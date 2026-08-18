@@ -1,13 +1,13 @@
 {
-  "updated": "2026-08-18 20:10 UTC",
-  "wave": 0,
-  "waveTitle": "Foundation",
-  "summary": "Identity, tokens, motion engine, six page shells built. Oryzo reference captured (17 frames). Media sourcing underway.",
+  "updated": "2026-08-18 20:16 UTC",
+  "wave": 1,
+  "waveTitle": "Five pieces, each looping against the reference",
+  "summary": "Foundation set: navy/cream/brass identity, Newsreader + Libre Franklin, a reveal/masked-line/parallax motion engine, six pages. Five builder-critic pairs are now looping in parallel \u2014 each critic re-shoots the real render, compares it blind against the Oryzo captures, and sends the builder back whenever the reference wins. A separate agent is sourcing licence-clear photography.",
   "pieces": [
     {
       "id": "scroll",
       "name": "Scroll narrative & homepage scenes",
-      "status": "building",
+      "status": "looping",
       "round": 0,
       "verdict": "",
       "gap": ""
@@ -15,7 +15,7 @@
     {
       "id": "pilots",
       "name": "Pilot cards & pilot detail",
-      "status": "building",
+      "status": "looping",
       "round": 0,
       "verdict": "",
       "gap": ""
@@ -23,7 +23,7 @@
     {
       "id": "people",
       "name": "People grid",
-      "status": "building",
+      "status": "looping",
       "round": 0,
       "verdict": "",
       "gap": ""
@@ -31,7 +31,7 @@
     {
       "id": "forum",
       "name": "Forum & photography treatment",
-      "status": "building",
+      "status": "looping",
       "round": 0,
       "verdict": "",
       "gap": ""
@@ -39,7 +39,7 @@
     {
       "id": "type",
       "name": "Type, colour, motion",
-      "status": "building",
+      "status": "queued",
       "round": 0,
       "verdict": "",
       "gap": ""
@@ -51,12 +51,32 @@
       "round": 0,
       "verdict": "",
       "gap": ""
+    },
+    {
+      "id": "chrome",
+      "name": "Nav, footer, Institute & Partner",
+      "status": "looping",
+      "round": 0,
+      "verdict": "",
+      "gap": ""
+    },
+    {
+      "id": "media",
+      "name": "Photography sourcing & grade",
+      "status": "building",
+      "round": 0,
+      "verdict": "",
+      "gap": ""
     }
   ],
   "log": [
     {
       "t": "Wave 0",
       "m": "Foundation: navy/cream/brass identity, Newsreader + Libre Franklin self-hosted, reveal/line-mask/parallax motion engine, six pages. Oryzo captured at 1440x900 and 390x844."
+    },
+    {
+      "t": "Wave 1",
+      "m": "Launched five builder/critic loops (scroll, pilots, people, forum, chrome) plus a coherence pass, and a media agent sourcing CC-licensed photography."
     }
   ]
 }
