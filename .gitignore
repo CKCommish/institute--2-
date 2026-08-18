@@ -6,3 +6,5 @@ progress/shots/
 tools/t.mjs
 tools/rawconnect.mjs
 tools/proxy-relay.mjs
+dist-*/
+progress/blind*/
