@@ -4,28 +4,222 @@ import Figure from '../components/Figure.astro';
 import { forum } from '../data/site.js';
 ---
 <Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
-  <section class="fhero">
-    <Figure src={forum.image} alt="" ratio="auto" grade={0.66} parallax={6} class="fhero__bg" loading="eager" />
-    <div class="shell fhero__in">
-      <p class="label" data-reveal>{forum.place}</p>
-      <h1 class="display display--hero lines">The Lion Forum</h1>
+  <!-- 1 ── full bleed. Name, then a hairline carrying the three facts. -->
+  <section class="fh">
+    <Figure src={forum.image} alt="" ratio="auto" grade={0.6} parallax={6} scrim="bottom" loading="eager" class="fh__bg" />
+
+    <div class="shell fh__in">
+      <div class="fh__tick" aria-hidden="true"></div>
+      <h1 class="display display--hero fh__h lines">{forum.name}</h1>
+
+      <div class="fh__bar">
+        <span class="fh__rule" aria-hidden="true"></span>
+        <div class="fh__cells">
+          <span class="label fh__cell">{forum.place}</span>
+          <span class="label fh__cell fh__cell--b">{forum.access}</span>
+          <span class="label fh__cell fh__cue">
+            Scroll<i class="fh__cueLine" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="scene">
-    <div class="shell fbody">
-      <p class="label" data-reveal>Invitation only</p>
-      <p class="fbody__p lede" data-reveal="120">{forum.line}</p>
-      <p class="fbody__p body" data-reveal="220">{forum.role}</p>
-      <a class="link fbody__cta" href="/partner/" data-reveal="320">Inquire about the Forum</a>
+  <!-- 2 ── one sentence, alone, at display size. -->
+  <section class="scene fsay">
+    <div class="shell fsay__in">
+      <p class="label fsay__k" data-reveal>The convening</p>
+      <p class="display display--xl fsay__p lines">{forum.line}</p>
+    </div>
+  </section>
+
+  <!-- 3 ── the photograph as its own beat. One caption, no argument. -->
+  <section class="fband">
+    <Figure src={forum.imageDetail} alt="" ratio="21 / 9" ratioSm="4 / 5" grade={0.52} parallax={8} class="fband__fig">
+      <figcaption class="fband__cap" data-reveal>
+        <i class="fband__tick" aria-hidden="true"></i><span class="label">{forum.caption}</span>
+      </figcaption>
+    </Figure>
+  </section>
+
+  <!-- 4 ── the Institute's relationship to it, and the quiet CTA. -->
+  <section class="scene frole">
+    <div class="shell">
+      <div class="frole__ruleWrap" data-reveal="60"><span class="frole__rule"></span></div>
+      <div class="frole__in">
+        <p class="label frole__k" data-reveal="110">The Institute's role</p>
+        <div class="frole__body">
+          <p class="frole__p" data-reveal="190">{forum.role}</p>
+          <a class="frole__cta" href="/partner/" data-reveal="280">
+            {forum.cta}
+            <svg viewBox="0 0 14 10" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .fhero { position: relative; min-height: 88svh; display: grid; align-items: end; isolation: isolate; }
-  .fhero__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
-  .fhero__in { width: 100%; display: grid; gap: var(--stack-2); padding-block: clamp(3rem, 8vw, 6rem); }
-  .fbody { display: grid; gap: var(--stack-2); max-width: 62ch; }
-  .fbody__cta { justify-self: start; font-size: var(--step-label); letter-spacing: .145em; text-transform: uppercase; font-weight: 500; margin-top: 1rem; }
+  /* ── 1. Hero ─────────────────────────────────────────────────────── */
+  .fh {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-items: end;
+    isolation: isolate;
+  }
+  .fh__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
+  .fh__in {
+    width: 100%;
+    padding-block: var(--nav-h) clamp(1.5rem, 2.6vw, 2.6rem);
+  }
+
+  /* brass tick — a graphic anchor above the name, no words spent */
+  .fh__tick {
+    width: 1px; height: clamp(34px, 5vw, 62px);
+    background: linear-gradient(to bottom, transparent, var(--brass));
+    margin-bottom: clamp(1rem, 1.8vw, 1.8rem);
+  }
+
+  .fh__h { max-width: 13ch; }
+
+  .fh__bar { margin-top: clamp(2.5rem, 6vw, 5rem); }
+
+  /* Local motion primitive: the hero bar sits below motion.js's reveal
+     rootMargin (-12%), so scroll-triggered reveal never fires above the fold.
+     This block is a load-time entrance instead — same easings, no observer. */
+  .fh__rule {
+    display: block; height: 1px; width: 100%;
+    background: color-mix(in srgb, var(--cream) 26%, transparent);
+    transform: scaleX(0); transform-origin: left;
+    animation: fhDraw 1150ms var(--ease-io) 340ms forwards;
+  }
+  .fh__tick, .fh__cell {
+    opacity: 0;
+    animation: fhIn var(--dur-2) var(--ease-out) forwards;
+  }
+  .fh__tick { animation-delay: 140ms; }
+  .fh__cell:nth-child(1) { animation-delay: 620ms; }
+  .fh__cell:nth-child(2) { animation-delay: 700ms; }
+  .fh__cell:nth-child(3) { animation-delay: 780ms; }
+  @keyframes fhIn  { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
+  @keyframes fhDraw { to { transform: scaleX(1); } }
+
+  .fh__cells {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: clamp(1.25rem, 4vw, 3.5rem);
+    padding-top: clamp(0.85rem, 1.4vw, 1.15rem);
+  }
+  .fh__cell { color: color-mix(in srgb, var(--cream) 66%, transparent); }
+  .fh__cell--b { color: var(--brass); }
+
+  .fh__cue { display: inline-flex; align-items: center; gap: 0.85em; }
+  .fh__cueLine {
+    position: relative; display: block;
+    width: 1px; height: 26px; overflow: hidden;
+    background: color-mix(in srgb, var(--cream) 22%, transparent);
+  }
+  .fh__cueLine::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--brass);
+    animation: fhCue 2600ms var(--ease-io) infinite;
+  }
+  @keyframes fhCue {
+    0%   { transform: translateY(-100%); }
+    55%  { transform: translateY(100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  /* ── 2. The sentence ─────────────────────────────────────────────── */
+  .fsay__in {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    column-gap: clamp(1rem, 4vw, 4rem);
+    align-items: start;
+  }
+  .fsay__k { padding-top: 0.85em; }
+  .fsay__p { max-width: 16ch; }
+  /* The shared .lines mask (base.css) clips descenders at this size. Give the
+     mask box room locally and lengthen the travel to keep it hidden. The
+     spans are built at runtime, so they need :global(). */
+  .fsay__p :global(.line) { padding-bottom: 0.16em; margin-bottom: -0.16em; }
+  .fsay__p :global(.line > span) { transform: translate3d(0, 130%, 0); }
+  .fsay__p.is-in :global(.line > span) { transform: none; }
+
+  /* ── 3. The photograph ───────────────────────────────────────────── */
+  .fband { position: relative; }
+  .fband__cap {
+    position: absolute; z-index: 6;
+    left: var(--gutter); bottom: clamp(1rem, 1.8vw, 1.6rem);
+    display: flex; align-items: center; gap: 0.9rem;
+    color: color-mix(in srgb, var(--cream) 64%, transparent);
+  }
+  .fband__tick { display: block; width: clamp(20px, 2.4vw, 34px); height: 1px; background: var(--brass); }
+
+  /* ── 4. Role + CTA ───────────────────────────────────────────────── */
+  .frole { padding-block: var(--scene-pad) clamp(3rem, 5vw, 6rem); }
+  /* same draw-in hairline as the hero, held to the content width */
+  .frole__ruleWrap { --reveal-y: 0px; display: block; }
+  .frole__rule {
+    display: block; height: 1px; width: 100%;
+    background: var(--rule);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 900ms var(--ease-io) 60ms;
+  }
+  .frole__ruleWrap.is-in .frole__rule { transform: scaleX(1); }
+  .frole__in {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    column-gap: clamp(1rem, 4vw, 4rem);
+    align-items: start;
+    padding-top: clamp(1.75rem, 3.2vw, 3rem);
+  }
+  .frole__k { padding-top: 0.45em; }
+  .frole__body { display: grid; gap: clamp(1.75rem, 3.4vw, 3rem); justify-items: start; }
+  .frole__p {
+    font-size: clamp(1.06rem, 0.96rem + 0.5vw, 1.42rem);
+    line-height: 1.5;
+    font-weight: 350;
+    color: color-mix(in srgb, var(--cream) 74%, transparent);
+    max-width: 40ch;
+    text-wrap: pretty;
+  }
+  .frole__cta {
+    display: inline-flex; align-items: center; gap: 0.9ch;
+    font-size: var(--step-label); letter-spacing: 0.145em;
+    text-transform: uppercase; font-weight: 500;
+    color: var(--cream);
+  }
+  .frole__cta svg { width: 0.95em; height: auto; transition: transform 460ms var(--ease-out); }
+  .frole__cta:hover svg { transform: translateX(4px); }
+  /* local hover rule — the shared .link underline assumes inline-block */
+  .frole__cta::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -0.45em; height: 1px;
+    background: currentColor; transform: scaleX(0); transform-origin: right;
+    transition: transform 520ms var(--ease-out);
+  }
+  .frole__cta { position: relative; }
+  .frole__cta:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  /* ── Mobile ──────────────────────────────────────────────────────── */
+  @media (max-width: 860px) {
+    .fsay__in, .frole__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 5vw, 2.25rem); }
+    .fsay__k, .frole__k { padding-top: 0; }
+    .fsay__p { max-width: 13ch; }
+  }
+  @media (max-width: 620px) {
+    .fh__h { max-width: 9ch; }
+    .fh__cells { grid-template-columns: 1fr auto; row-gap: 0.7rem; }
+    .fh__cell:first-child { grid-column: 1 / -1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .frole__rule { transition-duration: 1ms; }
+    .fh__rule { animation: none; transform: scaleX(1); }
+    .fh__tick, .fh__cell { animation: none; opacity: 1; }
+    .fh__cueLine::after { animation: none; transform: translateY(0); }
+  }
 </style>

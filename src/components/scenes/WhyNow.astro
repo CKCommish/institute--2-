@@ -1,19 +1,65 @@
 ---
 import { whyNow } from '../../data/site.js';
 ---
-<section class="why on-cream scene" id="why" aria-labelledby="why-h">
+<section class="why on-cream" id="why" aria-labelledby="why-h">
+  <p class="label why__label" data-reveal>Why now</p>
+
   <div class="shell why__in">
-    <p class="label why__label" data-reveal>Why now</p>
-    <h2 class="display display--xl why__h lines" id="why-h">{whyNow}</h2>
-    <div class="why__mark" aria-hidden="true" data-reveal="420"></div>
+    <h2 class="display why__h lines" id="why-h">{whyNow}</h2>
+  </div>
+
+  <div class="shell why__foot">
+    <span class="why__mark" aria-hidden="true" data-reveal="260"></span>
   </div>
 </section>
 
 <style>
-  .why { padding-block: clamp(6rem, 14vw, 14rem); }
-  .why__in { display: grid; gap: clamp(2rem, 4vw, 3.5rem); }
-  .why__h { max-width: 20ch; }
-  .why__mark { height: 1px; background: var(--rule); width: 100%; transform-origin: left; }
-  .why__mark[data-reveal] { transform: scaleX(0); transition: transform 1400ms var(--ease-out) 300ms, opacity 1ms; opacity: 1; }
+  /* One statement, one field. This is the only inverted scene on the page —
+     it earns that by being the largest and quietest thing in the scroll. */
+  .why {
+    position: relative;
+    min-height: min(78svh, 760px);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-content: center;
+    padding-top: clamp(4.5rem, 13vh, 9rem);
+    padding-bottom: clamp(1.75rem, 4.5vh, 3rem);
+    overflow: hidden;
+  }
+
+  .why__label {
+    position: absolute;
+    top: clamp(2rem, 5vh, 3.5rem);
+    left: var(--gutter);
+    color: var(--fg-mute);
+  }
+
+  .why__in { align-self: center; }
+
+  .why__h {
+    font-size: clamp(2.35rem, 0.2rem + 6.6vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.032em;
+    text-wrap: initial;
+  }
+
+  .why__foot {
+    align-self: end;
+    padding-top: clamp(2rem, 5vh, 3.5rem);
+  }
+  .why__mark {
+    height: 1px; width: 100%;
+    background: var(--brass);
+    transform-origin: left;
+  }
+  .why__mark[data-reveal] {
+    opacity: 1; transform: scaleX(0);
+    transition: transform 950ms var(--ease-out) var(--reveal-delay, 0ms);
+  }
   .why__mark.is-in { transform: scaleX(1); }
+  .why__mark { display: block; }
+
+  @media (max-width: 700px) {
+    .why { min-height: min(78svh, 700px); }
+  }
 </style>

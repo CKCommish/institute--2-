@@ -3,29 +3,85 @@ import Figure from '../Figure.astro';
 import { forum } from '../../data/site.js';
 ---
 <section class="forum" aria-labelledby="forum-h">
-  <Figure src={forum.image} alt="" ratio="auto" grade={0.68} parallax={7} class="forum__bg" />
+  <Figure src={forum.image} alt="" ratio="auto" grade={0.62} parallax={7} scrim="bottom" class="forum__bg" />
+
   <div class="shell forum__in">
     <p class="label forum__place" data-reveal>{forum.place}</p>
     <h2 class="display display--xl forum__h lines" id="forum-h">{forum.name}</h2>
-    <p class="forum__line" data-reveal="480">{forum.line}</p>
-    <a class="forum__more link" href="/forum/" data-reveal="620">Inquire about the Forum</a>
+
+    <div class="forum__ruleWrap" data-reveal="120"><span class="forum__rule"></span></div>
+
+    <div class="forum__cells">
+      <p class="forum__line" data-reveal="560">{forum.line}</p>
+      <a class="forum__more" href="/forum/" data-reveal="660">
+        {forum.cta}
+        <svg viewBox="0 0 14 10" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
+      </a>
+    </div>
   </div>
 </section>
 
 <style>
   .forum {
     position: relative;
-    min-height: clamp(560px, 92svh, 900px);
-    display: grid; align-items: end;
+    min-height: clamp(600px, 94svh, 940px);
+    display: grid;
+    align-items: end;
     isolation: isolate;
   }
   .forum__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
   .forum__in {
     width: 100%;
-    display: grid; gap: clamp(1rem, 2vw, 1.6rem);
-    padding-block: clamp(3rem, 8vw, 7rem);
+    padding-block: clamp(3rem, 8vw, 7rem) clamp(1.5rem, 2.6vw, 2.6rem);
   }
-  .forum__h { max-width: 12ch; }
-  .forum__line { color: color-mix(in srgb, var(--cream) 74%, transparent); max-width: 36ch; text-wrap: pretty; }
-  .forum__more { justify-self: start; font-size: var(--step-label); letter-spacing: 0.145em; text-transform: uppercase; font-weight: 500; margin-top: 0.5rem; }
+
+  .forum__place { color: color-mix(in srgb, var(--cream) 62%, transparent); }
+  .forum__h { max-width: 12ch; margin-top: clamp(0.9rem, 1.6vw, 1.5rem); }
+
+  /* Local motion primitive: hairline that draws in on reveal (not in
+     base.css). --reveal-y:0 cancels the default lift on the wrapper. */
+  .forum__ruleWrap { --reveal-y: 0px; display: block; margin-top: clamp(2.25rem, 5vw, 4rem); }
+  .forum__rule {
+    display: block; height: 1px; width: 100%;
+    background: color-mix(in srgb, var(--cream) 24%, transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 850ms var(--ease-io) 60ms;
+  }
+  .forum__ruleWrap.is-in .forum__rule { transform: scaleX(1); }
+
+  .forum__cells {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: clamp(1.25rem, 4vw, 3.5rem);
+    padding-top: clamp(1rem, 1.6vw, 1.4rem);
+  }
+  .forum__line {
+    color: color-mix(in srgb, var(--cream) 72%, transparent);
+    max-width: 34ch;
+    text-wrap: pretty;
+  }
+  .forum__more {
+    display: inline-flex; align-items: center; gap: 0.9ch;
+    white-space: nowrap;
+    font-size: var(--step-label); letter-spacing: 0.145em;
+    text-transform: uppercase; font-weight: 500;
+    padding-top: 0.35em;
+  }
+  .forum__more svg { width: 0.95em; height: auto; transition: transform 460ms var(--ease-out); }
+  .forum__more:hover svg { transform: translateX(4px); }
+  /* local hover rule — the shared .link underline assumes inline-block */
+  .forum__more { position: relative; }
+  .forum__more::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -0.5em; height: 1px;
+    background: currentColor; transform: scaleX(0); transform-origin: right;
+    transition: transform 520ms var(--ease-out);
+  }
+  .forum__more:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  @media (max-width: 720px) {
+    .forum__h { max-width: 9ch; }
+    .forum__cells { grid-template-columns: minmax(0, 1fr); row-gap: 1.35rem; }
+    .forum__more { justify-self: start; padding-top: 0; }
+  }
 </style>

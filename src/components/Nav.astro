@@ -2,39 +2,28 @@
 import { nav, cta, site } from '../data/site.js';
 const { pathname } = Astro.url;
 const isActive = (href) => pathname === href || (href !== '/' && pathname.startsWith(href));
+const ctaActive = isActive(cta.href);
 ---
 <header class="nav" data-nav>
   <div class="nav__in">
-    <a class="wordmark" href="/" aria-label={`${site.name} — home`}>
-      <span class="wordmark__lion" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1"/>
-          <path d="M12 5.6 13.9 10h4.6l-3.7 2.8 1.4 4.5L12 14.5l-4.2 2.8 1.4-4.5L5.5 10h4.6L12 5.6Z" fill="currentColor" opacity=".85"/>
-        </svg>
-      </span>
-      <span class="wordmark__text">
-        <span class="wordmark__l1">Lion Forum</span>
-        <span class="wordmark__l2">Institute</span>
-      </span>
+    <a class="mark" href="/" aria-label={`${site.name} — home`}>
+      <span class="mark__a">Lion Forum</span>
+      <span class="mark__b">Institute</span>
     </a>
 
     <nav class="nav__links" aria-label="Primary">
       {nav.map((n) => (
-        <a href={n.href} class:list={['nav__link', { 'is-active': isActive(n.href) }]}>
-          <span>{n.label}</span>
-        </a>
+        <a href={n.href} class:list={['nav__link', { 'is-active': isActive(n.href) }]}>{n.label}</a>
       ))}
+      <span class="nav__sep" aria-hidden="true"></span>
+      <a href={cta.href} class:list={['nav__link nav__link--cta', { 'is-active': ctaActive }]}>
+        <span class="nav__dot" aria-hidden="true"></span>{cta.label}
+      </a>
     </nav>
 
-    <a class="nav__cta" href={cta.href}>
-      <span>{cta.label}</span>
-      <svg viewBox="0 0 14 10" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
-    </a>
-
     <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
-      <span class="sr-only">Menu</span>
-      <span class="nav__burger-b" aria-hidden="true"></span>
-      <span class="nav__burger-b" aria-hidden="true"></span>
+      <span class="nav__dot" aria-hidden="true"></span>
+      <span class="nav__burger-t" data-burger-label>Menu</span>
     </button>
   </div>
 </header>
@@ -46,57 +35,83 @@ const isActive = (href) => pathname === href || (href !== '/' && pathname.starts
         <a href={n.href} style={`--i:${i}`}><span class="index">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
       ))}
     </nav>
-    <a class="menu__cta" href={cta.href} style={`--i:${nav.length}`}>{cta.label}</a>
+    <a class="menu__cta" href={cta.href} style={`--i:${nav.length}`}>
+      <span class="nav__dot" aria-hidden="true"></span>{cta.label}
+    </a>
+    <div class="menu__foot" style={`--i:${nav.length + 1}`}>
+      <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
+      <span>Hyannis Port · Washington, D.C.</span>
+    </div>
   </div>
 </div>
 
 <style>
+  /* The bar has no chrome of its own: no panel, no border, no blur. It is a
+     wordmark and a line of micro-labels floating on the composition. On scroll
+     a soft edgeless scrim appears so type stays legible; over a cream scene the
+     whole bar inverts to ink. --nav-scrim / --nav-fg are local to this file. */
   .nav {
     position: fixed; inset: 0 0 auto 0; z-index: 100;
     height: var(--nav-h);
-    color: var(--cream);
-    mix-blend-mode: normal;
-    transition: background 500ms var(--ease-out), border-color 500ms var(--ease-out), backdrop-filter 500ms;
-    border-bottom: 1px solid transparent;
+    color: var(--nav-fg, var(--cream));
+    --nav-scrim: var(--ink-900);
+    transition: color 420ms var(--ease-out);
+    pointer-events: none;
   }
-  .nav.is-scrolled {
-    background: color-mix(in srgb, var(--ink-900) 72%, transparent);
-    backdrop-filter: blur(14px) saturate(120%);
-    -webkit-backdrop-filter: blur(14px) saturate(120%);
-    border-bottom-color: color-mix(in srgb, var(--cream) 10%, transparent);
+  .nav::before {
+    content: ''; position: absolute; inset: 0 0 auto 0;
+    height: calc(100% + 4.2rem);
+    background: linear-gradient(
+      to bottom,
+      var(--nav-scrim) 0%,
+      var(--nav-scrim) 44%,
+      color-mix(in srgb, var(--nav-scrim) 74%, transparent) 66%,
+      color-mix(in srgb, var(--nav-scrim) 0%, transparent) 100%
+    );
+    opacity: 0; transition: opacity 460ms var(--ease-out);
+    pointer-events: none;
   }
+  .nav.is-scrolled::before { opacity: 1; }
+  .nav.is-inverted { --nav-fg: var(--ink-900); --nav-scrim: var(--cream); }
+
   .nav__in {
+    position: relative;
     height: 100%;
     max-width: var(--max); margin-inline: auto;
     padding-inline: var(--gutter);
     display: flex; align-items: center; gap: clamp(1rem, 3vw, 3rem);
   }
+  .nav__in > * { pointer-events: auto; }
 
-  .wordmark { display: flex; align-items: center; gap: 0.6rem; margin-right: auto; }
-  .wordmark__lion { width: 1.05rem; height: 1.05rem; color: var(--brass); flex: none; }
-  .wordmark__lion svg { width: 100%; height: 100%; }
-  .wordmark__text {
-    display: flex; gap: 0.4ch;
+  /* ── Wordmark: two words, one weight change. No glyph, no rule. ── */
+  .mark {
+    display: flex; align-items: center;
+    gap: 0.55ch;
+    margin-right: auto;
     font-family: var(--sans);
-    font-size: var(--step-label);
-    font-weight: 600;
-    letter-spacing: 0.145em;
+    font-size: clamp(0.78rem, 0.72rem + 0.2vw, 0.9rem);
+    letter-spacing: 0.135em;
     text-transform: uppercase;
     line-height: 1;
+    white-space: nowrap;
   }
-  .wordmark__l2 { color: color-mix(in srgb, currentColor 55%, transparent); }
+  .mark__a { font-weight: 600; }
+  .mark__b { font-weight: 400; color: color-mix(in srgb, currentColor 50%, transparent); transition: color 420ms var(--ease-out); }
+  .mark:hover .mark__b { color: currentColor; }
 
-  .nav__links { display: flex; gap: clamp(1.1rem, 2.2vw, 2.4rem); }
+  /* ── Links ── */
+  .nav__links { display: flex; align-items: center; gap: clamp(1.1rem, 2.2vw, 2.3rem); }
   .nav__link {
     font-size: var(--step-label); font-weight: 500;
     letter-spacing: 0.145em; text-transform: uppercase;
-    color: color-mix(in srgb, currentColor 62%, transparent);
+    color: color-mix(in srgb, currentColor 58%, transparent);
     transition: color 340ms var(--ease-out);
-    position: relative; padding-block: 0.4rem;
+    position: relative; padding-block: 0.5rem;
+    white-space: nowrap;
   }
   .nav__link::after {
-    content: ''; position: absolute; left: 0; right: 0; bottom: 0;
-    height: 1px; background: var(--brass);
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0.15rem;
+    height: 1px; background: currentColor; opacity: 0.55;
     transform: scaleX(0); transform-origin: right;
     transition: transform 460ms var(--ease-out);
   }
@@ -104,77 +119,117 @@ const isActive = (href) => pathname === href || (href !== '/' && pathname.starts
   .nav__link:hover::after, .nav__link.is-active::after { transform: scaleX(1); transform-origin: left; }
   .nav__link.is-active { color: currentColor; }
 
-  .nav__cta {
-    display: inline-flex; align-items: center; gap: 0.7ch;
+  .nav__sep { width: 1px; height: 10px; background: color-mix(in srgb, currentColor 14%, transparent); flex: none; }
+
+  /* The primary CTA earns a brass dot, not a button. */
+  .nav__link--cta { color: currentColor; display: inline-flex; align-items: center; gap: 0.72ch; }
+  .nav__link--cta::after { background: var(--brass); opacity: 1; }
+  .nav__dot {
+    width: 5px; height: 5px; border-radius: 50%; flex: none;
+    background: var(--brass);
+    transition: transform 520ms var(--ease-out);
+  }
+  .nav__link--cta:hover .nav__dot { transform: scale(1.7); }
+
+  /* ── Mobile trigger ── */
+  .nav__burger {
+    display: none; align-items: center; gap: 0.7ch;
+    padding: 0.9rem 0; margin-right: -0.2rem;
     font-size: var(--step-label); font-weight: 500;
     letter-spacing: 0.145em; text-transform: uppercase;
-    padding: 0.72em 1.15em;
-    border: 1px solid color-mix(in srgb, currentColor 26%, transparent);
-    border-radius: 100px;
-    transition: background 380ms var(--ease-out), color 380ms var(--ease-out), border-color 380ms var(--ease-out);
   }
-  .nav__cta svg { width: 0.85em; height: auto; transition: transform 420ms var(--ease-out); }
-  .nav__cta:hover { background: var(--cream); color: var(--ink-900); border-color: var(--cream); }
-  .nav__cta:hover svg { transform: translateX(3px); }
+  .nav__burger-t { min-width: 5ch; text-align: right; }
 
-  .nav__burger { display: none; width: 30px; height: 30px; position: relative; margin-right: -6px; }
-  .nav__burger-b {
-    position: absolute; left: 4px; right: 4px; height: 1px; background: currentColor;
-    transition: transform 420ms var(--ease-io), opacity 200ms;
-  }
-  .nav__burger-b:nth-child(2) { transform: translateY(-4px); }
-  .nav__burger-b:nth-child(3) { transform: translateY(4px); }
-  .nav__burger[aria-expanded='true'] .nav__burger-b:nth-child(2) { transform: rotate(45deg); }
-  .nav__burger[aria-expanded='true'] .nav__burger-b:nth-child(3) { transform: rotate(-45deg); }
-
-  @media (max-width: 900px) {
-    .nav__links, .nav__cta { display: none; }
-    .nav__burger { display: block; }
+  @media (max-width: 940px) {
+    .nav__links { display: none; }
+    .nav__burger { display: inline-flex; }
   }
 
   /* ── Mobile menu ── */
   .menu {
     position: fixed; inset: 0; z-index: 99;
-    background: var(--ink-900);
+    background: var(--ink-900); color: var(--cream);
     display: grid; align-items: center;
     opacity: 0; pointer-events: none;
-    transition: opacity 460ms var(--ease-out);
+    transition: opacity 420ms var(--ease-out);
   }
   .menu[data-open] { opacity: 1; pointer-events: auto; }
-  .menu__in { padding: var(--nav-h) var(--gutter) var(--gutter); width: 100%; }
-  .menu__links { display: grid; gap: 0.2em; }
+  .menu__in { padding: calc(var(--nav-h) + 2rem) var(--gutter) var(--gutter); width: 100%; }
+  .menu__links { display: grid; gap: 0.14em; }
   .menu__links a {
     font-family: var(--serif); font-weight: 320;
-    font-size: clamp(2rem, 9vw, 3.2rem); line-height: 1.12;
-    letter-spacing: -0.02em;
+    font-size: clamp(2.1rem, 10vw, 3.4rem); line-height: 1.1;
+    letter-spacing: -0.022em;
     display: flex; align-items: baseline; gap: 1rem;
     opacity: 0; transform: translateY(14px);
     transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
-    transition-delay: calc(var(--i) * 60ms + 90ms);
+    transition-delay: calc(var(--i) * 55ms + 80ms);
   }
   .menu__links .index { font-size: 0.62rem; }
   .menu[data-open] .menu__links a { opacity: 1; transform: none; }
-  .menu__cta {
-    margin-top: 2.5rem; display: inline-flex;
-    font-size: var(--step-label); letter-spacing: 0.145em; text-transform: uppercase; font-weight: 500;
-    border: 1px solid color-mix(in srgb, var(--cream) 26%, transparent);
-    border-radius: 100px; padding: 0.9em 1.4em;
+  .menu__cta,
+  .menu__foot {
     opacity: 0; transform: translateY(14px);
     transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
-    transition-delay: calc(var(--i) * 60ms + 90ms);
+    transition-delay: calc(var(--i) * 55ms + 80ms);
   }
-  .menu[data-open] .menu__cta { opacity: 1; transform: none; }
+  .menu[data-open] .menu__cta, .menu[data-open] .menu__foot { opacity: 1; transform: none; }
+  .menu__cta {
+    margin-top: 2.4rem; display: inline-flex; align-items: center; gap: 0.8ch;
+    font-size: var(--step-label); letter-spacing: 0.145em; text-transform: uppercase; font-weight: 500;
+    padding-bottom: 0.6rem; border-bottom: 1px solid var(--brass);
+  }
+  .menu__foot {
+    margin-top: 3.2rem; display: grid; gap: 0.5rem; justify-items: start;
+    font-size: var(--step-xs); color: var(--fg-mute);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav, .nav::before, .mark__b, .nav__link::after, .nav__dot,
+    .menu, .menu__links a, .menu__cta, .menu__foot { transition-duration: 1ms !important; }
+  }
 </style>
 
 <script>
+  const nav = document.querySelector('[data-nav]');
   const burger = document.querySelector('[data-burger]');
+  const burgerLabel = document.querySelector('[data-burger-label]');
   const menu = document.querySelector('[data-menu]');
+
+  /* Scrim + inversion. motion.js also toggles .is-scrolled at the same
+     threshold, so the two agree frame to frame. Inversion is local: no
+     token or engine change, just a class when a cream scene is under the bar. */
+  if (nav) {
+    const light = [...document.querySelectorAll('.on-cream')];
+    let queued = false;
+    const sync = () => {
+      queued = false;
+      nav.classList.toggle('is-scrolled', window.scrollY > 24);
+      const y = nav.offsetHeight * 0.55;
+      const inverted =
+        !menu?.hasAttribute('data-open') &&
+        light.some((el) => {
+          const r = el.getBoundingClientRect();
+          return r.top <= y && r.bottom >= y;
+        });
+      nav.classList.toggle('is-inverted', inverted);
+    };
+    const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(sync); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll, { passive: true });
+    sync();
+    nav.dataset.sync = '1';
+    window.__navSync = sync;
+  }
+
   if (burger && menu) {
     const set = (open) => {
       burger.setAttribute('aria-expanded', String(open));
+      if (burgerLabel) burgerLabel.textContent = open ? 'Close' : 'Menu';
       if (open) { menu.hidden = false; requestAnimationFrame(() => menu.setAttribute('data-open', '')); }
-      else { menu.removeAttribute('data-open'); setTimeout(() => { menu.hidden = true; }, 460); }
+      else { menu.removeAttribute('data-open'); setTimeout(() => { menu.hidden = true; }, 420); }
       document.documentElement.style.overflow = open ? 'hidden' : '';
+      if (window.__navSync) window.__navSync();
     };
     burger.addEventListener('click', () => set(burger.getAttribute('aria-expanded') !== 'true'));
     menu.addEventListener('click', (e) => { if (e.target.closest('a')) set(false); });

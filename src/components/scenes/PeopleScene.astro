@@ -1,52 +1,141 @@
 ---
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { founders, board } from '../../data/site.js';
-import Figure from '../Figure.astro';
+
+/* Portrait drop-in slot — same contract as /people/.
+   public/media/founder-mckelvy.jpg · founder-olanoff.jpg (or .jpeg/.png/.webp).
+   Absent files render nothing at all, so this scene never shows an empty
+   frame and never requests a missing asset. */
+const EXTS = ['.jpg', '.jpeg', '.png', '.webp'];
+function resolvePortrait(p) {
+  if (!p) return null;
+  const stem = p.replace(/\.(jpe?g|png|webp)$/i, '');
+  for (const ext of EXTS) {
+    const rel = `${stem}${ext}`;
+    try {
+      if (fs.existsSync(fileURLToPath(new URL(`../../../public${rel}`, import.meta.url)))) return rel;
+    } catch { /* unresolvable path — treat as absent */ }
+  }
+  return null;
+}
+
+const people = founders.map((f, i) => ({
+  name: f.name,
+  role: f.role,
+  index: String(i + 1).padStart(2, '0'),
+  portraitSrc: resolvePortrait(f.portrait),
+}));
 ---
 <section class="people scene" id="people" aria-labelledby="people-h">
   <div class="shell people__in">
     <header class="people__head">
       <p class="label" data-reveal>People</p>
-      <h2 class="display display--l people__h lines" id="people-h">Founded by two people who have built and governed.</h2>
+      <h2 class="display display--l people__h lines" id="people-h">Two founders. Sixteen people asked to govern the work.</h2>
     </header>
 
     <div class="people__founders">
-      {founders.map((f, i) => (
-        <article class="founder" data-reveal={String(120 + i * 120)}>
-          <Figure src={f.portrait} alt={f.name} ratio="4 / 5" grade={0.3} class="founder__fig" />
-          <h3 class="founder__name">{f.name}</h3>
-          <p class="founder__role">{f.lines[0]}</p>
+      {people.map((p, i) => (
+        <article class:list={['fd', { 'fd--portrait': p.portraitSrc }]} data-reveal={String(80 + i * 100)}>
+          <hr class="rule" />
+          <div class="fd__row">
+            {p.portraitSrc && <img class="fd__img" src={p.portraitSrc} alt={p.name} loading="lazy" decoding="async" width="240" height="300" />}
+            <h3 class="display fd__name">{p.name}</h3>
+            <p class="fd__role">{p.role}</p>
+          </div>
         </article>
       ))}
     </div>
 
-    <div class="people__board" data-reveal="200">
-      <p class="label people__board-label">Prospective board</p>
-      <ul class="people__board-list">
-        {board.map((b) => <li>{b.name}</li>)}
-      </ul>
+    <div class="people__board" data-reveal="160">
+      <hr class="rule" />
+      <div class="people__board-row">
+        <p class="people__board-label">
+          <span class="index tnum">16</span>
+          <span class="label">Prospective board</span>
+        </p>
+        <p class="people__names">
+          {board.map((b, i) => (
+            <>
+              {i > 0 && <span class="people__sep" aria-hidden="true">·</span>}
+              <span class="people__name">{b.name}</span>
+            </>
+          ))}
+        </p>
+      </div>
       <a class="link people__more" href="/people/">All people</a>
     </div>
   </div>
 </section>
 
 <style>
-  .people__in { display: grid; gap: clamp(2.5rem, 6vw, 5rem); }
+  .people__in { display: grid; gap: clamp(2.25rem, 5.5vw, 4.5rem); }
   .people__head { display: grid; gap: var(--stack-2); }
-  .people__h { max-width: 20ch; }
+  .people__h { max-width: 18ch; }
 
-  .people__founders { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1.25rem, 3vw, 2.5rem); max-width: 780px; }
-  .founder { display: grid; gap: 0.9rem; }
-  .founder__name { font-family: var(--sans); font-size: var(--step-s); font-weight: 500; }
-  .founder__role { color: var(--fg-mute); font-size: var(--step-xs); }
-
-  .people__board { display: grid; gap: 1.25rem; padding-top: clamp(1.5rem, 3vw, 2.5rem); border-top: 1px solid var(--rule); }
-  .people__board-list {
-    list-style: none; margin: 0; padding: 0;
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 0.6rem clamp(1rem, 2.5vw, 2rem);
-    font-size: var(--step-xs); color: var(--fg-mute);
+  /* Founders as two entries in a register — name left, role right. */
+  /* Name left, title anchored to the far edge — one register line. */
+  .fd__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: clamp(1.25rem, 3vw, 3rem);
+    align-items: baseline;
+    padding-block: clamp(1rem, 2.2vw, 1.75rem);
   }
-  .people__more { justify-self: start; font-size: var(--step-label); letter-spacing: 0.145em; text-transform: uppercase; font-weight: 500; }
-  @media (max-width: 900px) { .people__board-list { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px) { .people__founders { grid-template-columns: 1fr; max-width: 420px; } }
+  .fd--portrait .fd__row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+  }
+  .fd__img {
+    width: clamp(56px, 6vw, 84px);
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    filter: saturate(0.62) contrast(1.04) brightness(0.9);
+  }
+  .fd__name {
+    /* Between --step-m and --step-l; local to this scene. */
+    font-size: clamp(1.45rem, 1.05rem + 1.4vw, 2.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+  .fd__role {
+    font-size: var(--step-label);
+    letter-spacing: 0.155em;
+    text-transform: uppercase;
+    line-height: 1.7;
+    color: var(--fg-faint);
+    text-align: right;
+  }
+
+  .people__board { display: grid; gap: clamp(1.25rem, 2.5vw, 2rem); }
+  .people__board-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
+    column-gap: clamp(1.25rem, 3vw, 3rem);
+    align-items: start;
+    padding-top: clamp(1rem, 2.2vw, 1.75rem);
+  }
+  .people__board-label { display: flex; align-items: baseline; gap: 0.75rem; }
+  .people__names {
+    font-size: var(--step-xs);
+    line-height: 1.9;
+    color: var(--fg-mute);
+    text-wrap: pretty;
+  }
+  .people__sep { color: var(--brass); padding-inline: 0.42em; }
+  .people__more {
+    justify-self: start;
+    font-size: var(--step-label);
+    letter-spacing: 0.145em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  @media (max-width: 860px) {
+    .fd__row { grid-template-columns: 1fr; row-gap: 0.4rem; }
+    .fd--portrait .fd__row { grid-template-columns: auto minmax(0, 1fr); row-gap: 0.4rem; }
+    .fd--portrait .fd__role { grid-column: 2; }
+    .fd__role { text-align: left; }
+    .people__board-row { grid-template-columns: 1fr; row-gap: 1rem; }
+  }
 </style>

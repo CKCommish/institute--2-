@@ -3,27 +3,29 @@ import Figure from '../Figure.astro';
 import { pilots } from '../../data/site.js';
 ---
 <section class="hero" aria-labelledby="hero-h">
-  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.72} parallax={5} loading="eager" class="hero__bg" />
+  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.58} parallax={5} loading="eager" class="hero__bg" />
+  <div class="hero__veil" aria-hidden="true"></div>
 
   <div class="hero__in shell">
-    <p class="label hero__eyebrow" data-reveal="80">
+    <p class="label hero__eyebrow" data-reveal="40">
       <span class="hero__dot" aria-hidden="true"></span>The Lion Forum Institute
     </p>
 
-    <h1 class="display display--hero hero__h lines" id="hero-h">
+    <h1 class="display hero__h lines" id="hero-h">
       To ensure the technologies of tomorrow strengthen American families today.
     </h1>
 
-    <p class="hero__lede" data-reveal="620">
-      We run short, measurable pilots with the institutions families already trust.
+    <p class="hero__lede" data-reveal="480">
+      Short, measurable pilots inside institutions families already trust.
     </p>
   </div>
 
-  <div class="hero__index shell" data-reveal="820">
+  <div class="hero__index shell">
+    <span class="hero__rule" aria-hidden="true"></span>
     <span class="label hero__index-label">Pilots · 2026</span>
     <ul class="hero__index-list">
       {pilots.map((p) => (
-        <li><span class="index">{p.index}</span> {p.title}</li>
+        <li><span class="index">{p.index}</span>{p.title}</li>
       ))}
     </ul>
     <a class="hero__scroll" href="#why">
@@ -41,19 +43,40 @@ import { pilots } from '../../data/site.js';
     grid-template-rows: 1fr auto;
     align-items: end;
     isolation: isolate;
+    overflow: hidden;
   }
-  .hero__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
+  .hero__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -2; }
 
+  /* Legibility scrim + one quiet light source. Sits above the photograph so the
+     composition holds whether or not /media/hero.jpg has landed yet.
+     Local to this component — no new token invented. */
+  .hero__veil {
+    position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(72% 58% at 76% 12%, color-mix(in srgb, var(--brass) 13%, transparent) 0%, transparent 64%),
+      radial-gradient(60% 46% at 26% 34%, color-mix(in srgb, var(--ink-600) 46%, transparent) 0%, transparent 70%),
+      radial-gradient(96% 74% at 6% 98%, color-mix(in srgb, var(--ink-900) 92%, transparent) 0%, transparent 72%),
+      linear-gradient(196deg, color-mix(in srgb, var(--ink-900) 58%, transparent) 0%, transparent 32%),
+      linear-gradient(0deg, var(--ink-900) 0%, color-mix(in srgb, var(--ink-900) 58%, transparent) 24%, transparent 60%);
+  }
+
+  /* ── Upper composition: display left, lede in a right column ───────── */
   .hero__in {
     width: 100%;
-    padding-top: calc(var(--nav-h) + clamp(3rem, 9vh, 7rem));
-    padding-bottom: clamp(1.5rem, 4vh, 3rem);
+    padding-top: calc(var(--nav-h) + clamp(2.5rem, 8vh, 6rem));
+    padding-bottom: clamp(2.5rem, 8vh, 6rem);
     display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(14rem, 20vw, 19rem);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: clamp(1.3rem, 2.8vh, 2.2rem);
     align-content: end;
-    gap: clamp(1.25rem, 2.4vw, 2.25rem);
   }
 
-  .hero__eyebrow { display: flex; align-items: center; gap: 0.75rem; color: var(--cream); }
+  .hero__eyebrow {
+    grid-column: 1; grid-row: 1;
+    display: flex; align-items: center; gap: 0.8rem;
+    color: var(--cream);
+  }
   .hero__dot {
     width: 5px; height: 5px; border-radius: 50%; background: var(--brass);
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--brass) 60%, transparent);
@@ -63,35 +86,61 @@ import { pilots } from '../../data/site.js';
     0%, 70%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brass) 55%, transparent); }
     35% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--brass) 0%, transparent); }
   }
-  @media (prefers-reduced-motion: reduce) { .hero__dot { animation: none; } }
 
-  .hero__h { max-width: 17ch; }
-  .hero__lede {
-    font-size: clamp(1.02rem, 0.95rem + 0.4vw, 1.3rem);
-    line-height: 1.45;
-    color: color-mix(in srgb, var(--cream) 74%, transparent);
-    max-width: 34ch;
-    text-wrap: pretty;
+  .hero__h {
+    grid-column: 1; grid-row: 2;
+    font-size: clamp(2.05rem, 0.15rem + 5.05vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-wrap: initial;
   }
 
+  .hero__lede {
+    grid-column: 2; grid-row: 2;
+    align-self: end;
+    position: relative;
+    padding-left: clamp(1rem, 2.2vw, 2.2rem);
+    padding-bottom: 0.35em;
+    font-size: clamp(0.96rem, 0.89rem + 0.32vw, 1.14rem);
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--cream) 72%, transparent);
+    text-wrap: pretty;
+  }
+  /* the one piece of architecture: a hairline dividing the two columns */
+  .hero__lede::before {
+    content: ''; position: absolute; left: 0; top: -40vh; bottom: -0.2rem; width: 1px;
+    background: linear-gradient(to bottom, transparent 0%, var(--rule-soft) 38%, var(--rule) 100%);
+  }
+
+  /* ── Lower composition: the 2026 index, inside the first screen ─────── */
   .hero__index {
     width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: clamp(1rem, 3vw, 2.5rem);
-    padding-block: clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 2.5vh, 2rem);
-    border-top: 1px solid color-mix(in srgb, var(--cream) 16%, transparent);
-    margin-top: clamp(1.5rem, 4vh, 3rem);
+    column-gap: clamp(1.25rem, 3vw, 3rem);
+    row-gap: 0.9rem;
+    padding-bottom: clamp(1.75rem, 4.5vh, 3rem);
   }
-  .hero__index-label { white-space: nowrap; }
+  .hero__rule {
+    grid-column: 1 / -1;
+    height: 1px; width: 100%;
+    background: var(--rule);
+    transform-origin: left;
+    margin-bottom: clamp(1rem, 2.4vh, 1.75rem);
+    transform: scaleX(0);
+    animation: heroDraw 1000ms var(--ease-out) 380ms forwards;
+  }
+
+  .hero__index-label { white-space: nowrap; color: var(--cream); }
   .hero__index-list {
     list-style: none; padding: 0; margin: 0;
-    display: flex; flex-wrap: wrap; gap: clamp(0.9rem, 2.4vw, 2.6rem);
+    display: flex; flex-wrap: wrap;
+    gap: 0.55rem clamp(1rem, 2.6vw, 2.8rem);
     font-size: var(--step-xs);
-    color: color-mix(in srgb, var(--cream) 72%, transparent);
+    color: color-mix(in srgb, var(--cream) 70%, transparent);
   }
-  .hero__index-list li { display: flex; align-items: baseline; gap: 0.6ch; white-space: nowrap; }
+  .hero__index-list li { display: flex; align-items: baseline; gap: 0.65ch; white-space: nowrap; }
 
   .hero__scroll { display: flex; align-items: center; gap: 0.75rem; }
   .hero__scroll-line {
@@ -104,11 +153,49 @@ import { pilots } from '../../data/site.js';
     transform: translateX(-100%);
     animation: sweep 2.8s var(--ease-io) infinite;
   }
-  @keyframes sweep { 0% { transform: translateX(-100%); } 55%, 100% { transform: translateX(100%); } }
-  @media (prefers-reduced-motion: reduce) { .hero__scroll-line::after { animation: none; transform: none; opacity: .5; } }
 
-  @media (max-width: 860px) {
-    .hero__index { grid-template-columns: 1fr auto; row-gap: 0.9rem; }
-    .hero__index-list { grid-column: 1 / -1; order: 3; }
+  /* The index bar sits low in the first screen, where an IntersectionObserver
+     reveal would never fire. Staged on load instead — local to this component. */
+  .hero__index-label,
+  .hero__index-list li,
+  .hero__scroll {
+    opacity: 0;
+    animation: heroIn 720ms var(--ease-out) forwards;
+  }
+  .hero__index-label { animation-delay: 500ms; }
+  .hero__index-list li:nth-child(1) { animation-delay: 570ms; }
+  .hero__index-list li:nth-child(2) { animation-delay: 630ms; }
+  .hero__index-list li:nth-child(3) { animation-delay: 690ms; }
+  .hero__index-list li:nth-child(4) { animation-delay: 750ms; }
+  .hero__scroll { animation-delay: 840ms; }
+
+  @keyframes heroIn { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
+  @keyframes heroDraw { to { transform: none; } }
+  @keyframes sweep { 0% { transform: translateX(-100%); } 55%, 100% { transform: translateX(100%); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__dot,
+    .hero__scroll-line::after { animation: none; }
+    .hero__scroll-line::after { transform: none; opacity: .5; }
+    .hero__index-label,
+    .hero__index-list li,
+    .hero__scroll { opacity: 1; animation: none; }
+    .hero__rule { transform: none; animation: none; }
+  }
+
+  @media (max-width: 1000px) {
+    .hero__in { grid-template-columns: minmax(0, 1fr); }
+    .hero__h { grid-column: 1; }
+    .hero__lede { grid-column: 1; grid-row: 3; padding-left: 0; max-width: 36ch; }
+    .hero__lede::before { display: none; }
+  }
+  @media (max-width: 700px) {
+    .hero__index { grid-template-columns: minmax(0, 1fr) auto; }
+    .hero__index-list {
+      grid-column: 1 / -1; order: 3;
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem 1rem;
+    }
+    .hero__index-list li { white-space: normal; }
   }
 </style>

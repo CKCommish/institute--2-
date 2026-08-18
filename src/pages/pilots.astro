@@ -6,47 +6,191 @@ import { pilots } from '../data/site.js';
 <Base title="Pilots" description="Four pilots in 2026: health, energy, maternal health, and education.">
   <section class="phead">
     <div class="shell phead__in">
-      <p class="label" data-reveal>Four pilots · 2026</p>
-      <h1 class="display display--hero lines">Proof, one problem at a time.</h1>
-      <p class="lede" data-reveal="520">Each pilot runs three to twelve months against a single measurable outcome. The result is published either way.</p>
+      <p class="label phead__eyebrow" data-reveal>Four pilots · 2026</p>
+      <h1 class="display display--hero phead__h lines">Proof, one problem at a time.</h1>
+
+      <span class="phead__rule" aria-hidden="true"></span>
+
+      <p class="phead__lede" data-reveal="480">
+        One measurable outcome each. The result is published either way.
+      </p>
+
+      <nav class="phead__index" aria-label="The four pilots">
+        <ol>
+          {pilots.map((p, i) => (
+            <li data-reveal={String(560 + i * 70)}>
+              <a class="pcontents" href={`#${p.id}`}>
+                <span class="index pcontents__i">{p.index}</span>
+                <span class="pcontents__t">{p.title}</span>
+                <span class="label pcontents__f">{p.field}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
     </div>
   </section>
 
-  {pilots.map((p, i) => (
-    <section class="pdetail" id={p.id}>
+  {pilots.map((p) => (
+    <section class="pdetail" id={p.id} aria-labelledby={`${p.id}-h`}>
       <div class="shell pdetail__in">
-        <div class="pdetail__media" data-reveal>
-          <Figure src={p.image} alt="" ratio="4 / 5" grade={0.34} parallax={4} />
+        <p class="pdetail__meta" data-reveal>
+          <span class="index">{p.index}</span>
+          <span class="label pdetail__partner">{p.partner}</span>
+          <span class="label pdetail__field">{p.field} · {p.horizon}</span>
+        </p>
+
+        <div class="pdetail__band" data-reveal="80">
+          <Figure src={p.image} alt="" ratio="16 / 6" grade={0.36} parallax={5} />
         </div>
-        <div class="pdetail__body">
-          <p class="label pdetail__meta" data-reveal><span class="index">{p.index}</span> {p.partner}</p>
-          <h2 class="display display--xl lines">{p.title}</h2>
-          <p class="pdetail__tag" data-reveal="380">{p.tagline}</p>
-          <dl class="pdetail__dl" data-reveal="480">
-            <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-            <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-            <div><dt class="label">Goal</dt><dd>{p.goal}</dd></div>
-          </dl>
+
+        <div class="pdetail__say">
+          <h2 class="display pdetail__t lines" id={`${p.id}-h`}>{p.title}</h2>
+          <p class="pdetail__tag" data-reveal="240">{p.tagline}</p>
         </div>
+
+        <dl class="pdetail__spec" data-reveal="320">
+          <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+          <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+          <div><dt class="label">Goal</dt><dd>{p.goal}</dd></div>
+        </dl>
       </div>
     </section>
   ))}
 </Base>
 
 <style>
-  .phead { padding-block: calc(var(--nav-h) + clamp(5rem, 12vw, 10rem)) clamp(3rem, 7vw, 6rem); }
-  .phead__in { display: grid; gap: var(--stack-2); }
-  .phead .display { max-width: 14ch; }
-  .pdetail { padding-block: clamp(3rem, 7vw, 6rem); border-top: 1px solid var(--rule); }
-  .pdetail__in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
-  .pdetail__body { display: grid; gap: clamp(1rem, 2vw, 1.5rem); }
-  .pdetail__meta { display: flex; align-items: baseline; gap: 0.9ch; }
-  .pdetail__tag { font-size: clamp(1.05rem, 0.98rem + 0.4vw, 1.3rem); color: color-mix(in srgb, var(--cream) 78%, transparent); max-width: 30ch; }
-  .pdetail__dl { display: grid; gap: 1.25rem; margin: 0; padding-top: 0.75rem; border-top: 1px solid var(--rule); }
-  .pdetail__dl > div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1.25rem; align-items: baseline; }
-  .pdetail__dl dd { margin: 0; color: var(--fg-mute); font-size: var(--step-xs); max-width: 46ch; }
-  @media (max-width: 860px) {
-    .pdetail__in { grid-template-columns: 1fr; }
-    .pdetail__dl > div { grid-template-columns: 1fr; gap: 0.35rem; }
+  /* ── Masthead: statement full width, contents pinned to the right ──── */
+  .phead { padding-block: calc(var(--nav-h) + clamp(4rem, 9.5vw, 8rem)) clamp(2rem, 5vw, 4rem); }
+  .phead__in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 23rem);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: var(--stack-2);
+    align-items: start;
+  }
+  .phead__eyebrow { grid-column: 1 / -1; color: var(--cream); }
+  .phead__h { grid-column: 1 / -1; max-width: 13ch; }
+
+  /* one full-width rule the two lower columns both hang from */
+  .phead__rule {
+    grid-column: 1 / -1;
+    height: 1px; background: var(--rule);
+    margin-top: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .phead__lede {
+    grid-column: 1;
+    padding-top: clamp(1rem, 2vw, 1.5rem);
+    font-size: clamp(1.02rem, 0.94rem + 0.36vw, 1.24rem);
+    line-height: 1.5;
+    color: var(--fg-mute);
+    max-width: 28ch;
+    text-wrap: pretty;
+  }
+
+  .phead__index { grid-column: 2; }
+  .phead__index ol { list-style: none; margin: 0; padding: 0; }
+  .pcontents {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding-block: 0.62rem;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: var(--step-xs);
+    transition: color 320ms var(--ease-out);
+  }
+  .pcontents__t { color: color-mix(in srgb, var(--cream) 78%, transparent); transition: color 320ms var(--ease-out); }
+  .pcontents__f { color: var(--fg-faint); }
+  @media (hover: hover) {
+    .pcontents:hover .pcontents__t { color: var(--cream); }
+    .pcontents:hover .pcontents__f { color: var(--brass); }
+  }
+
+  /* ── One pilot ──────────────────────────────────────────────────────
+     Four beats on one grid: meta rail, full-width band, statement,
+     spec strip. Same order every time — the page reads as a register. */
+  .pdetail {
+    padding-block: clamp(2.75rem, 5.5vw, 5rem);
+    border-top: 1px solid var(--rule);
+    scroll-margin-top: calc(var(--nav-h) + 0.5rem);
+  }
+  .pdetail__in { display: grid; row-gap: clamp(1.25rem, 2.6vw, 2.25rem); }
+
+  .pdetail__meta {
+    display: flex; align-items: baseline;
+    gap: 1.1ch;
+    margin-bottom: clamp(0.25rem, 1vw, 0.75rem);
+  }
+  .pdetail__partner { color: var(--cream); }
+  .pdetail__field { margin-left: auto; color: var(--fg-faint); text-align: right; }
+
+  /* The band leads, and it breaks the shell: image first, labels second.
+     Ratio lives here, not on the component, so it can turn portrait on a
+     phone. */
+  .pdetail__band { margin-inline: calc(-1 * var(--gutter)); }
+  .pdetail__band :global(.fig) { aspect-ratio: 16 / 5.5; }
+
+  .pdetail__say {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 26ch);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: 0.75rem;
+    align-items: baseline;
+  }
+  .pdetail__t {
+    font-size: clamp(2.1rem, 1.1rem + 4.2vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.024em;
+    text-wrap: initial;
+  }
+  .pdetail__tag {
+    font-size: clamp(1rem, 0.93rem + 0.34vw, 1.2rem);
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--cream) 76%, transparent);
+    text-wrap: pretty;
+  }
+
+  /* Not a table: three columns, one line each, brass labels on a rule. */
+  .pdetail__spec {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    border-top: 1px solid var(--rule);
+    margin-top: clamp(0.5rem, 1.5vw, 1.25rem);
+  }
+  .pdetail__spec > div {
+    display: grid; gap: 0.6rem; align-content: start;
+    padding-top: clamp(0.9rem, 1.8vw, 1.35rem);
+    padding-right: clamp(1rem, 2.4vw, 2.25rem);
+  }
+  .pdetail__spec > div + div {
+    border-left: 1px solid var(--rule-soft);
+    padding-left: clamp(1rem, 2.4vw, 2.25rem);
+  }
+  .pdetail__spec dt { color: var(--brass); }
+  .pdetail__spec dd {
+    margin: 0;
+    color: var(--fg-mute);
+    font-size: var(--step-xs);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 1000px) {
+    .phead__in { grid-template-columns: minmax(0, 1fr); }
+    .phead__lede { max-width: 34ch; padding-bottom: clamp(1.25rem, 4vw, 2rem); }
+    .phead__index { grid-column: 1; max-width: 30rem; }
+    .pdetail__say { grid-template-columns: minmax(0, 1fr); align-items: start; }
+    .pdetail__tag { max-width: 34ch; }
+  }
+  @media (max-width: 760px) {
+    .pdetail__band :global(.fig) { aspect-ratio: 1 / 1; }
+    .pdetail__spec { grid-template-columns: minmax(0, 1fr); row-gap: 1.1rem; }
+    .pdetail__spec > div { padding-right: 0; }
+    .pdetail__spec > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule-soft); }
+    .pdetail__meta { flex-wrap: wrap; row-gap: 0.4rem; }
+    .pdetail__field { width: 100%; margin-left: 0; text-align: left; }
   }
 </style>

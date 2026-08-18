@@ -1,20 +1,21 @@
 ---
 import { method } from '../../data/site.js';
 ---
-<section class="method scene" id="method" aria-labelledby="method-h">
+<section class="method" id="method" aria-labelledby="method-h">
   <div class="shell method__in">
     <header class="method__head">
-      <p class="label" data-reveal>How we work</p>
-      <h2 class="display display--l method__h lines" id="method-h">
-        Three to twelve months. One measurable outcome.
-      </h2>
+      <h2 class="label method__eyebrow" id="method-h" data-reveal>How we work</h2>
+      <p class="label method__meta" data-reveal="90">3–12 months · one measurable outcome</p>
     </header>
+
     <ol class="method__steps">
+      <span class="method__track" aria-hidden="true" data-reveal="100"></span>
       {method.map((m, i) => (
-        <li class="beat" data-reveal={String(140 + i * 110)}>
-          <span class="index">{m.index}</span>
-          <h3 class="beat__t">{m.title}</h3>
-          <p class="beat__p">{m.text}</p>
+        <li class="step" data-reveal={String(220 + i * 110)}>
+          <span class="step__node" aria-hidden="true"></span>
+          <span class="index step__i">{m.index}</span>
+          <h3 class="display step__t">{m.title}</h3>
+          <p class="step__p">{m.text}</p>
         </li>
       ))}
     </ol>
@@ -22,16 +23,102 @@ import { method } from '../../data/site.js';
 </section>
 
 <style>
-  .method__in { display: grid; gap: clamp(2.5rem, 6vw, 5rem); }
-  .method__h { max-width: 18ch; }
-  .method__head { display: grid; gap: var(--stack-2); }
+  /* A quiet, wide beat between two loud ones: one continuous rule with three
+     nodes on it, rather than three cards. Sits on --ink-800 so the scroll gets
+     a third ground value without adding a colour. */
+  .method {
+    position: relative;
+    background: var(--ink-800);
+    padding-block: clamp(4rem, 2rem + 6.5vw, 8.5rem);
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .method__in { display: grid; gap: clamp(2.75rem, 6vw, 5rem); }
+
+  .method__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
+  }
+  .method__eyebrow { color: var(--cream); }
+  .method__meta { color: var(--fg-faint); text-align: right; }
+
   .method__steps {
     list-style: none; margin: 0; padding: 0;
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: clamp(1.5rem, 4vw, 3.5rem);
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 4vw, 4rem);
   }
-  .beat { display: grid; gap: 0.85rem; align-content: start; padding-top: 1.4rem; border-top: 1px solid var(--rule); }
-  .beat__t { font-family: var(--sans); font-size: var(--step-s); font-weight: 500; letter-spacing: -0.005em; }
-  .beat__p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 30ch; text-wrap: pretty; }
-  @media (max-width: 800px) { .method__steps { grid-template-columns: 1fr; } }
+
+  /* the track the sequence runs along */
+  .method__track {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px; background: var(--rule);
+    transform-origin: left;
+  }
+  .method__track[data-reveal] {
+    opacity: 1; transform: scaleX(0);
+    transition: transform 900ms var(--ease-out) var(--reveal-delay, 0ms);
+  }
+  .method__track.is-in { transform: scaleX(1); }
+
+  .step {
+    position: relative;
+    padding-top: clamp(1.9rem, 3.4vw, 3rem);
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+  }
+  .step__node {
+    position: absolute; top: -3px; left: 0;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--brass);
+    transform: scale(0.3);
+    opacity: 0;
+    transition: transform 440ms var(--ease-out) calc(var(--reveal-delay, 0ms) + 60ms),
+                opacity 320ms var(--ease-out) calc(var(--reveal-delay, 0ms) + 60ms);
+  }
+  .step.is-in .step__node { transform: none; opacity: 1; }
+
+  .step__i { line-height: 1; }
+  .step__t {
+    font-size: clamp(1.45rem, 0.95rem + 1.5vw, 2.45rem);
+    line-height: 1.05;
+    letter-spacing: -0.016em;
+    margin-top: 0.15rem;
+  }
+  .step__p {
+    color: var(--fg-mute);
+    font-size: var(--step-xs);
+    max-width: 26ch;
+    text-wrap: pretty;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step__node { transition-duration: 1ms; opacity: 1; transform: none; }
+  }
+
+  @media (max-width: 820px) {
+    .method__head { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+    .method__meta { text-align: left; }
+
+    /* track rotates: the same diagram, read downward */
+    .method__steps {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: clamp(1.75rem, 5vw, 2.5rem);
+      padding-left: 1.75rem;
+    }
+    .method__track {
+      top: 0; bottom: 0; left: 3px; right: auto;
+      width: 1px; height: auto;
+      transform-origin: top;
+    }
+    .method__track[data-reveal] { transform: scaleY(0); }
+    .method__track.is-in { transform: scaleY(1); }
+    .step { padding-top: 0; }
+    .step__node { top: 0.5em; left: -1.75rem; }
+    .step__p { max-width: 34ch; }
+  }
 </style>

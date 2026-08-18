@@ -1,22 +1,107 @@
 ---
-/* A full-bleed or contained image with the house grade:
-   navy multiply + slight desaturation + fine grain. Degrades to a
-   designed gradient if the file is not present yet. */
+/* Figure — the house image treatment for the whole site.
+   Four jobs, in this order:
+     1. PLATE  a designed navy plate, painted always. It is what you see when
+               the photograph has not landed yet, and it is seeded off `src`
+               so a grid of four fallbacks reads as four different frames
+               rather than one repeated swatch.
+     2. GRADE  navy multiply + desaturation over the photograph, strength
+               `grade` (0 untouched → 1 deep navy duotone).
+     3. VIGNETTE  always on, scaled by `grade`, so cream type set over any
+               figure has dark corners to sit against.
+     4. GRAIN  one fine monochrome tile over everything, so photograph and
+               plate share the same surface.
+
+   Photographs fade + settle in on load (opacity + a 1.08 → 1.02 scale).
+   Parallax is driven by scripts/motion.js writing --py onto .fig__media;
+   the entry scale lives on the <img> so the two never fight over transform. */
+import fs from 'node:fs';
+
 const {
   src,
   alt = '',
   ratio = '16 / 9',
+  ratioSm,             // optional aspect ratio below 720px
   parallax = 0,
-  grade = 0.5,       // 0 → untouched, 1 → deep navy duotone
+  grade = 0.5,
   focal = '50% 50%',
   loading = 'lazy',
+  grain = 1,
+  scrim = 'none',      // 'bottom' → extra ink ramp so cream type can sit on it
+  fill,                // absolutely fill the parent; defaults on for ratio="auto"
   class: klass = '',
 } = Astro.props;
+
+/* A `class` passed in from a parent carries the PARENT's scope id, but this
+   element only carries Figure's — so a parent rule like `.hero__bg{position:
+   absolute}` silently never matches. Full-bleed figures therefore have to
+   position themselves. ratio="auto" is the site's signal for "fill me". */
+const isFill = fill === undefined ? ratio === 'auto' : !!fill;
+
+/* Photography is dropped into public/media/ as it is sourced. Resolve the file
+   at build time: if it is not there yet, render no <img> at all rather than a
+   request that 404s, and let the designed plate below stand in for it. */
+const isLocal = typeof src === 'string' && src.startsWith('/');
+let file = src;
+if (isLocal) {
+  try {
+    if (!fs.existsSync(new URL(`../../public${src}`, import.meta.url))) file = undefined;
+  } catch { /* keep src */ }
+}
+
+/* Deterministic variation for the fallback plate: light position and base
+   gradient angle are hashed from the source path. Same file → same plate. */
+const key = String(src || alt || 'plate');
+let h = 2166136261;
+for (let i = 0; i < key.length; i++) {
+  h ^= key.charCodeAt(i);
+  h = Math.imul(h, 16777619) >>> 0;
+}
+const lx = 16 + (h % 9) * 8;          // 16–80 %
+const ly = 4 + ((h >>> 4) % 6) * 8;   // 4–44 %
+const ang = 156 + ((h >>> 8) % 10) * 3; // 156–183 deg
+const flip = (h >>> 12) % 2 ? 1 : -1;
+
+/* Parallax overscan: the media box is grown by more than the travel so the
+   photograph can never expose its own edge. */
+const over = Math.max(4, Number(parallax) + 3);
+
+const style = [
+  `--ratio:${ratio}`,
+  ...(ratioSm ? [`--ratio-sm:${ratioSm}`] : []),
+  `--grade:${grade}`,
+  `--focal:${focal}`,
+  `--grain:${grain}`,
+  `--lx:${lx}%`,
+  `--ly:${ly}%`,
+  `--ang:${ang}deg`,
+  `--tilt:${flip * 6}%`,
+  `--over:${over}%`,
+].join(';');
 ---
-<figure class:list={['fig', klass]} style={`--ratio:${ratio}; --grade:${grade}; --focal:${focal}`}>
+<figure
+  class:list={['fig', { 'fig--fill': isFill, 'fig--ramp': scrim === 'bottom' }, klass]}
+  style={style}
+  data-state={file ? 'loading' : 'empty'}
+>
+  <div class="fig__plate" aria-hidden="true"></div>
+
   <div class="fig__media" data-parallax={parallax || undefined}>
-    {src && <img src={src} alt={alt} loading={loading} decoding="async" onerror="this.style.opacity=0" />}
+    {file && (
+      <img
+        src={file}
+        alt={alt}
+        loading={loading}
+        decoding="async"
+        fetchpriority={loading === 'eager' ? 'high' : undefined}
+        onload="this.closest('figure').dataset.state='ready'"
+        onerror="this.closest('figure').dataset.state='failed'"
+      />
+    )}
   </div>
+
+  <div class="fig__scrim" aria-hidden="true"></div>
+  <div class="fig__vig" aria-hidden="true"></div>
   <div class="fig__grain" aria-hidden="true"></div>
   <slot />
 </figure>
@@ -26,33 +111,122 @@ const {
     position: relative;
     overflow: hidden;
     aspect-ratio: var(--ratio);
-    background:
-      radial-gradient(120% 90% at 22% 18%, #16324B 0%, transparent 62%),
-      radial-gradient(120% 120% at 82% 92%, #0C2035 0%, transparent 58%),
-      linear-gradient(168deg, #0B1D2E 0%, #050D16 100%);
     isolation: isolate;
+    background-color: var(--ink-900);
   }
-  .fig__media { position: absolute; inset: -6% 0; }
-  .fig__media img {
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: var(--focal);
-    filter: saturate(calc(1 - var(--grade) * 0.55)) contrast(1.04) brightness(calc(1 - var(--grade) * 0.14));
-    transform: translate3d(0, var(--py, 0%), 0) scale(1.02);
+
+  /* A landscape crop that works on a wide screen is a letterbox strip on a
+     phone; ratioSm lets a scene ask for a taller frame there. */
+  @media (max-width: 720px) {
+    .fig { aspect-ratio: var(--ratio-sm, var(--ratio)); }
+  }
+
+  /* Full-bleed: sit behind the scene's own content. -1 keeps it inside the
+     scene's stacking context (scenes set isolation: isolate). */
+  .fig--fill { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
+
+  /* 1 ── the plate ─────────────────────────────────────────────────── */
+  .fig__plate {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      /* one brass kiss of light, placed by the seed */
+      radial-gradient(50% 38% at var(--lx) var(--ly),
+        rgba(206, 178, 124, 0.13) 0%, rgba(206, 178, 124, 0.03) 40%, transparent 66%),
+      /* cool fill opposite it */
+      radial-gradient(86% 60% at calc(100% - var(--lx)) 26%,
+        rgba(26, 62, 96, 0.44) 0%, transparent 66%),
+      /* horizon lift off the bottom edge */
+      radial-gradient(150% 54% at calc(50% + var(--tilt)) 108%,
+        rgba(15, 40, 64, 0.58) 0%, transparent 62%),
+      linear-gradient(var(--ang), #0A1B2C 0%, #06121F 48%, #030910 100%);
+  }
+  /* a single soft band keeps the plate from reading as a flat gradient */
+  .fig__plate::after {
+    content: '';
+    position: absolute;
+    inset: -20%;
+    background: linear-gradient(calc(var(--ang) + 62deg),
+      transparent 34%, rgba(226, 238, 255, 0.045) 50%, transparent 66%);
+  }
+
+  /* 2 ── the photograph ────────────────────────────────────────────── */
+  .fig__media {
+    position: absolute;
+    inset: calc(var(--over) * -1) 0;
+    z-index: 1;
+    transform: translate3d(0, var(--py, 0%), 0);
     will-change: transform;
   }
-  .fig::after {
-    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  .fig__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal);
+    filter:
+      saturate(calc(1 - var(--grade) * 0.5))
+      contrast(calc(1 + var(--grade) * 0.09))
+      brightness(calc(1 - var(--grade) * 0.13));
+    opacity: 0;
+    transform: scale(1.08);
+    transition:
+      opacity 1000ms var(--ease-out),
+      transform 1700ms var(--ease-out);
+  }
+  .fig[data-state='ready'] .fig__media img { opacity: 1; transform: scale(1.02); }
+  .fig[data-state='failed'] .fig__media img { opacity: 0; }
+
+  /* 3 ── the navy grade, only where a photograph actually sits ─────── */
+  .fig__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
     background: linear-gradient(180deg,
-      color-mix(in srgb, #050D16 calc(var(--grade) * 62%), transparent) 0%,
-      color-mix(in srgb, #071627 calc(var(--grade) * 30%), transparent) 45%,
-      color-mix(in srgb, #050D16 calc(var(--grade) * 72%), transparent) 100%);
+      rgba(5, 13, 22, calc(var(--grade) * 0.58)) 0%,
+      rgba(7, 22, 39, calc(var(--grade) * 0.20)) 44%,
+      rgba(5, 13, 22, calc(var(--grade) * 0.80)) 100%);
     mix-blend-mode: multiply;
   }
+  .fig[data-state='ready'] .fig__scrim { opacity: 1; }
+
+  /* 4 ── vignette + grain, over photograph and plate alike ─────────── */
+  .fig__vig {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background: radial-gradient(112% 88% at 50% 40%,
+      transparent 30%,
+      rgba(2, 6, 11, calc(0.30 + var(--grade) * 0.44)) 100%);
+  }
   .fig__grain {
-    position: absolute; inset: 0; z-index: 2; pointer-events: none;
-    opacity: 0.16;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-    background-size: 140px 140px;
-    mix-blend-mode: overlay;
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    opacity: calc(0.062 * var(--grain));
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    background-size: 120px 120px;
+    mix-blend-mode: screen;
+  }
+
+  /* Optional bottom ink ramp for scenes that set display type over the media */
+  .fig--ramp::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 5; pointer-events: none;
+    background: linear-gradient(to top,
+      var(--ink-900) 0%,
+      color-mix(in srgb, var(--ink-900) 74%, transparent) 16%,
+      color-mix(in srgb, var(--ink-900) 30%, transparent) 42%,
+      transparent 68%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fig__media img { transition-duration: 1ms; transform: scale(1.02); }
+    .fig__scrim { transition-duration: 1ms; }
   }
 </style>

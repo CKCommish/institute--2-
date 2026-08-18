@@ -1,43 +1,156 @@
 ---
 import Base from '../layouts/Base.astro';
 import { site, pilots } from '../data/site.js';
+
+const roles = [
+  { t: 'Fund it', p: 'Underwrite one pilot, end to end.' },
+  { t: 'Build it', p: 'Bring the model, the product, or the team.' },
+  { t: 'Run it', p: 'A health system, district, university, or agency.' },
+];
 ---
 <Base title="Partner" description="Partner on a 2026 pilot with the Lion Forum Institute.">
-  <section class="chead">
-    <div class="shell chead__in">
+  <section class="phead">
+    <div class="shell phead__in">
       <p class="label" data-reveal>Work with us</p>
-      <h1 class="display display--hero lines">Partner on a pilot.</h1>
-      <p class="lede" data-reveal="480">Funders, technology partners, and implementation partners for the 2026 pilots. One email reaches us.</p>
-      <a class="cmail" href={`mailto:${site.email}`} data-reveal="600">
-        <span class="display display--m">{site.email}</span>
-      </a>
+
+      <h1 class="display display--hero phead__h lines">Partner on a pilot.</h1>
+
+      <div class="phead__ask">
+        <p class="phead__sub" data-reveal="420">Bring the funding, the technology, or the ground to run it on.</p>
+        <a class="pmail" href={`mailto:${site.email}`} data-reveal="520">
+          <span class="pmail__t">{site.email}</span>
+          <span class="pmail__arrow" aria-hidden="true">
+            <span class="pmail__line"></span>
+            <svg viewBox="0 0 11 12"><path d="M4 1.5 9.5 6 4 10.5" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+          </span>
+        </a>
+      </div>
+
+      <div class="phead__index" data-reveal="620">
+        <span class="label phead__index-l">Open pilots · 2026</span>
+        <ul>
+          {pilots.map((p) => (
+            <li><span class="index">{p.index}</span>{p.title}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   </section>
 
-  <section class="scene">
-    <div class="shell croles">
-      {[
-        { t: 'Fund a pilot', p: 'Underwrite one of the four 2026 pilots end to end.' },
-        { t: 'Build the technology', p: 'Bring the model, the product, or the engineering team.' },
-        { t: 'Run it on the ground', p: 'A health system, district, university, or agency that will implement.' },
-      ].map((r, i) => (
-        <div class="crole" data-reveal={String(100 + i * 110)}>
-          <span class="index">{String(i + 1).padStart(2, '0')}</span>
-          <h2>{r.t}</h2>
-          <p>{r.p}</p>
-        </div>
-      ))}
+  <section class="scene proles">
+    <div class="shell proles__in">
+      <p class="label" data-reveal>Three ways in</p>
+      <ol class="proles__list">
+        {roles.map((r, i) => (
+          <li data-reveal={String(100 + i * 110)}>
+            <span class="proles__n">{String(i + 1).padStart(2, '0')}</span>
+            <h2 class="display display--m">{r.t}</h2>
+            <p>{r.p}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="proles__note" data-reveal="440">Say which pilot and which role. A person answers.</p>
     </div>
   </section>
 </Base>
 
 <style>
-  .chead { padding-block: calc(var(--nav-h) + clamp(5rem, 12vw, 10rem)) clamp(2rem, 5vw, 4rem); }
-  .chead__in { display: grid; gap: var(--stack-2); }
-  .cmail { justify-self: start; margin-top: 1.5rem; color: var(--brass); }
-  .croles { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); }
-  .crole { display: grid; gap: 0.8rem; align-content: start; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
-  .crole h2 { font-family: var(--sans); font-size: var(--step-s); font-weight: 500; }
-  .crole p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 30ch; }
-  @media (max-width: 800px) { .croles { grid-template-columns: 1fr; } }
+  /* The end of the scroll should feel like arrival: one line, one address,
+     and the list of what you would be joining held in the corner. */
+  .phead {
+    min-height: min(96svh, 58rem);
+    display: grid; align-items: end;
+    padding-block: calc(var(--nav-h) + clamp(4rem, 10vw, 8rem)) clamp(2.5rem, 5vw, 4.5rem);
+  }
+  .phead__in {
+    display: grid; gap: var(--stack-2);
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    align-items: end;
+  }
+  .phead__in > .label { grid-column: 1 / -1; }
+  .phead__h { grid-column: 1 / -1; max-width: 12ch; }
+  .phead__h :global(.line) { padding-bottom: 0.08em; margin-bottom: -0.08em; }
+
+  .phead__ask {
+    grid-column: 1; display: grid; gap: clamp(1.5rem, 3vw, 2.4rem);
+    justify-items: start; margin-top: clamp(1.25rem, 2.5vw, 2rem);
+  }
+  .phead__sub { color: var(--fg-mute); font-size: var(--step-s); max-width: 34ch; }
+
+  .pmail {
+    display: inline-grid; grid-auto-flow: column; align-items: center;
+    gap: clamp(0.9rem, 2vw, 1.6rem);
+    padding-bottom: clamp(0.5rem, 1vw, 0.8rem);
+    border-bottom: 1px solid color-mix(in srgb, var(--brass) 50%, transparent);
+    transition: border-color 420ms var(--ease-out);
+    max-width: 100%;
+  }
+  .pmail__t {
+    font-family: var(--sans); font-weight: 400;
+    font-size: clamp(1.15rem, 0.85rem + 1.35vw, 2.05rem);
+    letter-spacing: -0.012em; line-height: 1.1;
+    color: var(--cream);
+    overflow-wrap: anywhere;
+  }
+  .pmail__arrow { display: flex; align-items: center; width: clamp(34px, 4vw, 58px); height: 12px; color: var(--brass); flex: none; transition: transform 560ms var(--ease-out); }
+  .pmail__line { flex: 1 1 auto; height: 1px; background: currentColor; }
+  .pmail svg { width: 11px; height: 12px; margin-left: -1px; flex: none; }
+  .pmail:hover { border-bottom-color: var(--brass); }
+  .pmail:hover .pmail__arrow { transform: translateX(8px); }
+
+  .phead__index {
+    grid-column: 2; justify-self: end; text-align: right;
+    display: grid; gap: 0.85rem; padding-bottom: 0.4rem;
+  }
+  .phead__index-l { color: var(--fg-faint); }
+  /* Two hard columns so the indices line up instead of raggedly trailing
+     the names — corner information should read as a table, not a list. */
+  .phead__index ul {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: max-content max-content;
+    justify-content: end; column-gap: 0.9rem; row-gap: 0.4rem;
+    font-size: var(--step-xs); color: var(--fg-mute); text-align: left;
+  }
+  .phead__index li { display: contents; }
+
+  /* ── Three ways in ── */
+  .proles__in { display: grid; gap: clamp(2rem, 4.5vw, 3.5rem); }
+  .proles__list {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+  }
+  .proles__list li {
+    display: grid; gap: clamp(0.6rem, 1.1vw, 0.9rem);
+    align-content: start; padding-top: 1.1rem;
+    border-top: 1px solid var(--rule);
+  }
+  .proles__n {
+    font-family: var(--serif); font-weight: 300;
+    font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.6rem);
+    line-height: 1; color: var(--brass);
+    font-variant-numeric: tabular-nums;
+  }
+  .proles__list h2 { font-weight: 320; }
+  .proles__list p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 26ch; }
+  .proles__note { color: var(--fg-faint); font-size: var(--step-xs); justify-self: end; text-align: right; }
+
+  @media (max-width: 900px) {
+    .proles__list { grid-template-columns: 1fr; gap: 1.5rem; }
+    .proles__note { justify-self: start; text-align: left; }
+  }
+
+  @media (max-width: 860px) {
+    .phead { min-height: min(76svh, 41rem); }
+    .phead__in { grid-template-columns: 1fr; }
+    .phead__index {
+      grid-column: 1; justify-self: start; text-align: left;
+      margin-top: clamp(2rem, 8vw, 3rem); padding-bottom: 0;
+    }
+    .phead__index ul { justify-content: start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pmail, .pmail__arrow { transition-duration: 1ms; }
+  }
 </style>

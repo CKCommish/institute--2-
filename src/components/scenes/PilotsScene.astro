@@ -5,7 +5,8 @@ import Figure from '../Figure.astro';
 <section class="pilots scene" id="pilots" aria-labelledby="pilots-h">
   <div class="shell">
     <header class="pilots__head">
-      <p class="label" data-reveal>Four pilots · 2026</p>
+      <p class="label pilots__eyebrow" data-reveal>Four pilots · 2026</p>
+      <p class="label pilots__count" data-reveal="60">01 — 04</p>
       <h2 class="display display--l pilots__h lines" id="pilots-h">
         Each one starts with a problem a family can name.
       </h2>
@@ -14,14 +15,15 @@ import Figure from '../Figure.astro';
     <ol class="pilots__list" data-pilot-list>
       {pilots.map((p, i) => (
         <li class="pilot" data-reveal={String(120 + i * 90)} data-pilot={p.id}>
-          <a class="pilot__a" href={`/pilots/#${p.id}`}>
+          <a class="pilot__a" href={`/pilots/#${p.id}`} aria-label={`${p.title} — ${p.partner}`}>
             <span class="index pilot__i">{p.index}</span>
-            <span class="pilot__body">
-              <span class="pilot__partner label">{p.partner}</span>
-              <span class="display display--m pilot__title">{p.title}</span>
-              <span class="pilot__tag">{p.tagline}</span>
-            </span>
-            <span class="pilot__field label">{p.field}</span>
+            <span class="pilot__v" aria-hidden="true"></span>
+            <span class="label pilot__partner">{p.partner}</span>
+            <span class="display pilot__title">{p.title}</span>
+            <span class="pilot__v pilot__v--b" aria-hidden="true"></span>
+            <span class="pilot__tag">{p.tagline}</span>
+            <span class="pilot__v pilot__v--c" aria-hidden="true"></span>
+            <span class="label pilot__field">{p.field}</span>
             <span class="pilot__arrow" aria-hidden="true">
               <svg viewBox="0 0 22 10"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
             </span>
@@ -32,100 +34,258 @@ import Figure from '../Figure.astro';
   </div>
 
   <div class="pilots__preview" aria-hidden="true" data-preview>
-    {pilots.map((p) => (
-      <div class="pilots__preview-item" data-preview-for={p.id}>
-        <Figure src={p.image} ratio="4 / 5" grade={0.42} />
-      </div>
-    ))}
+    <div class="pilots__preview-in">
+      {pilots.map((p) => (
+        <div class="pilots__preview-item" data-preview-for={p.id}>
+          <Figure src={p.image} ratio="4 / 5" grade={0.46} />
+          <span class="index pilots__preview-i">{p.index}</span>
+          <span class="label pilots__preview-f">{p.field}</span>
+        </div>
+      ))}
+    </div>
   </div>
 </section>
 
 <style>
   .pilots { position: relative; }
-  .pilots__head { display: grid; gap: var(--stack-2); margin-bottom: clamp(2.5rem, 6vw, 5rem); }
-  .pilots__h { max-width: 22ch; }
 
+  /* Masthead: eyebrow left, range right, statement below — corner-anchored. */
+  .pilots__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    column-gap: 1.5rem;
+    row-gap: var(--stack-2);
+    margin-bottom: clamp(2.25rem, 5vw, 4rem);
+  }
+  .pilots__eyebrow { color: var(--cream); }
+  .pilots__count { color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+  .pilots__h { grid-column: 1 / -1; max-width: 20ch; }
+
+  /* ── The register ───────────────────────────────────────────────────
+     Horizontal rules carry the rhythm; quieter vertical rules carry the
+     structure. Four columns, all content top-aligned to one baseline. */
   .pilots__list { list-style: none; margin: 0; padding: 0; }
-  .pilot { border-top: 1px solid var(--rule); }
+  .pilot { position: relative; border-top: 1px solid var(--rule); }
   .pilot:last-child { border-bottom: 1px solid var(--rule); }
 
-  .pilot__a {
-    display: grid;
-    grid-template-columns: 3.5rem minmax(0, 1fr) auto 3rem;
-    align-items: center;
-    gap: clamp(1rem, 2.5vw, 2.5rem);
-    padding-block: clamp(1.5rem, 3vw, 2.6rem);
-    transition: opacity 480ms var(--ease-out);
+  /* brass hairline that wipes along the row's own rule */
+  .pilot::after {
+    content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 1px;
+    background: var(--brass);
+    transform: scaleX(0); transform-origin: right;
+    transition: transform 660ms var(--ease-out);
+    pointer-events: none;
   }
-  .pilot__i { align-self: start; padding-top: 0.35em; }
-  .pilot__body { display: grid; gap: 0.45rem; }
-  .pilot__partner { color: var(--fg-faint); }
-  .pilot__title { transition: transform 620ms var(--ease-out); }
-  .pilot__tag { color: var(--fg-mute); font-size: var(--step-xs); max-width: 42ch; }
-  .pilot__field { justify-self: end; color: var(--fg-faint); white-space: nowrap; }
-  .pilot__arrow { justify-self: end; width: 22px; color: var(--brass); opacity: 0; transform: translateX(-8px); transition: opacity 460ms var(--ease-out), transform 560ms var(--ease-out); }
+
+  /* Two tiers: micro-labels on the top line, content on the bottom line.
+     Baseline alignment does the work, so the serif title and the sans
+     tagline sit on one shared baseline across the row. The 1px columns
+     are the vertical rules — spaced by the gap, not by padding. */
+  .pilot__a {
+    --rowpad: clamp(1.4rem, 2.6vw, 2.25rem);
+    position: relative;
+    padding-block: var(--rowpad);
+    display: grid;
+    grid-template-columns:
+      3.25rem 1px minmax(0, 1.16fr) 1px minmax(0, 1fr) 1px 8rem;
+    grid-template-rows: auto auto;
+    align-items: baseline;
+    column-gap: clamp(0.9rem, 1.8vw, 2rem);
+    row-gap: 0.5rem;
+    transition: opacity 300ms var(--ease-out), background-color 420ms var(--ease-out);
+  }
+  .pilot__v {
+    grid-row: 1 / -1;
+    background: var(--rule-soft);
+    margin-block: calc(-1 * var(--rowpad));
+    align-self: stretch;
+  }
+  .pilot__v { grid-column: 2; }
+  .pilot__v--b { grid-column: 4; }
+  .pilot__v--c { grid-column: 6; }
+
+  .pilot__i { grid-column: 1; grid-row: 1; }
+  .pilot__partner {
+    grid-column: 3; grid-row: 1;
+    color: var(--fg-faint);
+    transition: color 380ms var(--ease-out);
+  }
+  .pilot__title {
+    grid-column: 3; grid-row: 2;
+    font-size: clamp(1.4rem, 1.02rem + 1.28vw, 2.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    transition: transform 620ms var(--ease-out);
+  }
+  .pilot__tag {
+    grid-column: 5; grid-row: 2;
+    color: var(--fg-mute);
+    font-size: var(--step-xs);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  .pilot__field {
+    grid-column: 7; grid-row: 1;
+    justify-self: end;
+    color: var(--fg-faint);
+    white-space: nowrap;
+  }
+  .pilot__arrow {
+    grid-column: 7; grid-row: 2;
+    justify-self: end; align-self: baseline;
+    width: 22px; color: var(--brass);
+    opacity: 0; transform: translateX(-10px);
+    transition: opacity 380ms var(--ease-out), transform 520ms var(--ease-out);
+  }
   .pilot__arrow svg { width: 100%; height: auto; }
 
   @media (hover: hover) {
-    [data-pilot-list]:hover .pilot__a { opacity: 0.38; }
-    .pilot:hover .pilot__a { opacity: 1; }
-    .pilot:hover .pilot__title { transform: translateX(0.5rem); }
+    [data-pilot-list]:hover .pilot__a { opacity: 0.4; }
+    .pilot:hover .pilot__a {
+      opacity: 1;
+      background-color: color-mix(in srgb, var(--cream) 3%, transparent);
+    }
+    .pilot:hover::after { transform: scaleX(1); transform-origin: left; }
+    .pilot:hover .pilot__partner { color: var(--brass); }
+    .pilot:hover .pilot__title { transform: translateX(0.35rem); }
     .pilot:hover .pilot__arrow { opacity: 1; transform: none; }
   }
+  /* keyboard gets the same row treatment as the pointer */
+  .pilot:focus-within .pilot__a { opacity: 1; }
+  .pilot:focus-within::after { transform: scaleX(1); transform-origin: left; }
+  .pilot:focus-within .pilot__partner { color: var(--brass); }
+  .pilot:focus-within .pilot__arrow { opacity: 1; transform: none; }
 
-  /* Cursor-following preview, desktop only */
+  @media (prefers-reduced-motion: reduce) {
+    .pilot::after, .pilot__title, .pilot__arrow { transition-duration: 1ms; }
+  }
+
+  /* ── Cursor preview ─────────────────────────────────────────────────
+     Glides horizontally with the pointer but stays clamped inside the
+     hovered row's band, so it reads as belonging to that row instead of
+     floating over the whole list. Flips sides past the midline. Enters
+     with a clip wipe rather than a pop. Desktop pointer only. */
   .pilots__preview {
     position: fixed; top: 0; left: 0; z-index: 40;
-    width: clamp(200px, 17vw, 280px);
+    width: clamp(172px, 13.6vw, 210px);
     pointer-events: none;
-    opacity: 0;
-    transform: translate3d(var(--x, 0), var(--y, 0), 0) translate(-50%, -50%);
-    transition: opacity 420ms var(--ease-out);
     display: none;
+    opacity: 0;
+    transform: translate3d(var(--x, 0), var(--y, 0), 0);
+    transition: opacity 240ms var(--ease-out);
+    will-change: transform;
   }
   .pilots__preview.is-on { opacity: 1; }
+
+  .pilots__preview-in {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    --ox: 1.6rem;
+    transform: translate(var(--ox), -50%);
+    clip-path: inset(0 0 100% 0);
+    transition: transform 560ms var(--ease-out), clip-path 700ms var(--ease-out);
+  }
+  .pilots__preview[data-side="left"] .pilots__preview-in { --ox: calc(-100% - 1.6rem); }
+  .pilots__preview.is-on .pilots__preview-in { clip-path: inset(0 0 0 0); }
+
   .pilots__preview-item {
     position: absolute; inset: 0;
-    opacity: 0; transform: scale(0.97);
-    transition: opacity 400ms var(--ease-out), transform 700ms var(--ease-out);
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 340ms var(--ease-out), transform 620ms var(--ease-out);
   }
   .pilots__preview-item.is-on { opacity: 1; transform: none; }
+
+  /* corner-anchored info, so the plate reads even before photography lands */
+  .pilots__preview-i,
+  .pilots__preview-f {
+    position: absolute; z-index: 3;
+    font-size: var(--step-label);
+  }
+  .pilots__preview-i { top: 0.85rem; left: 0.9rem; }
+  .pilots__preview-f { bottom: 0.85rem; right: 0.9rem; color: color-mix(in srgb, var(--cream) 82%, transparent); }
+
   @media (hover: hover) and (min-width: 900px) { .pilots__preview { display: block; } }
 
-  @media (max-width: 760px) {
-    .pilot__a { grid-template-columns: 2.25rem minmax(0, 1fr); row-gap: 0.5rem; }
-    .pilot__field { grid-column: 2; justify-self: start; }
+  /* ── Narrow ─────────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .pilot__a {
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-rows: auto auto auto;
+      align-items: baseline;
+      row-gap: 0.35rem;
+      column-gap: 1rem;
+      padding-block: clamp(1.3rem, 4.2vw, 1.8rem);
+    }
+    .pilot__v { display: none; }
+    .pilot__i { grid-column: 1; grid-row: 1; }
+    .pilot__field { grid-column: 2; grid-row: 1; justify-self: end; }
+    .pilot__partner { grid-column: 1 / -1; grid-row: 2; margin-top: 0.5rem; }
+    .pilot__title { grid-column: 1 / -1; grid-row: 3; }
+    .pilot__tag { grid-column: 1 / -1; grid-row: 4; margin-top: 0.5rem; max-width: 40ch; }
     .pilot__arrow { display: none; }
+  }
+  @media (max-width: 560px) {
+    .pilots__head { grid-template-columns: minmax(0, 1fr); }
+    .pilots__count { display: none; }
   }
 </style>
 
 <script>
   const list = document.querySelector('[data-pilot-list]');
   const prev = document.querySelector('[data-preview]');
-  if (list && prev && window.matchMedia('(hover: hover) and (min-width: 900px)').matches
+
+  if (list && prev
+      && window.matchMedia('(hover: hover) and (min-width: 900px)').matches
       && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    let raf = 0, tx = 0, ty = 0, cx = 0, cy = 0;
+    const plate = prev.querySelector('.pilots__preview-in');
+    const items = [...prev.querySelectorAll('.pilots__preview-item')];
+    let raf = 0, tx = 0, ty = 0, cx = 0, cy = 0, side = '', row = null;
+
+    /* Keep the plate inside the hovered row: it belongs to that pilot. */
+    const settle = () => {
+      if (!row) return ty;
+      const r = row.getBoundingClientRect();
+      const h = plate.getBoundingClientRect().height || 0;
+      if (r.height <= h) return r.top + r.height / 2;
+      return Math.min(Math.max(ty, r.top + h / 2), r.bottom - h / 2);
+    };
+
     const loop = () => {
-      cx += (tx - cx) * 0.14; cy += (ty - cy) * 0.14;
-      prev.style.setProperty('--x', cx + 'px');
-      prev.style.setProperty('--y', cy + 'px');
+      const gy = settle();
+      cx += (tx - cx) * 0.14;
+      cy += (gy - cy) * 0.16;
+      prev.style.setProperty('--x', cx.toFixed(1) + 'px');
+      prev.style.setProperty('--y', cy.toFixed(1) + 'px');
       raf = requestAnimationFrame(loop);
     };
-    list.addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; });
+
+    const track = (e) => {
+      tx = e.clientX; ty = e.clientY;
+      const s = e.clientX > window.innerWidth * 0.58 ? 'left' : 'right';
+      if (s !== side) { side = s; prev.dataset.side = s; }
+    };
+
+    list.addEventListener('pointermove', track);
     list.addEventListener('pointerenter', (e) => {
-      tx = cx = e.clientX; ty = cy = e.clientY;
+      track(e);
+      cx = tx; cy = settle();
+      prev.style.setProperty('--x', cx + 'px');
+      prev.style.setProperty('--y', cy + 'px');
       prev.classList.add('is-on');
       if (!raf) raf = requestAnimationFrame(loop);
     });
     list.addEventListener('pointerleave', () => {
       prev.classList.remove('is-on');
       cancelAnimationFrame(raf); raf = 0;
-      prev.querySelectorAll('.is-on').forEach((n) => n.classList.remove('is-on'));
+      row = null;
+      items.forEach((n) => n.classList.remove('is-on'));
     });
+
     list.querySelectorAll('[data-pilot]').forEach((li) => {
       li.addEventListener('pointerenter', () => {
-        prev.querySelectorAll('.pilots__preview-item').forEach((n) =>
-          n.classList.toggle('is-on', n.dataset.previewFor === li.dataset.pilot));
+        row = li;
+        items.forEach((n) => n.classList.toggle('is-on', n.dataset.previewFor === li.dataset.pilot));
       });
     });
   }

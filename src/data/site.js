@@ -24,9 +24,9 @@ export const pilots = [
     title: 'Healthy Athletes',
     tagline: 'A free screening becomes real follow-up care.',
     field: 'Health',
-    problem: 'Millions are screened at Special Olympics events. Few reach the care those screenings identify.',
-    approach: 'A companion app that carries the result home — reminders, navigation, and a route to a local provider.',
-    goal: 'Measurably more athletes complete follow-up care within 90 days.',
+    problem: 'Screenings find the problem. Care rarely follows.',
+    approach: 'An app that carries the result home.',
+    goal: 'Follow-up care completed within ninety days.',
     horizon: '3–12 months',
     image: '/media/pilot-health.jpg',
   },
@@ -37,9 +37,9 @@ export const pilots = [
     title: 'Clean Data Centers',
     tagline: 'States negotiate the buildout instead of absorbing it.',
     field: 'Energy',
-    problem: 'Data centers arrive faster than states can set terms, and families see the cost on their utility bill.',
-    approach: 'A playbook states can use at the table: clean power, jobs, affordability, and community benefit.',
-    goal: 'Adopted terms in at least one state siting agreement.',
+    problem: 'Data centers arrive before states set terms.',
+    approach: 'A playbook for the negotiating table.',
+    goal: 'Those terms inside one state siting agreement.',
     horizon: '3–12 months',
     image: '/media/pilot-energy.jpg',
   },
@@ -50,9 +50,9 @@ export const pilots = [
     title: 'Infant Mortality',
     tagline: 'Risk found early, in the weeks that decide outcomes.',
     field: 'Health',
-    problem: 'Indianapolis has one of the highest infant mortality rates in the country.',
-    approach: 'Maternal health data read for early risk, paired with an intervention for mothers on Medicaid.',
-    goal: 'Earlier identification, and a repeatable model for other cities.',
+    problem: 'Among the nation’s highest infant mortality rates.',
+    approach: 'Maternal health data read for early risk.',
+    goal: 'Weeks of warning, in a model other cities can run.',
     horizon: '3–12 months',
     image: '/media/pilot-maternal.jpg',
   },
@@ -63,9 +63,9 @@ export const pilots = [
     title: 'Career Pathways',
     tagline: 'Guidance that follows a student from school to work.',
     field: 'Education',
-    problem: 'The students with the least access to counseling face the most consequential choices.',
-    approach: 'Personalized guidance built with districts, from coursework through the first job.',
-    goal: 'More low-income students land in a defined pathway after graduation.',
+    problem: 'The least counseling, the largest choices.',
+    approach: 'Guidance built with districts, school to work.',
+    goal: 'More students land in a defined pathway.',
     horizon: '3–12 months',
     image: '/media/pilot-education.jpg',
   },
@@ -73,9 +73,9 @@ export const pilots = [
 
 /* ── How the institute works ──────────────────────────────────────── */
 export const method = [
-  { index: '01', title: 'Find the problem', text: 'One that families feel, and an institution is already accountable for.' },
-  { index: '02', title: 'Match the partners', text: 'A technology partner who can build it, and the people who will run it.' },
-  { index: '03', title: 'Measure, then publish', text: 'Three to twelve months. The result goes out either way.' },
+  { index: '01', title: 'Find the problem', text: 'One families feel, and an institution owns.' },
+  { index: '02', title: 'Match the partners', text: 'Who builds it. Who runs it.' },
+  { index: '03', title: 'Measure, then publish', text: 'The result goes out either way.' },
 ];
 
 /* ── People ───────────────────────────────────────────────────────── */
@@ -126,9 +126,13 @@ export const board = [
 export const forum = {
   name: 'The Lion Forum',
   place: 'Kennedy Compound, Hyannis Port',
-  line: 'An invitation-only convening of founders, investors, and elected officials.',
-  role: 'The Institute is a lead sponsor. It is where pilots find their partners, and where results are reported back.',
+  access: 'By invitation',
+  line: 'A convening of founders, investors, and elected officials.',
+  role: 'The Institute is a lead sponsor: the Forum is where pilots find their partners, and where results are reported back.',
+  caption: 'Hyannis Port, Massachusetts',
+  cta: 'Inquire about the Forum',
   image: '/media/forum.jpg',
+  imageDetail: '/media/forum-detail.jpg',
 };
 
 export const whyNow =
