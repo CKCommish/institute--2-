@@ -2,6 +2,11 @@
 import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
 import { forum } from '../data/site.js';
+
+/* The room plate has no dedicated frame of its own yet. It names the file it
+   wants first and falls back to the interior in public/media/ — Figure takes
+   the first candidate that is actually on disk at build time. */
+const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
 ---
 <Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
   <!-- 1 ── full bleed. Name, then a hairline carrying the three facts. -->
@@ -15,7 +20,7 @@ import { forum } from '../data/site.js';
       <div class="fh__bar">
         <span class="fh__rule" aria-hidden="true"></span>
         <div class="fh__cells">
-          <span class="label fh__cell">{forum.place}</span>
+          <span class="cap fh__cell">{forum.place}</span>
           <span class="label fh__cell fh__cell--b">{forum.access}</span>
           <span class="label fh__cell fh__cue">
             Scroll<i class="fh__cueLine" aria-hidden="true"></i>
@@ -33,24 +38,33 @@ import { forum } from '../data/site.js';
     </div>
   </section>
 
-  <!-- 3 ── the photograph as its own beat. One caption, no argument. -->
-  <section class="fband">
-    <Figure src={forum.imageDetail} alt="" ratio="21 / 9" ratioSm="4 / 5" grade={0.52} parallax={8} class="fband__fig">
-      <figcaption class="fband__cap" data-reveal>
-        <i class="fband__tick" aria-hidden="true"></i><span class="label">{forum.caption}</span>
+  <!-- 3 ── the room. The tallest object on the page, and the only one held to
+       the text measure: the margin beside it carries the caption. -->
+  <section class="fplate">
+    <figure class="shell fplate__in">
+      <figcaption class="fplate__cap">
+        <i class="fplate__tick" data-reveal="360" aria-hidden="true"></i>
+        <span class="cap" data-reveal="440">{forum.caption}</span>
       </figcaption>
-    </Figure>
+
+      <div class="fplate__frame">
+        <Figure src={roomPlate} alt="" ratio="auto" grade={0.72} parallax={7}
+                focal="50% 46%" enter="wipe" sizes="(max-width: 860px) 100vw, 66vw" />
+      </div>
+    </figure>
   </section>
 
   <!-- 4 ── the Institute's relationship to it, and the quiet CTA. -->
-  <section class="scene frole">
+  <section class="frole">
     <div class="shell">
-      <div class="frole__ruleWrap" data-reveal="60"><span class="frole__rule"></span></div>
       <div class="frole__in">
-        <p class="label frole__k" data-reveal="110">The Institute's role</p>
+        <div class="frole__side">
+          <div class="frole__ruleWrap" data-reveal="60"><span class="frole__rule"></span></div>
+          <p class="label frole__k" data-reveal="140">The Institute's role</p>
+        </div>
         <div class="frole__body">
-          <p class="frole__p" data-reveal="190">{forum.role}</p>
-          <a class="frole__cta" href="/partner/" data-reveal="280">
+          <p class="frole__p lines">{forum.role}</p>
+          <a class="frole__cta" href="/partner/" data-reveal="300">
             {forum.cta}
             <svg viewBox="0 0 14 10" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
           </a>
@@ -61,6 +75,20 @@ import { forum } from '../data/site.js';
 </Base>
 
 <style>
+  /* Two ranks of small type. `.label` (global) is the section marker: tracked,
+     uppercase, 11.7px. `.cap` is the photograph's own voice: sentence case,
+     untracked, smaller, quieter — so the page's small type is not one flat
+     band of interchangeable objects. Local because it is a Forum/Figure idea. */
+  .cap {
+    font-family: var(--sans);
+    font-size: clamp(0.62rem, 0.6rem + 0.1vw, 0.665rem);
+    font-weight: 400;
+    letter-spacing: 0.012em;
+    line-height: 1.35;
+    text-transform: none;
+    color: color-mix(in srgb, var(--cream) 58%, transparent);
+  }
+
   /* ── 1. Hero ─────────────────────────────────────────────────────── */
   .fh {
     position: relative;
@@ -109,18 +137,18 @@ import { forum } from '../data/site.js';
   .fh__cells {
     display: grid;
     grid-template-columns: 1fr auto auto;
-    align-items: center;
+    align-items: baseline;
     gap: clamp(1.25rem, 4vw, 3.5rem);
     padding-top: clamp(0.85rem, 1.4vw, 1.15rem);
   }
-  .fh__cell { color: color-mix(in srgb, var(--cream) 66%, transparent); }
   .fh__cell--b { color: var(--brass); }
 
-  .fh__cue { display: inline-flex; align-items: center; gap: 0.85em; }
+  .fh__cue { display: inline-flex; align-items: center; gap: 0.85em; color: color-mix(in srgb, var(--cream) 66%, transparent); }
   .fh__cueLine {
     position: relative; display: block;
     width: 1px; height: 26px; overflow: hidden;
     background: color-mix(in srgb, var(--cream) 22%, transparent);
+    align-self: center;
   }
   .fh__cueLine::after {
     content: ''; position: absolute; inset: 0;
@@ -134,6 +162,9 @@ import { forum } from '../data/site.js';
   }
 
   /* ── 2. The sentence ─────────────────────────────────────────────── */
+  /* Deliberately shorter than --scene-pad: this beat must not measure the
+     same as the photograph below it. */
+  .fsay { padding-block: clamp(3rem, 2.4rem + 4.8vw, 8rem); }
   .fsay__in {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
@@ -149,19 +180,47 @@ import { forum } from '../data/site.js';
   .fsay__p :global(.line > span) { transform: translate3d(0, 130%, 0); }
   .fsay__p.is-in :global(.line > span) { transform: none; }
 
-  /* ── 3. The photograph ───────────────────────────────────────────── */
-  .fband { position: relative; }
-  .fband__cap {
-    position: absolute; z-index: 6;
-    left: var(--gutter); bottom: clamp(1rem, 1.8vw, 1.6rem);
-    display: flex; align-items: center; gap: 0.9rem;
-    color: color-mix(in srgb, var(--cream) 64%, transparent);
+  /* ── 3. The room ─────────────────────────────────────────────────── */
+  .fplate { padding-block: clamp(1rem, 2vw, 2.5rem) clamp(3rem, 6vw, 7rem); }
+  .fplate__in {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    column-gap: clamp(1rem, 4vw, 4rem);
+    align-items: start;
   }
-  .fband__tick { display: block; width: clamp(20px, 2.4vw, 34px); height: 1px; background: var(--brass); }
+  /* The one object on the page that is neither full-bleed nor a paragraph:
+     held to the 9-column measure and taken to nearly the full viewport, so
+     the scroll changes width, height and tempo all at once. */
+  .fplate__frame {
+    position: relative;
+    isolation: isolate;
+    height: clamp(520px, 88svh, 900px);
+  }
+  /* The caption rides the photograph's top edge, so the frame and the words
+     that name it arrive in the same glance. */
+  .fplate__cap {
+    display: grid;
+    justify-items: start;
+    gap: clamp(0.7rem, 1vw, 1rem);
+    padding-top: clamp(0.35rem, 0.7vw, 0.7rem);
+    max-width: 22ch;
+  }
+  .fplate__tick {
+    --reveal-y: 0px;
+    display: block; width: clamp(24px, 2.6vw, 40px); height: 1px;
+    background: var(--brass);
+  }
 
   /* ── 4. Role + CTA ───────────────────────────────────────────────── */
-  .frole { padding-block: var(--scene-pad) clamp(3rem, 5vw, 6rem); }
-  /* same draw-in hairline as the hero, held to the content width */
+  .frole { --fgap: clamp(1rem, 4vw, 4rem); padding-block: clamp(3rem, 5.5vw, 7rem) clamp(3.5rem, 6vw, 7.5rem); }
+  .frole__in {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    column-gap: var(--fgap);
+    align-items: start;
+  }
+  /* Held to the label field, not the page: the hero's hairline is a full-width
+     break, this one only opens a column. */
   .frole__ruleWrap { --reveal-y: 0px; display: block; }
   .frole__rule {
     display: block; height: 1px; width: 100%;
@@ -170,28 +229,31 @@ import { forum } from '../data/site.js';
     transition: transform 900ms var(--ease-io) 60ms;
   }
   .frole__ruleWrap.is-in .frole__rule { transform: scaleX(1); }
-  .frole__in {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
-    column-gap: clamp(1rem, 4vw, 4rem);
-    align-items: start;
-    padding-top: clamp(1.75rem, 3.2vw, 3rem);
-  }
-  .frole__k { padding-top: 0.45em; }
-  .frole__body { display: grid; gap: clamp(1.75rem, 3.4vw, 3rem); justify-items: start; }
+  .frole__k { padding-top: clamp(0.9rem, 1.35vw, 1.25rem); }
+  .frole__body { display: grid; gap: clamp(2rem, 3.6vw, 3.25rem); justify-items: start; }
+  /* The missing intermediate step: between the 86px thesis and the 12px
+     labels the page had nothing but body copy. The Institute's role is the
+     one place worth spending a mid-display size on. */
   .frole__p {
-    font-size: clamp(1.06rem, 0.96rem + 0.5vw, 1.42rem);
-    line-height: 1.5;
-    font-weight: 350;
-    color: color-mix(in srgb, var(--cream) 74%, transparent);
-    max-width: 40ch;
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 1.02rem + 1.9vw, 2.55rem);
+    line-height: 1.2;
+    font-weight: 300;
+    letter-spacing: -0.012em;
+    color: color-mix(in srgb, var(--cream) 84%, transparent);
+    max-width: 26ch;
     text-wrap: pretty;
   }
+  .frole__p :global(.line) { padding-bottom: 0.14em; margin-bottom: -0.14em; }
+  .frole__p :global(.line > span) { transform: translate3d(0, 120%, 0); }
+  .frole__p.is-in :global(.line > span) { transform: none; }
+
   .frole__cta {
     display: inline-flex; align-items: center; gap: 0.9ch;
     font-size: var(--step-label); letter-spacing: 0.145em;
     text-transform: uppercase; font-weight: 500;
     color: var(--cream);
+    position: relative;
   }
   .frole__cta svg { width: 0.95em; height: auto; transition: transform 460ms var(--ease-out); }
   .frole__cta:hover svg { transform: translateX(4px); }
@@ -201,18 +263,32 @@ import { forum } from '../data/site.js';
     background: currentColor; transform: scaleX(0); transform-origin: right;
     transition: transform 520ms var(--ease-out);
   }
-  .frole__cta { position: relative; }
   .frole__cta:hover::after { transform: scaleX(1); transform-origin: left; }
 
   /* ── Mobile ──────────────────────────────────────────────────────── */
   @media (max-width: 860px) {
     .fsay__in, .frole__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 5vw, 2.25rem); }
-    .fsay__k, .frole__k { padding-top: 0; }
+    .fsay__k { padding-top: 0; }
+    .frole__k { padding-top: clamp(0.9rem, 3vw, 1.2rem); }
     .fsay__p { max-width: 13ch; }
+    .frole__p { max-width: 20ch; }
+
+    /* On a phone the 9-column trick is gone, so the plate takes its contrast
+       the other way: edge to edge, and still by far the tallest beat. */
+    .fplate { padding-block: clamp(0.5rem, 2vw, 1.5rem) clamp(2rem, 6vw, 3rem); }
+    .fplate__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(0.9rem, 3vw, 1.2rem); }
+    .fplate__frame {
+      order: -1;
+      height: clamp(440px, 76svh, 720px);
+      margin-inline: calc(var(--gutter) * -1);
+    }
+    .fplate__cap { max-width: 26ch; }
+    /* keep the two hairlines different ranks where the margin column is gone */
+    .frole__ruleWrap { width: 42%; }
   }
   @media (max-width: 620px) {
     .fh__h { max-width: 9ch; }
-    .fh__cells { grid-template-columns: 1fr auto; row-gap: 0.7rem; }
+    .fh__cells { grid-template-columns: 1fr auto; row-gap: 0.9rem; }
     .fh__cell:first-child { grid-column: 1 / -1; }
   }
 

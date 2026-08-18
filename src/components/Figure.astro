@@ -1,6 +1,6 @@
 ---
 /* Figure — the house image treatment for the whole site.
-   Four jobs, in this order:
+   Five jobs, in this order:
      1. PLATE  a designed navy plate, painted always. It is what you see when
                the photograph has not landed yet, and it is seeded off `src`
                so a grid of four fallbacks reads as four different frames
@@ -11,6 +11,9 @@
                figure has dark corners to sit against.
      4. GRAIN  one fine monochrome tile over everything, so photograph and
                plate share the same surface.
+     5. ENTER  `enter="wipe"` upgrades the default fade to a bottom-up mask
+               wipe plus a 1.07 → 1.0 settle, for the one figure on a page
+               that is meant to be the largest object on it.
 
    Photographs fade + settle in on load (opacity + a 1.08 → 1.02 scale).
    Parallax is driven by scripts/motion.js writing --py onto .fig__media;
@@ -18,7 +21,7 @@
 import fs from 'node:fs';
 
 const {
-  src,
+  src,                 // path, or an array of candidates: first one on disk wins
   alt = '',
   ratio = '16 / 9',
   ratioSm,             // optional aspect ratio below 720px
@@ -29,6 +32,8 @@ const {
   grain = 1,
   scrim = 'none',      // 'bottom' → extra ink ramp so cream type can sit on it
   fill,                // absolutely fill the parent; defaults on for ratio="auto"
+  enter = 'fade',      // 'fade' (default) | 'wipe'
+  sizes = '100vw',
   class: klass = '',
 } = Astro.props;
 
@@ -38,20 +43,27 @@ const {
    position themselves. ratio="auto" is the site's signal for "fill me". */
 const isFill = fill === undefined ? ratio === 'auto' : !!fill;
 
-/* Photography is dropped into public/media/ as it is sourced. Resolve the file
-   at build time: if it is not there yet, render no <img> at all rather than a
-   request that 404s, and let the designed plate below stand in for it. */
-const isLocal = typeof src === 'string' && src.startsWith('/');
-let file = src;
-if (isLocal) {
-  try {
-    if (!fs.existsSync(new URL(`../../public${src}`, import.meta.url))) file = undefined;
-  } catch { /* keep src */ }
-}
+/* Photography is dropped into public/media/ as it is sourced, and not every
+   slot gets its own frame. `src` may therefore be a list of candidates: the
+   first file that actually exists at build time is the one that renders, and
+   if none of them are there we render no <img> at all rather than a request
+   that 404s, and let the designed plate below stand in. */
+const onDisk = (p) => {
+  if (typeof p !== 'string' || !p.startsWith('/')) return typeof p === 'string';
+  try { return fs.existsSync(new URL(`../../public${p}`, import.meta.url)); }
+  catch { return true; }
+};
+const candidates = (Array.isArray(src) ? src : [src]).filter(Boolean);
+const file = candidates.find(onDisk);
+
+/* A sibling .webp of the same crop is served in preference when the build has
+   one — same pixels, roughly half the bytes on the wide plates. */
+const webp = file && /\.(jpe?g|png)$/i.test(file) ? file.replace(/\.(jpe?g|png)$/i, '.webp') : undefined;
+const webpFile = webp && onDisk(webp) ? webp : undefined;
 
 /* Deterministic variation for the fallback plate: light position and base
    gradient angle are hashed from the source path. Same file → same plate. */
-const key = String(src || alt || 'plate');
+const key = String(candidates[0] || alt || 'plate');
 let h = 2166136261;
 for (let i = 0; i < key.length; i++) {
   h ^= key.charCodeAt(i);
@@ -80,23 +92,27 @@ const style = [
 ].join(';');
 ---
 <figure
-  class:list={['fig', { 'fig--fill': isFill, 'fig--ramp': scrim === 'bottom' }, klass]}
+  class:list={['fig', { 'fig--fill': isFill, 'fig--ramp': scrim === 'bottom', 'fig--wipe': enter === 'wipe' }, klass]}
   style={style}
   data-state={file ? 'loading' : 'empty'}
+  data-reveal={enter === 'wipe' ? '' : undefined}
 >
   <div class="fig__plate" aria-hidden="true"></div>
 
   <div class="fig__media" data-parallax={parallax || undefined}>
     {file && (
-      <img
-        src={file}
-        alt={alt}
-        loading={loading}
-        decoding="async"
-        fetchpriority={loading === 'eager' ? 'high' : undefined}
-        onload="this.closest('figure').dataset.state='ready'"
-        onerror="this.closest('figure').dataset.state='failed'"
-      />
+      <picture>
+        {webpFile && <source type="image/webp" srcset={webpFile} sizes={sizes} />}
+        <img
+          src={file}
+          alt={alt}
+          loading={loading}
+          decoding="async"
+          fetchpriority={loading === 'eager' ? 'high' : undefined}
+          onload="this.closest('figure').dataset.state='ready'"
+          onerror="this.closest('figure').dataset.state='failed'"
+        />
+      </picture>
     )}
   </div>
 
@@ -158,6 +174,11 @@ const style = [
     z-index: 1;
     transform: translate3d(0, var(--py, 0%), 0);
     will-change: transform;
+  }
+  .fig__media picture {
+    position: absolute;
+    inset: 0;
+    display: block;
   }
   .fig__media img {
     width: 100%;
@@ -225,8 +246,41 @@ const style = [
       transparent 68%);
   }
 
+  /* 5 ── the wipe entrance ─────────────────────────────────────────
+     motion.js only toggles .is-in on [data-reveal], so the wipe borrows that
+     observer and then cancels the generic 12px lift + fade that comes with it.
+     The mask runs on the figure; the settle runs on the plate and the <img>,
+     so neither ever fights the parallax transform on .fig__media. */
+  .fig--wipe {
+    opacity: 1;
+    transform: none;
+    /* A mask, not clip-path: IntersectionObserver folds the target's own
+       clip into its intersection rect, so a clipped-to-zero figure would
+       never trip the observer that is supposed to un-clip it. */
+    -webkit-mask-image: linear-gradient(#000, #000);
+    mask-image: linear-gradient(#000, #000);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: 0 100%;
+    mask-position: 0 100%;
+    -webkit-mask-size: 100% 0%;
+    mask-size: 100% 0%;
+    transition: -webkit-mask-size 1300ms var(--ease-io), mask-size 1300ms var(--ease-io);
+  }
+  .fig--wipe.is-in { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  .fig--wipe .fig__plate {
+    transform: scale(1.07);
+    transition: transform 1900ms var(--ease-out);
+  }
+  .fig--wipe.is-in .fig__plate { transform: none; }
+  .fig--wipe[data-state='ready'] .fig__media img { transform: scale(1.07); }
+  .fig--wipe.is-in[data-state='ready'] .fig__media img { transform: scale(1); }
+
   @media (prefers-reduced-motion: reduce) {
     .fig__media img { transition-duration: 1ms; transform: scale(1.02); }
     .fig__scrim { transition-duration: 1ms; }
+    .fig--wipe { -webkit-mask-image: none; mask-image: none; transition: none; }
+    .fig--wipe .fig__plate,
+    .fig--wipe[data-state='ready'] .fig__media img { transform: none; transition: none; }
   }
 </style>

@@ -1,5 +1,5 @@
 ---
-import { nav, cta, site, forum } from '../data/site.js';
+import { cta, site, forum } from '../data/site.js';
 const year = new Date().getFullYear();
 const { pathname } = Astro.url;
 
@@ -29,31 +29,31 @@ const aside = onPartner || onForum ? null : { label: forum.cta, href: '/forum/' 
     </a>
 
     <div class="foot__aside">
-      <p class="foot__sub" data-reveal="220">{scene.sub}</p>
-      <a class="foot__mail" href={`mailto:${site.email}`} data-reveal="300">{site.email}</a>
-      {aside && <a class="label foot__second link" href={aside.href} data-reveal="380">{aside.label}</a>}
+      <a class="foot__mail" href={`mailto:${site.email}`} data-reveal="240">{site.email}</a>
+      <p class="foot__sub" data-reveal="320">{scene.sub}</p>
+      {aside && <a class="label foot__second link" href={aside.href} data-reveal="400">{aside.label}</a>}
     </div>
   </div>
 
   <div class="shell foot__base">
     <span class="foot__rule" aria-hidden="true"></span>
     <div class="foot__row">
-      <span class="foot__id">{site.name}</span>
-      <nav class="foot__nav" aria-label="Footer">
-        {nav.map((n) => <a class="link" href={n.href}>{n.label}</a>)}
-      </nav>
-      <span class="foot__meta">Hyannis Port · Washington, D.C. <span class="foot__year tnum">© {year}</span></span>
+      <a class="foot__id" href="/">{site.name}</a>
+      <span class="foot__meta">
+        <span>Hyannis Port · Washington, D.C.</span>
+        <span class="tnum">© {year}</span>
+      </span>
     </div>
   </div>
 </footer>
 
 <style>
+  /* The close is one block: a big lead-in of ground, the ask, then the legal
+     line tucked immediately beneath it. No third stratum, no repeated nav. */
   .foot {
     position: relative; isolation: isolate; overflow: hidden;
-    padding-block: clamp(4.5rem, 3rem + 7vw, 10rem) clamp(1.5rem, 2.4vw, 2.4rem);
-    display: grid; gap: clamp(4rem, 10vw, 11rem);
-    align-content: space-between;
-    min-height: clamp(30rem, 78svh, 46rem);
+    padding-block: clamp(4.5rem, 2rem + 8.5vw, 10.5rem) clamp(1.4rem, 2vw, 2rem);
+    display: grid; gap: clamp(2.6rem, 4vw, 4.5rem);
   }
   /* One quiet light source so the last scene reads as a scene, not a page end.
      Local to this component — no new token. */
@@ -72,12 +72,12 @@ const aside = onPartner || onForum ? null : { label: forum.cta, href: '/forum/' 
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
     column-gap: clamp(1.5rem, 4vw, 4rem);
-    row-gap: clamp(1.75rem, 3vw, 2.75rem);
+    row-gap: clamp(1.5rem, 2.4vw, 2.2rem);
     align-items: end;
   }
   .foot__kicker { grid-column: 1 / -1; }
 
-  .foot__cta { display: grid; gap: clamp(1.1rem, 2vw, 1.9rem); align-content: start; }
+  .foot__cta { display: grid; gap: clamp(1rem, 1.8vw, 1.7rem); align-content: start; }
   .foot__line { max-width: 11ch; }
   /* .lines masks each line; give descenders room inside the mask. */
   .foot__line :global(.line) { padding-bottom: 0.1em; margin-bottom: -0.1em; }
@@ -91,45 +91,55 @@ const aside = onPartner || onForum ? null : { label: forum.cta, href: '/forum/' 
   .foot__cta:hover .foot__arrow { transform: translateX(10px); }
 
   /* Anchored to the same right edge as the nav and the legal row, so the
-     scene reads as two corners with air between them. */
-  .foot__aside { display: grid; gap: clamp(1rem, 1.8vw, 1.5rem); justify-items: end; text-align: right; padding-bottom: 0.35rem; }
-  .foot__sub { color: var(--fg-mute); font-size: var(--step-xs); max-width: 26ch; }
+     scene reads as two corners with air between them. The address is the
+     anchor here — it outranks the supporting line beneath it. */
+  .foot__aside { display: grid; gap: clamp(0.75rem, 1.4vw, 1.1rem); justify-items: end; text-align: right; padding-bottom: 0.35rem; }
   .foot__mail {
-    font-size: clamp(1rem, 0.9rem + 0.4vw, 1.28rem);
-    letter-spacing: -0.005em;
+    font-size: clamp(1.05rem, 0.82rem + 0.85vw, 1.62rem);
+    letter-spacing: -0.012em; line-height: 1.15;
     color: var(--cream);
-    padding-bottom: 0.32rem;
+    padding-bottom: 0.34rem;
     border-bottom: 1px solid color-mix(in srgb, var(--brass) 55%, transparent);
     transition: color 380ms var(--ease-out), border-color 380ms var(--ease-out);
     overflow-wrap: anywhere;
   }
   .foot__mail:hover { color: var(--brass); border-bottom-color: var(--brass); }
-  .foot__second { color: var(--fg-mute); }
+  .foot__sub { color: var(--fg-mute); font-size: var(--step-xs); max-width: 26ch; }
+  .foot__second { color: var(--fg-faint); }
   .foot__second:hover { color: var(--cream); }
 
-  /* ── Corner-anchored utility ── */
-  .foot__base { display: grid; gap: clamp(0.9rem, 1.6vw, 1.35rem); }
+  /* ── Corner-anchored utility. Two corners only: the mark, and the fine print. ── */
+  .foot__base { display: grid; gap: clamp(0.8rem, 1.3vw, 1.1rem); }
   .foot__rule { display: block; height: 1px; background: var(--rule-soft); }
   .foot__row {
     display: flex; flex-wrap: wrap; align-items: baseline;
-    gap: clamp(1rem, 3vw, 3rem);
+    justify-content: space-between;
+    gap: clamp(0.8rem, 2vw, 2rem);
+  }
+  /* The wordmark closes the page, so it is set as a mark, not as fine print. */
+  .foot__id {
+    font-family: var(--serif); font-weight: 340;
+    font-size: clamp(1.15rem, 0.95rem + 0.6vw, 1.55rem);
+    letter-spacing: -0.014em; line-height: 1;
+    color: var(--fg);
+    transition: color 340ms var(--ease-out);
+  }
+  .foot__id:hover { color: var(--brass); }
+  .foot__meta {
+    display: inline-flex; gap: clamp(1rem, 2vw, 1.75rem);
     font-size: var(--step-label);
     letter-spacing: 0.115em; text-transform: uppercase;
     color: var(--fg-faint);
+    white-space: nowrap;
   }
-  .foot__id { color: var(--fg-mute); }
-  .foot__nav { display: flex; flex-wrap: wrap; gap: clamp(0.9rem, 2vw, 2rem); margin-inline: auto; }
-  .foot__nav a { transition: color 340ms var(--ease-out); }
-  .foot__nav a:hover { color: var(--cream); }
-  .foot__meta { display: inline-flex; gap: 1.25rem; white-space: nowrap; }
 
   @media (max-width: 860px) {
-    .foot { min-height: 0; gap: clamp(3rem, 12vw, 5rem); }
-    .foot__scene { grid-template-columns: 1fr; align-items: start; }
+    .foot { gap: clamp(2.4rem, 9vw, 4rem); }
+    .foot__scene { grid-template-columns: 1fr; align-items: start; row-gap: clamp(1.6rem, 6vw, 2.4rem); }
     .foot__line { max-width: 10ch; }
     .foot__aside { padding-bottom: 0; justify-items: start; text-align: left; }
-    .foot__nav { margin-inline: 0; width: 100%; order: 3; }
-    .foot__meta { flex-wrap: wrap; white-space: normal; order: 4; }
+    .foot__row { flex-direction: column; align-items: flex-start; }
+    .foot__meta { flex-wrap: wrap; white-space: normal; }
   }
 
   @media (prefers-reduced-motion: reduce) {

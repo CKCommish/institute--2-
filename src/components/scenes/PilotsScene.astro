@@ -17,13 +17,11 @@ import Figure from '../Figure.astro';
         <li class="pilot" data-reveal={String(120 + i * 90)} data-pilot={p.id}>
           <a class="pilot__a" href={`/pilots/#${p.id}`} aria-label={`${p.title} — ${p.partner}`}>
             <span class="index pilot__i">{p.index}</span>
-            <span class="pilot__v" aria-hidden="true"></span>
             <span class="label pilot__partner">{p.partner}</span>
             <span class="display pilot__title">{p.title}</span>
-            <span class="pilot__v pilot__v--b" aria-hidden="true"></span>
-            <span class="pilot__tag">{p.tagline}</span>
-            <span class="pilot__v pilot__v--c" aria-hidden="true"></span>
+            <span class="pilot__v" aria-hidden="true"></span>
             <span class="label pilot__field">{p.field}</span>
+            <span class="pilot__tag">{p.tagline}</span>
             <span class="pilot__arrow" aria-hidden="true">
               <svg viewBox="0 0 22 10"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
             </span>
@@ -63,8 +61,8 @@ import Figure from '../Figure.astro';
   .pilots__h { grid-column: 1 / -1; max-width: 20ch; }
 
   /* ── The register ───────────────────────────────────────────────────
-     Horizontal rules carry the rhythm; quieter vertical rules carry the
-     structure. Four columns, all content top-aligned to one baseline. */
+     Horizontal rules carry the rhythm. One quiet vertical hairline carries
+     the structure — any more and the register reads as a table. */
   .pilots__list { list-style: none; margin: 0; padding: 0; }
   .pilot { position: relative; border-top: 1px solid var(--rule); }
   .pilot:last-child { border-bottom: 1px solid var(--rule); }
@@ -80,59 +78,58 @@ import Figure from '../Figure.astro';
 
   /* Two tiers: micro-labels on the top line, content on the bottom line.
      Baseline alignment does the work, so the serif title and the sans
-     tagline sit on one shared baseline across the row. The 1px columns
-     are the vertical rules — spaced by the gap, not by padding. */
+     tagline sit on one shared baseline across the row. The 1px track is
+     the hairline — spaced by the gap, not by padding. */
   .pilot__a {
-    --rowpad: clamp(1.4rem, 2.6vw, 2.25rem);
+    --rowpad: clamp(1.5rem, 2.9vw, 2.5rem);
     position: relative;
     padding-block: var(--rowpad);
     display: grid;
     grid-template-columns:
-      3.25rem 1px minmax(0, 1.16fr) 1px minmax(0, 1fr) 1px 8rem;
+      3.25rem minmax(0, 1.15fr) 1px minmax(0, 1fr) 1.6rem;
     grid-template-rows: auto auto;
     align-items: baseline;
-    column-gap: clamp(0.9rem, 1.8vw, 2rem);
-    row-gap: 0.5rem;
+    column-gap: clamp(1.1rem, 2.2vw, 2.4rem);
+    row-gap: 0.55rem;
     transition: opacity 300ms var(--ease-out), background-color 420ms var(--ease-out);
   }
+  /* one hairline, not a table: it divides who runs it from what it does */
   .pilot__v {
-    grid-row: 1 / -1;
+    grid-column: 3; grid-row: 1 / -1;
     background: var(--rule-soft);
     margin-block: calc(-1 * var(--rowpad));
     align-self: stretch;
   }
-  .pilot__v { grid-column: 2; }
-  .pilot__v--b { grid-column: 4; }
-  .pilot__v--c { grid-column: 6; }
 
   .pilot__i { grid-column: 1; grid-row: 1; }
   .pilot__partner {
-    grid-column: 3; grid-row: 1;
+    grid-column: 2; grid-row: 1;
     color: var(--fg-faint);
     transition: color 380ms var(--ease-out);
   }
   .pilot__title {
-    grid-column: 3; grid-row: 2;
+    grid-column: 2; grid-row: 2;
     font-size: clamp(1.4rem, 1.02rem + 1.28vw, 2.4rem);
     line-height: 1.05;
     letter-spacing: -0.015em;
     transition: transform 620ms var(--ease-out);
   }
   .pilot__tag {
-    grid-column: 5; grid-row: 2;
+    grid-column: 4; grid-row: 2;
     color: var(--fg-mute);
     font-size: var(--step-xs);
     line-height: 1.5;
     text-wrap: pretty;
   }
   .pilot__field {
-    grid-column: 7; grid-row: 1;
+    grid-column: 4 / -1; grid-row: 1;
     justify-self: end;
     color: var(--fg-faint);
     white-space: nowrap;
+    transition: color 380ms var(--ease-out);
   }
   .pilot__arrow {
-    grid-column: 7; grid-row: 2;
+    grid-column: 5; grid-row: 2;
     justify-self: end; align-self: baseline;
     width: 22px; color: var(--brass);
     opacity: 0; transform: translateX(-10px);
@@ -148,6 +145,7 @@ import Figure from '../Figure.astro';
     }
     .pilot:hover::after { transform: scaleX(1); transform-origin: left; }
     .pilot:hover .pilot__partner { color: var(--brass); }
+    .pilot:hover .pilot__field { color: color-mix(in srgb, var(--cream) 62%, transparent); }
     .pilot:hover .pilot__title { transform: translateX(0.35rem); }
     .pilot:hover .pilot__arrow { opacity: 1; transform: none; }
   }
@@ -162,13 +160,14 @@ import Figure from '../Figure.astro';
   }
 
   /* ── Cursor preview ─────────────────────────────────────────────────
-     Glides horizontally with the pointer but stays clamped inside the
-     hovered row's band, so it reads as belonging to that row instead of
-     floating over the whole list. Flips sides past the midline. Enters
-     with a clip wipe rather than a pop. Desktop pointer only. */
+     The plate does not sit under the cursor: it is parked in the empty
+     lane between the end of the title and the row's hairline, so it never
+     covers a word you are reading. It rides the pointer vertically inside
+     the hovered row's band and drifts a little with its x — alive, but it
+     stays where it belongs. Desktop pointer only. */
   .pilots__preview {
     position: fixed; top: 0; left: 0; z-index: 40;
-    width: clamp(172px, 13.6vw, 210px);
+    width: clamp(180px, 14.4vw, 224px);
     pointer-events: none;
     display: none;
     opacity: 0;
@@ -180,19 +179,17 @@ import Figure from '../Figure.astro';
 
   .pilots__preview-in {
     position: relative;
-    aspect-ratio: 16 / 10;
-    --ox: 1.6rem;
-    transform: translate(var(--ox), -50%);
+    aspect-ratio: 4 / 5;
+    transform: translateY(-50%);
     clip-path: inset(0 0 100% 0);
-    transition: transform 560ms var(--ease-out), clip-path 700ms var(--ease-out);
+    transition: clip-path 700ms var(--ease-out);
   }
-  .pilots__preview[data-side="left"] .pilots__preview-in { --ox: calc(-100% - 1.6rem); }
   .pilots__preview.is-on .pilots__preview-in { clip-path: inset(0 0 0 0); }
 
   .pilots__preview-item {
-    position: absolute; inset: 0;
-    opacity: 0; transform: translateY(8px);
-    transition: opacity 340ms var(--ease-out), transform 620ms var(--ease-out);
+    position: absolute; inset: 0; overflow: hidden;
+    opacity: 0; transform: translateY(5px);
+    transition: opacity 300ms var(--ease-out), transform 560ms var(--ease-out);
   }
   .pilots__preview-item.is-on { opacity: 1; transform: none; }
 
@@ -205,7 +202,7 @@ import Figure from '../Figure.astro';
   .pilots__preview-i { top: 0.85rem; left: 0.9rem; }
   .pilots__preview-f { bottom: 0.85rem; right: 0.9rem; color: color-mix(in srgb, var(--cream) 82%, transparent); }
 
-  @media (hover: hover) and (min-width: 900px) { .pilots__preview { display: block; } }
+  @media (hover: hover) and (min-width: 1100px) { .pilots__preview { display: block; } }
 
   /* ── Narrow ─────────────────────────────────────────────────────── */
   @media (max-width: 900px) {
@@ -234,42 +231,56 @@ import Figure from '../Figure.astro';
 <script>
   const list = document.querySelector('[data-pilot-list]');
   const prev = document.querySelector('[data-preview]');
+  const MQ = '(hover: hover) and (min-width: 1100px)';
 
   if (list && prev
-      && window.matchMedia('(hover: hover) and (min-width: 900px)').matches
+      && window.matchMedia(MQ).matches
       && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const plate = prev.querySelector('.pilots__preview-in');
     const items = [...prev.querySelectorAll('.pilots__preview-item')];
-    let raf = 0, tx = 0, ty = 0, cx = 0, cy = 0, side = '', row = null;
+    let raf = 0, ty = 0, cx = 0, cy = 0, drift = 0, row = null;
 
-    /* Keep the plate inside the hovered row: it belongs to that pilot. */
+    /* x: parked just left of the row's hairline, in the void the titles
+       leave behind. The pointer only nudges it. */
+    const lane = () => {
+      const w = prev.offsetWidth;
+      const rule = row && row.querySelector('.pilot__v');
+      const edge = rule
+        ? rule.getBoundingClientRect().left - 22
+        : window.innerWidth * 0.5;
+      return Math.max(12, edge - w) + drift;
+    };
+
+    /* y: anchored to the hovered row. When the plate is taller than a row
+       it centres on it and only leans toward the pointer, so moving down the
+       list reads as a series of stops rather than a floating cutout. */
     const settle = () => {
       if (!row) return ty;
       const r = row.getBoundingClientRect();
       const h = plate.getBoundingClientRect().height || 0;
-      if (r.height <= h) return r.top + r.height / 2;
+      const c = r.top + r.height / 2;
+      if (r.height <= h) return c + Math.max(-18, Math.min(18, (ty - c) * 0.35));
       return Math.min(Math.max(ty, r.top + h / 2), r.bottom - h / 2);
     };
 
     const loop = () => {
-      const gy = settle();
-      cx += (tx - cx) * 0.14;
-      cy += (gy - cy) * 0.16;
+      const gx = lane(), gy = settle();
+      cx += (gx - cx) * 0.18;
+      cy += (gy - cy) * 0.2;
       prev.style.setProperty('--x', cx.toFixed(1) + 'px');
       prev.style.setProperty('--y', cy.toFixed(1) + 'px');
       raf = requestAnimationFrame(loop);
     };
 
     const track = (e) => {
-      tx = e.clientX; ty = e.clientY;
-      const s = e.clientX > window.innerWidth * 0.58 ? 'left' : 'right';
-      if (s !== side) { side = s; prev.dataset.side = s; }
+      ty = e.clientY;
+      drift = (e.clientX / window.innerWidth - 0.5) * 34;
     };
 
     list.addEventListener('pointermove', track);
     list.addEventListener('pointerenter', (e) => {
       track(e);
-      cx = tx; cy = settle();
+      cx = lane(); cy = settle();
       prev.style.setProperty('--x', cx + 'px');
       prev.style.setProperty('--y', cy + 'px');
       prev.classList.add('is-on');

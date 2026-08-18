@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
 import { founders, board } from '../data/site.js';
+import { cohortsOf } from '../components/people-cohorts.js';
 
 /* ── Portrait drop-in slot ────────────────────────────────────────────
    We hold no rights-cleared portraits of the founders, so the page is
@@ -13,11 +14,11 @@ import { founders, board } from '../data/site.js';
        public/media/founder-olanoff.jpg     (.jpeg / .png / .webp also work)
 
    and that founder's record switches from the two-column register
-   (name | facts) to a three-column one (portrait | name | facts) with no
-   other change. While a file is absent nothing is rendered in its place —
-   the record is a typographic entry, not a frame waiting for an image, so
-   the empty state is designed air and never a broken box. It also keeps
-   the console clean: no request is made for a file that is not there. */
+   (name | affiliations) to a three-column one (portrait | name | affiliations)
+   with no other change. While a file is absent nothing is rendered in its
+   place — the record is a typographic entry, not a frame waiting for an
+   image, so the empty state is designed air and never a broken box. It also
+   keeps the console clean: no request is made for a file that is not there. */
 const EXTS = ['.jpg', '.jpeg', '.png', '.webp'];
 function resolvePortrait(p) {
   if (!p) return null;
@@ -37,6 +38,12 @@ const people = founders.map((f, i) => ({
   portraitSrc: resolvePortrait(f.portrait),
   credentials: f.detail.replace(/\.\s*$/, '').split(/\.\s+/),
 }));
+
+/* Cohorts live in src/components/people-cohorts.js so this page and the
+   homepage scene group the roster identically. */
+const cohorts = cohortsOf(board);
+
+const boardCount = board.length;
 ---
 <Base title="People" description="The founders and prospective board of the Lion Forum Institute.">
 
@@ -53,7 +60,7 @@ const people = founders.map((f, i) => ({
             <span class="stat__l">Founders</span>
           </p>
           <p class="stat stat--end">
-            <span class="stat__n tnum">16</span>
+            <span class="stat__n tnum">{boardCount}</span>
             <span class="stat__l">Prospective board</span>
           </p>
         </div>
@@ -80,11 +87,6 @@ const people = founders.map((f, i) => ({
                 <span class="label label--brass">{p.role}</span>
               </p>
               <h2 class="display fr__name">{p.name}</h2>
-            </div>
-            <div class="fr__facts">
-              <ul class="fr__aff">
-                {p.lines.map((l) => <li>{l}</li>)}
-              </ul>
               <p class="fr__cred">
                 {p.credentials.map((c, n) => (
                   <>
@@ -94,6 +96,9 @@ const people = founders.map((f, i) => ({
                 ))}
               </p>
             </div>
+            <ul class="fr__aff">
+              {p.lines.map((l) => <li>{l}</li>)}
+            </ul>
           </div>
         </article>
       ))}
@@ -104,25 +109,38 @@ const people = founders.map((f, i) => ({
   <section class="scene on-cream bd" aria-labelledby="board-h">
     <div class="shell">
       <header class="bd__head">
-        <p class="label" data-reveal>Prospective board</p>
-        <h2 class="display display--l bd__h lines" id="board-h">Advising the pilots. Opening the doors they need.</h2>
+        <div class="bd__say">
+          <p class="label" data-reveal>Prospective board</p>
+          <h2 class="display display--l bd__h lines" id="board-h">Advising the pilots. Opening the doors they need.</h2>
+        </div>
+        <p class="stat stat--end bd__tally" data-reveal="220">
+          <span class="stat__n tnum">{boardCount}</span>
+          <span class="stat__l">Names put forward</span>
+        </p>
       </header>
 
-      <div class="bd__body">
-        <aside class="bd__rail" data-reveal="120">
-          <p class="bd__count tnum">16</p>
-          <p class="bd__note">Membership is prospective.<br />Titles for identification.</p>
-        </aside>
+      {cohorts.map((c, ci) => (
+        <section class="cg" aria-labelledby={c.id}>
+          <span class="cg__rule" data-reveal={String(ci * 35)} aria-hidden="true"></span>
+          <div class="cg__body">
+            <h3 class="cg__rail" id={c.id} data-reveal={String(ci * 35 + 60)}>
+              <span class="cg__n tnum">{c.people.length}</span>
+              <span class="cg__l">{c.label}</span>
+            </h3>
+            <ul class="cg__list">
+              {c.people.map((p, i) => (
+                <li class="pn" data-reveal={String(ci * 35 + 90 + i * 22)}>
+                  <span class="pn__n">{p.name}</span>
+                  <span class="pn__t">{p.line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ))}
 
-        <ul class="roster">
-          {board.map((b, i) => (
-            <li data-reveal={String(Math.min(i, 9) * 55)}>
-              <span class="roster__n">{b.name}</span>
-              <span class="roster__t">{b.line}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <span class="cg__rule" data-reveal aria-hidden="true"></span>
+      <p class="bd__foot" data-reveal="70">Membership is prospective · Titles for identification</p>
     </div>
   </section>
 </Base>
@@ -135,6 +153,8 @@ const people = founders.map((f, i) => ({
   }
   .pm__in { display: grid; gap: clamp(2rem, 5vw, 4rem); }
   .pm__h { max-width: 13ch; }
+  /* motion.js builds .line at runtime, so it never carries the scope hash. */
+  .pm__h :global(.line) { padding-bottom: 0.07em; margin-bottom: -0.07em; }
   .pm__foot { display: grid; gap: clamp(0.9rem, 1.6vw, 1.5rem); }
   .pm__stats { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; }
   .stat { display: grid; gap: 0.5rem; }
@@ -158,7 +178,7 @@ const people = founders.map((f, i) => ({
   /* ── Founders: the register at full scale ───────────────────────── */
   /* The last record already carries deep bottom padding, so the section
      needs far less than a full --scene-pad before the cream edge. */
-  .fs { padding-block: clamp(3rem, 7vw, 7rem) clamp(2rem, 4.5vw, 4.5rem); }
+  .fs { padding-block: clamp(3rem, 7vw, 7rem) clamp(0.5rem, 1.2vw, 1.25rem); }
 
   .fr__row {
     display: grid;
@@ -187,116 +207,180 @@ const people = founders.map((f, i) => ({
     max-width: 16ch;
   }
 
-  .fr__facts { display: grid; gap: clamp(0.95rem, 1.7vw, 1.4rem); padding-top: 0.45rem; }
+  /* Credentials sit under the name, in the wide column, capped at three
+     items so the run holds one line and never leaves an orphan. */
+  .fr__cred {
+    display: flex;
+    align-items: baseline;
+    margin-top: clamp(0.9rem, 1.7vw, 1.4rem);
+    font-size: var(--step-label);
+    letter-spacing: 0.135em;
+    text-transform: uppercase;
+    line-height: 1.4;
+    color: var(--fg-faint);
+    white-space: nowrap;
+  }
+  .fr__cred-s {
+    padding-inline: 0.6em;
+    color: color-mix(in srgb, var(--brass) 65%, transparent);
+  }
+
+  /* Anchored to the right edge, like the counts in the masthead — the air
+     between the name and the affiliations is the layout, not a gap. */
   .fr__aff {
     list-style: none; margin: 0; padding: 0;
     display: grid; gap: 0.4rem;
+    padding-top: 0.5rem;
+    justify-self: end;
+    text-align: right;
     font-size: var(--step-xs);
     color: var(--fg-mute);
   }
-  /* Flex-wrapped so the block breaks between credentials, never inside one. */
-  .fr__cred {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    row-gap: 0.5rem;
-    font-size: var(--step-label);
-    letter-spacing: 0.115em;
-    text-transform: uppercase;
-    line-height: 1.45;
-    color: var(--fg-faint);
-  }
-  .fr__cred-i { white-space: nowrap; }
-  .fr__cred-s {
-    padding-inline: 0.5em;
-    color: color-mix(in srgb, var(--brass) 60%, transparent);
-  }
 
-  /* ── Prospective board: the same register, sixteen entries ──────── */
-  .bd__head { display: grid; gap: var(--stack-2); margin-bottom: clamp(2.5rem, 6vw, 5rem); }
-  .bd__h { max-width: 20ch; }
-
-  .bd__body {
+  /* ── Prospective board ──────────────────────────────────────────── */
+  /* Closes tighter than it opens: the last rule and its note are the
+     ending, so there is no dead cream between them and the footer. */
+  .bd { padding-block: clamp(4rem, 3rem + 5.4vw, 7.5rem) clamp(3rem, 5vw, 5.5rem); }
+  .bd__head {
     display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
     column-gap: clamp(1.5rem, 3vw, 3.5rem);
+    margin-bottom: clamp(2.25rem, 4.5vw, 4rem);
   }
-  .bd__rail {
+  .bd__say { display: grid; gap: var(--stack-2); }
+  .bd__tally { padding-top: 0.1rem; }
+  .bd__h { max-width: 20ch; }
+  /* The one display line in this scene gets the slowest, latest ramp on
+     the page — motion sorts the hierarchy instead of dimming it evenly. */
+  .bd__h { --dur-3: 1400ms; }
+  .bd__h :global(.line) { padding-bottom: 0.09em; margin-bottom: -0.09em; }
+  .bd__h :global(.line > span) { transition-delay: calc(var(--line-delay, 0ms) + 120ms); }
+
+  /* Structural rules. They wipe in from the left rather than fading, so
+     the frame of the section arrives before its contents. */
+  .cg__rule {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: var(--rule);
+    opacity: 1;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 820ms var(--ease-io) var(--reveal-delay, 0ms);
+    will-change: transform;
+  }
+  .cg__rule.is-in { transform: scaleX(1); }
+
+  .cg__body {
+    display: grid;
+    grid-template-columns: minmax(0, 2.15fr) minmax(0, 9.85fr);
+    column-gap: clamp(1.5rem, 3vw, 3.5rem);
+    padding-block: clamp(1.6rem, 3.2vw, 2.9rem) clamp(2.25rem, 4.6vw, 4rem);
+  }
+
+  /* Per-cohort rail: a running count that changes as you scroll, held in
+     place beside its own names. The numeral matches .stat__n in the
+     masthead — the page has exactly one numeral step. */
+  .cg__rail {
     position: sticky;
-    top: calc(var(--nav-h) + clamp(1.5rem, 4vw, 3rem));
+    top: calc(var(--nav-h) + clamp(1.25rem, 3vw, 2.5rem));
     align-self: start;
     display: grid;
-    gap: clamp(0.9rem, 1.6vw, 1.35rem);
+    gap: clamp(0.6rem, 1vw, 0.85rem);
+    font-weight: 400;
   }
-  .bd__count {
+  .cg__n {
     font-family: var(--serif);
     font-weight: 300;
-    font-size: clamp(2.4rem, 1.4rem + 3.1vw, 4rem);
-    line-height: 0.82;
-    letter-spacing: -0.035em;
+    font-size: clamp(1.5rem, 1.08rem + 1.45vw, 2.4rem);
+    line-height: 0.9;
+    letter-spacing: -0.025em;
   }
-  .bd__note {
+  .cg__l {
+    font-family: var(--sans);
     font-size: var(--step-label);
-    letter-spacing: 0.115em;
+    font-weight: 500;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    line-height: 1.95;
-    color: var(--fg-faint);
-    /* No measure cap — the <br /> sets the break and the rail sets the width. */
+    line-height: 1;
+    color: var(--fg-mute);
   }
 
-  .roster { list-style: none; margin: 0; padding: 0; }
-  .roster li {
+  .cg__list {
+    list-style: none; margin: 0; padding: 0;
     display: grid;
-    grid-template-columns: minmax(0, 0.66fr) minmax(0, 1fr);
-    column-gap: clamp(1rem, 2.2vw, 2.25rem);
-    align-items: baseline;
-    padding-block: clamp(0.8rem, 1.5vw, 1.2rem);
-    border-top: 1px solid var(--rule);
-    transition: border-color 420ms var(--ease-out);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: clamp(1.25rem, 2.4vw, 2.5rem);
+    row-gap: clamp(1.5rem, 2.9vw, 2.6rem);
   }
-  .roster li:last-child { border-bottom: 1px solid var(--rule); }
-  .roster__n {
+  .pn {
+    display: grid;
+    gap: 0.3rem;
+    align-content: start;
+    /* Small items move a shorter distance than the display line. */
+    --reveal-y: 8px;
+  }
+  .pn__n {
     font-family: var(--serif);
     font-weight: 340;
-    font-size: clamp(1.32rem, 0.95rem + 0.95vw, 1.72rem);
-    line-height: 1.15;
-    letter-spacing: -0.015em;
+    font-size: clamp(1.2rem, 0.95rem + 0.72vw, 1.6rem);
+    line-height: 1.08;
+    letter-spacing: -0.014em;
     text-wrap: balance;
   }
-  .roster__t {
+  .pn__t {
     font-size: var(--step-xs);
-    line-height: 1.42;
+    line-height: 1.38;
     color: var(--fg-mute);
+    text-wrap: pretty;
     transition: color 420ms var(--ease-out);
   }
   @media (hover: hover) {
-    .roster li:hover { border-top-color: color-mix(in srgb, var(--brass) 70%, transparent); }
-    .roster li:hover .roster__t { color: var(--fg); }
+    .pn:hover .pn__t { color: var(--fg); }
+  }
+
+  .bd__foot {
+    padding-top: clamp(1.1rem, 2vw, 1.6rem);
+    font-size: var(--step-label);
+    letter-spacing: 0.135em;
+    text-transform: uppercase;
+    line-height: 1.5;
+    color: var(--fg-faint);
   }
 
   /* ── Narrow ─────────────────────────────────────────────────────── */
+  @media (max-width: 1180px) {
+    .cg__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
   @media (max-width: 980px) {
     .fr__row,
     .fr--portrait .fr__row { grid-template-columns: 1fr; row-gap: clamp(1.25rem, 4vw, 2rem); }
     .fr__portrait { max-width: 240px; }
     .fr__name { max-width: none; }
-    /* Stacked, like the affiliations above it — no separator can dangle
-       at a line end once the facts column runs full width. */
-    .fr__cred { flex-direction: column; align-items: flex-start; row-gap: 0.35rem; }
-    .fr__cred-s { display: none; }
+    .fr__aff { padding-top: 0; justify-self: start; text-align: left; }
 
-    .bd__body { grid-template-columns: 1fr; row-gap: clamp(1.75rem, 5vw, 2.75rem); }
-    .bd__rail {
+    .cg__body { grid-template-columns: 1fr; row-gap: clamp(1.5rem, 4vw, 2.25rem); }
+    /* The rail turns into a head: count and cohort on one baseline. */
+    .cg__rail {
       position: static;
-      grid-template-columns: auto minmax(0, 1fr);
-      align-items: center;
-      gap: 0 clamp(1rem, 3vw, 1.5rem);
+      display: flex;
+      align-items: baseline;
+      gap: 0.85rem;
     }
-    .bd__note { max-width: 30ch; }
+    .cg__n { font-size: clamp(1.35rem, 1.1rem + 0.9vw, 1.9rem); }
+  }
+  @media (max-width: 700px) {
+    .cg__list { grid-template-columns: 1fr; row-gap: clamp(1.15rem, 4vw, 1.6rem); }
   }
   @media (max-width: 620px) {
-    /* Stacked rows need the name to stay clearly dominant over the title. */
-    .roster li { grid-template-columns: 1fr; row-gap: 0.22rem; padding-block: 0.95rem; }
-    .roster__t { font-size: 0.86rem; }
+    /* Tighter tracking keeps the three credentials on one line at 390px. */
+    .fr__cred { font-size: 0.63rem; letter-spacing: 0.075em; }
+    .fr__cred-s { padding-inline: 0.5em; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cg__rule { transform: none; transition-duration: 1ms; }
+    .bd__h :global(.line > span) { transition-delay: 0ms; }
   }
 </style>

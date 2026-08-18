@@ -73,9 +73,9 @@ export const pilots = [
 
 /* ── How the institute works ──────────────────────────────────────── */
 export const method = [
-  { index: '01', title: 'Find the problem', text: 'One families feel, and an institution owns.' },
+  { index: '01', title: 'Find the problem', text: 'One an institution already owns.' },
   { index: '02', title: 'Match the partners', text: 'Who builds it. Who runs it.' },
-  { index: '03', title: 'Measure, then publish', text: 'The result goes out either way.' },
+  { index: '03', title: 'Measure, then publish', text: 'Whatever the result.' },
 ];
 
 /* ── People ───────────────────────────────────────────────────────── */
@@ -87,7 +87,7 @@ export const founders = [
       'Founding Partner, K. Ventures',
       'Founding Partner, The Lion Forum',
     ],
-    detail: 'Army Ranger. Oculus and Meta. MPA, Harvard. BS, Syracuse.',
+    detail: 'Army Ranger. Oculus and Meta. MPA, Harvard.',
     portrait: '/media/founder-mckelvy.jpg',
   },
   {
@@ -97,7 +97,7 @@ export const founders = [
       'Founding Partner, K. Ventures',
       'Founding Partner, The Lion Forum',
     ],
-    detail: 'MBA, Stanford GSB. MPA, Harvard Kennedy School. BA, Amherst.',
+    detail: 'MBA, Stanford. MPA, Harvard. BA, Amherst.',
     portrait: '/media/founder-olanoff.jpg',
   },
 ];
@@ -128,8 +128,8 @@ export const forum = {
   place: 'Kennedy Compound, Hyannis Port',
   access: 'By invitation',
   line: 'A convening of founders, investors, and elected officials.',
-  role: 'The Institute is a lead sponsor: the Forum is where pilots find their partners, and where results are reported back.',
-  caption: 'Hyannis Port, Massachusetts',
+  role: 'The Institute is a lead sponsor. Pilots find their partners here, and report their results back.',
+  caption: 'Before the room fills.',
   cta: 'Inquire about the Forum',
   image: '/media/forum.jpg',
   imageDetail: '/media/forum-detail.jpg',

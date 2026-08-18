@@ -13,31 +13,33 @@ const roles = [
     <div class="shell phead__in">
       <p class="label" data-reveal>Work with us</p>
 
-      <h1 class="display display--hero phead__h lines">Partner on a pilot.</h1>
+      <h1 class="display phead__h lines">Partner on a pilot.</h1>
 
       <div class="phead__ask">
-        <p class="phead__sub" data-reveal="420">Bring the funding, the technology, or the ground to run it on.</p>
-        <a class="pmail" href={`mailto:${site.email}`} data-reveal="520">
+        <a class="pmail" href={`mailto:${site.email}`} data-reveal="380">
           <span class="pmail__t">{site.email}</span>
           <span class="pmail__arrow" aria-hidden="true">
             <span class="pmail__line"></span>
             <svg viewBox="0 0 11 12"><path d="M4 1.5 9.5 6 4 10.5" stroke="currentColor" stroke-width="1" fill="none"/></svg>
           </span>
         </a>
+        <p class="phead__sub" data-reveal="460">Name the pilot and the role. A person answers.</p>
       </div>
 
-      <div class="phead__index" data-reveal="620">
+      <div class="phead__index" data-reveal="300">
         <span class="label phead__index-l">Open pilots · 2026</span>
         <ul>
           {pilots.map((p) => (
-            <li><span class="index">{p.index}</span>{p.title}</li>
+            <li><span class="index">{p.index}</span><span class="phead__index-n">{p.title}</span></li>
           ))}
         </ul>
       </div>
     </div>
   </section>
 
-  <section class="scene proles">
+  <!-- The one hard cut in the scroll: ground changes, and the three doors
+       arrive tight underneath the address rather than a screen later. -->
+  <section class="on-cream proles">
     <div class="shell proles__in">
       <p class="label" data-reveal>Three ways in</p>
       <ol class="proles__list">
@@ -49,33 +51,46 @@ const roles = [
           </li>
         ))}
       </ol>
-      <p class="proles__note" data-reveal="440">Say which pilot and which role. A person answers.</p>
     </div>
   </section>
+
+  <!-- Deliberate breath. The page is tight everywhere else; this is the one
+       place it is allowed to be generous, right before the quiet second door. -->
+  <div class="pbreath" aria-hidden="true"></div>
 </Base>
 
 <style>
   /* The end of the scroll should feel like arrival: one line, one address,
-     and the list of what you would be joining held in the corner. */
+     and the list of what you would be joining held in the corner.
+     No min-height — the hero is as tall as it needs to be and no taller,
+     so the first screen opens on type instead of on a void. */
   .phead {
-    min-height: min(96svh, 58rem);
-    display: grid; align-items: end;
-    padding-block: calc(var(--nav-h) + clamp(4rem, 10vw, 8rem)) clamp(2.5rem, 5vw, 4.5rem);
+    padding-block: calc(var(--nav-h) + clamp(5.75rem, 3.6rem + 4.5vw, 8rem)) clamp(2rem, 3.6vw, 3.5rem);
   }
   .phead__in {
-    display: grid; gap: var(--stack-2);
-    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
-    align-items: end;
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: clamp(1.5rem, 3vw, 2.8rem);
+    align-items: start;
   }
-  .phead__in > .label { grid-column: 1 / -1; }
-  .phead__h { grid-column: 1 / -1; max-width: 12ch; }
+  .phead__in > .label { grid-column: 1 / -1; margin-bottom: clamp(0.6rem, 1.4vw, 1.4rem); }
+
+  /* One hero size for the whole site, sitting between --step-xl (footer close)
+     and --step-hero (homepage). Local: the token scale has no step here. */
+  .phead__h {
+    grid-column: 1 / -1;
+    font-size: clamp(3.1rem, 1rem + 6.3vw, 7rem);
+    line-height: 0.94; letter-spacing: -0.028em;
+    max-width: 13ch;
+  }
   .phead__h :global(.line) { padding-bottom: 0.08em; margin-bottom: -0.08em; }
 
   .phead__ask {
-    grid-column: 1; display: grid; gap: clamp(1.5rem, 3vw, 2.4rem);
-    justify-items: start; margin-top: clamp(1.25rem, 2.5vw, 2rem);
+    grid-column: 1; display: grid; gap: clamp(0.85rem, 1.5vw, 1.2rem);
+    justify-items: start; align-content: start;
   }
-  .phead__sub { color: var(--fg-mute); font-size: var(--step-s); max-width: 34ch; }
+  .phead__sub { color: var(--fg-faint); font-size: var(--step-xs); max-width: 34ch; }
 
   .pmail {
     display: inline-grid; grid-auto-flow: column; align-items: center;
@@ -98,9 +113,11 @@ const roles = [
   .pmail:hover { border-bottom-color: var(--brass); }
   .pmail:hover .pmail__arrow { transform: translateX(8px); }
 
+  /* The four open pilots are the only concrete nouns on the page, so they are
+     set as content, not as a caption. Only the label stays micro. */
   .phead__index {
     grid-column: 2; justify-self: end; text-align: right;
-    display: grid; gap: 0.85rem; padding-bottom: 0.4rem;
+    display: grid; gap: clamp(1rem, 1.8vw, 1.5rem); align-content: start;
   }
   .phead__index-l { color: var(--fg-faint); }
   /* Two hard columns so the indices line up instead of raggedly trailing
@@ -108,44 +125,56 @@ const roles = [
   .phead__index ul {
     list-style: none; margin: 0; padding: 0;
     display: grid; grid-template-columns: max-content max-content;
-    justify-content: end; column-gap: 0.9rem; row-gap: 0.4rem;
-    font-size: var(--step-xs); color: var(--fg-mute); text-align: left;
+    justify-content: end; column-gap: clamp(0.8rem, 1.4vw, 1.2rem); row-gap: clamp(0.3rem, 0.7vw, 0.55rem);
+    text-align: left;
   }
   .phead__index li { display: contents; }
+  .phead__index .index { align-self: baseline; }
+  .phead__index-n {
+    font-size: clamp(1.15rem, 0.9rem + 0.75vw, 1.5rem);
+    line-height: 1.22; letter-spacing: -0.008em;
+    color: var(--fg);
+  }
 
-  /* ── Three ways in ── */
-  .proles__in { display: grid; gap: clamp(2rem, 4.5vw, 3.5rem); }
+  /* ── Three ways in — the cream field ──
+     Tight top padding on purpose: the cut lands right under the address rule. */
+  .proles {
+    padding-block: clamp(2rem, 2.4vw, 2.6rem) clamp(4rem, 2rem + 4vw, 6rem);
+  }
+  .proles__in { display: grid; gap: clamp(1.75rem, 3vw, 2.6rem); }
   .proles__list {
     list-style: none; margin: 0; padding: 0;
     display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: clamp(1.75rem, 4vw, 3.5rem);
+    gap: clamp(1.5rem, 3.4vw, 3rem);
   }
   .proles__list li {
-    display: grid; gap: clamp(0.6rem, 1.1vw, 0.9rem);
-    align-content: start; padding-top: 1.1rem;
+    display: grid; gap: clamp(0.5rem, 0.9vw, 0.8rem);
+    align-content: start; padding-top: 1rem;
     border-top: 1px solid var(--rule);
   }
   .proles__n {
     font-family: var(--serif); font-weight: 300;
-    font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.6rem);
+    font-size: clamp(1.5rem, 1.05rem + 1.4vw, 2.35rem);
     line-height: 1; color: var(--brass);
     font-variant-numeric: tabular-nums;
   }
   .proles__list h2 { font-weight: 320; }
   .proles__list p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 26ch; }
-  .proles__note { color: var(--fg-faint); font-size: var(--step-xs); justify-self: end; text-align: right; }
+
+  .pbreath { height: clamp(2.5rem, 12vw, 11rem); }
 
   @media (max-width: 900px) {
-    .proles__list { grid-template-columns: 1fr; gap: 1.5rem; }
-    .proles__note { justify-self: start; text-align: left; }
+    .proles__list { grid-template-columns: 1fr; gap: 1.25rem; }
   }
 
   @media (max-width: 860px) {
-    .phead { min-height: min(76svh, 41rem); }
-    .phead__in { grid-template-columns: 1fr; }
+    .phead { padding-block-start: calc(var(--nav-h) + 5.75rem); }
+    .phead__in { grid-template-columns: 1fr; row-gap: clamp(1.4rem, 5vw, 2rem); }
+    .phead__h { max-width: 100%; }
+    .phead__ask { grid-column: 1; }
     .phead__index {
       grid-column: 1; justify-self: start; text-align: left;
-      margin-top: clamp(2rem, 8vw, 3rem); padding-bottom: 0;
+      margin-top: clamp(1.5rem, 6vw, 2.5rem);
     }
     .phead__index ul { justify-content: start; }
   }

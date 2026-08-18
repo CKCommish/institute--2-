@@ -3,6 +3,7 @@ import { nav, cta, site } from '../data/site.js';
 const { pathname } = Astro.url;
 const isActive = (href) => pathname === href || (href !== '/' && pathname.startsWith(href));
 const ctaActive = isActive(cta.href);
+const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6 4.1-.55 5.45-1.9 6-6Z';
 ---
 <header class="nav" data-nav>
   <div class="nav__in">
@@ -15,15 +16,16 @@ const ctaActive = isActive(cta.href);
       {nav.map((n) => (
         <a href={n.href} class:list={['nav__link', { 'is-active': isActive(n.href) }]}>{n.label}</a>
       ))}
-      <span class="nav__sep" aria-hidden="true"></span>
-      <a href={cta.href} class:list={['nav__link nav__link--cta', { 'is-active': ctaActive }]}>
-        <span class="nav__dot" aria-hidden="true"></span>{cta.label}
-      </a>
     </nav>
 
-    <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
-      <span class="nav__dot" aria-hidden="true"></span>
-      <span class="nav__burger-t" data-burger-label>Menu</span>
+    <a href={cta.href} class:list={['pill', { 'is-active': ctaActive }]}>
+      <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
+      <span>{cta.label}</span>
+    </a>
+
+    <button class="pill pill--burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
+      <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
+      <span class="pill__t" data-burger-label>Menu</span>
     </button>
   </div>
 </header>
@@ -36,7 +38,8 @@ const ctaActive = isActive(cta.href);
       ))}
     </nav>
     <a class="menu__cta" href={cta.href} style={`--i:${nav.length}`}>
-      <span class="nav__dot" aria-hidden="true"></span>{cta.label}
+      <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
+      {cta.label}
     </a>
     <div class="menu__foot" style={`--i:${nav.length + 1}`}>
       <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
@@ -46,10 +49,10 @@ const ctaActive = isActive(cta.href);
 </div>
 
 <style>
-  /* The bar has no chrome of its own: no panel, no border, no blur. It is a
-     wordmark and a line of micro-labels floating on the composition. On scroll
-     a soft edgeless scrim appears so type stays legible; over a cream scene the
-     whole bar inverts to ink. --nav-scrim / --nav-fg are local to this file. */
+  /* The bar has no chrome of its own: no panel, no border, no blur. A wordmark,
+     four whisper-quiet labels, and exactly one lit object — the CTA pill. On
+     scroll an edgeless scrim keeps type legible; over a cream scene the whole
+     bar inverts to ink. --nav-scrim / --nav-fg are local to this file. */
   .nav {
     position: fixed; inset: 0 0 auto 0; z-index: 100;
     height: var(--nav-h);
@@ -60,12 +63,11 @@ const ctaActive = isActive(cta.href);
   }
   .nav::before {
     content: ''; position: absolute; inset: 0 0 auto 0;
-    height: calc(100% + 4.2rem);
+    height: calc(100% + 3.4rem);
     background: linear-gradient(
       to bottom,
       var(--nav-scrim) 0%,
-      var(--nav-scrim) 44%,
-      color-mix(in srgb, var(--nav-scrim) 74%, transparent) 66%,
+      color-mix(in srgb, var(--nav-scrim) 82%, transparent) 52%,
       color-mix(in srgb, var(--nav-scrim) 0%, transparent) 100%
     );
     opacity: 0; transition: opacity 460ms var(--ease-out);
@@ -79,39 +81,39 @@ const ctaActive = isActive(cta.href);
     height: 100%;
     max-width: var(--max); margin-inline: auto;
     padding-inline: var(--gutter);
-    display: flex; align-items: center; gap: clamp(1rem, 3vw, 3rem);
+    display: flex; align-items: center; gap: clamp(1rem, 2.6vw, 2.6rem);
   }
   .nav__in > * { pointer-events: auto; }
 
-  /* ── Wordmark: two words, one weight change. No glyph, no rule. ── */
+  /* ── Wordmark: two words, one weight change. No rule, no box. ── */
   .mark {
-    display: flex; align-items: center;
-    gap: 0.55ch;
+    display: flex; align-items: baseline;
+    gap: 0.5ch;
     margin-right: auto;
     font-family: var(--sans);
-    font-size: clamp(0.78rem, 0.72rem + 0.2vw, 0.9rem);
-    letter-spacing: 0.135em;
+    font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.85rem);
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     line-height: 1;
     white-space: nowrap;
   }
   .mark__a { font-weight: 600; }
-  .mark__b { font-weight: 400; color: color-mix(in srgb, currentColor 50%, transparent); transition: color 420ms var(--ease-out); }
+  .mark__b { font-weight: 400; color: color-mix(in srgb, currentColor 42%, transparent); transition: color 420ms var(--ease-out); }
   .mark:hover .mark__b { color: currentColor; }
 
-  /* ── Links ── */
-  .nav__links { display: flex; align-items: center; gap: clamp(1.1rem, 2.2vw, 2.3rem); }
+  /* ── Links: nearly invisible until asked for ── */
+  .nav__links { display: flex; align-items: center; gap: clamp(1rem, 2vw, 2.1rem); }
   .nav__link {
     font-size: var(--step-label); font-weight: 500;
     letter-spacing: 0.145em; text-transform: uppercase;
-    color: color-mix(in srgb, currentColor 58%, transparent);
+    color: color-mix(in srgb, currentColor 42%, transparent);
     transition: color 340ms var(--ease-out);
     position: relative; padding-block: 0.5rem;
     white-space: nowrap;
   }
   .nav__link::after {
-    content: ''; position: absolute; left: 0; right: 0; bottom: 0.15rem;
-    height: 1px; background: currentColor; opacity: 0.55;
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0.2rem;
+    height: 1px; background: currentColor; opacity: 0.5;
     transform: scaleX(0); transform-origin: right;
     transition: transform 460ms var(--ease-out);
   }
@@ -119,30 +121,32 @@ const ctaActive = isActive(cta.href);
   .nav__link:hover::after, .nav__link.is-active::after { transform: scaleX(1); transform-origin: left; }
   .nav__link.is-active { color: currentColor; }
 
-  .nav__sep { width: 1px; height: 10px; background: color-mix(in srgb, currentColor 14%, transparent); flex: none; }
-
-  /* The primary CTA earns a brass dot, not a button. */
-  .nav__link--cta { color: currentColor; display: inline-flex; align-items: center; gap: 0.72ch; }
-  .nav__link--cta::after { background: var(--brass); opacity: 1; }
-  .nav__dot {
-    width: 5px; height: 5px; border-radius: 50%; flex: none;
-    background: var(--brass);
-    transition: transform 520ms var(--ease-out);
-  }
-  .nav__link--cta:hover .nav__dot { transform: scale(1.7); }
-
-  /* ── Mobile trigger ── */
-  .nav__burger {
-    display: none; align-items: center; gap: 0.7ch;
-    padding: 0.9rem 0; margin-right: -0.2rem;
+  /* ── The one lit object in the bar ──
+     Hairline brass pill; fills on hover. Radius/fill are local to the chrome —
+     no token exists for a pill and none should. */
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.72ch;
+    padding: 0.62em 1.05em 0.6em;
+    border: 1px solid color-mix(in srgb, var(--brass) 42%, transparent);
+    border-radius: 999px;
     font-size: var(--step-label); font-weight: 500;
     letter-spacing: 0.145em; text-transform: uppercase;
+    line-height: 1; white-space: nowrap;
+    color: currentColor;
+    transition: background-color 420ms var(--ease-out), border-color 420ms var(--ease-out), color 420ms var(--ease-out);
   }
-  .nav__burger-t { min-width: 5ch; text-align: right; }
+  .pill .star { width: 8px; height: 8px; color: var(--brass); flex: none; transition: transform 620ms var(--ease-out), color 420ms var(--ease-out); }
+  .pill:hover { background: var(--brass); border-color: var(--brass); color: var(--ink-900); }
+  .pill:hover .star { transform: rotate(90deg); color: var(--ink-900); }
+  .pill.is-active { border-color: var(--brass); }
+  .nav.is-inverted .pill:hover { color: var(--cream); }
+
+  .pill--burger { display: none; }
+  .pill__t { min-width: 4.4ch; text-align: left; }
 
   @media (max-width: 940px) {
-    .nav__links { display: none; }
-    .nav__burger { display: inline-flex; }
+    .nav__links, .nav__in > a.pill:not(.pill--burger) { display: none; }
+    .pill--burger { display: inline-flex; }
   }
 
   /* ── Mobile menu ── */
@@ -179,13 +183,14 @@ const ctaActive = isActive(cta.href);
     font-size: var(--step-label); letter-spacing: 0.145em; text-transform: uppercase; font-weight: 500;
     padding-bottom: 0.6rem; border-bottom: 1px solid var(--brass);
   }
+  .menu__cta .star { width: 8px; height: 8px; color: var(--brass); flex: none; }
   .menu__foot {
     margin-top: 3.2rem; display: grid; gap: 0.5rem; justify-items: start;
     font-size: var(--step-xs); color: var(--fg-mute);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .nav, .nav::before, .mark__b, .nav__link::after, .nav__dot,
+    .nav, .nav::before, .mark__b, .nav__link::after, .pill, .pill .star,
     .menu, .menu__links a, .menu__cta, .menu__foot { transition-duration: 1ms !important; }
   }
 </style>

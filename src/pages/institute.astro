@@ -9,15 +9,15 @@ const runs = ['Health systems', 'Universities', 'Community organizations', 'Gove
   <section class="ihead">
     <div class="shell ihead__in">
       <p class="label" data-reveal>The Institute</p>
-      <h1 class="display display--xl ihead__h lines">We sit between the people building it and the people who have to use it.</h1>
+      <h1 class="display ihead__h lines">We sit between the builders and the institutions.</h1>
       <p class="ihead__note label" data-reveal="520">Pilots · 3–12 months</p>
     </div>
   </section>
 
-  <section class="scene ibetween">
+  <!-- The one idea on the page. It gets the air, and it gets its own
+       choreography: rails, then names, then the connectors drawn outward. -->
+  <section class="ibetween">
     <div class="shell">
-      <p class="label ibetween__label" data-reveal>Between</p>
-
       <div class="dgm">
         <div class="dgm__side dgm__side--a" data-reveal>
           <p class="label label--brass">Who builds it</p>
@@ -37,12 +37,13 @@ const runs = ['Health systems', 'Universities', 'Community organizations', 'Gove
         </div>
       </div>
 
-      <p class="ibetween__note" data-reveal="420">Neither side can run the pilot alone.</p>
+      <p class="ibetween__note" data-reveal="640">Neither side can run the pilot alone.</p>
     </div>
   </section>
 
-  <section class="scene on-cream imethod">
+  <section class="on-cream imethod">
     <div class="shell imethod__in">
+      <p class="label imethod__k" data-reveal>One problem · one outcome · published either way</p>
       <h2 class="display display--l lines">Every pilot runs the same way.</h2>
       <ol class="imethod__list">
         {method.map((m, i) => (
@@ -53,34 +54,41 @@ const runs = ['Health systems', 'Universities', 'Community organizations', 'Gove
           </li>
         ))}
       </ol>
-      <p class="label imethod__foot" data-reveal="480">One problem · one outcome · published either way</p>
     </div>
   </section>
 </Base>
 
 <style>
-  /* ── Head ── */
+  /* ── Head ──
+     No min-height: the first screen opens on type, not on a void. */
   .ihead {
-    min-height: min(92svh, 54rem);
-    display: grid; align-items: end;
-    padding-block: calc(var(--nav-h) + clamp(4rem, 10vw, 8rem)) clamp(2.5rem, 5vw, 4.5rem);
+    padding-block: calc(var(--nav-h) + clamp(5.75rem, 3.6rem + 4.5vw, 8rem)) clamp(1.25rem, 1.4vw, 1.5rem);
   }
   .ihead__in {
-    display: grid; gap: var(--stack-2);
+    display: grid; gap: clamp(0.9rem, 1.8vw, 1.6rem);
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
   }
-  .ihead__in > .label { grid-column: 1 / -1; }
-  .ihead__h { max-width: 15ch; grid-column: 1; }
+  .ihead__in > .label { grid-column: 1 / -1; margin-bottom: clamp(0.6rem, 1.4vw, 1.4rem); }
+  /* One hero size for the whole site — matches /partner/. Local, because the
+     token scale has no step between --step-xl and --step-hero. */
+  .ihead__h {
+    grid-column: 1;
+    font-size: clamp(3.1rem, 1rem + 6.3vw, 7rem);
+    line-height: 0.94; letter-spacing: -0.028em;
+    max-width: 14ch;
+  }
   .ihead__h :global(.line) { padding-bottom: 0.08em; margin-bottom: -0.08em; }
-  .ihead__note { grid-column: 2; text-align: right; padding-bottom: 0.5rem; color: var(--fg-faint); white-space: nowrap; }
+  .ihead__note { grid-column: 2; text-align: right; padding-bottom: 0.6rem; color: var(--fg-faint); white-space: nowrap; }
 
   /* ── The diagram ────────────────────────────────────────────────
-     Two rails, one hub. Rails and connectors draw themselves in off the
-     house .is-in class, so no new motion primitive is needed. */
-  .ibetween__label { margin-bottom: clamp(2.5rem, 6vw, 5rem); }
+     Two rails, one hub. Tight above (it answers the headline directly),
+     generous below (that space is the page's one real breath). */
+  .ibetween {
+    padding-block: clamp(1.5rem, 0.4rem + 1.5vw, 2rem) clamp(4.5rem, 2rem + 19vw, 21rem);
+  }
   .dgm {
-    --dgm-gap: clamp(2rem, 6vw, 6rem);
+    --dgm-gap: clamp(2rem, 6vw, 6.5rem);
     display: grid;
     grid-template-columns: auto auto auto;
     justify-content: center;
@@ -101,18 +109,21 @@ const runs = ['Health systems', 'Universities', 'Community organizations', 'Gove
     content: ''; position: absolute; top: -0.35rem; bottom: -0.35rem; width: 1px;
     background: var(--rule);
     transform: scaleY(0); transform-origin: top;
-    transition: transform 900ms var(--ease-out) 160ms;
+    transition: transform 820ms var(--ease-out) 120ms;
   }
   .dgm__side--a::after { right: 0; }
   .dgm__side--b::after { left: 0; }
   .dgm__side.is-in::after { transform: none; }
 
+  /* The connectors are the last thing to happen on the page. They draw
+     outward from the hub only after both rails and both lists have settled —
+     the sequence is the argument. Local delays; no motion primitive added. */
   .dgm__core { position: relative; display: grid; justify-items: center; }
   .dgm__core::before, .dgm__core::after {
     content: ''; position: absolute; top: 50%; height: 1px;
     width: var(--dgm-gap);
-    background: color-mix(in srgb, var(--brass) 60%, transparent);
-    transition: transform 720ms var(--ease-out) 520ms;
+    background: var(--brass);
+    transition: transform 560ms var(--ease-out) 820ms;
   }
   .dgm__core::before { right: 100%; transform: scaleX(0); transform-origin: right; }
   .dgm__core::after { left: 100%; transform: scaleX(0); transform-origin: left; }
@@ -120,53 +131,61 @@ const runs = ['Health systems', 'Universities', 'Community organizations', 'Gove
 
   .dgm__node {
     display: grid; justify-items: center; gap: 0.7rem;
-    padding: clamp(1.1rem, 2vw, 1.6rem) clamp(1.1rem, 2.2vw, 1.8rem);
-    border: 1px solid color-mix(in srgb, var(--brass) 42%, transparent);
-    background: color-mix(in srgb, var(--brass) 5%, var(--ink-900));
+    padding: clamp(1.1rem, 2vw, 1.7rem) clamp(1.1rem, 2.2vw, 1.9rem);
+    border: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
+    background: color-mix(in srgb, var(--brass) 6%, var(--ink-900));
     white-space: nowrap;
   }
-  .dgm__node-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brass); }
+  .dgm__node-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--brass);
+    transform: scale(0.2); opacity: 0;
+    transition: transform 460ms var(--ease-out) 1180ms, opacity 460ms var(--ease-out) 1180ms;
+  }
+  .dgm__core.is-in .dgm__node-dot { transform: none; opacity: 1; }
   .dgm__node-t { color: var(--fg); letter-spacing: 0.16em; }
 
   .ibetween__note {
-    margin-top: clamp(2.5rem, 6vw, 5rem);
+    margin-top: clamp(2.25rem, 5vw, 4rem);
     color: var(--fg-mute); font-size: var(--step-s);
-    max-width: 34ch;
+    text-align: center; max-width: 34ch; margin-inline: auto;
   }
 
-  /* ── Method ── */
-  .imethod__in { display: grid; gap: clamp(2.5rem, 6vw, 5rem); }
+  /* ── Method — the cream field ── */
+  .imethod {
+    padding-block: clamp(2.75rem, 1.5rem + 3vw, 4.5rem) clamp(4rem, 2rem + 4.5vw, 6.5rem);
+  }
+  .imethod__in { display: grid; gap: clamp(1.75rem, 3.2vw, 2.8rem); }
+  .imethod__k { color: var(--fg-faint); margin-bottom: clamp(0.4rem, 1vw, 1rem); text-wrap: balance; }
   .imethod .display--l { max-width: 16ch; }
   .imethod__list {
     list-style: none; margin: 0; padding: 0;
     display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: clamp(1.75rem, 4vw, 3.5rem);
+    gap: clamp(1.5rem, 3.4vw, 3rem);
+    margin-top: clamp(0.5rem, 1.4vw, 1.4rem);
   }
   .imethod__list li {
-    display: grid; gap: clamp(0.6rem, 1.1vw, 0.9rem);
-    align-content: start; padding-top: 1.1rem;
+    display: grid; gap: clamp(0.5rem, 0.9vw, 0.8rem);
+    align-content: start; padding-top: 1rem;
     border-top: 1px solid var(--rule);
   }
   .imethod__n {
     font-family: var(--serif); font-weight: 300;
-    font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.6rem);
+    font-size: clamp(1.5rem, 1.05rem + 1.4vw, 2.35rem);
     line-height: 1; color: var(--brass);
     font-variant-numeric: tabular-nums;
   }
   .imethod__list h3 { font-weight: 320; }
   .imethod__list p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 26ch; }
-  .imethod__foot { color: var(--fg-faint); justify-self: end; text-align: right; text-wrap: balance; }
 
   @media (max-width: 900px) {
-    .imethod__list { grid-template-columns: 1fr; gap: 1.5rem; }
-    .imethod__foot { justify-self: start; text-align: left; }
+    .imethod__list { grid-template-columns: 1fr; gap: 1.25rem; }
   }
 
   @media (max-width: 860px) {
-    .ihead { min-height: min(76svh, 40rem); }
+    .ihead { padding-block-start: calc(var(--nav-h) + 5.75rem); }
     .ihead__in { grid-template-columns: 1fr; }
-    .ihead__h { max-width: 100%; }
-    .ihead__note { grid-column: 1; text-align: left; padding-bottom: 0; margin-top: 0.6rem; }
+    .ihead__h { grid-column: 1; max-width: 100%; }
+    .ihead__note { grid-column: 1; text-align: left; padding-bottom: 0; margin-top: 0.9rem; }
 
     /* One spine down the left edge instead of two rails and a gap. */
     .dgm {
@@ -184,13 +203,14 @@ const runs = ['Health systems', 'Universities', 'Community organizations', 'Gove
     .dgm__core { justify-items: start; width: 100%; }
     .dgm__core::before, .dgm__core::after {
       left: 0; right: auto; top: auto; width: 1px; height: var(--dgm-gap);
-      background: color-mix(in srgb, var(--brass) 60%, transparent);
     }
     .dgm__core::before { bottom: 100%; transform: scaleY(0); transform-origin: bottom; }
     .dgm__core::after { top: 100%; transform: scaleY(0); transform-origin: top; }
+    .ibetween__note { text-align: left; margin-inline: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .dgm__side::after, .dgm__core::before, .dgm__core::after { transform: none !important; transition-duration: 1ms !important; }
+    .dgm__node-dot { transform: none !important; opacity: 1 !important; transition-duration: 1ms !important; }
   }
 </style>

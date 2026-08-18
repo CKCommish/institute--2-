@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { founders, board } from '../../data/site.js';
+import { cohortsOf } from '../people-cohorts.js';
 
 /* Portrait drop-in slot — same contract as /people/.
    public/media/founder-mckelvy.jpg · founder-olanoff.jpg (or .jpeg/.png/.webp).
@@ -26,6 +27,11 @@ const people = founders.map((f, i) => ({
   index: String(i + 1).padStart(2, '0'),
   portraitSrc: resolvePortrait(f.portrait),
 }));
+
+/* Same three cohorts as /people/, so the roster reads the same way in both
+   places. Here they are three lines, not three bands — the homepage gets the
+   shape of the board, the People page gets the board. */
+const cohorts = cohortsOf(board);
 ---
 <section class="people scene" id="people" aria-labelledby="people-h">
   <div class="shell people__in">
@@ -54,14 +60,21 @@ const people = founders.map((f, i) => ({
           <span class="index tnum">16</span>
           <span class="label">Prospective board</span>
         </p>
-        <p class="people__names">
-          {board.map((b, i) => (
-            <>
-              {i > 0 && <span class="people__sep" aria-hidden="true">·</span>}
-              <span class="people__name">{b.name}</span>
-            </>
+        <ul class="people__cohorts">
+          {cohorts.map((c) => (
+            <li>
+              <span class="label people__cohort">{c.label}</span>
+              <span class="people__names">
+                {c.people.map((b, i) => (
+                  <>
+                    {i > 0 && <span class="people__sep" aria-hidden="true">·</span>}
+                    <span class="people__name">{b.name}</span>
+                  </>
+                ))}
+              </span>
+            </li>
           ))}
-        </p>
+        </ul>
       </div>
       <a class="link people__more" href="/people/">All people</a>
     </div>
@@ -116,9 +129,23 @@ const people = founders.map((f, i) => ({
     padding-top: clamp(1rem, 2.2vw, 1.75rem);
   }
   .people__board-label { display: flex; align-items: baseline; gap: 0.75rem; }
+  /* One line per cohort: the label leads, the names follow. Same total
+     height as the old single run, but the run now has a shape. */
+  .people__cohorts {
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    row-gap: clamp(0.55rem, 1.1vw, 0.9rem);
+  }
+  .people__cohorts li {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    column-gap: clamp(0.75rem, 1.6vw, 1.5rem);
+    align-items: baseline;
+  }
+  .people__cohort { color: var(--brass); line-height: 1.6; }
   .people__names {
     font-size: var(--step-xs);
-    line-height: 1.9;
+    line-height: 1.6;
     color: var(--fg-mute);
     text-wrap: pretty;
   }
@@ -137,5 +164,7 @@ const people = founders.map((f, i) => ({
     .fd--portrait .fd__role { grid-column: 2; }
     .fd__role { text-align: left; }
     .people__board-row { grid-template-columns: 1fr; row-gap: 1rem; }
+    .people__cohorts li { grid-template-columns: 1fr; row-gap: 0.2rem; }
+    .people__cohorts { row-gap: clamp(0.85rem, 3vw, 1.25rem); }
   }
 </style>
