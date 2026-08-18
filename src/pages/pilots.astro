@@ -3,12 +3,30 @@ import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
 import { pilots } from '../data/site.js';
 
-/* Four pilots, four different scene envelopes. The page is a scroll, not a
-   register: 01 opens full-bleed with the title set into the photograph, 02
-   is a quiet two-column brief that closes on a letterbox, 03 turns portrait
-   and splits, 04 drops the photograph entirely and lands on cream. Height,
-   type size, reveal amplitude and internal order all change with it. */
-const [p1, p2, p3, p4] = pilots;
+/* ONE card, four times.
+   Round 2 shipped four bespoke scene envelopes and the scroll had no beat you
+   could predict — pilot 02's photo band carried no type at all and read as a
+   spacer. This is a single system now: full-bleed band, number + partner at
+   the top-left inset, sector + horizon flush right on the same baseline, the
+   name and its one line set into the foot of the photograph, and one
+   three-column Problem / Approach / Goal strip hung off the image edge.
+   Nothing alternates. The photographs and the running index carry the
+   variation; the frame does not. Cream is reserved for the Partner CTA. */
+/* Per-frame grade only — the navy multiply that pulls each photograph into
+   the palette. Structure is identical across all four; the maternal frame is
+   a warm interior and needs more of it to sit in the same colour family. */
+const grades = {
+  'healthy-athletes': 0.64,
+  'clean-data-centers': 0.58,
+  'infant-mortality': 0.74,
+  'career-pathways': 0.62,
+};
+const focals = {
+  'healthy-athletes': '50% 34%',
+  'clean-data-centers': '50% 58%',
+  'infant-mortality': '46% 42%',
+  'career-pathways': '50% 46%',
+};
 ---
 <Base title="Pilots" description="Four pilots in 2026: health, energy, maternal health, and education.">
   <section class="phead">
@@ -39,111 +57,48 @@ const [p1, p2, p3, p4] = pilots;
     </div>
   </section>
 
-  {/* ── 01 · full bleed, title inside the photograph ─────────────── */}
-  <section class="pd pd--bleed" id={p1.id} aria-labelledby={`${p1.id}-h`}>
-    <div class="bleed">
-      <Figure src={p1.image} alt="" ratio="auto" grade={0.58} focal="50% 34%" parallax={6} scrim="bottom" loading="eager" />
+  {pilots.map((p, i) => (
+    <article class="pcard" id={p.id} aria-labelledby={`${p.id}-h`}>
+      <div class="pcard__band">
+        <Figure
+          src={p.image}
+          alt=""
+          ratio="auto"
+          grade={grades[p.id] ?? 0.6}
+          focal={focals[p.id] || '50% 50%'}
+          parallax={5}
+          loading={i === 0 ? 'eager' : 'lazy'}
+        />
 
-      <p class="shell pd__meta bleed__meta" data-reveal>
-        <span class="index">{p1.index}</span>
-        <span class="label pd__partner">{p1.partner}</span>
-        <span class="label pd__field">{p1.field} · {p1.horizon}</span>
-      </p>
+        <p class="shell pcard__rail" data-reveal>
+          <span class="index pcard__i">{p.index}</span>
+          <span class="pcard__partner">{p.partner}</span>
+          <span class="pcard__field">{p.field} · {p.horizon}</span>
+        </p>
 
-      <div class="shell bleed__say">
-        <h2 class="display bleed__t lines" id={`${p1.id}-h`}>{p1.title}</h2>
-        <p class="pd__tag" data-reveal="180">{p1.tagline}</p>
-      </div>
-    </div>
-
-    <dl class="shell spec spec--strip">
-      <div data-reveal="300"><dt class="label">Problem</dt><dd>{p1.problem}</dd></div>
-      <div data-reveal="370"><dt class="label">Approach</dt><dd>{p1.approach}</dd></div>
-      <div data-reveal="440"><dt class="label">Goal</dt><dd>{p1.goal}</dd></div>
-    </dl>
-  </section>
-
-  {/* ── 02 · the brief first, the letterbox last ─────────────────── */}
-  <section class="pd pd--strip" id={p2.id} aria-labelledby={`${p2.id}-h`}>
-    <div class="shell strip">
-      <p class="pd__meta" data-reveal>
-        <span class="index">{p2.index}</span>
-        <span class="label pd__partner">{p2.partner}</span>
-        <span class="label pd__field">{p2.field} · {p2.horizon}</span>
-      </p>
-
-      <div class="strip__say">
-        <h2 class="display strip__t" data-reveal="60" id={`${p2.id}-h`}>{p2.title}</h2>
-        <p class="pd__tag" data-reveal="110">{p2.tagline}</p>
-      </div>
-
-      <dl class="spec spec--rows">
-        <div data-reveal="170"><dt class="label">Problem</dt><dd>{p2.problem}</dd></div>
-        <div data-reveal="215"><dt class="label">Approach</dt><dd>{p2.approach}</dd></div>
-        <div data-reveal="260"><dt class="label">Goal</dt><dd>{p2.goal}</dd></div>
-      </dl>
-    </div>
-
-    <div class="strip__band" data-reveal="120">
-      <Figure src={p2.image} alt="" ratio="16 / 5.5" ratioSm="4 / 3" grade={0.74} focal="50% 62%" parallax={5} />
-    </div>
-  </section>
-
-  {/* ── 03 · portrait, split against the spec ────────────────────── */}
-  <section class="pd pd--split" id={p3.id} aria-labelledby={`${p3.id}-h`}>
-    <div class="shell split">
-      <div class="split__fig" data-reveal>
-        <Figure src={p3.image} alt="" ratio="4 / 5" ratioSm="4 / 3" grade={0.44} parallax={7} />
-        <span class="label split__cap">{p3.index} · {p3.partner}</span>
-      </div>
-
-      <div class="split__body">
-        <div class="split__head">
-          <p class="label pd__field split__field" data-reveal="60">{p3.field} · {p3.horizon}</p>
-          <h2 class="display split__t" data-reveal="90" id={`${p3.id}-h`}>{p3.title}</h2>
-          <p class="pd__tag" data-reveal="140">{p3.tagline}</p>
+        <div class="shell pcard__say">
+          <h2 class="display pcard__t lines" id={`${p.id}-h`}>{p.title}</h2>
+          <p class="pcard__tag" data-reveal="160">{p.tagline}</p>
         </div>
-
-        <dl class="spec spec--rows spec--wide">
-          <div data-reveal="200"><dt class="label">Problem</dt><dd>{p3.problem}</dd></div>
-          <div data-reveal="245"><dt class="label">Approach</dt><dd>{p3.approach}</dd></div>
-          <div data-reveal="290"><dt class="label">Goal</dt><dd>{p3.goal}</dd></div>
-        </dl>
       </div>
-    </div>
-  </section>
 
-  {/* ── 04 · no photograph. Cream, type, and air. ────────────────── */}
-  <section class="pd pd--type on-cream" id={p4.id} aria-labelledby={`${p4.id}-h`}>
-    <div class="shell type4">
-      <p class="pd__meta" data-reveal>
-        <span class="index">{p4.index}</span>
-        <span class="label pd__partner">{p4.partner}</span>
-        <span class="label pd__field">{p4.field} · {p4.horizon}</span>
-      </p>
-
-      <h2 class="display type4__t lines" id={`${p4.id}-h`}>{p4.title}</h2>
-      <p class="type4__tag" data-reveal="280">{p4.tagline}</p>
-
-      <dl class="spec spec--ledger">
-        <div data-reveal="360"><dt class="label">Problem</dt><dd>{p4.problem}</dd></div>
-        <div data-reveal="440"><dt class="label">Approach</dt><dd>{p4.approach}</dd></div>
-        <div data-reveal="520"><dt class="label">Goal</dt><dd>{p4.goal}</dd></div>
+      <dl class="shell pcard__spec">
+        <div data-reveal="80"><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+        <div data-reveal="150"><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+        <div data-reveal="220"><dt class="label">Goal</dt><dd>{p.goal}</dd></div>
       </dl>
-    </div>
-  </section>
+    </article>
+  ))}
 </Base>
 
 <style>
   /* ── Nav guard, local to this page ─────────────────────────────────
-     Nav.astro is not this piece's file. But /pilots/ scrolls 86–100px cream
-     display type straight under the bar, and the shared edgeless fade cannot
-     mask type at that size. So this page carries a stronger band of its own:
-     solid for the full height of the bar, then a 2.4rem fade. Display type
-     then slides under a hard edge instead of ghosting through it.
-     The :has() guard keeps this rule inert on every page but this one, even
-     if the bundler hoists it into a shared stylesheet. */
-  :global(header.nav.is-scrolled:has(~ main .pd--bleed))::before {
+     Nav.astro is not this piece's file. But /pilots/ scrolls 80–100px cream
+     display type straight under the bar, four times, and the shared edgeless
+     fade cannot mask type at that size. So this page carries a stronger band
+     of its own: solid for the full height of the bar, then a 2.4rem fade.
+     The :has() guard keeps this rule inert on every page but this one. */
+  :global(header.nav.is-scrolled:has(~ main .pcard))::before {
     background: linear-gradient(
       to bottom,
       var(--nav-scrim) 0%,
@@ -154,10 +109,10 @@ const [p1, p2, p3, p4] = pilots;
   }
 
   /* ── Masthead ──────────────────────────────────────────────────────
-     Statement full width; below the rule, a short lede on the left and a
-     real table of contents on the right. The contents is the page's middle
-     type voice — serif at --step-m — not a caption. */
-  .phead { padding-block: calc(var(--nav-h) + clamp(4rem, 9.5vw, 8rem)) clamp(2.5rem, 6vw, 5rem); }
+     Statement full width; below the rule, a short lede on the left and the
+     contents on the right — both hung off the rule, sharing one top edge.
+     The head is sized so the first photograph's edge cuts the first screen. */
+  .phead { padding-block: calc(var(--nav-h) + clamp(3rem, 6.5vw, 6rem)) clamp(2rem, 4.5vw, 3.5rem); }
   .phead__in {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
@@ -173,13 +128,14 @@ const [p1, p2, p3, p4] = pilots;
   .phead__rule {
     grid-column: 1 / -1;
     height: 1px; background: var(--rule);
-    margin-top: clamp(1.5rem, 4vw, 3rem);
+    margin-top: clamp(1.25rem, 3vw, 2.25rem);
   }
 
+  /* hangs off the rule at the same height as the contents' first row */
   .phead__lede {
     grid-column: 1;
-    align-self: end;
-    padding-top: clamp(1rem, 2vw, 1.5rem);
+    align-self: start;
+    padding-top: clamp(0.7rem, 1.4vw, 1rem);
     font-size: clamp(1.02rem, 0.94rem + 0.36vw, 1.24rem);
     line-height: 1.5;
     color: var(--fg-mute);
@@ -190,8 +146,7 @@ const [p1, p2, p3, p4] = pilots;
   .phead__index { grid-column: 2; }
   .phead__index ol { list-style: none; margin: 0; padding: 0; }
 
-  /* number · title · hairline leader · field. The leader closes the gap the
-     auto-width field used to leave open. */
+  /* number · title · hairline leader · field */
   .pc {
     display: grid;
     grid-template-columns: 2.4rem minmax(0, auto) minmax(1.25rem, 1fr) auto;
@@ -223,22 +178,120 @@ const [p1, p2, p3, p4] = pilots;
   }
   .pc:focus-visible { outline-offset: 6px; }
 
-  /* ── Shared pilot parts ───────────────────────────────────────────── */
-  .pd { scroll-margin-top: calc(var(--nav-h) + 0.5rem); }
+  /* ══ THE CARD ══════════════════════════════════════════════════════
+     Band → spec strip. Four times, identically. The image edge is the
+     divider between cards; there is no padded gap between them. */
+  .pcard { scroll-margin-top: calc(var(--nav-h) + 0.5rem); }
 
-  .pd__meta { display: flex; align-items: baseline; gap: 1.1ch; }
-  .pd__partner { color: var(--cream); }
-  .pd__field { margin-left: auto; color: var(--fg-faint); text-align: right; }
+  .pcard__band {
+    position: relative;
+    isolation: isolate;
+    min-height: clamp(320px, 58vh, 36rem);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
 
-  .pd__tag {
-    color: color-mix(in srgb, var(--cream) 76%, transparent);
+  /* Figure ships a bottom ink ramp for the title; the top rail needs its own,
+     because a bright sky swallows a 0.7rem tracked label. ~180px at 35–60%. */
+  .pcard__band::before {
+    content: ''; position: absolute; inset: 0 0 auto 0; z-index: 0;
+    height: clamp(7rem, 20vh, 11.5rem);
+    background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--ink-900) 72%, transparent) 0%,
+      color-mix(in srgb, var(--ink-900) 40%, transparent) 46%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  /* Bottom ramp for the name. Figure ships a `scrim="bottom"` ramp, but it
+     goes to solid ink over the last 16% and turned the foot of every band
+     into a black slab; this is the same idea, shallower, so the photograph
+     still reaches its own edge and the seam with the spec strip is a real
+     picture edge rather than a fade-out. Local by design. */
+  .pcard__band::after {
+    content: ''; position: absolute; inset: auto 0 0 0; z-index: 0;
+    height: 58%;
+    background: linear-gradient(to top,
+      color-mix(in srgb, var(--ink-900) 84%, transparent) 0%,
+      color-mix(in srgb, var(--ink-900) 58%, transparent) 30%,
+      color-mix(in srgb, var(--ink-900) 20%, transparent) 62%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  /* padding lives on the children: the fill Figure is positioned against the
+     band's padding box, so padding here would inset the photograph. */
+  .pcard__rail, .pcard__say { position: relative; z-index: 1; }
+
+  /* number + partner at the left inset, sector + horizon flush right,
+     one shared baseline, one tracking. This is the card's nameplate. */
+  .pcard__rail {
+    grid-row: 1;
+    margin: 0;
+    padding-top: clamp(1.35rem, 2.6vw, 2.25rem);
+    display: flex;
+    align-items: baseline;
+    gap: 1.15ch;
+    font-family: var(--sans);
+    font-size: var(--step-label);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .pcard__i { letter-spacing: 0.18em; }
+  .pcard__partner { color: var(--cream); }
+  .pcard__field {
+    margin-left: auto;
+    text-align: right;
+    color: color-mix(in srgb, var(--cream) 70%, transparent);
+    white-space: nowrap;
+  }
+
+  /* the name and its one line, set into the foot of the photograph */
+  .pcard__say {
+    grid-row: 3;
+    padding-bottom: clamp(1.75rem, 3.4vw, 3rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 18.5rem);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: 0.8rem;
+    align-items: end;
+  }
+  .pcard__t {
+    font-size: clamp(2rem, 1.05rem + 4.2vw, 5rem);
+    line-height: 0.96;
+    letter-spacing: -0.026em;
+    text-wrap: initial;
+  }
+  .pcard__tag {
+    padding-bottom: 0.4em;
+    font-size: var(--step-s);
     line-height: 1.45;
+    color: color-mix(in srgb, var(--cream) 78%, transparent);
     text-wrap: pretty;
   }
 
-  .spec { margin: 0; }
-  .spec dt { color: var(--brass); }
-  .spec dd {
+  /* ── The spec strip ────────────────────────────────────────────────
+     One object, on every card. Three columns, one line each, hung off the
+     image edge by a single full-width hairline. */
+  .pcard__spec {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding-bottom: clamp(2.25rem, 4.4vw, 3.75rem);
+  }
+  .pcard__spec > div {
+    display: grid; gap: 0.6rem; align-content: start;
+    padding: clamp(1rem, 2vw, 1.5rem) clamp(1rem, 2.4vw, 2.25rem) 0 0;
+    border-top: 1px solid var(--rule);
+  }
+  .pcard__spec > div + div {
+    border-left: 1px solid var(--rule-soft);
+    padding-left: clamp(1rem, 2.4vw, 2.25rem);
+  }
+  .pcard__spec dt { color: var(--brass); }
+  .pcard__spec dd {
     margin: 0;
     color: var(--fg-mute);
     font-size: var(--step-xs);
@@ -246,217 +299,29 @@ const [p1, p2, p3, p4] = pilots;
     text-wrap: pretty;
   }
 
-  /* three columns, hairline above — used once, under the full-bleed band */
-  .spec--strip {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-top: 1px solid var(--rule);
-    margin-top: clamp(2rem, 4.5vw, 3.75rem);
-  }
-  .spec--strip > div {
-    display: grid; gap: 0.6rem; align-content: start;
-    padding: clamp(0.9rem, 1.8vw, 1.35rem) clamp(1rem, 2.4vw, 2.25rem) 0 0;
-  }
-  .spec--strip > div + div {
-    border-left: 1px solid var(--rule-soft);
-    padding-left: clamp(1rem, 2.4vw, 2.25rem);
-  }
-
-  /* three stacked rows — used in the two-column briefs */
-  .spec--rows { display: grid; }
-  .spec--rows > div {
-    display: grid; gap: 0.45rem;
-    padding-block: clamp(0.7rem, 1.4vw, 1rem);
-    border-top: 1px solid var(--rule-soft);
-  }
-  .spec--rows > div:first-child { border-top-color: var(--rule); }
-  /* the hairlines run the full column; only the reading line is capped */
-  .spec--wide dd { max-width: 44ch; }
-
-  /* label left, line right — the closer's ledger */
-  .spec--ledger { display: grid; }
-  .spec--ledger > div {
-    display: grid;
-    grid-template-columns: 9rem minmax(0, 1fr);
-    gap: 1rem;
-    align-items: baseline;
-    padding-block: clamp(0.85rem, 1.7vw, 1.25rem);
-    border-top: 1px solid var(--rule-soft);
-  }
-  .spec--ledger > div:first-child { border-top-color: var(--rule); }
-  .spec--ledger dd { font-size: var(--step-s); color: var(--fg-mute); max-width: 46ch; }
-
-  /* ── 01 · bleed ───────────────────────────────────────────────────── */
-  .pd--bleed { --reveal-y: 24px; padding-bottom: clamp(3.5rem, 7vw, 6.5rem); }
-  .bleed {
-    position: relative;
-    isolation: isolate;
-    min-height: min(94vh, 54rem);
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-  }
-  /* Figure ships a bottom ink ramp; the opening band also sets micro-labels
-     against the top of the frame, so it gets a matching one here. */
-  .bleed::before {
-    content: ''; position: absolute; inset: 0 0 auto 0; z-index: 0;
-    height: clamp(7rem, 16vh, 12rem);
-    background: linear-gradient(to bottom,
-      color-mix(in srgb, var(--ink-900) 66%, transparent) 0%,
-      color-mix(in srgb, var(--ink-900) 22%, transparent) 52%,
-      transparent 100%);
-    pointer-events: none;
-  }
-  /* padding lives on the children: the fill Figure is positioned against
-     .bleed's padding box, so padding here would inset the photograph. */
-  /* both sit above the ramp, which is a positioned box and would otherwise
-     paint over static content */
-  .bleed__meta, .bleed__say { position: relative; z-index: 1; }
-  .bleed__meta { grid-row: 1; width: 100%; padding-top: clamp(1.5rem, 3vw, 2.75rem); }
-  .bleed__say {
-    grid-row: 3;
-    padding-bottom: clamp(2rem, 4vw, 3.5rem);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 24ch);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: 0.9rem;
-    align-items: end;
-  }
-  .bleed__t {
-    font-size: var(--step-xl);
-    line-height: 0.96;
-    letter-spacing: -0.026em;
-    text-wrap: initial;
-  }
-  .bleed__say .pd__tag { padding-bottom: 0.35em; font-size: var(--step-s); }
-
-  /* ── 02 · brief, then letterbox ───────────────────────────────────── */
-  .pd--strip {
-    --reveal-y: 10px;
-    padding-block: clamp(2.25rem, 4vw, 3.25rem) 0;
-    border-top: 1px solid var(--rule);
-  }
-  .strip {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 27rem);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: clamp(1.5rem, 3vw, 2.5rem);
-    align-items: start;
-    padding-bottom: clamp(1.25rem, 2.5vw, 2rem);
-  }
-  .strip .pd__meta { grid-column: 1 / -1; }
-  .strip__say { grid-column: 1; display: grid; gap: clamp(0.8rem, 1.6vw, 1.2rem); }
-  .strip__t {
-    font-size: var(--step-l);
-    max-width: 20ch;
-    text-wrap: initial;
-  }
-  .strip__say .pd__tag { max-width: 30ch; font-size: var(--step-s); }
-  .strip .spec--rows { grid-column: 2; }
-
-  /* ── 03 · portrait split ──────────────────────────────────────────── */
-  .pd--split {
-    --reveal-y: 10px;
-    padding-block: clamp(4.5rem, 11vw, 9.5rem);
-    border-top: 1px solid var(--rule);
-  }
-  .split {
-    display: grid;
-    grid-template-columns: minmax(0, 9fr) minmax(0, 15fr);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    align-items: stretch;
-  }
-  /* the portrait runs off the left edge of the page */
-  .split__fig { margin-left: calc(-1 * var(--gutter)); position: relative; }
-  .split__cap {
-    display: block;
-    margin-top: 0.9rem;
-    padding-left: var(--gutter);
-    color: var(--fg-faint);
-  }
-  /* head at the top of the portrait, spec at its foot: the column is held
-     open by the picture instead of trailing off under it. */
-  .split__body {
-    display: grid; align-content: space-between;
-    gap: clamp(1.5rem, 4vw, 3rem);
-    padding-top: 0.4rem;
-  }
-  .split__head { display: grid; gap: clamp(0.8rem, 1.6vw, 1.15rem); }
-  .split__field { margin-left: 0; text-align: left; }
-  .split__t {
-    font-size: var(--step-l);
-    max-width: 12ch;
-    text-wrap: initial;
-  }
-  .split__body .pd__tag { max-width: 32ch; font-size: var(--step-s); }
-
-
-  /* ── 04 · cream, type only ────────────────────────────────────────── */
-  .pd--type {
-    --reveal-y: 18px;
-    padding-block: clamp(3.75rem, 7vw, 6rem);
-    background: var(--bg);
-    color: var(--fg);
-  }
-  .type4 {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 26ch);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: clamp(1.1rem, 2.4vw, 2rem);
-    align-items: end;
-  }
-  .type4 .pd__meta { grid-column: 1 / -1; }
-  .type4 .spec--ledger { grid-column: 1 / -1; }
-  .type4 .pd__partner { color: var(--fg); }
-  .type4__t {
-    grid-column: 1;
-    font-size: clamp(2.7rem, 1.3rem + 5.9vw, 7rem);
-    line-height: 0.94;
-    letter-spacing: -0.028em;
-    text-wrap: initial;
-    margin-top: clamp(0.5rem, 1.6vw, 1.5rem);
-  }
-  .type4__tag {
-    grid-column: 2;
-    padding-bottom: 0.45em;
-    font-size: clamp(1.05rem, 0.95rem + 0.45vw, 1.4rem);
-    line-height: 1.45;
-    color: var(--fg-mute);
-    text-wrap: pretty;
-  }
-  .type4 .spec--ledger { margin-top: clamp(1.5rem, 4vw, 3.5rem); }
-
   /* ── Narrow ───────────────────────────────────────────────────────── */
   @media (max-width: 1080px) {
     .phead__in { grid-template-columns: minmax(0, 1fr); }
-    .phead__lede { max-width: 34ch; padding-bottom: clamp(1rem, 3vw, 1.75rem); }
+    .phead__lede { max-width: 34ch; padding-top: clamp(0.5rem, 2vw, 1rem); }
     .phead__index { grid-column: 1; max-width: 34rem; }
-    .strip { grid-template-columns: minmax(0, 1fr); }
-    .strip__say, .strip .spec--rows { grid-column: 1; }
-    .strip .spec--rows { max-width: 40rem; }
-    .split { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 4vw, 2.5rem); }
-    .split__fig { margin-inline: calc(-1 * var(--gutter)); }
-    .split__cap { padding-left: var(--gutter); }
-    .split__t, .strip__t { max-width: 16ch; }
-    .type4 { grid-template-columns: minmax(0, 1fr); align-items: start; }
-    .type4__t, .type4__tag { grid-column: 1; }
-    .type4__tag { padding-bottom: 0; max-width: 34ch; }
   }
 
   @media (max-width: 760px) {
-    .bleed { min-height: min(80vh, 34rem); }
-    .bleed__say { grid-template-columns: minmax(0, 1fr); align-items: start; }
-    .bleed__say .pd__tag { padding-bottom: 0; max-width: 32ch; }
-    .pd__meta { flex-wrap: wrap; row-gap: 0.4rem; }
-    .pd__field { width: 100%; margin-left: 0; text-align: left; }
-    .spec--strip { grid-template-columns: minmax(0, 1fr); }
-    .spec--strip > div { padding-right: 0; padding-bottom: 1rem; }
-    .spec--strip > div + div {
-      border-left: 0; padding-left: 0;
-      border-top: 1px solid var(--rule-soft); padding-top: 1rem;
-    }
-    .spec--ledger > div { grid-template-columns: minmax(0, 1fr); gap: 0.45rem; }
+    .pcard__band { min-height: clamp(300px, 46vh, 28rem); }
+    .pcard__say { grid-template-columns: minmax(0, 1fr); align-items: start; row-gap: 0.6rem; }
+    .pcard__t { font-size: clamp(2.15rem, 1.2rem + 4.6vw, 3rem); }
+    .pcard__tag { padding-bottom: 0; max-width: 34ch; }
+    .pcard__rail { gap: 0.9ch; letter-spacing: 0.14em; }
+    .pcard__spec { grid-template-columns: minmax(0, 1fr); }
+    .pcard__spec > div { padding-right: 0; padding-bottom: 1rem; border-top-color: var(--rule-soft); }
+    .pcard__spec > div:first-child { border-top-color: var(--rule); }
+    .pcard__spec > div + div { border-left: 0; padding-left: 0; }
     .pc { grid-template-columns: 2rem minmax(0, auto) minmax(1rem, 1fr) auto; gap: 0.7rem; }
     .pc__t { font-size: clamp(1.2rem, 1rem + 2.4vw, 1.6rem); }
+  }
+
+  @media (max-width: 430px) {
+    .pcard__rail { font-size: 0.62rem; letter-spacing: 0.12em; }
   }
 
   @media (max-width: 420px) {

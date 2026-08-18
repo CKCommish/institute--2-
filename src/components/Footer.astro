@@ -105,7 +105,9 @@ const aside = onPartner || onForum ? null : { label: forum.cta, href: '/forum/' 
   }
   .foot__mail:hover { color: var(--brass); border-bottom-color: var(--brass); }
   .foot__sub { color: var(--fg-mute); font-size: var(--step-xs); max-width: 26ch; }
-  .foot__second { color: var(--fg-faint); }
+  /* Padding-with-negative-margin keeps the tap target ≥24px without moving
+     the baseline the corner alignment depends on. */
+  .foot__second { color: var(--fg-faint); padding-block: 0.45rem; margin-block: -0.45rem; }
   .foot__second:hover { color: var(--cream); }
 
   /* ── Corner-anchored utility. Two corners only: the mark, and the fine print. ── */
@@ -122,6 +124,7 @@ const aside = onPartner || onForum ? null : { label: forum.cta, href: '/forum/' 
     font-size: clamp(1.15rem, 0.95rem + 0.6vw, 1.55rem);
     letter-spacing: -0.014em; line-height: 1;
     color: var(--fg);
+    padding-block: 0.4rem; margin-block: -0.4rem;
     transition: color 340ms var(--ease-out);
   }
   .foot__id:hover { color: var(--brass); }

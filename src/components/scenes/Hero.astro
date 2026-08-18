@@ -2,32 +2,38 @@
 import Figure from '../Figure.astro';
 import { pilots } from '../../data/site.js';
 ---
+<!-- Three deliberate horizontal registers, top to bottom:
+     1. the stamp rail — who this is (left) and where the frame is (right)
+     2. the poster — the thesis, at the top of the frame, at hero scale
+     3. the ledger rail — the four 2026 pilots, inside the first screen
+     The photograph holds the middle. Nothing floats between registers. -->
 <section class="hero" aria-labelledby="hero-h">
-  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.58} parallax={5} loading="eager" class="hero__bg" />
+  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.58} focal="36% 58%" parallax={5} loading="eager" class="hero__bg" />
   <div class="hero__veil" aria-hidden="true"></div>
 
-  <!-- Top-right corner anchor, so the upper half of the photograph is composed
-       rather than merely unoccupied: the hero photograph's own caption
-       (Greenville, Mississippi — Highsmith, LOC). Rhymes with the Forum scene's
-       place label. Held here because this piece may not add keys to site.js. -->
+  <!-- Register 1. The eyebrow finishes into the H1 — read together they are
+       the brief's sentence in full. The locator is the photograph's own
+       caption (Greenville, Mississippi — Highsmith, LOC), set on the same
+       optical line so the rail reads as one rule, not two orphans. -->
   <div class="hero__top shell">
-    <p class="label hero__place" data-reveal="120">Greenville, Mississippi</p>
+    <p class="label hero__eyebrow">
+      <span class="hero__dot" aria-hidden="true"></span>The Lion Forum Institute exists
+    </p>
+    <p class="label hero__place">Greenville, Mississippi</p>
   </div>
 
-  <div class="hero__in shell">
-    <p class="label hero__eyebrow" data-reveal="40">
-      <span class="hero__dot" aria-hidden="true"></span>The Lion Forum Institute
-    </p>
-
-    <h1 class="display hero__h lines" id="hero-h">
+  <!-- Register 2. -->
+  <div class="hero__mid shell">
+    <h1 class="display display--hero hero__h lines" id="hero-h">
       To ensure the technologies of tomorrow strengthen American families today.
     </h1>
 
-    <p class="hero__lede" data-reveal="480">
+    <p class="hero__lede" data-reveal="520">
       Short, measurable pilots inside institutions families already trust.
     </p>
   </div>
 
+  <!-- Register 3. -->
   <div class="hero__index shell">
     <span class="hero__rule" aria-hidden="true"></span>
     <span class="label hero__index-label">Pilots · 2026</span>
@@ -48,55 +54,48 @@ import { pilots } from '../../data/site.js';
     position: relative;
     min-height: 100svh;
     display: grid;
-    grid-template-rows: auto 1fr auto;
-    align-items: end;
+    grid-template-rows: auto minmax(0, 1fr) auto;
     isolation: isolate;
     overflow: hidden;
   }
   .hero__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -2; }
 
-  /* Legibility scrim + one quiet light source. Sits above the photograph so the
-     composition holds whether or not /media/hero.jpg has landed yet.
-     Local to this component — no new token invented. */
+  /* Legibility scrim, weighted to the top now that the poster sits there.
+     One open window across the lower-middle so the river still reads as a
+     photograph. Local to this component — no new token invented. */
   .hero__veil {
     position: absolute; inset: 0; z-index: -1; pointer-events: none;
     background:
-      radial-gradient(72% 58% at 76% 12%, color-mix(in srgb, var(--brass) 13%, transparent) 0%, transparent 64%),
-      radial-gradient(60% 46% at 26% 34%, color-mix(in srgb, var(--ink-600) 46%, transparent) 0%, transparent 70%),
-      radial-gradient(96% 74% at 6% 98%, color-mix(in srgb, var(--ink-900) 92%, transparent) 0%, transparent 72%),
-      linear-gradient(196deg, color-mix(in srgb, var(--ink-900) 58%, transparent) 0%, transparent 32%),
-      linear-gradient(0deg, var(--ink-900) 0%, color-mix(in srgb, var(--ink-900) 58%, transparent) 24%, transparent 60%);
+      radial-gradient(64% 44% at 88% 76%, color-mix(in srgb, var(--brass) 11%, transparent) 0%, transparent 68%),
+      radial-gradient(78% 52% at 4% 4%, color-mix(in srgb, var(--ink-900) 74%, transparent) 0%, transparent 72%),
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--ink-900) 84%, transparent) 0%,
+        color-mix(in srgb, var(--ink-900) 66%, transparent) 24%,
+        color-mix(in srgb, var(--ink-900) 32%, transparent) 50%,
+        color-mix(in srgb, var(--ink-900) 22%, transparent) 68%,
+        color-mix(in srgb, var(--ink-900) 68%, transparent) 90%,
+        color-mix(in srgb, var(--ink-900) 96%, transparent) 100%);
   }
 
-  /* ── Top rail: two corner anchors under the nav ───────────────────── */
+  /* ── Register 1: the stamp rail ───────────────────────────────────── */
   .hero__top {
     width: 100%;
-    align-self: start;
-    padding-top: calc(var(--nav-h) + clamp(1rem, 3.4vh, 2.4rem));
+    padding-top: calc(var(--nav-h) + clamp(0.9rem, 3vh, 2rem));
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
   }
-  .hero__place { color: color-mix(in srgb, var(--cream) 50%, transparent); }
-
-  /* ── Lower composition: display left, deck in a right column ──────── */
-  .hero__in {
-    width: 100%;
-    padding-top: clamp(2rem, 6vh, 4rem);
-    padding-bottom: clamp(2.5rem, 8vh, 5.5rem);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(15rem, 24vw, 23rem);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: clamp(1.3rem, 2.8vh, 2.2rem);
-    align-content: end;
-  }
-
   .hero__eyebrow {
-    grid-column: 1; grid-row: 1;
-    display: flex; align-items: center; gap: 0.8rem;
+    display: flex; align-items: baseline; gap: 0.75rem;
     color: var(--cream);
   }
+  .hero__place { color: color-mix(in srgb, var(--cream) 52%, transparent); text-align: right; }
+
   .hero__dot {
     width: 5px; height: 5px; border-radius: 50%; background: var(--brass);
+    transform: translateY(-0.1em);
+    flex: none;
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--brass) 60%, transparent);
     animation: pulse 3.6s var(--ease-out) infinite;
   }
@@ -105,35 +104,43 @@ import { pilots } from '../../data/site.js';
     35% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--brass) 0%, transparent); }
   }
 
-  .hero__h {
-    grid-column: 1; grid-row: 2;
-    font-size: clamp(2.05rem, 0.15rem + 5.05vw, 5.5rem);
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    text-wrap: initial;
+  /* the whole rail arrives as one object, before the poster */
+  .hero__top { opacity: 0; animation: heroIn 640ms var(--ease-out) 120ms forwards; }
+
+  /* ── Register 2: the poster ───────────────────────────────────────── */
+  .hero__mid {
+    width: 100%;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    padding-top: clamp(0.75rem, 2.4vh, 1.7rem);
+    padding-bottom: clamp(1rem, 3vh, 2rem);
   }
 
-  /* Second in command: must clearly outrank the 0.95rem pilot index below it. */
+  /* Font size comes from .display--hero → --step-hero. The thesis line is the
+     largest type on the site; nothing below it may outrank it. */
+  .hero__h {
+    line-height: 0.94;
+    letter-spacing: -0.032em;
+    text-wrap: initial;
+    hyphens: none;
+    max-width: 24ch;
+  }
+
+  /* Right-anchored, left-set: the one supporting register, hung in the
+     bottom-right of the open band so the photograph keeps the middle. */
   .hero__lede {
-    grid-column: 2; grid-row: 2;
     align-self: end;
-    position: relative;
-    padding-left: clamp(1rem, 2.2vw, 2.2rem);
-    padding-bottom: 0.3em;
-    font-size: clamp(1.1rem, 0.94rem + 0.66vw, 1.5rem);
-    line-height: 1.38;
+    justify-self: end;
+    max-width: 26ch;
+    font-size: clamp(1.06rem, 0.94rem + 0.5vw, 1.35rem);
+    line-height: 1.42;
     font-weight: 340;
     letter-spacing: -0.004em;
-    color: color-mix(in srgb, var(--cream) 80%, transparent);
+    color: color-mix(in srgb, var(--cream) 82%, transparent);
     text-wrap: pretty;
   }
-  /* the one piece of architecture: a hairline dividing the two columns */
-  .hero__lede::before {
-    content: ''; position: absolute; left: 0; top: -40vh; bottom: -0.2rem; width: 1px;
-    background: linear-gradient(to bottom, transparent 0%, var(--rule-soft) 38%, var(--rule) 100%);
-  }
 
-  /* ── Lower composition: the 2026 index, inside the first screen ─────── */
+  /* ── Register 3: the 2026 ledger rail ─────────────────────────────── */
   .hero__index {
     width: 100%;
     display: grid;
@@ -141,20 +148,20 @@ import { pilots } from '../../data/site.js';
     align-items: center;
     column-gap: clamp(1.25rem, 3vw, 3rem);
     row-gap: 0.9rem;
-    padding-bottom: clamp(1.75rem, 4.5vh, 3rem);
+    padding-bottom: clamp(1.5rem, 4vh, 2.75rem);
   }
   .hero__rule {
     grid-column: 1 / -1;
     height: 1px; width: 100%;
     background: var(--rule);
     transform-origin: left;
-    margin-bottom: clamp(1rem, 2.4vh, 1.75rem);
+    margin-bottom: clamp(0.9rem, 2.2vh, 1.6rem);
     transform: scaleX(0);
-    animation: heroDraw 1000ms var(--ease-out) 380ms forwards;
+    animation: heroDraw 1000ms var(--ease-out) 520ms forwards;
   }
 
   .hero__index-label { white-space: nowrap; color: var(--cream); }
-  /* Local step below --step-xs: the index must sit under the deck, not beside it. */
+  /* Local step below --step-xs: the rail must sit under the deck, not beside it. */
   .hero__index-list {
     list-style: none; padding: 0; margin: 0;
     display: flex; flex-wrap: wrap;
@@ -176,7 +183,7 @@ import { pilots } from '../../data/site.js';
     animation: sweep 2.8s var(--ease-io) infinite;
   }
 
-  /* The index bar sits low in the first screen, where an IntersectionObserver
+  /* The rail sits low in the first screen, where an IntersectionObserver
      reveal would never fire. Staged on load instead — local to this component. */
   .hero__index-label,
   .hero__index-list li,
@@ -184,12 +191,12 @@ import { pilots } from '../../data/site.js';
     opacity: 0;
     animation: heroIn 720ms var(--ease-out) forwards;
   }
-  .hero__index-label { animation-delay: 500ms; }
-  .hero__index-list li:nth-child(1) { animation-delay: 570ms; }
-  .hero__index-list li:nth-child(2) { animation-delay: 630ms; }
-  .hero__index-list li:nth-child(3) { animation-delay: 690ms; }
-  .hero__index-list li:nth-child(4) { animation-delay: 750ms; }
-  .hero__scroll { animation-delay: 840ms; }
+  .hero__index-label { animation-delay: 640ms; }
+  .hero__index-list li:nth-child(1) { animation-delay: 700ms; }
+  .hero__index-list li:nth-child(2) { animation-delay: 760ms; }
+  .hero__index-list li:nth-child(3) { animation-delay: 820ms; }
+  .hero__index-list li:nth-child(4) { animation-delay: 880ms; }
+  .hero__scroll { animation-delay: 960ms; }
 
   @keyframes heroIn { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
   @keyframes heroDraw { to { transform: none; } }
@@ -199,22 +206,28 @@ import { pilots } from '../../data/site.js';
     .hero__dot,
     .hero__scroll-line::after { animation: none; }
     .hero__scroll-line::after { transform: none; opacity: .5; }
+    .hero__top,
     .hero__index-label,
     .hero__index-list li,
     .hero__scroll { opacity: 1; animation: none; }
     .hero__rule { transform: none; animation: none; }
   }
 
-  @media (max-width: 1000px) {
-    .hero__in { grid-template-columns: minmax(0, 1fr); }
-    .hero__h { grid-column: 1; }
-    .hero__lede { grid-column: 1; grid-row: 3; padding-left: 0; max-width: 32ch; }
-    .hero__lede::before { display: none; }
+  @media (max-width: 1180px) {
+    .hero__h { max-width: none; }
   }
+
+  @media (max-width: 900px) {
+    .hero__lede { justify-self: start; max-width: 30ch; }
+  }
+
   @media (max-width: 760px) {
     /* one anchor per corner is enough at this width */
     .hero__place { display: none; }
+    .hero__h { letter-spacing: -0.028em; }
+    .hero__lede { align-self: end; max-width: 34ch; }
   }
+
   @media (max-width: 700px) {
     .hero__index { grid-template-columns: minmax(0, 1fr) auto; }
     .hero__index-list {

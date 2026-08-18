@@ -1,16 +1,11 @@
 ---
 import { whyNow } from '../../data/site.js';
-
-/* The footnote apparatus. Numerals only — these are the same operating facts
-   the method scene used to carry as a limp right-aligned meta label, promoted
-   here into the missing middle rung of the type scale. Held locally because
-   this piece may not add keys to src/data/site.js. */
-const ledger = [
-  { n: '3–12', k: 'Months per pilot' },
-  { n: '01', k: 'Measured outcome' },
-  { n: '04', k: 'Pilots running now' },
-];
 ---
+<!-- The page's one inversion, and its only silent scene. A single claim on a
+     cream field, an asterisk hung off its last word, and a footnote at the
+     foot of the frame that hands straight down into the method. No second
+     idea lives here — the operating facts moved to the scene below, where
+     they are evidence rather than decoration. -->
 <section class="why on-cream" id="why" aria-labelledby="why-h">
   <div class="shell why__in">
     <p class="label why__label" data-reveal>Why now</p>
@@ -18,60 +13,55 @@ const ledger = [
   </div>
 
   <div class="shell why__foot">
-    <p class="label why__note" data-reveal="240">
+    <span class="why__rule" aria-hidden="true" data-reveal="200"></span>
+    <p class="label why__note" data-reveal="340">
       <span class="why__note-ast" aria-hidden="true">*</span>Our answer
+      <span class="why__note-arrow" aria-hidden="true"></span>
     </p>
-
-    <span class="why__rule" aria-hidden="true" data-reveal="310"></span>
-
-    <dl class="why__ledger">
-      {ledger.map((c, i) => (
-        <div class="why__cell" data-reveal={String(390 + i * 90)}>
-          <dt class="display tnum why__n">{c.n}</dt>
-          <dd class="label why__k">{c.k}</dd>
-        </div>
-      ))}
-    </dl>
   </div>
 </section>
 
 <style>
-  /* The page's one inversion. A claim at the top of the frame, an asterisk
-     hanging in the right margin, and the answer to it — three numerals on a
-     brass rule — anchored to the bottom. Four ranked registers, top tied to
-     bottom, so the cream field is composed rather than merely empty. */
   .why {
     position: relative;
-    min-height: min(70svh, 660px);
+    min-height: min(62svh, 580px);
     display: grid;
     grid-template-rows: 1fr auto;
     padding-top: clamp(4.5rem, 12vh, 8rem);
-    padding-bottom: clamp(1.75rem, 4.5vh, 3rem);
+    padding-bottom: clamp(1.5rem, 4vh, 2.75rem);
     overflow: hidden;
   }
 
   /* ── Claim ──────────────────────────────────────────────────────── */
   .why__in { position: relative; align-self: center; }
 
+  /* Local durations throughout this scene: the house --dur-2/--dur-3 pair
+     runs 1.15s, so a staggered scene needs most of two seconds to settle.
+     A statement this short should be finished arriving in one. */
+  .why__label[data-reveal] { transition-duration: 620ms, 760ms; }
+  :global(.why__h .line > span) { transition-duration: 820ms; }
+  .why__note[data-reveal] { transition-duration: 540ms, 660ms; }
+
   .why__label {
     display: block;
     color: var(--fg-mute);
-    margin-bottom: clamp(0.65rem, 1.2vw, 0.95rem);
+    margin-bottom: clamp(0.7rem, 1.3vw, 1.1rem);
   }
 
+  /* Deliberately ranked below the hero thesis: this is the page's second
+     voice, not a competing poster. */
   .why__h {
-    font-size: clamp(2.35rem, 0.2rem + 6.6vw, 6.5rem);
-    line-height: 0.95;
-    letter-spacing: -0.032em;
+    font-size: clamp(2.2rem, 0.2rem + 5.6vw, 5.4rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
     text-wrap: initial;
-    max-width: 21ch;
+    max-width: 30ch;
   }
 
   /* Footnote mark, hung off the end of the last line of the statement and
-     answered by the one above the rule at the foot of the frame. Attached to
-     the masked line motion.js builds, so it always lands on the final line at
-     any width. Decorative: absent if the splitter never runs. */
-  /* :global — motion.js builds .line/span at runtime, so they never carry
+     answered at the foot of the frame. Attached to the masked line motion.js
+     builds, so it always lands on the final line at any width.
+     :global — motion.js builds .line/span at runtime, so they never carry
      Astro's scope attribute. .why__h keeps the selector local in practice. */
   :global(.why__h .line:last-child > span::after) {
     content: '*';
@@ -82,22 +72,13 @@ const ledger = [
     letter-spacing: 0;
   }
 
-  /* ── Answer ─────────────────────────────────────────────────────── */
+  /* ── The hand-off ───────────────────────────────────────────────── */
   .why__foot {
     align-self: end;
     display: grid;
-    row-gap: clamp(0.6rem, 1.4vh, 0.95rem);
-    padding-top: clamp(2rem, 5vh, 3.25rem);
+    row-gap: clamp(0.7rem, 1.6vh, 1.1rem);
+    padding-top: clamp(2.5rem, 8vh, 5rem);
   }
-
-  .why__note {
-    justify-self: end;
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    color: var(--fg-mute);
-  }
-  .why__note-ast { font-family: var(--serif); font-size: 1.25em; color: var(--brass); }
 
   /* Local motion primitive: hairline that draws left→right on reveal. */
   .why__rule {
@@ -110,54 +91,43 @@ const ledger = [
   .why__rule[data-reveal] {
     opacity: 1;
     transform: scaleX(0);
-    transition: transform 950ms var(--ease-out) var(--reveal-delay, 0ms);
+    transition: transform 820ms var(--ease-out) var(--reveal-delay, 0ms);
   }
   .why__rule.is-in { transform: scaleX(1); }
 
-  .why__ledger {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: clamp(1.5rem, 4vw, 4rem);
-    padding-top: clamp(0.85rem, 2vh, 1.4rem);
+  .why__note {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--fg-mute);
   }
-  .why__cell {
-    display: grid;
-    gap: clamp(0.4rem, 0.9vh, 0.65rem);
-    align-content: start;
-    /* local, faster than --dur-2/3: the ledger should settle as a group */
-    transition-duration: 560ms, 660ms;
+  .why__note-ast { font-family: var(--serif); font-size: 1.3em; color: var(--brass); line-height: 1; }
+
+  /* Direction, not decoration: the footnote points into the scene that
+     answers it. Local primitive — no chevron token exists. */
+  .why__note-arrow {
+    width: 7px; height: 7px;
+    border-right: 1px solid var(--brass);
+    border-bottom: 1px solid var(--brass);
+    transform: rotate(45deg) translate(-1px, -1px);
+    margin-left: 0.35rem;
   }
-  .why__n {
-    font-size: clamp(1.9rem, 1.1rem + 2.3vw, 3.4rem);
-    line-height: 0.88;
-    letter-spacing: -0.024em;
-    color: var(--fg);
+
+  @media (max-width: 1100px) {
+    .why__h { max-width: 22ch; }
   }
-  .why__k { color: var(--fg-mute); }
-  /* the ledger is justified edge to edge, so the frame closes on the right */
-  .why__cell:last-child { justify-items: end; text-align: right; }
 
   @media (max-width: 900px) {
-    .why__h { max-width: 18ch; }
+    .why__h { max-width: 16ch; }
   }
 
   @media (max-width: 700px) {
     .why {
-      min-height: min(66svh, 560px);
+      min-height: min(56svh, 480px);
       padding-top: clamp(3rem, 7vh, 5rem);
     }
     .why__h { max-width: none; }
-
-    /* the ledger becomes a three-row micro table, flush to the rule */
-    .why__ledger { grid-template-columns: minmax(0, 1fr); padding-top: 0; }
-    .why__cell {
-      grid-template-columns: auto minmax(0, 1fr);
-      align-items: baseline;
-      column-gap: 1rem;
-      padding-block: clamp(0.6rem, 1.6vh, 0.9rem);
-      border-bottom: 1px solid var(--rule-soft);
-    }
-    .why__cell:last-child { border-bottom: 0; justify-items: stretch; text-align: left; }
-    .why__k { justify-self: end; text-align: right; }
+    .why__foot { padding-top: clamp(2rem, 6vh, 3rem); }
   }
 </style>

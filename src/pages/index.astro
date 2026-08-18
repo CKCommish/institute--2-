@@ -2,16 +2,26 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/scenes/Hero.astro';
 import WhyNow from '../components/scenes/WhyNow.astro';
-import PilotsScene from '../components/scenes/PilotsScene.astro';
 import MethodScene from '../components/scenes/MethodScene.astro';
+import PilotsScene from '../components/scenes/PilotsScene.astro';
 import ForumScene from '../components/scenes/ForumScene.astro';
 import PeopleScene from '../components/scenes/PeopleScene.astro';
 ---
+<!-- Six beats, ranked by weight and alternating ground so no two adjacent
+     scenes land the same way:
+       Hero      photograph, poster type, 100svh          — the thesis
+       WhyNow    cream, one sentence, near-empty          — the pressure
+       Method    ink-800, a drawn sequence                — the mechanism
+       Pilots    ink-900, a dense ledger                  — the proof
+       Forum     photograph                               — the room
+       People    grid                                     — who
+     Method precedes Pilots so the abstract is spent before the concrete
+     arrives, and so the densest scene runs straight into the photograph. -->
 <Base>
   <Hero />
   <WhyNow />
-  <PilotsScene />
   <MethodScene />
+  <PilotsScene />
   <ForumScene />
   <PeopleScene />
 </Base>

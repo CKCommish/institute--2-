@@ -20,7 +20,7 @@ import Figure from '../Figure.astro';
             <span class="label pilot__partner">{p.partner}</span>
             <span class="display pilot__title">{p.title}</span>
             <span class="pilot__v" aria-hidden="true"></span>
-            <span class="label pilot__field">{p.field}</span>
+            <span class="label pilot__field">{p.field} · {p.horizon}</span>
             <span class="pilot__tag">{p.tagline}</span>
             <span class="pilot__arrow" aria-hidden="true">
               <svg viewBox="0 0 22 10"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
@@ -81,7 +81,7 @@ import Figure from '../Figure.astro';
      tagline sit on one shared baseline across the row. The 1px track is
      the hairline — spaced by the gap, not by padding. */
   .pilot__a {
-    --rowpad: clamp(1.5rem, 2.9vw, 2.5rem);
+    --rowpad: clamp(1.35rem, 2.5vw, 2.05rem);
     position: relative;
     padding-block: var(--rowpad);
     display: grid;
@@ -101,7 +101,10 @@ import Figure from '../Figure.astro';
     align-self: stretch;
   }
 
-  .pilot__i { grid-column: 1; grid-row: 1; }
+  /* same micro-label grammar as the /pilots/ nameplate: 0.18em tracking,
+     number + partner left, sector · horizon flush right, one baseline. */
+  .pilot__i { grid-column: 1; grid-row: 1; letter-spacing: 0.18em; }
+  .pilot__partner, .pilot__field { letter-spacing: 0.18em; }
   .pilot__partner {
     grid-column: 2; grid-row: 1;
     color: var(--fg-faint);
@@ -109,7 +112,7 @@ import Figure from '../Figure.astro';
   }
   .pilot__title {
     grid-column: 2; grid-row: 2;
-    font-size: clamp(1.4rem, 1.02rem + 1.28vw, 2.4rem);
+    font-size: clamp(1.5rem, 1rem + 1.7vw, 2.9rem);
     line-height: 1.05;
     letter-spacing: -0.015em;
     transition: transform 620ms var(--ease-out);
@@ -167,7 +170,7 @@ import Figure from '../Figure.astro';
      stays where it belongs. Desktop pointer only. */
   .pilots__preview {
     position: fixed; top: 0; left: 0; z-index: 40;
-    width: clamp(180px, 14.4vw, 224px);
+    width: clamp(186px, 15.6vw, 244px);
     pointer-events: none;
     display: none;
     opacity: 0;
@@ -215,7 +218,10 @@ import Figure from '../Figure.astro';
       padding-block: clamp(1.3rem, 4.2vw, 1.8rem);
     }
     .pilot__v { display: none; }
-    .pilot__i { grid-column: 1; grid-row: 1; }
+    /* same micro-label grammar as the /pilots/ nameplate: 0.18em tracking,
+     number + partner left, sector · horizon flush right, one baseline. */
+  .pilot__i { grid-column: 1; grid-row: 1; letter-spacing: 0.18em; }
+  .pilot__partner, .pilot__field { letter-spacing: 0.18em; }
     .pilot__field { grid-column: 2; grid-row: 1; justify-self: end; }
     .pilot__partner { grid-column: 1 / -1; grid-row: 2; margin-top: 0.5rem; }
     .pilot__title { grid-column: 1 / -1; grid-row: 3; }
