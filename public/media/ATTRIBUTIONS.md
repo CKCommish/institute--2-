@@ -51,16 +51,22 @@ originals with a mild neutral contrast adjustment only. No color grade is baked 
 | field | value |
 |---|---|
 | **Slot** | Pilot — Governor Inslee: Clean Data Center Playbook |
-| **Title** | *Procession of electrical transmission towers in Van Zandt County in northeast Texas* |
+| **Title** | *A line of enormous power towers and electric cables in Muskingum County, Ohio* |
 | **Creator** | Carol M. Highsmith |
-| **Date** | 2014-05-22 |
+| **Date** | 2016-10-11 |
 | **Collection** | Carol M. Highsmith Archive, Library of Congress Prints and Photographs Division |
-| **Call number** | LC-DIG-highsm-29991 |
-| **License / rights** | Public Domain — "No known restrictions on publication." SPDX-ish: `PD-US` / `NoC-US` |
-| **Source page** | https://www.loc.gov/item/2015630228/ |
-| **Direct file URL** | https://tile.loc.gov/storage-services/master/pnp/highsm/29900/29991a.tif |
-| **Original size** | 7360 × 4912 (16-bit TIFF master) |
-| **Processing** | Centre crop to 3:2; converted to sRGB 8-bit; resized; contrast +4.5%. |
+| **Call number** | LC-DIG-highsm-41718 |
+| **License / rights** | Public Domain — LOC rights advisory: "No known restrictions on publication." SPDX-ish: `PD-US` / `NoC-US` |
+| **Source page** | https://www.loc.gov/item/2016632536/ |
+| **Direct file URL** | https://tile.loc.gov/image-services/iiif/service:pnp:highsm:41700:41718/full/pct:100/0/default.jpg |
+| **Original size** | 8688 × 5792 |
+| **Processing** | Cropped to 3:2 from x 9–93%, y 5–89% of the frame (tower head brought inside the `16 / 5.5` band and the 4:5 centre crop); resized to 2400 × 1600; contrast +4.5%; mild downscale sharpen. mozjpeg q82 / webp q78. |
+
+**Replaced (second pass):** the previous file in this slot was *Procession of electrical
+transmission towers in Van Zandt County in northeast Texas* (LC-DIG-highsm-29991,
+https://www.loc.gov/item/2015630228/), also PD-Highsmith. It was swapped for tone, not
+rights — bright midday sky with cumulus, which read cheerful against the rest of the set.
+
 
 ## 4. `pilot-maternal.jpg` / `.webp` / `@1200.*`
 
@@ -75,7 +81,7 @@ originals with a mild neutral contrast adjustment only. No color grade is baked 
 | **Source page** | https://commons.wikimedia.org/wiki/File:Infant_Nutrition_(Team_Nutrition)_(20210805-FNS-UNC-0006).jpg |
 | **Direct file URL** | https://upload.wikimedia.org/wikipedia/commons/1/15/Infant_Nutrition_%28Team_Nutrition%29_%2820210805-FNS-UNC-0006%29.jpg |
 | **Original size** | 7360 × 4912 |
-| **Processing** | Cropped to 3:2 at 72% of frame width, offset 5% from left (tighter on mother and infant); resized; contrast +4.5%. |
+| **Processing** | **Re-cropped (second pass)** to 3:2 from the left 60% of the frame (x 0–60%, y 0–59.9%), which drops the second adult entirely and leaves the mother and infant alone; resized to 2400 × 1600; contrast +4.5%; mild downscale sharpen. mozjpeg q82 / webp q78. The first pass used x 5–77% and kept the child care provider in frame. |
 
 ## 5. `pilot-education.jpg` / `.webp` / `@1200.*`
 
@@ -96,17 +102,25 @@ originals with a mild neutral contrast adjustment only. No color grade is baked 
 
 | field | value |
 |---|---|
-| **Slot** | The Lion Forum — Hyannis Port |
-| **Title** | *Home and small tower undergoing renovation on a beach at Hyannis Port on Massachusetts' Cape Cod, a fishhook-shaped peninsula extending into the Atlantic Ocean from the southeastern corner of mainland Massachusetts* |
+| **Slot** | The Lion Forum — full-bleed scene (homepage + `/forum/`) |
+| **Title** | *Dusk view of Old Harbor on Block Island, Rhode Island* |
 | **Creator** | Carol M. Highsmith |
-| **Date** | 2019-05-01 |
-| **Collection** | Carol M. Highsmith Archive, Library of Congress Prints and Photographs Division |
-| **Call number** | LC-DIG-highsm-57378 |
-| **License / rights** | Public Domain — "No known restrictions on publication." SPDX-ish: `PD-US` / `NoC-US` |
-| **Source page** | https://www.loc.gov/item/2019689802/ |
-| **Direct file URL** | https://tile.loc.gov/storage-services/master/pnp/highsm/57300/57378a.tif |
-| **Original size** | 8400 × 5600 (16-bit TIFF master) |
-| **Processing** | Cropped to 3:2 at 80% of frame width from the left edge; converted to sRGB 8-bit; resized; contrast +4.5%. Encoded at q76 / webp q70 to stay inside the 600 KB budget (fine beach texture is expensive). |
+| **Date** | [between 1980 and 2006] (LOC indexes it as 1980-01-01; scanned from the photographer's original colour film transparency) |
+| **Collection** | Carol M. Highsmith Archive, Library of Congress Prints and Photographs Division — Selects Series |
+| **Call number** | LC-HS503-4129 (colour film transparency); reproduction no. LC-DIG-highsm-14245 (digital file from original) |
+| **License / rights** | Public Domain — LOC rights advisory: "No known restrictions on publication." SPDX-ish: `PD-US` / `NoC-US` |
+| **Source page** | https://www.loc.gov/item/2011632439/ |
+| **Direct file URL** | https://tile.loc.gov/image-services/iiif/service:pnp:highsm:14200:14245/full/pct:100/0/default.jpg |
+| **Original size** | 6021 × 4793 (IIIF full; a larger 16-bit TIFF master exists at `cdn.loc.gov/master/pnp/highsm/14200/14245a.tif`) |
+| **Processing** | Cropped to 2.24 : 1 — full width, y 18.5–74.6% — so the breakwater sits low and the sky carries the frame; resized to 2800 × 1250; contrast +4.5%; mild downscale sharpen. mozjpeg q80 / webp q76. |
+
+**Replaced (second pass):** the previous file in this slot was *Home and small tower
+undergoing renovation on a beach at Hyannis Port* (LC-DIG-highsm-57378,
+https://www.loc.gov/item/2019689802/), also PD-Highsmith. Swapped for craft, and for one
+substantive reason: a large private house **at Hyannis Port**, printed under a Forum
+headline, invites exactly the Kennedy-Compound misreading `refs/PHOTO-FACTS.md` warns
+against. **This photograph is Rhode Island, not Cape Cod** — see `CONTENT-NOTES.md`.
+
 
 ## 7. `institute.jpg` / `.webp` / `@1200.*`
 
@@ -123,6 +137,20 @@ originals with a mild neutral contrast adjustment only. No color grade is baked 
 | **Direct file URL** | https://tile.loc.gov/image-services/iiif/service:pnp:highsm:30100:30117/full/pct:100/0/default.jpg |
 | **Original size** | 8982 × 6731 |
 | **Processing** | Cropped to 3:2 anchored 10% from the top; resized; contrast +4.5%. |
+
+---
+
+## 8. `pilot-health-portrait.jpg` / `.webp`
+
+| field | value |
+|---|---|
+| **Slot** | Pilot — Special Olympics, **4:5 portrait use only** (homepage pilot-list hover preview) |
+| **Title / creator / rights** | Identical to entry 2 above — *Unified Special Olympics Track & Field Event (8983859)*, U.S. Army photo by Pfc. Seu Chan, 2025-04-16. Public Domain, 17 U.S.C. § 105 (`PD-USGov-Military-Army`). |
+| **Source page** | https://commons.wikimedia.org/wiki/File:Unified_Special_Olympics_Track_%26_Field_Event_(8983859).jpg |
+| **Direct file URL** | https://commons.wikimedia.org/wiki/Special:FilePath/Unified_Special_Olympics_Track_%26_Field_Event_(8983859).jpg?width=4000 (upload.wikimedia.org rate-limits the 5577 × 3711 original; the 3840 × 2555 derivative is still a downscale at this output size) |
+| **Original size used** | 3840 × 2555 |
+| **Processing** | Cropped to 4:5 from x 20–73.2% of the frame, full height; resized to 1600 × 2000; contrast +4.5%; mild downscale sharpen. mozjpeg q82 / webp q78. |
+| **Why it exists** | A 4:5 centre crop of `pilot-health.jpg` clips the athlete's trailing foot and pushes her against the left edge. This crop keeps the whole figure with space ahead of her. **No `@1200` variants** — this file is only ever rendered small. |
 
 ---
 
