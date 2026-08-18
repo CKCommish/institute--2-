@@ -1,0 +1,33 @@
+{
+  "name": "lion-forum-institute",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview --port 4322 --host"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CKCommish/institute--2-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CKCommish/institute--2-/issues"
+  },
+  "homepage": "https://github.com/CKCommish/institute--2-#readme",
+  "devDependencies": {
+    "playwright": "^1.62.1",
+    "sharp": "^0.35.3",
+    "sirv": "^3.0.2",
+    "vite": "^8.2.1"
+  },
+  "dependencies": {
+    "astro": "^7.2.3"
+  },
+  "private": true,
+  "type": "module"
+}

@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Figure from '../components/Figure.astro';
+import { forum } from '../data/site.js';
+---
+<Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
+  <section class="fhero">
+    <Figure src={forum.image} alt="" ratio="auto" grade={0.66} parallax={6} class="fhero__bg" loading="eager" />
+    <div class="shell fhero__in">
+      <p class="label" data-reveal>{forum.place}</p>
+      <h1 class="display display--hero lines">The Lion Forum</h1>
+    </div>
+  </section>
+
+  <section class="scene">
+    <div class="shell fbody">
+      <p class="label" data-reveal>Invitation only</p>
+      <p class="fbody__p lede" data-reveal="120">{forum.line}</p>
+      <p class="fbody__p body" data-reveal="220">{forum.role}</p>
+      <a class="link fbody__cta" href="/partner/" data-reveal="320">Inquire about the Forum</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .fhero { position: relative; min-height: 88svh; display: grid; align-items: end; isolation: isolate; }
+  .fhero__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
+  .fhero__in { width: 100%; display: grid; gap: var(--stack-2); padding-block: clamp(3rem, 8vw, 6rem); }
+  .fbody { display: grid; gap: var(--stack-2); max-width: 62ch; }
+  .fbody__cta { justify-self: start; font-size: var(--step-label); letter-spacing: .145em; text-transform: uppercase; font-weight: 500; margin-top: 1rem; }
+</style>

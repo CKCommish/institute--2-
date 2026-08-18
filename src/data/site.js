@@ -1,0 +1,135 @@
+export const site = {
+  name: 'Lion Forum Institute',
+  short: 'Lion Forum Institute',
+  mission:
+    'The Lion Forum Institute exists to ensure the technologies of tomorrow strengthen American families today.',
+  email: 'partners@lionforuminstitute.org',
+};
+
+export const nav = [
+  { label: 'Institute', href: '/institute/' },
+  { label: 'Pilots', href: '/pilots/' },
+  { label: 'Forum', href: '/forum/' },
+  { label: 'People', href: '/people/' },
+];
+
+export const cta = { label: 'Partner on a pilot', href: '/partner/' };
+
+/* ── The four 2026 pilots ─────────────────────────────────────────── */
+export const pilots = [
+  {
+    id: 'healthy-athletes',
+    index: '01',
+    partner: 'Special Olympics',
+    title: 'Healthy Athletes',
+    tagline: 'A free screening becomes real follow-up care.',
+    field: 'Health',
+    problem: 'Millions are screened at Special Olympics events. Few reach the care those screenings identify.',
+    approach: 'A companion app that carries the result home — reminders, navigation, and a route to a local provider.',
+    goal: 'Measurably more athletes complete follow-up care within 90 days.',
+    horizon: '3–12 months',
+    image: '/media/pilot-health.jpg',
+  },
+  {
+    id: 'clean-data-centers',
+    index: '02',
+    partner: 'Governor Jay Inslee',
+    title: 'Clean Data Centers',
+    tagline: 'States negotiate the buildout instead of absorbing it.',
+    field: 'Energy',
+    problem: 'Data centers arrive faster than states can set terms, and families see the cost on their utility bill.',
+    approach: 'A playbook states can use at the table: clean power, jobs, affordability, and community benefit.',
+    goal: 'Adopted terms in at least one state siting agreement.',
+    horizon: '3–12 months',
+    image: '/media/pilot-energy.jpg',
+  },
+  {
+    id: 'infant-mortality',
+    index: '03',
+    partner: 'Butler University',
+    title: 'Infant Mortality',
+    tagline: 'Risk found early, in the weeks that decide outcomes.',
+    field: 'Health',
+    problem: 'Indianapolis has one of the highest infant mortality rates in the country.',
+    approach: 'Maternal health data read for early risk, paired with an intervention for mothers on Medicaid.',
+    goal: 'Earlier identification, and a repeatable model for other cities.',
+    horizon: '3–12 months',
+    image: '/media/pilot-maternal.jpg',
+  },
+  {
+    id: 'career-pathways',
+    index: '04',
+    partner: 'Secretary Miguel Cardona',
+    title: 'Career Pathways',
+    tagline: 'Guidance that follows a student from school to work.',
+    field: 'Education',
+    problem: 'The students with the least access to counseling face the most consequential choices.',
+    approach: 'Personalized guidance built with districts, from coursework through the first job.',
+    goal: 'More low-income students land in a defined pathway after graduation.',
+    horizon: '3–12 months',
+    image: '/media/pilot-education.jpg',
+  },
+];
+
+/* ── How the institute works ──────────────────────────────────────── */
+export const method = [
+  { index: '01', title: 'Find the problem', text: 'One that families feel, and an institution is already accountable for.' },
+  { index: '02', title: 'Match the partners', text: 'A technology partner who can build it, and the people who will run it.' },
+  { index: '03', title: 'Measure, then publish', text: 'Three to twelve months. The result goes out either way.' },
+];
+
+/* ── People ───────────────────────────────────────────────────────── */
+export const founders = [
+  {
+    name: 'Christopher Kennedy McKelvy',
+    role: 'Co-founder',
+    lines: [
+      'Founding Partner, K. Ventures',
+      'Founding Partner, The Lion Forum',
+    ],
+    detail: 'Army Ranger. Oculus and Meta. MPA, Harvard. BS, Syracuse.',
+    portrait: '/media/founder-mckelvy.jpg',
+  },
+  {
+    name: 'Judd Olanoff',
+    role: 'Co-founder',
+    lines: [
+      'Founding Partner, K. Ventures',
+      'Founding Partner, The Lion Forum',
+    ],
+    detail: 'MBA, Stanford GSB. MPA, Harvard Kennedy School. BA, Amherst.',
+    portrait: '/media/founder-olanoff.jpg',
+  },
+];
+
+/* Prospective board — names and one short line only.
+   NOTE: titles are pending client confirmation. See CONTENT-NOTES.md */
+export const board = [
+  { name: 'John Bailey', line: 'Senior Fellow, American Enterprise Institute' },
+  { name: 'Roy Bahat', line: 'Head, Bloomberg Beta' },
+  { name: 'Aneesh Chopra', line: 'First Chief Technology Officer of the United States' },
+  { name: 'Guy Filippelli', line: 'Founder, RedOwl Analytics' },
+  { name: 'Michael Hole', line: 'Pediatrician; Professor, UT Austin' },
+  { name: 'Galym Imanbayev', line: 'Partner, Lightspeed Venture Partners' },
+  { name: 'Governor Jay Inslee', line: 'Governor of Washington, 2013–2025' },
+  { name: 'Tess deBlanc-Knowles', line: 'Former Special Advisor for AI, White House OSTP' },
+  { name: 'Robin McIntosh', line: 'Co-founder and Co-CEO, Workit Health' },
+  { name: 'Nate Mitchell', line: 'Co-founder, Oculus' },
+  { name: 'Gina Raimondo', line: 'U.S. Secretary of Commerce, 2021–2025' },
+  { name: 'Kyla Scanlon', line: 'Writer on the economy' },
+  { name: 'Jake Sullivan', line: 'U.S. National Security Advisor, 2021–2025' },
+  { name: 'Bradley Tusk', line: 'Founder, Tusk Ventures' },
+  { name: 'Julie Yoo', line: 'General Partner, Andreessen Horowitz' },
+  { name: 'Helen Zhang', line: 'Investor' },
+];
+
+export const forum = {
+  name: 'The Lion Forum',
+  place: 'Kennedy Compound, Hyannis Port',
+  line: 'An invitation-only convening of founders, investors, and elected officials.',
+  role: 'The Institute is a lead sponsor. It is where pilots find their partners, and where results are reported back.',
+  image: '/media/forum.jpg',
+};
+
+export const whyNow =
+  'AI is moving faster than public institutions can absorb it.';

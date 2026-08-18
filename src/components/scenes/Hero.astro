@@ -1,0 +1,114 @@
+---
+import Figure from '../Figure.astro';
+import { pilots } from '../../data/site.js';
+---
+<section class="hero" aria-labelledby="hero-h">
+  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.72} parallax={5} loading="eager" class="hero__bg" />
+
+  <div class="hero__in shell">
+    <p class="label hero__eyebrow" data-reveal="80">
+      <span class="hero__dot" aria-hidden="true"></span>The Lion Forum Institute
+    </p>
+
+    <h1 class="display display--hero hero__h lines" id="hero-h">
+      To ensure the technologies of tomorrow strengthen American families today.
+    </h1>
+
+    <p class="hero__lede" data-reveal="620">
+      We run short, measurable pilots with the institutions families already trust.
+    </p>
+  </div>
+
+  <div class="hero__index shell" data-reveal="820">
+    <span class="label hero__index-label">Pilots · 2026</span>
+    <ul class="hero__index-list">
+      {pilots.map((p) => (
+        <li><span class="index">{p.index}</span> {p.title}</li>
+      ))}
+    </ul>
+    <a class="hero__scroll" href="#why">
+      <span class="label">Scroll</span>
+      <span class="hero__scroll-line" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-items: end;
+    isolation: isolate;
+  }
+  .hero__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
+
+  .hero__in {
+    width: 100%;
+    padding-top: calc(var(--nav-h) + clamp(3rem, 9vh, 7rem));
+    padding-bottom: clamp(1.5rem, 4vh, 3rem);
+    display: grid;
+    align-content: end;
+    gap: clamp(1.25rem, 2.4vw, 2.25rem);
+  }
+
+  .hero__eyebrow { display: flex; align-items: center; gap: 0.75rem; color: var(--cream); }
+  .hero__dot {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--brass);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--brass) 60%, transparent);
+    animation: pulse 3.6s var(--ease-out) infinite;
+  }
+  @keyframes pulse {
+    0%, 70%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brass) 55%, transparent); }
+    35% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--brass) 0%, transparent); }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero__dot { animation: none; } }
+
+  .hero__h { max-width: 17ch; }
+  .hero__lede {
+    font-size: clamp(1.02rem, 0.95rem + 0.4vw, 1.3rem);
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--cream) 74%, transparent);
+    max-width: 34ch;
+    text-wrap: pretty;
+  }
+
+  .hero__index {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding-block: clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 2.5vh, 2rem);
+    border-top: 1px solid color-mix(in srgb, var(--cream) 16%, transparent);
+    margin-top: clamp(1.5rem, 4vh, 3rem);
+  }
+  .hero__index-label { white-space: nowrap; }
+  .hero__index-list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-wrap: wrap; gap: clamp(0.9rem, 2.4vw, 2.6rem);
+    font-size: var(--step-xs);
+    color: color-mix(in srgb, var(--cream) 72%, transparent);
+  }
+  .hero__index-list li { display: flex; align-items: baseline; gap: 0.6ch; white-space: nowrap; }
+
+  .hero__scroll { display: flex; align-items: center; gap: 0.75rem; }
+  .hero__scroll-line {
+    display: block; width: 34px; height: 1px;
+    background: color-mix(in srgb, var(--cream) 40%, transparent);
+    position: relative; overflow: hidden;
+  }
+  .hero__scroll-line::after {
+    content: ''; position: absolute; inset: 0; background: var(--brass);
+    transform: translateX(-100%);
+    animation: sweep 2.8s var(--ease-io) infinite;
+  }
+  @keyframes sweep { 0% { transform: translateX(-100%); } 55%, 100% { transform: translateX(100%); } }
+  @media (prefers-reduced-motion: reduce) { .hero__scroll-line::after { animation: none; transform: none; opacity: .5; } }
+
+  @media (max-width: 860px) {
+    .hero__index { grid-template-columns: 1fr auto; row-gap: 0.9rem; }
+    .hero__index-list { grid-column: 1 / -1; order: 3; }
+  }
+</style>

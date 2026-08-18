@@ -1,0 +1,60 @@
+---
+import { nav, cta, site } from '../data/site.js';
+const year = new Date().getFullYear();
+---
+<footer class="foot">
+  <div class="shell">
+    <div class="foot__top">
+      <a class="foot__cta" href={cta.href}>
+        <span class="foot__cta-label label">Start here</span>
+        <span class="display display--l foot__cta-line">{cta.label}</span>
+        <span class="foot__cta-arrow" aria-hidden="true">
+          <svg viewBox="0 0 40 14"><path d="M32 1l7 6-7 6M39 7H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+        </span>
+      </a>
+    </div>
+
+    <hr class="rule" />
+
+    <div class="foot__bot">
+      <div class="foot__col">
+        <span class="label">Lion Forum Institute</span>
+        <a class="link foot__mail" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+      <nav class="foot__col foot__nav" aria-label="Footer">
+        {nav.map((n) => <a class="link" href={n.href}>{n.label}</a>)}
+      </nav>
+      <div class="foot__col foot__meta">
+        <span>Hyannis Port · Washington, D.C.</span>
+        <span>© {year}</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .foot { padding-block: clamp(3.5rem, 6vw, 7rem) clamp(1.75rem, 3vw, 2.75rem); }
+  .foot__top { padding-block: clamp(1rem, 3vw, 3rem) clamp(3rem, 6vw, 6rem); }
+  .foot__cta { display: inline-grid; gap: var(--stack-2); position: relative; }
+  .foot__cta-line { display: block; max-width: 14ch; transition: opacity 400ms var(--ease-out); }
+  .foot__cta-arrow { display: block; width: clamp(48px, 6vw, 74px); color: var(--brass); margin-top: 0.4rem; }
+  .foot__cta-arrow svg { width: 100%; height: auto; }
+  .foot__cta-arrow svg path { transition: transform 520ms var(--ease-out); }
+  .foot__cta:hover .foot__cta-arrow svg path { transform: translateX(6px); }
+
+  .foot__bot {
+    display: grid; gap: var(--stack-3);
+    grid-template-columns: 1fr 1fr 1fr;
+    padding-top: clamp(1.5rem, 2.5vw, 2.25rem);
+    font-size: var(--step-xs);
+    color: var(--fg-mute);
+  }
+  .foot__col { display: grid; gap: 0.6rem; align-content: start; }
+  .foot__nav { grid-auto-flow: row; justify-items: start; }
+  .foot__meta { justify-items: end; text-align: right; }
+  .foot__mail { color: var(--cream); }
+  @media (max-width: 760px) {
+    .foot__bot { grid-template-columns: 1fr 1fr; }
+    .foot__meta { grid-column: 1 / -1; justify-items: start; text-align: left; }
+  }
+</style>

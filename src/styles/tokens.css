@@ -1,0 +1,76 @@
+/* ── Lion Forum Institute — design tokens ────────────────────────────────
+   Palette: deep navy ground, cream type, one brass accent. Nothing else.
+   Type:    Newsreader (editorial serif) + Libre Franklin (civic sans).
+   ---------------------------------------------------------------------- */
+:root {
+  /* Ground */
+  --ink-900: #050D16;
+  --ink-850: #071322;
+  --ink-800: #0A1A2B;
+  --ink-700: #10263B;
+  --ink-600: #1A3550;
+
+  /* Light ground (used sparingly, for inverted scenes) */
+  --cream: #F2EDE3;
+  --cream-200: #E7E0D2;
+  --cream-300: #D6CDBA;
+
+  /* Accent — brass. Used for rules, indices, one hover state. */
+  --brass: #C4A469;
+  --brass-deep: #8F7238;
+
+  /* Semantic */
+  --bg: var(--ink-900);
+  --fg: var(--cream);
+  --fg-mute: color-mix(in srgb, var(--cream) 58%, transparent);
+  --fg-faint: color-mix(in srgb, var(--cream) 30%, transparent);
+  --rule: color-mix(in srgb, var(--cream) 14%, transparent);
+  --rule-soft: color-mix(in srgb, var(--cream) 8%, transparent);
+
+  /* Type families */
+  --serif: 'Newsreader', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --sans: 'Libre Franklin', 'Helvetica Neue', Arial, system-ui, sans-serif;
+
+  /* Fluid type scale — 390px → 1600px */
+  --step-hero: clamp(2.9rem, 1.05rem + 7.6vw, 8.4rem);
+  --step-xl:   clamp(2.3rem, 1.15rem + 4.7vw, 5.6rem);
+  --step-l:    clamp(1.75rem, 1.16rem + 2.4vw, 3.4rem);
+  --step-m:    clamp(1.3rem, 1.05rem + 1.05vw, 2.1rem);
+  --step-s:    clamp(1.02rem, 0.97rem + 0.22vw, 1.19rem);
+  --step-xs:   clamp(0.9rem, 0.87rem + 0.13vw, 1rem);
+  --step-label: clamp(0.66rem, 0.63rem + 0.11vw, 0.73rem);
+
+  /* Spacing rhythm */
+  --gutter: clamp(1.25rem, 0.6rem + 2.9vw, 4.5rem);
+  --scene-pad: clamp(5rem, 3rem + 9vw, 11rem);
+  --stack-1: clamp(0.5rem, 0.4rem + 0.4vw, 0.75rem);
+  --stack-2: clamp(1rem, 0.8rem + 0.8vw, 1.6rem);
+  --stack-3: clamp(1.75rem, 1.3rem + 1.8vw, 3rem);
+  --stack-4: clamp(3rem, 2rem + 4vw, 6rem);
+
+  --measure: 34ch;
+  --measure-wide: 46ch;
+  --max: 1560px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0.02, 0.24, 1);
+  --dur-1: 420ms;
+  --dur-2: 760ms;
+  --dur-3: 1150ms;
+
+  --nav-h: clamp(58px, 4.4vw, 76px);
+}
+
+/* Inverted (cream) scenes */
+.on-cream {
+  --bg: var(--cream);
+  --fg: var(--ink-900);
+  --fg-mute: color-mix(in srgb, var(--ink-900) 62%, transparent);
+  --fg-faint: color-mix(in srgb, var(--ink-900) 34%, transparent);
+  --rule: color-mix(in srgb, var(--ink-900) 16%, transparent);
+  --rule-soft: color-mix(in srgb, var(--ink-900) 9%, transparent);
+  --brass: var(--brass-deep);
+  background: var(--bg);
+  color: var(--fg);
+}

@@ -1,0 +1,183 @@
+---
+import { nav, cta, site } from '../data/site.js';
+const { pathname } = Astro.url;
+const isActive = (href) => pathname === href || (href !== '/' && pathname.startsWith(href));
+---
+<header class="nav" data-nav>
+  <div class="nav__in">
+    <a class="wordmark" href="/" aria-label={`${site.name} — home`}>
+      <span class="wordmark__lion" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1"/>
+          <path d="M12 5.6 13.9 10h4.6l-3.7 2.8 1.4 4.5L12 14.5l-4.2 2.8 1.4-4.5L5.5 10h4.6L12 5.6Z" fill="currentColor" opacity=".85"/>
+        </svg>
+      </span>
+      <span class="wordmark__text">
+        <span class="wordmark__l1">Lion Forum</span>
+        <span class="wordmark__l2">Institute</span>
+      </span>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      {nav.map((n) => (
+        <a href={n.href} class:list={['nav__link', { 'is-active': isActive(n.href) }]}>
+          <span>{n.label}</span>
+        </a>
+      ))}
+    </nav>
+
+    <a class="nav__cta" href={cta.href}>
+      <span>{cta.label}</span>
+      <svg viewBox="0 0 14 10" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
+    </a>
+
+    <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
+      <span class="sr-only">Menu</span>
+      <span class="nav__burger-b" aria-hidden="true"></span>
+      <span class="nav__burger-b" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden data-menu>
+  <div class="menu__in">
+    <nav class="menu__links" aria-label="Primary">
+      {nav.map((n, i) => (
+        <a href={n.href} style={`--i:${i}`}><span class="index">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
+      ))}
+    </nav>
+    <a class="menu__cta" href={cta.href} style={`--i:${nav.length}`}>{cta.label}</a>
+  </div>
+</div>
+
+<style>
+  .nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 100;
+    height: var(--nav-h);
+    color: var(--cream);
+    mix-blend-mode: normal;
+    transition: background 500ms var(--ease-out), border-color 500ms var(--ease-out), backdrop-filter 500ms;
+    border-bottom: 1px solid transparent;
+  }
+  .nav.is-scrolled {
+    background: color-mix(in srgb, var(--ink-900) 72%, transparent);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    border-bottom-color: color-mix(in srgb, var(--cream) 10%, transparent);
+  }
+  .nav__in {
+    height: 100%;
+    max-width: var(--max); margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: flex; align-items: center; gap: clamp(1rem, 3vw, 3rem);
+  }
+
+  .wordmark { display: flex; align-items: center; gap: 0.6rem; margin-right: auto; }
+  .wordmark__lion { width: 1.05rem; height: 1.05rem; color: var(--brass); flex: none; }
+  .wordmark__lion svg { width: 100%; height: 100%; }
+  .wordmark__text {
+    display: flex; gap: 0.4ch;
+    font-family: var(--sans);
+    font-size: var(--step-label);
+    font-weight: 600;
+    letter-spacing: 0.145em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .wordmark__l2 { color: color-mix(in srgb, currentColor 55%, transparent); }
+
+  .nav__links { display: flex; gap: clamp(1.1rem, 2.2vw, 2.4rem); }
+  .nav__link {
+    font-size: var(--step-label); font-weight: 500;
+    letter-spacing: 0.145em; text-transform: uppercase;
+    color: color-mix(in srgb, currentColor 62%, transparent);
+    transition: color 340ms var(--ease-out);
+    position: relative; padding-block: 0.4rem;
+  }
+  .nav__link::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+    height: 1px; background: var(--brass);
+    transform: scaleX(0); transform-origin: right;
+    transition: transform 460ms var(--ease-out);
+  }
+  .nav__link:hover { color: currentColor; }
+  .nav__link:hover::after, .nav__link.is-active::after { transform: scaleX(1); transform-origin: left; }
+  .nav__link.is-active { color: currentColor; }
+
+  .nav__cta {
+    display: inline-flex; align-items: center; gap: 0.7ch;
+    font-size: var(--step-label); font-weight: 500;
+    letter-spacing: 0.145em; text-transform: uppercase;
+    padding: 0.72em 1.15em;
+    border: 1px solid color-mix(in srgb, currentColor 26%, transparent);
+    border-radius: 100px;
+    transition: background 380ms var(--ease-out), color 380ms var(--ease-out), border-color 380ms var(--ease-out);
+  }
+  .nav__cta svg { width: 0.85em; height: auto; transition: transform 420ms var(--ease-out); }
+  .nav__cta:hover { background: var(--cream); color: var(--ink-900); border-color: var(--cream); }
+  .nav__cta:hover svg { transform: translateX(3px); }
+
+  .nav__burger { display: none; width: 30px; height: 30px; position: relative; margin-right: -6px; }
+  .nav__burger-b {
+    position: absolute; left: 4px; right: 4px; height: 1px; background: currentColor;
+    transition: transform 420ms var(--ease-io), opacity 200ms;
+  }
+  .nav__burger-b:nth-child(2) { transform: translateY(-4px); }
+  .nav__burger-b:nth-child(3) { transform: translateY(4px); }
+  .nav__burger[aria-expanded='true'] .nav__burger-b:nth-child(2) { transform: rotate(45deg); }
+  .nav__burger[aria-expanded='true'] .nav__burger-b:nth-child(3) { transform: rotate(-45deg); }
+
+  @media (max-width: 900px) {
+    .nav__links, .nav__cta { display: none; }
+    .nav__burger { display: block; }
+  }
+
+  /* ── Mobile menu ── */
+  .menu {
+    position: fixed; inset: 0; z-index: 99;
+    background: var(--ink-900);
+    display: grid; align-items: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 460ms var(--ease-out);
+  }
+  .menu[data-open] { opacity: 1; pointer-events: auto; }
+  .menu__in { padding: var(--nav-h) var(--gutter) var(--gutter); width: 100%; }
+  .menu__links { display: grid; gap: 0.2em; }
+  .menu__links a {
+    font-family: var(--serif); font-weight: 320;
+    font-size: clamp(2rem, 9vw, 3.2rem); line-height: 1.12;
+    letter-spacing: -0.02em;
+    display: flex; align-items: baseline; gap: 1rem;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
+    transition-delay: calc(var(--i) * 60ms + 90ms);
+  }
+  .menu__links .index { font-size: 0.62rem; }
+  .menu[data-open] .menu__links a { opacity: 1; transform: none; }
+  .menu__cta {
+    margin-top: 2.5rem; display: inline-flex;
+    font-size: var(--step-label); letter-spacing: 0.145em; text-transform: uppercase; font-weight: 500;
+    border: 1px solid color-mix(in srgb, var(--cream) 26%, transparent);
+    border-radius: 100px; padding: 0.9em 1.4em;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
+    transition-delay: calc(var(--i) * 60ms + 90ms);
+  }
+  .menu[data-open] .menu__cta { opacity: 1; transform: none; }
+</style>
+
+<script>
+  const burger = document.querySelector('[data-burger]');
+  const menu = document.querySelector('[data-menu]');
+  if (burger && menu) {
+    const set = (open) => {
+      burger.setAttribute('aria-expanded', String(open));
+      if (open) { menu.hidden = false; requestAnimationFrame(() => menu.setAttribute('data-open', '')); }
+      else { menu.removeAttribute('data-open'); setTimeout(() => { menu.hidden = true; }, 460); }
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+    };
+    burger.addEventListener('click', () => set(burger.getAttribute('aria-expanded') !== 'true'));
+    menu.addEventListener('click', (e) => { if (e.target.closest('a')) set(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+  }
+</script>

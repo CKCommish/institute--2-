@@ -1,0 +1,37 @@
+---
+import { method } from '../../data/site.js';
+---
+<section class="method scene" id="method" aria-labelledby="method-h">
+  <div class="shell method__in">
+    <header class="method__head">
+      <p class="label" data-reveal>How we work</p>
+      <h2 class="display display--l method__h lines" id="method-h">
+        Three to twelve months. One measurable outcome.
+      </h2>
+    </header>
+    <ol class="method__steps">
+      {method.map((m, i) => (
+        <li class="beat" data-reveal={String(140 + i * 110)}>
+          <span class="index">{m.index}</span>
+          <h3 class="beat__t">{m.title}</h3>
+          <p class="beat__p">{m.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .method__in { display: grid; gap: clamp(2.5rem, 6vw, 5rem); }
+  .method__h { max-width: 18ch; }
+  .method__head { display: grid; gap: var(--stack-2); }
+  .method__steps {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+  }
+  .beat { display: grid; gap: 0.85rem; align-content: start; padding-top: 1.4rem; border-top: 1px solid var(--rule); }
+  .beat__t { font-family: var(--sans); font-size: var(--step-s); font-weight: 500; letter-spacing: -0.005em; }
+  .beat__p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 30ch; text-wrap: pretty; }
+  @media (max-width: 800px) { .method__steps { grid-template-columns: 1fr; } }
+</style>

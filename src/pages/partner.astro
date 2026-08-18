@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, pilots } from '../data/site.js';
+---
+<Base title="Partner" description="Partner on a 2026 pilot with the Lion Forum Institute.">
+  <section class="chead">
+    <div class="shell chead__in">
+      <p class="label" data-reveal>Work with us</p>
+      <h1 class="display display--hero lines">Partner on a pilot.</h1>
+      <p class="lede" data-reveal="480">Funders, technology partners, and implementation partners for the 2026 pilots. One email reaches us.</p>
+      <a class="cmail" href={`mailto:${site.email}`} data-reveal="600">
+        <span class="display display--m">{site.email}</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="scene">
+    <div class="shell croles">
+      {[
+        { t: 'Fund a pilot', p: 'Underwrite one of the four 2026 pilots end to end.' },
+        { t: 'Build the technology', p: 'Bring the model, the product, or the engineering team.' },
+        { t: 'Run it on the ground', p: 'A health system, district, university, or agency that will implement.' },
+      ].map((r, i) => (
+        <div class="crole" data-reveal={String(100 + i * 110)}>
+          <span class="index">{String(i + 1).padStart(2, '0')}</span>
+          <h2>{r.t}</h2>
+          <p>{r.p}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .chead { padding-block: calc(var(--nav-h) + clamp(5rem, 12vw, 10rem)) clamp(2rem, 5vw, 4rem); }
+  .chead__in { display: grid; gap: var(--stack-2); }
+  .cmail { justify-self: start; margin-top: 1.5rem; color: var(--brass); }
+  .croles { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); }
+  .crole { display: grid; gap: 0.8rem; align-content: start; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+  .crole h2 { font-family: var(--sans); font-size: var(--step-s); font-weight: 500; }
+  .crole p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 30ch; }
+  @media (max-width: 800px) { .croles { grid-template-columns: 1fr; } }
+</style>

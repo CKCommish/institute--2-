@@ -1,0 +1,31 @@
+---
+import Figure from '../Figure.astro';
+import { forum } from '../../data/site.js';
+---
+<section class="forum" aria-labelledby="forum-h">
+  <Figure src={forum.image} alt="" ratio="auto" grade={0.68} parallax={7} class="forum__bg" />
+  <div class="shell forum__in">
+    <p class="label forum__place" data-reveal>{forum.place}</p>
+    <h2 class="display display--xl forum__h lines" id="forum-h">{forum.name}</h2>
+    <p class="forum__line" data-reveal="480">{forum.line}</p>
+    <a class="forum__more link" href="/forum/" data-reveal="620">Inquire about the Forum</a>
+  </div>
+</section>
+
+<style>
+  .forum {
+    position: relative;
+    min-height: clamp(560px, 92svh, 900px);
+    display: grid; align-items: end;
+    isolation: isolate;
+  }
+  .forum__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
+  .forum__in {
+    width: 100%;
+    display: grid; gap: clamp(1rem, 2vw, 1.6rem);
+    padding-block: clamp(3rem, 8vw, 7rem);
+  }
+  .forum__h { max-width: 12ch; }
+  .forum__line { color: color-mix(in srgb, var(--cream) 74%, transparent); max-width: 36ch; text-wrap: pretty; }
+  .forum__more { justify-self: start; font-size: var(--step-label); letter-spacing: 0.145em; text-transform: uppercase; font-weight: 500; margin-top: 0.5rem; }
+</style>

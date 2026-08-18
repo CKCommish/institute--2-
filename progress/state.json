@@ -1,0 +1,62 @@
+{
+  "updated": "2026-08-18 20:10 UTC",
+  "wave": 0,
+  "waveTitle": "Foundation",
+  "summary": "Identity, tokens, motion engine, six page shells built. Oryzo reference captured (17 frames). Media sourcing underway.",
+  "pieces": [
+    {
+      "id": "scroll",
+      "name": "Scroll narrative & homepage scenes",
+      "status": "building",
+      "round": 0,
+      "verdict": "",
+      "gap": ""
+    },
+    {
+      "id": "pilots",
+      "name": "Pilot cards & pilot detail",
+      "status": "building",
+      "round": 0,
+      "verdict": "",
+      "gap": ""
+    },
+    {
+      "id": "people",
+      "name": "People grid",
+      "status": "building",
+      "round": 0,
+      "verdict": "",
+      "gap": ""
+    },
+    {
+      "id": "forum",
+      "name": "Forum & photography treatment",
+      "status": "building",
+      "round": 0,
+      "verdict": "",
+      "gap": ""
+    },
+    {
+      "id": "type",
+      "name": "Type, colour, motion",
+      "status": "building",
+      "round": 0,
+      "verdict": "",
+      "gap": ""
+    },
+    {
+      "id": "mobile",
+      "name": "Mobile",
+      "status": "queued",
+      "round": 0,
+      "verdict": "",
+      "gap": ""
+    }
+  ],
+  "log": [
+    {
+      "t": "Wave 0",
+      "m": "Foundation: navy/cream/brass identity, Newsreader + Libre Franklin self-hosted, reveal/line-mask/parallax motion engine, six pages. Oryzo captured at 1440x900 and 390x844."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import Figure from '../components/Figure.astro';
+import { founders, board } from '../data/site.js';
+---
+<Base title="People" description="Founders and prospective board of the Lion Forum Institute.">
+  <section class="pehead">
+    <div class="shell pehead__in">
+      <p class="label" data-reveal>People</p>
+      <h1 class="display display--hero lines">The people accountable for the work.</h1>
+    </div>
+  </section>
+
+  <section class="scene">
+    <div class="shell founders">
+      {founders.map((f, i) => (
+        <article class="fcard" data-reveal={String(100 + i * 120)}>
+          <Figure src={f.portrait} alt={f.name} ratio="4 / 5" grade={0.28} />
+          <div class="fcard__body">
+            <p class="label label--brass">{f.role}</p>
+            <h2 class="display display--m">{f.name}</h2>
+            <ul class="fcard__lines">{f.lines.map((l) => <li>{l}</li>)}</ul>
+            <p class="fcard__detail">{f.detail}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="scene on-cream">
+    <div class="shell boardsec">
+      <header class="boardsec__head">
+        <p class="label" data-reveal>Prospective board</p>
+        <h2 class="display display--l lines">Advising the pilots, and opening the doors they need.</h2>
+      </header>
+      <ul class="boardgrid">
+        {board.map((b, i) => (
+          <li data-reveal={String(60 + (i % 4) * 60)}>
+            <span class="boardgrid__n">{b.name}</span>
+            <span class="boardgrid__t">{b.line}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pehead { padding-block: calc(var(--nav-h) + clamp(5rem, 12vw, 10rem)) clamp(2rem, 5vw, 4rem); }
+  .pehead__in { display: grid; gap: var(--stack-2); }
+  .pehead .display { max-width: 15ch; }
+  .founders { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(2rem, 5vw, 4rem); }
+  .fcard { display: grid; gap: clamp(1rem, 2vw, 1.5rem); }
+  .fcard__body { display: grid; gap: 0.7rem; }
+  .fcard__lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; color: var(--fg-mute); font-size: var(--step-xs); }
+  .fcard__detail { color: var(--fg-faint); font-size: var(--step-xs); max-width: 40ch; }
+  .boardsec { display: grid; gap: clamp(2rem, 5vw, 4rem); }
+  .boardsec__head { display: grid; gap: var(--stack-2); }
+  .boardsec__head .display { max-width: 20ch; }
+  .boardgrid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1.25rem, 3vw, 2.25rem); }
+  .boardgrid li { display: grid; gap: 0.3rem; padding-top: 0.9rem; border-top: 1px solid var(--rule); }
+  .boardgrid__n { font-size: var(--step-xs); font-weight: 500; }
+  .boardgrid__t { font-size: var(--step-label); letter-spacing: 0.02em; color: var(--fg-mute); line-height: 1.4; }
+  @media (max-width: 900px) { .boardgrid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 620px) { .founders { grid-template-columns: 1fr; } }
+</style>

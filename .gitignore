@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+*.log
+progress/shots/
+tools/t.mjs
+tools/rawconnect.mjs
+tools/proxy-relay.mjs

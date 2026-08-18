@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import { method } from '../data/site.js';
+---
+<Base title="Institute" description="How the Lion Forum Institute works: short pilots, real partners, published results.">
+  <section class="ihead">
+    <div class="shell ihead__in">
+      <p class="label" data-reveal>The Institute</p>
+      <h1 class="display display--hero lines">We sit between the people building it and the people who have to use it.</h1>
+    </div>
+  </section>
+
+  <section class="scene">
+    <div class="shell iwork">
+      <div class="iwork__side">
+        <p class="label" data-reveal>Between</p>
+      </div>
+      <div class="iwork__cols">
+        <div class="iwork__col" data-reveal="120">
+          <p class="label label--brass">Builders</p>
+          <ul><li>Technology companies</li><li>Founders</li><li>Research labs</li></ul>
+        </div>
+        <div class="iwork__col" data-reveal="220">
+          <p class="label label--brass">Institutions</p>
+          <ul><li>Health systems</li><li>Universities</li><li>Community organizations</li><li>Government</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene on-cream">
+    <div class="shell imethod">
+      <h2 class="display display--l lines">Every pilot runs the same way.</h2>
+      <ol class="imethod__list">
+        {method.map((m, i) => (
+          <li data-reveal={String(120 + i * 110)}>
+            <span class="index">{m.index}</span>
+            <h3>{m.title}</h3>
+            <p>{m.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ihead { padding-block: calc(var(--nav-h) + clamp(5rem, 12vw, 10rem)) clamp(2rem, 5vw, 4rem); }
+  .ihead__in { display: grid; gap: var(--stack-2); }
+  .ihead .display { max-width: 17ch; }
+  .iwork { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: clamp(1.5rem, 4vw, 4rem); }
+  .iwork__cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1.5rem, 4vw, 4rem); }
+  .iwork__col { display: grid; gap: 1rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+  .iwork__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; color: var(--fg-mute); font-size: var(--step-xs); }
+  .imethod { display: grid; gap: clamp(2rem, 5vw, 4rem); }
+  .imethod .display { max-width: 16ch; }
+  .imethod__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); }
+  .imethod__list li { display: grid; gap: 0.8rem; align-content: start; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+  .imethod__list h3 { font-family: var(--sans); font-size: var(--step-s); font-weight: 500; }
+  .imethod__list p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 30ch; }
+  @media (max-width: 860px) {
+    .iwork, .iwork__cols, .imethod__list { grid-template-columns: 1fr; }
+  }
+</style>

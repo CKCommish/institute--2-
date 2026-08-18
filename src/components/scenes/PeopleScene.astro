@@ -1,0 +1,52 @@
+---
+import { founders, board } from '../../data/site.js';
+import Figure from '../Figure.astro';
+---
+<section class="people scene" id="people" aria-labelledby="people-h">
+  <div class="shell people__in">
+    <header class="people__head">
+      <p class="label" data-reveal>People</p>
+      <h2 class="display display--l people__h lines" id="people-h">Founded by two people who have built and governed.</h2>
+    </header>
+
+    <div class="people__founders">
+      {founders.map((f, i) => (
+        <article class="founder" data-reveal={String(120 + i * 120)}>
+          <Figure src={f.portrait} alt={f.name} ratio="4 / 5" grade={0.3} class="founder__fig" />
+          <h3 class="founder__name">{f.name}</h3>
+          <p class="founder__role">{f.lines[0]}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="people__board" data-reveal="200">
+      <p class="label people__board-label">Prospective board</p>
+      <ul class="people__board-list">
+        {board.map((b) => <li>{b.name}</li>)}
+      </ul>
+      <a class="link people__more" href="/people/">All people</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .people__in { display: grid; gap: clamp(2.5rem, 6vw, 5rem); }
+  .people__head { display: grid; gap: var(--stack-2); }
+  .people__h { max-width: 20ch; }
+
+  .people__founders { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1.25rem, 3vw, 2.5rem); max-width: 780px; }
+  .founder { display: grid; gap: 0.9rem; }
+  .founder__name { font-family: var(--sans); font-size: var(--step-s); font-weight: 500; }
+  .founder__role { color: var(--fg-mute); font-size: var(--step-xs); }
+
+  .people__board { display: grid; gap: 1.25rem; padding-top: clamp(1.5rem, 3vw, 2.5rem); border-top: 1px solid var(--rule); }
+  .people__board-list {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem clamp(1rem, 2.5vw, 2rem);
+    font-size: var(--step-xs); color: var(--fg-mute);
+  }
+  .people__more { justify-self: start; font-size: var(--step-label); letter-spacing: 0.145em; text-transform: uppercase; font-weight: 500; }
+  @media (max-width: 900px) { .people__board-list { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .people__founders { grid-template-columns: 1fr; max-width: 420px; } }
+</style>
