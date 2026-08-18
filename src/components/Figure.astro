@@ -50,8 +50,14 @@ const isFill = fill === undefined ? ratio === 'auto' : !!fill;
    that 404s, and let the designed plate below stand in. */
 const onDisk = (p) => {
   if (typeof p !== 'string' || !p.startsWith('/')) return typeof p === 'string';
-  try { return fs.existsSync(new URL(`../../public${p}`, import.meta.url)); }
-  catch { return true; }
+  /* `import.meta.url` points at this file under `astro dev`, but at a compiled
+     chunk under `astro build`, where `../../public` resolves to nothing. Checked
+     alone it renders every photograph in dev and silently ships a production
+     build with no photography at all, which is exactly what happened once.
+     Resolve from the project root too, and only fall back to trusting the path
+     if neither lookup can run. */
+  try { if (fs.existsSync(new URL(`../../public${p}`, import.meta.url))) return true; } catch { /* build */ }
+  try { return fs.existsSync(`${process.cwd()}/public${p}`); } catch { return true; }
 };
 const candidates = (Array.isArray(src) ? src : [src]).filter(Boolean);
 const file = candidates.find(onDisk);

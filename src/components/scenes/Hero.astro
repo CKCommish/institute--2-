@@ -217,8 +217,17 @@ import { pilots } from '../../data/site.js';
     .hero__h { max-width: none; }
   }
 
+  /* Below this the four titles cannot sit on one line beside the label and
+     the scroll cue, so the rail becomes two registers instead of one. */
   @media (max-width: 900px) {
     .hero__lede { justify-self: start; max-width: 30ch; }
+    .hero__index { grid-template-columns: minmax(0, 1fr) auto; }
+    .hero__index-list {
+      grid-column: 1 / -1; order: 3;
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem 1rem;
+    }
+    .hero__index-list li { white-space: normal; }
   }
 
   @media (max-width: 760px) {
@@ -228,13 +237,4 @@ import { pilots } from '../../data/site.js';
     .hero__lede { align-self: end; max-width: 34ch; }
   }
 
-  @media (max-width: 700px) {
-    .hero__index { grid-template-columns: minmax(0, 1fr) auto; }
-    .hero__index-list {
-      grid-column: 1 / -1; order: 3;
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.5rem 1rem;
-    }
-    .hero__index-list li { white-space: normal; }
-  }
 </style>
