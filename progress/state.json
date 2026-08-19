@@ -1,40 +1,40 @@
 {
-  "updated": "2026-08-19 18:55 UTC",
-  "wave": 3,
-  "waveTitle": "From disciplined to designed",
-  "summary": "Wave 2 closed: ours won all fifteen blind comparisons \u2014 several clean sweeps (15/15, 14/15, 12/12) \u2014 the audit reports zero issues across twelve page-views, and every Wave 1 root cause is measurably dead. Fifteen critics for fifteen still refused to be wowed, in almost the same words: \"it wins by not making mistakes rather than by making anything.\" Wave 3 goes after that: one compositional armature repeated on every scene, one tonal event in 5,814px, and a navy grade flattening excellent photography to within seven luminance points of blank background.",
+  "updated": "2026-08-19 23:56 UTC",
+  "wave": 4,
+  "waveTitle": "Tonal rhythm, the held scene, and two editorial calls",
+  "summary": "Wave 3 broke through: all five pieces won their blind comparison AND were wowed, each with a named moment \u2014 the mother-and-infant scene with type ranged right into the one empty patch of wall; a 40-star flag on a committee room axis with the display set to that axis; a goal sentence broken across a full-bleed twelve-month rule; a 245px \"16\" seated at the end of a conference table; a masthead baseline registered to a breakwater silhouette. Audit clean, 0 type-over-photograph failures, homepage body copy 106 words. Wave 4 is narrow: the ground still changes only once and early, /pilots/ is four unrelated shapes, and two photographs of real people need editorial decisions.",
   "pieces": [
     {
       "id": "scroll",
       "name": "Scroll narrative & homepage scenes",
       "status": "looping",
-      "round": 7,
-      "verdict": "won 12/15 \u00b7 13/15",
-      "gap": "Six scenes drawn with one move; the hero is the quietest banner on the site"
+      "round": 9,
+      "verdict": "WOWED \u00b7 15/16",
+      "gap": "79% of the scroll sits in a 5.7-point luminance band \u2014 one exception, still one ground"
     },
     {
       "id": "pilots",
       "name": "Pilot cards & pilot detail",
       "status": "looping",
-      "round": 7,
-      "verdict": "won 12/12 \u00b7 10/12",
-      "gap": "The anchor payoff sits at 53px with 865px of unbounded void beside it"
+      "round": 9,
+      "verdict": "WOWED \u00b7 14/14",
+      "gap": "Four pilots built as four unrelated shapes; the wowed moment is the one place with no grid"
     },
     {
       "id": "people",
       "name": "People grid",
-      "status": "looping",
+      "status": "passed",
       "round": 7,
-      "verdict": "won 10/11 \u00b7 9/10",
-      "gap": "The design ranks two co-founders who hold the same title"
+      "verdict": "WOWED \u00b7 12/12",
+      "gap": "\u2014"
     },
     {
       "id": "forum",
       "name": "Forum & photography treatment",
-      "status": "looping",
+      "status": "passed",
       "round": 7,
-      "verdict": "won 9/10 \u00b7 7/9",
-      "gap": "No reading size anywhere: four slogans, a harbour and a mailto"
+      "verdict": "WOWED \u00b7 11/11",
+      "gap": "\u2014"
     },
     {
       "id": "type",
@@ -42,7 +42,7 @@
       "status": "passed",
       "round": 0,
       "verdict": "done",
-      "gap": "Nine-rung ladder, three micro registers, three motion vectors \u2014 all shipped"
+      "gap": "Nine-rung ladder, three micro registers, three motion vectors"
     },
     {
       "id": "mobile",
@@ -50,15 +50,15 @@
       "status": "passed",
       "round": 0,
       "verdict": "done",
-      "gap": "Focus trap, tap targets and tablet/wide breakpoints closed"
+      "gap": "Focus trap, tap targets, tablet and wide breakpoints"
     },
     {
       "id": "chrome",
       "name": "Nav, footer, Institute & Partner",
       "status": "looping",
-      "round": 7,
-      "verdict": "won 15/15 \u00b7 12/12",
-      "gap": "The one designed object is 8% of the page; the sentence restating it takes the rest"
+      "round": 9,
+      "verdict": "WOWED \u00b7 10/10",
+      "gap": "/partner/ uses a real identifiable child as wallpaper behind an email address"
     },
     {
       "id": "media",
@@ -66,7 +66,7 @@
       "status": "passed",
       "round": 0,
       "verdict": "done",
-      "gap": "Seven public-domain frames; regrade underway so the pictures read as pictures"
+      "gap": "Seven public-domain frames; grade rebuilt so photographs read as photographs"
     }
   ],
   "log": [
@@ -101,6 +101,18 @@
     {
       "t": "Wave 3",
       "m": "Regrade the photography and extend the ground system first, then five owners break the single left-column armature and earn one designed moment per page."
+    },
+    {
+      "t": "Wave 3 closed",
+      "m": "First wows: 5 of 5. A tool of mine was blind \u2014 audit.mjs reads the DOM background, so cream type over a lit photograph measured against --ink-900 and passed. 22 pieces of type were illegible. photo-meter.mjs now measures real backdrop luminance; failures 22 to 0."
+    },
+    {
+      "t": "Reference re-read",
+      "m": "Measured rather than inferred: the reference's DOM is inert \u2014 all its motion is one fixed WebGL canvas. The transferable idea is structural and free: hold the visual, move the type. Our site does the inverse."
+    },
+    {
+      "t": "Wave 4",
+      "m": "A held-scene primitive (one scene site-wide, not a gimmick), a real tonal spine, one pilot shape with variation, and two editorial calls about photographs of identifiable people."
     }
   ]
 }
