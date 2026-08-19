@@ -70,6 +70,14 @@ const file = candidates.find(onDisk);
 const webp = file && /\.(jpe?g|png)$/i.test(file) ? file.replace(/\.(jpe?g|png)$/i, '.webp') : undefined;
 const webpFile = webp && onDisk(webp) ? webp : undefined;
 
+/* …and a sibling `name@1200.ext` narrow crop when the sourcing agent has cut
+   one. A phone is asking for a 390pt frame; handing it the 2400px plate costs
+   three quarters of the page weight for pixels it cannot show. */
+const small = (p) => (p ? p.replace(/(\.[a-z0-9]+)$/i, '@1200$1') : undefined);
+const webpSm = webpFile && onDisk(small(webpFile)) ? small(webpFile) : undefined;
+const fileSm = file && onDisk(small(file)) ? small(file) : undefined;
+const SM = '(max-width: 760px)';
+
 /* Deterministic variation for the fallback plate: light position and base
    gradient angle are hashed from the source path. Same file → same plate. */
 const key = String(candidates[0] || alt || 'plate');
@@ -82,6 +90,7 @@ const lx = 16 + (h % 9) * 8;          // 16–80 %
 const ly = 4 + ((h >>> 4) % 6) * 8;   // 4–44 %
 const ang = 156 + ((h >>> 8) % 10) * 3; // 156–183 deg
 const flip = (h >>> 12) % 2 ? 1 : -1;
+const hz = 44 + ((h >>> 16) % 6) * 6;   // 44–74 % — where the plate's horizon sits
 
 /* Parallax overscan: the media box is grown by more than the travel so the
    photograph can never expose its own edge. */
@@ -98,6 +107,7 @@ const style = [
   `--ly:${ly}%`,
   `--ang:${ang}deg`,
   `--tilt:${flip * 6}%`,
+  `--hz:${hz}%`,
   `--over:${over}%`,
 ].join(';');
 ---
@@ -112,7 +122,9 @@ const style = [
   <div class="fig__media" data-parallax={parallax || undefined}>
     {file && (
       <picture>
+        {webpSm && <source type="image/webp" media={SM} srcset={webpSm} />}
         {webpFile && <source type="image/webp" srcset={webpFile} sizes={sizes} />}
+        {fileSm && <source media={SM} srcset={fileSm} />}
         <img
           src={file}
           alt={alt}
@@ -158,16 +170,36 @@ const style = [
     inset: 0;
     z-index: 0;
     background:
+      /* an engraved hairline field — the plate is a made surface, not a gap */
+      repeating-linear-gradient(0deg,
+        rgba(226, 238, 255, 0.026) 0 1px, transparent 1px 7px),
+      /* the light that sits on the water just above the horizon */
+      radial-gradient(64% 26% at calc(50% + var(--tilt)) calc(var(--hz) - 5%),
+        rgba(206, 178, 124, 0.10) 0%, rgba(150, 178, 210, 0.05) 44%, transparent 72%),
       /* one brass kiss of light, placed by the seed */
       radial-gradient(50% 38% at var(--lx) var(--ly),
         rgba(206, 178, 124, 0.13) 0%, rgba(206, 178, 124, 0.03) 40%, transparent 66%),
       /* cool fill opposite it */
       radial-gradient(86% 60% at calc(100% - var(--lx)) 26%,
         rgba(26, 62, 96, 0.44) 0%, transparent 66%),
-      /* horizon lift off the bottom edge */
-      radial-gradient(150% 54% at calc(50% + var(--tilt)) 108%,
-        rgba(15, 40, 64, 0.58) 0%, transparent 62%),
+      /* the ground below the horizon reads darker than the sky above it */
+      linear-gradient(180deg,
+        transparent 0%, transparent calc(var(--hz) - 1px),
+        rgba(3, 9, 16, 0.55) calc(var(--hz) + 1px), rgba(2, 6, 12, 0.72) 100%),
       linear-gradient(var(--ang), #0A1B2C 0%, #06121F 48%, #030910 100%);
+  }
+  /* the horizon itself: one drawn line, so an empty frame is still composed */
+  .fig__plate::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: var(--hz);
+    height: 1px;
+    background: linear-gradient(to right,
+      transparent 0%,
+      color-mix(in srgb, var(--brass) 46%, transparent) 18%,
+      color-mix(in srgb, var(--brass) 46%, transparent) 82%,
+      transparent 100%);
+    opacity: 0.52;
   }
   /* a single soft band keeps the plate from reading as a flat gradient */
   .fig__plate::after {

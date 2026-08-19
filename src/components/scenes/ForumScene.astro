@@ -13,9 +13,9 @@ import { forum } from '../../data/site.js';
 
     <div class="forum__cells">
       <p class="forum__line" data-reveal="560">{forum.line}</p>
-      <a class="forum__more" href="/forum/" data-reveal="660">
+      <a class="forum__more tap" href="/forum/" data-reveal="660">
         {forum.cta}
-        <svg viewBox="0 0 14 10" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
+        <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
       </a>
     </div>
   </div>
@@ -35,7 +35,6 @@ import { forum } from '../../data/site.js';
     padding-block: clamp(3rem, 8vw, 7rem) clamp(1.5rem, 2.6vw, 2.6rem);
   }
 
-  .forum__place { color: color-mix(in srgb, var(--cream) 62%, transparent); }
   .forum__h { max-width: 12ch; margin-top: clamp(0.9rem, 1.6vw, 1.5rem); }
 
   /* Local motion primitive: hairline that draws in on reveal (not in
@@ -68,8 +67,7 @@ import { forum } from '../../data/site.js';
     text-transform: uppercase; font-weight: 500;
     padding-top: 0.35em;
   }
-  .forum__more svg { width: 0.95em; height: auto; transition: transform 460ms var(--ease-out); }
-  .forum__more:hover svg { transform: translateX(4px); }
+  .forum__more:hover :global(.arrow) { transform: translateX(4px); }
   /* local hover rule — the shared .link underline assumes inline-block */
   .forum__more { position: relative; }
   .forum__more::after {

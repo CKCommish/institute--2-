@@ -1,50 +1,44 @@
 ---
 import { method } from '../../data/site.js';
-
-/* The operating terms. Numerals only — the same three facts the cream scene
-   used to carry as a decorative ledger, moved here where they are evidence
-   for the sequence above them. Held locally because this piece may not add
-   keys to src/data/site.js. */
-const terms = [
-  { n: '3–12', k: 'Months per pilot' },
-  { n: '01', k: 'Measured outcome' },
-  { n: '04', k: 'Pilots running now' },
-];
 ---
-<!-- The answer to the cream scene's asterisk. One continuous rule running the
-     width of the page, ending in an arrow, with three stops hung beneath it —
-     a sequence, not three columns — and the terms it runs on closing the
-     frame at the foot. -->
+<!-- The answer to the cream scene's asterisk, and the page's tightest beat:
+     a section thesis held on the left, the mechanism as three ranked rows on
+     the right.
+
+     It used to be three anonymous columns whose titles were set at 51px — as
+     loud as the section head that introduces the pilots, so a sub-item
+     outranked its own section. The section head is now the only display type
+     here; the steps drop to the page's mid tier (~26px), which puts four
+     ranked sizes in one scene: 50 / 26 / 15 / 10.5. -->
 <section class="method" id="method" aria-labelledby="method-h">
   <div class="shell method__in">
-    <header class="method__head">
-      <h2 class="label method__eyebrow" id="method-h" data-reveal>How we work</h2>
+    <div class="method__head">
+      <p class="label method__eyebrow" data-reveal>The method</p>
       <p class="label tnum method__meta" data-reveal="70">01 — 03</p>
-    </header>
+    </div>
 
-    <ol class="method__steps">
-      <span class="method__track" aria-hidden="true" data-reveal="80"></span>
-      <span class="method__tip" aria-hidden="true" data-reveal="460"></span>
-      {method.map((m, i) => (
-        <li class="step" data-reveal={String(150 + i * 100)}>
-          <span class="step__node" aria-hidden="true"></span>
-          <div class="step__body">
-            <span class="index step__i">{m.index}</span>
-            <h3 class="display step__t">{m.title}</h3>
-            <p class="step__p">{m.text}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
+    <span class="method__rule" aria-hidden="true" data-reveal="60"></span>
 
-    <dl class="method__terms">
-      {terms.map((t, i) => (
-        <div class="term" data-reveal={String(380 + i * 60)}>
-          <dt class="tnum term__n">{t.n}</dt>
-          <dd class="label term__k">{t.k}</dd>
-        </div>
-      ))}
-    </dl>
+    <div class="method__grid">
+      <div class="method__thesis">
+        <h2 class="display method__h lines" id="method-h">How we work.</h2>
+
+        <p class="method__stat" data-reveal="320">
+          <span class="method__stat-n tnum">3&ndash;12</span>
+          <span class="method__stat-k">Months<br />per pilot</span>
+        </p>
+      </div>
+
+      <ol class="method__steps">
+        {method.map((m, i) => (
+          <li class="mstep" data-reveal={String(140 + i * 120)}>
+            <span class="index mstep__i">{m.index}</span>
+            <h3 class="mstep__t">{m.title}</h3>
+            <p class="mstep__p">{m.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
   </div>
 </section>
 
@@ -52,192 +46,141 @@ const terms = [
   .method {
     position: relative;
     background: var(--ink-800);
-    padding-block: clamp(4.5rem, 2.4rem + 7.2vw, 9rem);
+    padding-block: clamp(3.75rem, 2rem + 5.4vw, 7rem);
     border-top: 1px solid var(--rule-soft);
     border-bottom: 1px solid var(--rule-soft);
   }
-  .method__in { display: grid; gap: clamp(2.25rem, 4.6vw, 3.75rem); }
+  .method__in { display: grid; }
 
   .method__head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     gap: 1.5rem;
+    margin-bottom: clamp(0.7rem, 1.6vw, 1.1rem);
   }
   /* Local durations: the house --dur-2/--dur-3 pair runs 1.15s, so a scene
-     with five staggered objects would still be arriving two seconds after it
+     with six staggered objects would still be arriving two seconds after it
      is on screen. Everything here lands inside one. */
   .method__eyebrow[data-reveal],
   .method__meta[data-reveal],
-  .term[data-reveal] { transition-duration: 520ms, 640ms; }
+  .method__stat[data-reveal],
+  .mstep[data-reveal] { transition-duration: 520ms, 640ms; }
 
-  .method__eyebrow { color: var(--cream); }
   .method__meta { color: var(--fg-faint); text-align: right; }
 
-  .method__steps {
-    list-style: none; margin: 0; padding: 0;
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: auto auto auto;
-    column-gap: clamp(1.5rem, 4vw, 4rem);
-  }
-
-  /* the track the sequence runs along */
-  .method__track {
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 1px; background: var(--rule);
+  /* Local motion primitive: hairline that draws left→right on reveal. */
+  .method__rule {
+    display: block; height: 1px; width: 100%;
+    background: var(--rule);
     transform-origin: left;
   }
-  .method__track[data-reveal] {
+  .method__rule[data-reveal] {
     opacity: 1; transform: scaleX(0);
-    transition: transform 820ms var(--ease-out) var(--reveal-delay, 0ms);
+    transition: transform 860ms var(--ease-out) var(--reveal-delay, 0ms);
   }
-  .method__track.is-in { transform: scaleX(1); }
+  .method__rule.is-in { transform: scaleX(1); }
 
-  /* Terminus. The one mark that turns three stops into a direction.
-     Local primitive — no arrowhead token exists. */
-  .method__tip {
-    position: absolute; top: 0; right: 0;
-    width: 9px; height: 9px;
-    border-top: 1px solid var(--brass);
-    border-right: 1px solid var(--brass);
-    transform-origin: center;
-  }
-  /* own reveal, so base.css's translate/none does not eat the rotation */
-  .method__tip[data-reveal] {
-    opacity: 0;
-    transform: translate(-10px, -50%) rotate(45deg);
-    transition: opacity 420ms var(--ease-out) var(--reveal-delay, 0ms),
-                transform 620ms var(--ease-out) var(--reveal-delay, 0ms);
-  }
-  .method__tip.is-in { opacity: 1; transform: translate(0, -50%) rotate(45deg); }
-
-  /* ── Stops ────────────────────────────────────────────────────────
-     This scene does not enter the way the rest of the page does. Instead of
-     the house 14px lift, each stop is unmasked downward off the track it
-     hangs from, so the diagram appears to be drawn rather than to arrive.
-     The clip lives on an inner element: a li clipped to zero height would
-     never trip the observer meant to un-clip it. */
-  /* Subgrid twice over, so index / title / line share three rows across all
-     three stops: the longest title may run to two lines without stepping the
-     other two supporting lines off the baseline. */
-  .step {
-    position: relative;
-    padding-top: clamp(1.7rem, 3vw, 2.8rem);
-    grid-row: span 3;
+  /* ── The split ────────────────────────────────────────────────────
+     Thesis left, sequence right. Not three equal columns. */
+  .method__grid {
     display: grid;
-    grid-template-rows: subgrid;
-  }
-  .step[data-reveal] { opacity: 1; transform: none; transition: none; }
-  .step__body {
-    grid-row: span 3;
-    display: grid;
-    grid-template-rows: subgrid;
-    align-content: start;
-    clip-path: inset(0 0 100% 0);
-    transition: clip-path 720ms var(--ease-io) var(--reveal-delay, 0ms);
-  }
-  .step.is-in .step__body { clip-path: inset(0 0 -30% 0); }
-
-  .step__node {
-    position: absolute; top: -3px; left: 0;
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--brass);
-    transform: scale(0.3);
-    opacity: 0;
-    transition: transform 440ms var(--ease-out) var(--reveal-delay, 0ms),
-                opacity 320ms var(--ease-out) var(--reveal-delay, 0ms);
-  }
-  .step.is-in .step__node { transform: none; opacity: 1; }
-
-  .step__i { display: block; line-height: 1; }
-  /* The scene's one display register — ranked under the cream statement,
-     well under the hero thesis, but large enough to be read at a glance. */
-  .step__t {
-    display: block;
-    font-size: clamp(1.7rem, 1rem + 2.5vw, 3.2rem);
-    line-height: 1.02;
-    letter-spacing: -0.02em;
-    margin-top: 0.15rem;
-    text-wrap: balance;
-    align-self: start;
-  }
-  .step__p {
-    display: block;
-    color: var(--fg-mute);
-    font-size: var(--step-xs);
-    max-width: 24ch;
-    text-wrap: pretty;
-    margin-top: clamp(0.7rem, 1.4vw, 1.1rem);
-    align-self: start;
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.3fr);
+    column-gap: clamp(2rem, 6vw, 6.5rem);
+    padding-top: clamp(2rem, 4.4vw, 3.6rem);
   }
 
-  /* ── Terms ────────────────────────────────────────────────────────
-     A dense hairline strip, the smallest register in the scene, closing the
-     frame edge to edge under the sequence. */
-  .method__terms {
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: clamp(1.5rem, 4vw, 4rem);
-    border-top: 1px solid var(--rule-soft);
-    padding-top: clamp(1rem, 2.2vw, 1.6rem);
+  .method__thesis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(2rem, 5vh, 3.5rem);
   }
-  .term { display: flex; align-items: baseline; gap: 0.75rem; }
-  .term__n {
-    font-size: var(--step-s);
-    font-weight: 500;
-    letter-spacing: 0.01em;
+  /* The scene's ONLY display register, and deliberately quieter than the
+     section head that opens the pilots ledger below it. */
+  .method__h {
+    font-size: clamp(1.9rem, 0.85rem + 2.9vw, 3.05rem);
+    line-height: 0.98;
+    letter-spacing: -0.022em;
+    max-width: 9ch;
+  }
+
+  /* The one operating fact, hung in the corner of the column. */
+  .method__stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+  }
+  .method__stat-n {
+    font-size: clamp(1.35rem, 0.95rem + 1.05vw, 1.85rem);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.012em;
     color: var(--brass);
     white-space: nowrap;
   }
-  .term__k { margin: 0; color: var(--fg-faint); }
-  .method__terms .term:last-child { justify-content: flex-end; }
+  .method__stat-k {
+    font-size: 0.655rem;
+    font-weight: 500;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    line-height: 1.5;
+    color: var(--fg-faint);
+  }
 
-  @media (prefers-reduced-motion: reduce) {
-    .step__body { transition-duration: 1ms; clip-path: none; }
-    .step__node { transition-duration: 1ms; opacity: 1; transform: none; }
+  /* ── The three stops ──────────────────────────────────────────────
+     Rows on a hairline register, staggered 01 → 02 → 03. Each row holds one
+     numeral, one title and one line, at three clearly different sizes. */
+  .method__steps { list-style: none; margin: 0; padding: 0; }
+  .mstep {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: clamp(1rem, 2.4vw, 2rem);
+    align-items: baseline;
+    padding-block: clamp(1rem, 2.2vw, 1.5rem);
+    border-top: 1px solid var(--rule-soft);
+  }
+  .mstep:first-child { border-top: 0; padding-top: 0; }
+  .mstep:last-child { padding-bottom: 0; }
+
+  .mstep__i { grid-row: 1; }
+  /* The same three steps appear as a ledger on /institute/. One object, one
+     treatment: shared .index numeral, serif title, one rank quieter here so it
+     stays under the section head. */
+  .mstep__t {
+    grid-row: 1;
+    font-family: var(--serif);
+    font-size: clamp(1.24rem, 0.9rem + 0.92vw, 1.62rem);
+    font-weight: 320;
+    line-height: 1.1;
+    letter-spacing: -0.014em;
+  }
+  .mstep__p {
+    grid-column: 2;
+    margin-top: 0.4rem;
+    font-size: clamp(0.88rem, 0.85rem + 0.14vw, 0.95rem);
+    line-height: 1.5;
+    color: var(--fg-mute);
+    max-width: 30ch;
   }
 
   @media (max-width: 900px) {
-    .step__p { max-width: 20ch; }
+    .method__grid {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: clamp(2.25rem, 6vw, 3rem);
+    }
+    .method__thesis {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .method__h { max-width: none; }
+    .method__stat { align-self: baseline; }
   }
 
-  @media (max-width: 820px) {
-    /* track rotates: the same diagram, read downward */
-    .method__steps {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: clamp(1.9rem, 5vw, 2.6rem);
-      padding-left: 1.75rem;
-    }
-    .method__track {
-      top: 0; bottom: 0; left: 3px; right: auto;
-      width: 1px; height: auto;
-      transform-origin: top;
-    }
-    .method__track[data-reveal] { transform: scaleY(0); }
-    .method__track.is-in { transform: scaleY(1); }
-    .method__tip { top: auto; bottom: 0; left: 3px; right: auto; }
-    .method__tip[data-reveal] { transform: translate(-50%, -10px) rotate(135deg); }
-    .method__tip.is-in { transform: translate(-50%, 0) rotate(135deg); }
-    .step { padding-top: 0; grid-row: auto; display: block; }
-    .step__body { grid-row: auto; display: grid; grid-template-rows: auto; }
-    .step__node { top: 0.45em; left: -1.75rem; }
-    .step__p { max-width: 34ch; }
-
-    /* the terms become three flush rows, read as a spec block */
-    .method__terms {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: 0;
-    }
-    .term {
-      justify-content: flex-start;
-      gap: 1rem;
-      padding-block: clamp(0.55rem, 1.5vh, 0.8rem);
-      border-bottom: 1px solid var(--rule-soft);
-    }
-    .term__n { min-width: 3.4ch; }
-    .method__terms .term:last-child { justify-content: flex-start; border-bottom: 0; }
+  @media (max-width: 520px) {
+    .method__thesis { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+    .mstep { column-gap: 1rem; }
   }
 </style>

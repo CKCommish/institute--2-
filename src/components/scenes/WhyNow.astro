@@ -1,20 +1,33 @@
 ---
 import { whyNow } from '../../data/site.js';
 ---
-<!-- The page's one inversion, and its only silent scene. A single claim on a
-     cream field, an asterisk hung off its last word, and a footnote at the
-     foot of the frame that hands straight down into the method. No second
-     idea lives here — the operating facts moved to the scene below, where
-     they are evidence rather than decoration. -->
+<!-- The page's one inversion, and its only silent scene.
+
+     It is composed the opposite way round from the hero: the hero loads its
+     top-left corner and lets the photograph fall away beneath it; this loads
+     the FOOT of the frame and puts the cream above it as a held pause. Two
+     scenes in a row cannot land the same way, and the cut from a dark
+     top-weighted screen into an empty bottom-weighted one is the beat.
+
+     It also fixes the scene's motion. Held near the top of a short block the
+     claim was already inside the viewport before the section arrived, so the
+     page's thesis was the one line that never animated. Sitting on the foot
+     of a 78svh field it cannot be read before it moves, and it is staged:
+     claim, then the rule, then the footnote that points down into the answer. -->
 <section class="why on-cream" id="why" aria-labelledby="why-h">
-  <div class="shell why__in">
+  <!-- Eyebrow only. The corner opposite carries an item range on the two
+       scenes below ("01 — 03", "01 — 04"); a lone scene number here made the
+       same slot mean two different things on one page. -->
+  <div class="shell why__top">
     <p class="label why__label" data-reveal>Why now</p>
-    <h2 class="display why__h lines" id="why-h">{whyNow}</h2>
   </div>
 
+  <div class="why__pause" aria-hidden="true"></div>
+
   <div class="shell why__foot">
-    <span class="why__rule" aria-hidden="true" data-reveal="200"></span>
-    <p class="label why__note" data-reveal="340">
+    <h2 class="display why__h lines" id="why-h">{whyNow}</h2>
+    <span class="why__rule" aria-hidden="true" data-reveal="820"></span>
+    <p class="label why__note" data-reveal="980">
       <span class="why__note-ast" aria-hidden="true">*</span>Our answer
       <span class="why__note-arrow" aria-hidden="true"></span>
     </p>
@@ -24,42 +37,58 @@ import { whyNow } from '../../data/site.js';
 <style>
   .why {
     position: relative;
-    min-height: min(62svh, 580px);
+    min-height: min(78svh, 730px);
     display: grid;
-    grid-template-rows: 1fr auto;
-    padding-top: clamp(4.5rem, 12vh, 8rem);
-    padding-bottom: clamp(1.5rem, 4vh, 2.75rem);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    padding-top: clamp(1.5rem, 4.2vh, 3rem);
+    padding-bottom: clamp(1.5rem, 4vh, 2.8rem);
     overflow: hidden;
   }
 
-  /* ── Claim ──────────────────────────────────────────────────────── */
-  .why__in { position: relative; align-self: center; }
+  /* ── Corner stamps ──────────────────────────────────────────────── */
+  .why__top {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .why__label { color: var(--fg-mute); }
 
-  /* Local durations throughout this scene: the house --dur-2/--dur-3 pair
-     runs 1.15s, so a staggered scene needs most of two seconds to settle.
-     A statement this short should be finished arriving in one. */
-  .why__label[data-reveal] { transition-duration: 620ms, 760ms; }
-  :global(.why__h .line > span) { transition-duration: 820ms; }
-  .why__note[data-reveal] { transition-duration: 540ms, 660ms; }
+  /* The held pause. It is the scene's largest object and it is empty. */
+  .why__pause { min-height: clamp(3rem, 16vh, 9rem); }
 
-  .why__label {
-    display: block;
-    color: var(--fg-mute);
-    margin-bottom: clamp(0.7rem, 1.3vw, 1.1rem);
+  /* ── The claim, on the foot of the frame ────────────────────────── */
+  .why__foot {
+    align-self: end;
+    display: grid;
+    row-gap: clamp(1.5rem, 4vh, 2.6rem);
   }
 
-  /* Deliberately ranked below the hero thesis: this is the page's second
-     voice, not a competing poster. */
+  /* Local durations. The house --dur-2/--dur-3 pair runs 1.15s, so a staged
+     scene needs most of two seconds to settle; a statement this short should
+     be finished arriving in one. */
+  .why__label[data-reveal] { transition-duration: 560ms, 700ms; }
+  /* Authored, in three beats. motion.js stages its own lines 85ms apart,
+     which at this size reads as one object arriving; overridden here so the
+     claim lands line by line and the rule and the footnote follow it. */
+  :global(.why__h .line > span) { transition-duration: 900ms; transition-delay: 140ms; }
+  :global(.why__h .line:nth-child(2) > span) { transition-delay: 360ms; }
+  :global(.why__h .line:nth-child(3) > span) { transition-delay: 560ms; }
+  .why__note[data-reveal] { transition-duration: 520ms, 640ms; }
+
+  /* Ranked under the hero thesis, above everything else on the page. Measure
+     is set in em so the break holds at every width. */
   .why__h {
-    font-size: clamp(2.2rem, 0.2rem + 5.6vw, 5.4rem);
-    line-height: 0.98;
-    letter-spacing: -0.03em;
+    font-size: clamp(2.15rem, 0.28rem + 5vw, 4.7rem);
+    line-height: 1.0;
+    letter-spacing: -0.028em;
+    max-width: min(12.6em, 100%);
     text-wrap: initial;
-    max-width: 30ch;
   }
 
-  /* Footnote mark, hung off the end of the last line of the statement and
-     answered at the foot of the frame. Attached to the masked line motion.js
+  /* Footnote mark, hung off the end of the last line of the claim and
+     answered in the bottom corner. Attached to the masked line motion.js
      builds, so it always lands on the final line at any width.
      :global — motion.js builds .line/span at runtime, so they never carry
      Astro's scope attribute. .why__h keeps the selector local in practice. */
@@ -70,14 +99,6 @@ import { whyNow } from '../../data/site.js';
     vertical-align: 0.88em;
     margin-left: 0.14em;
     letter-spacing: 0;
-  }
-
-  /* ── The hand-off ───────────────────────────────────────────────── */
-  .why__foot {
-    align-self: end;
-    display: grid;
-    row-gap: clamp(0.7rem, 1.6vh, 1.1rem);
-    padding-top: clamp(2.5rem, 8vh, 5rem);
   }
 
   /* Local motion primitive: hairline that draws left→right on reveal. */
@@ -91,7 +112,7 @@ import { whyNow } from '../../data/site.js';
   .why__rule[data-reveal] {
     opacity: 1;
     transform: scaleX(0);
-    transition: transform 820ms var(--ease-out) var(--reveal-delay, 0ms);
+    transition: transform 880ms var(--ease-out) var(--reveal-delay, 0ms);
   }
   .why__rule.is-in { transform: scaleX(1); }
 
@@ -100,6 +121,7 @@ import { whyNow } from '../../data/site.js';
     display: flex;
     align-items: center;
     gap: 0.55rem;
+    margin-top: calc(clamp(1.5rem, 4vh, 2.6rem) * -0.55);
     color: var(--fg-mute);
   }
   .why__note-ast { font-family: var(--serif); font-size: 1.3em; color: var(--brass); line-height: 1; }
@@ -114,20 +136,12 @@ import { whyNow } from '../../data/site.js';
     margin-left: 0.35rem;
   }
 
-  @media (max-width: 1100px) {
-    .why__h { max-width: 22ch; }
-  }
-
-  @media (max-width: 900px) {
-    .why__h { max-width: 16ch; }
-  }
-
   @media (max-width: 700px) {
     .why {
-      min-height: min(56svh, 480px);
-      padding-top: clamp(3rem, 7vh, 5rem);
+      min-height: min(70svh, 600px);
+      padding-top: clamp(1.25rem, 3.2vh, 2rem);
     }
-    .why__h { max-width: none; }
-    .why__foot { padding-top: clamp(2rem, 6vh, 3rem); }
+    .why__h { max-width: none; letter-spacing: -0.024em; }
+    .why__foot { row-gap: clamp(1.25rem, 3vh, 1.9rem); }
   }
 </style>

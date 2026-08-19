@@ -20,10 +20,10 @@ import Figure from '../Figure.astro';
             <span class="label pilot__partner">{p.partner}</span>
             <span class="display pilot__title">{p.title}</span>
             <span class="pilot__v" aria-hidden="true"></span>
-            <span class="label pilot__field">{p.field} · {p.horizon}</span>
+            <span class="label pilot__field">{p.field}</span>
             <span class="pilot__tag">{p.tagline}</span>
             <span class="pilot__arrow" aria-hidden="true">
-              <svg viewBox="0 0 22 10"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+              <svg class="arrow" viewBox="0 0 22 10"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
             </span>
           </a>
         </li>
@@ -56,7 +56,6 @@ import Figure from '../Figure.astro';
     row-gap: var(--stack-2);
     margin-bottom: clamp(2.25rem, 5vw, 4rem);
   }
-  .pilots__eyebrow { color: var(--cream); }
   .pilots__count { color: var(--fg-faint); font-variant-numeric: tabular-nums; }
   .pilots__h { grid-column: 1 / -1; max-width: 20ch; }
 
@@ -103,7 +102,7 @@ import Figure from '../Figure.astro';
 
   /* same micro-label grammar as the /pilots/ nameplate: 0.18em tracking,
      number + partner left, sector · horizon flush right, one baseline. */
-  .pilot__i { grid-column: 1; grid-row: 1; letter-spacing: 0.18em; }
+  .pilot__i { grid-column: 1; grid-row: 1; }
   .pilot__partner, .pilot__field { letter-spacing: 0.18em; }
   .pilot__partner {
     grid-column: 2; grid-row: 1;
@@ -138,7 +137,7 @@ import Figure from '../Figure.astro';
     opacity: 0; transform: translateX(-10px);
     transition: opacity 380ms var(--ease-out), transform 520ms var(--ease-out);
   }
-  .pilot__arrow svg { width: 100%; height: auto; }
+  .pilot__arrow :global(.arrow) { width: 100%; }
 
   @media (hover: hover) {
     [data-pilot-list]:hover .pilot__a { opacity: 0.4; }
@@ -220,7 +219,7 @@ import Figure from '../Figure.astro';
     .pilot__v { display: none; }
     /* same micro-label grammar as the /pilots/ nameplate: 0.18em tracking,
      number + partner left, sector · horizon flush right, one baseline. */
-  .pilot__i { grid-column: 1; grid-row: 1; letter-spacing: 0.18em; }
+  .pilot__i { grid-column: 1; grid-row: 1; }
   .pilot__partner, .pilot__field { letter-spacing: 0.18em; }
     .pilot__field { grid-column: 2; grid-row: 1; justify-self: end; }
     .pilot__partner { grid-column: 1 / -1; grid-row: 2; margin-top: 0.5rem; }

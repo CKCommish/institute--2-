@@ -34,9 +34,20 @@ for (const view of [{ tag: 'desktop', vp: { width: 1440, height: 900 } }, { tag:
       const out = { overflow: [], headings: [], noAlt: [], smallTaps: [], links: [], text: [], words: 0, imgBytes: 0 };
       const docW = document.documentElement.clientWidth;
 
+      /* An element wider than the viewport only causes a horizontal scrollbar
+         if nothing between it and <html> clips. Full-bleed media deliberately
+         overhangs inside an overflow:hidden parallax plate, so checking the
+         box alone reported every figure on the site as broken layout. */
+      const clipped = (el) => {
+        for (let n = el.parentElement; n && n !== document.documentElement; n = n.parentElement) {
+          const o = getComputedStyle(n);
+          if (/hidden|clip|auto|scroll/.test(o.overflowX) || /hidden|clip/.test(o.overflow)) return true;
+        }
+        return false;
+      };
       document.querySelectorAll('body *').forEach((el) => {
         const r = el.getBoundingClientRect();
-        if (r.width > 0 && (r.right > docW + 2 || r.left < -2)) {
+        if (r.width > 0 && (r.right > docW + 2 || r.left < -2) && !clipped(el)) {
           const sel = el.tagName.toLowerCase() + (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).slice(0, 2).join('.') : '');
           out.overflow.push(`${sel} → ${Math.round(r.left)}..${Math.round(r.right)} (vw ${docW})`);
         }
@@ -78,6 +89,7 @@ for (const view of [{ tag: 'desktop', vp: { width: 1440, height: 900 } }, { tag:
         out.text.push({ color: cs.color, bg, size: parseFloat(cs.fontSize), weight: cs.fontWeight, sample: el.textContent.trim().slice(0, 34) });
       });
 
+      out.docScrollsX = document.documentElement.scrollWidth > document.documentElement.clientWidth + 1;
       const main = document.querySelector('main');
       out.words = main ? main.innerText.trim().split(/\s+/).filter(Boolean).length : 0;
       return out;
@@ -89,17 +101,38 @@ for (const view of [{ tag: 'desktop', vp: { width: 1440, height: 900 } }, { tag:
     if (data.headings[0] !== 1) issues.push(`first heading is h${data.headings[0]} not h1`);
     if (data.headings.filter((h) => h === 1).length !== 1) issues.push(`${data.headings.filter((h) => h === 1).length} h1 elements`);
 
-    const parse = (s) => (s.match(/\d+(\.\d+)?/g) || []).slice(0, 3).map(Number);
+    /* Chrome reports computed colours as rgb()/rgba() OR color(srgb r g b / a),
+       where the srgb form is 0-1 floats. Parsing digits blindly turned
+       `color(srgb 0.95 0.93 0.89)` into [0,0.95,0.93] and reported 1.07:1 for
+       every element on the page. Parse both forms, then composite the text
+       colour's alpha over its background before measuring. */
+    const parseColor = (s) => {
+      if (!s) return null;
+      const srgb = s.match(/color\(\s*srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?/i);
+      if (srgb) return [ +srgb[1] * 255, +srgb[2] * 255, +srgb[3] * 255, srgb[4] === undefined ? 1 : +srgb[4] ];
+      const rgb = s.match(/rgba?\(([^)]+)\)/i);
+      if (rgb) {
+        const n = rgb[1].split(/[\s,\/]+/).filter(Boolean).map(Number);
+        if (n.length < 3 || n.some(Number.isNaN)) return null;
+        return [ n[0], n[1], n[2], n[3] === undefined ? 1 : n[3] ];
+      }
+      return null;
+    };
+    const over = (fg, bg) => [0, 1, 2].map((i) => fg[i] * fg[3] + bg[i] * (1 - fg[3]));
+
     for (const t of data.text) {
-      const fg = parse(t.color), bg = parse(t.bg);
-      if (fg.length < 3 || bg.length < 3) continue;
+      const fgc = parseColor(t.color), bgc = parseColor(t.bg);
+      if (!fgc || !bgc) continue;
+      const bg = bgc[3] < 1 ? over(bgc, [5, 13, 22, 1]) : bgc.slice(0, 3);
+      const fg = fgc[3] < 1 ? over(fgc, bg.concat(1)) : fgc.slice(0, 3);
       const r = ratio(fg, bg);
       const large = t.size >= 24 || (t.size >= 18.66 && Number(t.weight) >= 700);
       const need = large ? 3 : 4.5;
       if (r < need) issues.push(`contrast ${r.toFixed(2)}:1 (needs ${need}) — ${t.size}px "${t.sample}"`);
     }
 
-    if (data.overflow.length) issues.push(`horizontal overflow: ${data.overflow.slice(0, 4).join(' | ')}`);
+    if (data.docScrollsX) issues.push(`document scrolls horizontally (scrollWidth > clientWidth)`);
+    if (data.overflow.length) issues.push(`unclipped overflow: ${data.overflow.slice(0, 4).join(' | ')}`);
     if (data.noAlt.length) issues.push(`img without alt: ${data.noAlt.join(', ')}`);
     if (view.mobile && data.smallTaps.length) issues.push(`small/unnamed targets: ${[...new Set(data.smallTaps)].slice(0, 5).join(' | ')}`);
     if (consoleErrors.length) issues.push(`console: ${[...new Set(consoleErrors)].slice(0, 3).join(' | ')}`);

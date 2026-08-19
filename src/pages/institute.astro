@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Figure from '../components/Figure.astro';
 import { method } from '../data/site.js';
 
 const builds = ['Technology companies', 'Founders', 'Research labs'];
@@ -31,16 +32,31 @@ const spec = [
           A pilot needs money, a technology, and a real place to run.
           We bring the three together, then measure.
         </p>
+        <a class="ihead__cue" href="#bridge" data-reveal="620">
+          <span class="ihead__cue-r" aria-hidden="true"></span>
+          <span class="label">The bridge</span>
+        </a>
       </div>
 
-      <dl class="spec" data-reveal="260">
-        {spec.map((s) => (
-          <div class="spec__row">
+      <div class="ihead__side">
+
+      <dl class="spec">
+        {spec.map((s, i) => (
+          <div class="spec__row" data-reveal={String(300 + i * 60)}>
             <dt class="label spec__k">{s.k}</dt>
-            <dd class="spec__v">{s.href ? <a class="link" href={s.href}>{s.v}</a> : s.v}</dd>
+            <dd class="spec__v">{s.href ? <a class="link tap" href={s.href}>{s.v}</a> : s.v}</dd>
           </div>
         ))}
       </dl>
+
+      <!-- Corner media, cropped to a detail so it reads as a chip pinned to
+           the plate edge rather than a second wide frame. -->
+      <Figure
+        src="/media/institute.jpg" alt="" ratio="2 / 1" ratioSm="3 / 2"
+        grade={0.6} zoom={1.18} focal="50% 50%" enter="wipe" class="ichip"
+        sizes="(max-width: 860px) 92vw, 34vw" />
+
+      </div>
     </div>
   </section>
 
@@ -48,19 +64,19 @@ const spec = [
        One shared five-row baseline grid: both arms sit on the same rows,
        both rails run the same length, and the connectors are the last
        thing to arrive — left arm, right arm, rails, connectors, thesis. -->
-  <section class="ibridge">
+  <section class="ibridge" id="bridge">
     <div class="shell">
       <div class="brg" data-reveal>
         <span class="brg__rail brg__rail--a" aria-hidden="true"><i></i></span>
         <p class="label label--brass brg__k brg__k--a" style="--d:0ms">Who builds it</p>
         <ul class="brg__list brg__list--a" role="list">
-          {builds.map((b, i) => <li style={`--d:${90 + i * 90}ms`}>{b}</li>)}
+          {builds.map((b, i) => <li style={`--d:${80 + i * 80}ms`}>{b}</li>)}
         </ul>
 
         <span class="brg__rail brg__rail--b" aria-hidden="true"><i></i></span>
-        <p class="label label--brass brg__k brg__k--b" style="--d:450ms">Who runs it</p>
+        <p class="label label--brass brg__k brg__k--b" style="--d:260ms">Who runs it</p>
         <ul class="brg__list brg__list--b" role="list">
-          {runs.map((r, i) => <li style={`--d:${540 + i * 90}ms`}>{r}</li>)}
+          {runs.map((r, i) => <li style={`--d:${340 + i * 80}ms`}>{r}</li>)}
         </ul>
 
         <span class="brg__hub">
@@ -86,10 +102,12 @@ const spec = [
 
       <ol class="ledger">
         {method.map((m, i) => (
-          <li data-reveal={String(60 + i * 110)}>
-            <span class="ledger__n tnum">{m.index}</span>
-            <h3 class="ledger__t display display--m">{m.title}</h3>
-            <p class="ledger__p">{m.text}</p>
+          <li data-reveal={String(60 + i * 90)}>
+            <span class="index ledger__n">{m.index}</span>
+            <div class="ledger__b">
+              <h3 class="ledger__t display display--m">{m.title}</h3>
+              <p class="ledger__p">{m.text}</p>
+            </div>
           </li>
         ))}
       </ol>
@@ -103,18 +121,29 @@ const spec = [
      the caption card holds the right one, so no half of the first
      screen is carrying a single sentence on its own. */
   .ihead {
-    padding-block: calc(var(--nav-h) + clamp(4.5rem, 3rem + 3.4vw, 6.5rem)) clamp(1.25rem, 1.4vw, 1.5rem);
+    padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(1.25rem, 1.4vw, 1.5rem);
   }
   .ihead__in {
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: clamp(1.4rem, 2.4vw, 2.2rem);
-    align-items: start;
+    row-gap: clamp(1.6rem, 2.8vw, 2.6rem);
+    align-items: stretch;
   }
-  .ihead__k { grid-column: 1 / -1; margin-bottom: clamp(0.4rem, 1vw, 1rem); }
+  .ihead__k { grid-column: 1 / -1; margin-bottom: clamp(0.2rem, 0.6vw, 0.6rem); }
 
-  .ihead__lead { grid-column: 1; display: grid; gap: clamp(1.5rem, 2.6vw, 2.5rem); }
+  /* Both columns stretch to the taller of the two, so the scroll cue and the
+     media chip land on the same plate edge instead of leaving one half short. */
+  .ihead__lead {
+    grid-column: 1;
+    display: flex; flex-direction: column;
+    gap: clamp(1.5rem, 2.6vw, 2.5rem);
+  }
+  .ihead__side {
+    grid-column: 2;
+    display: flex; flex-direction: column;
+    gap: clamp(1.6rem, 3vw, 2.8rem);
+  }
   /* One hero size for the whole site — matches /partner/. Local, because the
      token scale has no step between --step-xl and --step-hero. */
   .ihead__h {
@@ -123,6 +152,12 @@ const spec = [
     max-width: 14ch;
   }
   .ihead__h :global(.line) { padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  /* Motion is rank, not decoration. The statement rises long and slow; every
+     supporting row arrives faster, tighter and closer behind it. Local
+     overrides of the base durations — the engine is untouched. */
+  .ihead__h :global(.line > span) { transition-duration: 1450ms; }
+  .ihead__stand, .ihead__cue { --reveal-y: 8px; transition-duration: 460ms, 560ms; }
+  .spec__row { --reveal-y: 6px; transition-duration: 400ms, 500ms; }
 
   /* The missing middle rank: ~19px on a fixed short measure, left-flush with
      the statement, sitting between the 11px kicker and the 100px display. */
@@ -136,12 +171,10 @@ const spec = [
   }
 
   /* ── Caption card ──
-     Hairline rows across the full right column, label left, value right. */
-  .spec {
-    grid-column: 2; margin: 0;
-    align-self: start;
-    padding-top: clamp(0.5rem, 1.4vw, 1.3rem);
-  }
+     Hairline rows across the full right column, label left, value right.
+     No padding on top: the first rule lands on the display's cap-line, so
+     the right rail opens on the same horizon as the statement. */
+  .spec { margin: 0; padding-top: 0; }
   .spec__row {
     display: flex; align-items: baseline; justify-content: space-between;
     gap: clamp(0.8rem, 2vw, 1.6rem);
@@ -158,6 +191,24 @@ const spec = [
   }
   .spec__v :global(a:hover) { color: var(--brass); }
 
+  /* Media chip + scroll cue close the plate: one object pinned to each
+     bottom corner, sharing a baseline. */
+  .ichip { margin-top: auto; }
+  .ihead__cue {
+    margin-top: auto; align-self: flex-start;
+    display: inline-flex; align-items: center; gap: 0.9rem;
+    color: var(--fg-faint);
+    padding-block: 0.45rem; margin-bottom: -0.45rem;
+    transition: color 380ms var(--ease-out);
+  }
+  .ihead__cue-r {
+    display: block; width: clamp(28px, 3.4vw, 46px); height: 1px;
+    background: currentColor;
+    transition: width 480ms var(--ease-out);
+  }
+  .ihead__cue:hover { color: var(--brass); }
+  .ihead__cue:hover .ihead__cue-r { width: clamp(40px, 5vw, 64px); }
+
   /* ── The bridge ───────────────────────────────────────────────────
      One grid: row 1 is both arm labels, rows 2–5 are the names. Both
      rails span 1 / -1, so they are the same length and terminate on the
@@ -171,6 +222,9 @@ const spec = [
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--hub-w) minmax(0, 1fr);
+    /* Declared, not implicit: `1 / -1` on the rails and the hub only means
+       "the whole diagram" if the explicit grid actually has these five rows. */
+    grid-template-rows: auto repeat(4, auto);
     column-gap: var(--brg-gap);
     row-gap: clamp(0.45rem, 1vw, 0.85rem);
   }
@@ -179,11 +233,12 @@ const spec = [
   .brg[data-reveal] { opacity: 1; transform: none; transition: none; }
 
   .brg__list { display: contents; }
+  /* Short, close rises: these are the supporting rank. */
   .brg__k, .brg__list li {
-    opacity: 0; transform: translate3d(0, 12px, 0);
+    opacity: 0; transform: translate3d(0, 8px, 0);
     transition:
-      opacity 620ms var(--ease-out) var(--d, 0ms),
-      transform 860ms var(--ease-out) var(--d, 0ms);
+      opacity 380ms var(--ease-out) var(--d, 0ms),
+      transform 460ms var(--ease-out) var(--d, 0ms);
   }
   .brg.is-in .brg__k, .brg.is-in .brg__list li { opacity: 1; transform: none; }
 
@@ -210,10 +265,10 @@ const spec = [
     display: block; width: 1px; height: 100%;
     background: var(--rule);
     transform: scaleY(0); transform-origin: top;
-    transition: transform 720ms var(--ease-out) var(--d, 0ms);
+    transition: transform 460ms var(--ease-out) var(--d, 0ms);
   }
-  .brg__rail--a i { --d: 900ms; }
-  .brg__rail--b i { --d: 990ms; }
+  .brg__rail--a i { --d: 540ms; }
+  .brg__rail--b i { --d: 590ms; }
   .brg.is-in .brg__rail i { transform: none; }
 
   /* Hub + the two connectors, which draw inward from each rail to the box.
@@ -226,14 +281,14 @@ const spec = [
     border: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
     background: color-mix(in srgb, var(--brass) 6%, var(--ink-900));
     opacity: 0;
-    transition: opacity 700ms var(--ease-out) 1080ms;
+    transition: opacity 460ms var(--ease-out) 640ms;
   }
   .brg.is-in .brg__hub { opacity: 1; }
   .brg__hub::before, .brg__hub::after {
     content: ''; position: absolute; top: 50%;
     width: var(--brg-gap); height: 1px;
     background: var(--brass);
-    transition: transform 520ms var(--ease-out) 1180ms;
+    transition: transform 420ms var(--ease-out) 720ms;
   }
   .brg__hub::before { right: 100%; transform: scaleX(0); transform-origin: left; }
   .brg__hub::after { left: 100%; transform: scaleX(0); transform-origin: right; }
@@ -260,63 +315,79 @@ const spec = [
   .imeth__head { display: grid; gap: clamp(0.9rem, 1.8vw, 1.5rem); }
   .imeth__k { color: var(--fg-faint); }
   .imeth .display--l { max-width: 16ch; }
+  .imeth__head h2 :global(.line > span) { transition-duration: 1450ms; }
 
+  /* Two columns only. The gloss belongs under the title it glosses — a third
+     column set at 11px on the far side of a 1300px row is decoration, not
+     information. Same treatment on every width. */
   .ledger { list-style: none; margin: 0; padding: 0; }
   .ledger li {
     display: grid;
-    grid-template-columns: clamp(2.8rem, 5vw, 5rem) minmax(0, 7fr) minmax(0, 5fr);
-    column-gap: clamp(1rem, 2.4vw, 2.4rem);
-    align-items: baseline;
-    padding-block: clamp(1rem, 1.9vw, 1.75rem);
+    grid-template-columns: clamp(2.4rem, 4vw, 3.8rem) minmax(0, 1fr);
+    column-gap: clamp(0.9rem, 2vw, 1.8rem);
+    align-items: start;
+    padding-block: clamp(1.1rem, 2.1vw, 2rem);
     border-top: 1px solid var(--rule);
   }
   .ledger li:last-child { border-bottom: 1px solid var(--rule); }
-  .ledger__n {
-    font-family: var(--serif); font-weight: 300;
-    font-size: clamp(1.2rem, 0.95rem + 0.8vw, 1.7rem);
-    line-height: 1; color: var(--brass);
-  }
+  .ledger li[data-reveal] { --reveal-y: 8px; transition-duration: 440ms, 560ms; }
+  /* Shared .index primitive; only the optical drop onto the row is local. */
+  .ledger__n { padding-top: 0.55em; }
+  .ledger__b { display: grid; gap: clamp(0.3rem, 0.7vw, 0.55rem); }
   .ledger__t { font-weight: 320; }
-  .ledger__p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 30ch; }
-
-  @media (max-width: 900px) {
-    .ledger li { grid-template-columns: clamp(2.4rem, 8vw, 3.4rem) minmax(0, 1fr); row-gap: 0.4rem; }
-    .ledger__p { grid-column: 2; }
+  .ledger__p {
+    color: var(--fg-mute);
+    font-size: clamp(0.88rem, 0.82rem + 0.24vw, 1rem);
+    max-width: 34ch;
   }
 
   @media (max-width: 860px) {
-    .ihead { padding-block-start: calc(var(--nav-h) + 4.75rem); }
-    .ihead__in { grid-template-columns: 1fr; }
-    .ihead__lead { grid-column: 1; gap: clamp(1.2rem, 5vw, 1.8rem); }
+    /* head offset comes from --head-pad; nothing local to override */
+    .ihead__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 6vw, 2.2rem); }
+    .ihead__lead, .ihead__side { grid-column: 1; }
+    .ihead__lead { gap: clamp(1.2rem, 5vw, 1.8rem); }
+    .ihead__side { gap: clamp(1.4rem, 6vw, 2rem); }
     .ihead__h { max-width: 100%; }
     .ihead__stand { max-width: 34ch; }
-    .spec { grid-column: 1; padding-top: clamp(0.4rem, 3vw, 1rem); }
+    .spec { padding-top: 0; }
+    .ichip { margin-top: 0; }
+    .ihead__cue { display: none; }
 
-    /* One spine down the left edge instead of two rails and a gap. */
+    /* One column, and the node genuinely sits between the two lists rather
+       than trailing them with a connector running off into empty space.
+       `order` reorders the flow; the node becomes a full-width band bounded
+       by two rules, which is what a hinge looks like without a diagram. */
     .ibridge { padding-block: clamp(2rem, 6vw, 3rem) clamp(3.5rem, 12vw, 5rem); }
     .brg {
-      --brg-gap: clamp(1.8rem, 8vw, 3rem);
       grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
       row-gap: clamp(0.35rem, 1.6vw, 0.6rem);
     }
     .brg__rail { display: none; }
     .brg__k, .brg__list li { grid-column: 1; grid-row: auto; text-align: left; }
     .brg__k--a, .brg__k--b { padding-left: 0; padding-right: 0; }
-    .brg__list--a li, .brg__list--b li {
+    .brg__list--a li:nth-child(n), .brg__list--b li:nth-child(n) {
       padding-left: 0; padding-right: 0;
-      grid-row: auto;
+      grid-row: auto; grid-column: 1; text-align: left;
     }
-    .brg__k--b { margin-top: clamp(1.6rem, 7vw, 2.4rem); }
+    .brg__k--a { order: 1; }
+    .brg__list--a li { order: 2; }
+    .brg__hub { order: 3; }
+    .brg__k--b { order: 4; }
+    .brg__list--b li { order: 5; }
+
     .brg__hub {
-      grid-column: 1; grid-row: auto; justify-self: start; align-self: auto;
-      margin-block: calc(var(--brg-gap) + 0.4rem);
+      grid-column: 1; grid-row: auto;
+      justify-self: stretch; align-self: auto;
+      margin-block: clamp(1.5rem, 6.5vw, 2.2rem);
+      display: flex; align-items: center; justify-content: flex-start; gap: 0.8rem;
+      padding: clamp(1rem, 4.4vw, 1.4rem) clamp(0.9rem, 4vw, 1.2rem);
+      border: 0;
+      border-top: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
+      border-bottom: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
+      background: color-mix(in srgb, var(--brass) 6%, transparent);
     }
-    .brg__hub::before, .brg__hub::after {
-      top: auto; left: clamp(1.6rem, 6vw, 2.4rem); right: auto;
-      width: 1px; height: var(--brg-gap);
-    }
-    .brg__hub::before { bottom: 100%; transform: scaleY(0); transform-origin: bottom; }
-    .brg__hub::after { top: 100%; transform: scaleY(0); transform-origin: top; }
+    .brg__hub::before, .brg__hub::after { content: none; }
     .brg__thesis { margin-inline: 0; text-align: left; max-width: 22ch; }
   }
 

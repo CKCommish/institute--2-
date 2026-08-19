@@ -1,72 +1,72 @@
 {
-  "updated": "2026-08-18 20:16 UTC",
-  "wave": 1,
-  "waveTitle": "Five pieces, each looping against the reference",
-  "summary": "Foundation set: navy/cream/brass identity, Newsreader + Libre Franklin, a reveal/masked-line/parallax motion engine, six pages. Five builder-critic pairs are now looping in parallel \u2014 each critic re-shoots the real render, compares it blind against the Oryzo captures, and sends the builder back whenever the reference wins. A separate agent is sourcing licence-clear photography.",
+  "updated": "2026-08-19 02:17 UTC",
+  "wave": 2,
+  "waveTitle": "System pass, then apply \u2014 chasing \"wowed\", not \"wins\"",
+  "summary": "Wave 1 closed: all five pieces now WIN their blind comparison against the reference, but no critic was wowed. Five independent critics converged on the same root causes \u2014 a hole in the type scale (an 11.7px label against a 75px display with no rung between), twenty-five undifferentiated micro-labels across six brightness levels, exactly one motion primitive, and metronome pacing. Wave 2 rebuilds the system first, then applies it piece by piece. The pass bar is now \"would you keep this in a folder of references\", not \"did it win\".",
   "pieces": [
     {
       "id": "scroll",
       "name": "Scroll narrative & homepage scenes",
       "status": "looping",
-      "round": 0,
-      "verdict": "",
-      "gap": ""
+      "round": 4,
+      "verdict": "won 6/8",
+      "gap": "Why now: a 394px void, 56% of the scene, with no rung between an 11.7px label and a 75.2px claim"
     },
     {
       "id": "pilots",
       "name": "Pilot cards & pilot detail",
       "status": "looping",
-      "round": 0,
-      "verdict": "",
-      "gap": ""
+      "round": 4,
+      "verdict": "won 6/6",
+      "gap": "PROBLEM/APPROACH/GOAL repeats an identical 209px slab under all four pilots"
     },
     {
       "id": "people",
       "name": "People grid",
       "status": "looping",
-      "round": 0,
-      "verdict": "",
-      "gap": ""
+      "round": 4,
+      "verdict": "won 3/5",
+      "gap": "The 16-name board is a well-set table, not a composition \u2014 cited by four separate critics"
     },
     {
       "id": "forum",
       "name": "Forum & photography treatment",
       "status": "looping",
-      "round": 0,
-      "verdict": "",
-      "gap": ""
+      "round": 4,
+      "verdict": "won 4/5",
+      "gap": "Three type sizes and ~25 identical micro-labels; the photograph is the least composed thing on the page"
     },
     {
       "id": "type",
       "name": "Type, colour, motion",
-      "status": "queued",
+      "status": "building",
       "round": 0,
-      "verdict": "",
-      "gap": ""
+      "verdict": "\u2014",
+      "gap": "Rebuilding the scale, the micro registers and the motion vocabulary"
     },
     {
       "id": "mobile",
       "name": "Mobile",
       "status": "queued",
       "round": 0,
-      "verdict": "",
-      "gap": ""
+      "verdict": "\u2014",
+      "gap": "Queued behind the apply pass"
     },
     {
       "id": "chrome",
       "name": "Nav, footer, Institute & Partner",
       "status": "looping",
-      "round": 0,
-      "verdict": "",
-      "gap": ""
+      "round": 4,
+      "verdict": "won 9/11",
+      "gap": "Both losses were heroes: /institute/ jumps 19px to 107px with nothing between"
     },
     {
       "id": "media",
       "name": "Photography sourcing & grade",
-      "status": "building",
+      "status": "passed",
       "round": 0,
-      "verdict": "",
-      "gap": ""
+      "verdict": "done",
+      "gap": "Seven public-domain frames; production-build image bug found and fixed"
     }
   ],
   "log": [
@@ -77,6 +77,18 @@
     {
       "t": "Wave 1",
       "m": "Launched five builder/critic loops (scroll, pilots, people, forum, chrome) plus a coherence pass, and a media agent sourcing CC-licensed photography."
+    },
+    {
+      "t": "Wave 1 closed",
+      "m": "41 agents, 0 errors. Every piece wins its blind comparison; none was called remarkable. Coherence pass fixed four nav offsets, six label brightnesses, three arrow constructions, a menu that sat in the tab order at every viewport, and three contrast failures."
+    },
+    {
+      "t": "Bug",
+      "m": "Production builds were shipping with no photography at all \u2014 Figure resolved its on-disk check from import.meta.url, correct under astro dev, wrong under astro build. Dev looked perfect. Fixed."
+    },
+    {
+      "t": "Wave 2",
+      "m": "Design system rebuilt by a single owner (type ladder, three micro registers, two new motion primitives), then five builder/critic loops apply it, then mobile and accessibility, then coherence."
     }
   ]
 }

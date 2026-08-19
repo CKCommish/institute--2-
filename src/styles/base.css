@@ -68,6 +68,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .label--brass { color: var(--brass); }
 
+/* A micro-label link is 11px tall; a finger is not. .tap gives any inline
+   label-sized link a 26px hit box without moving a pixel of the layout. */
+.tap { position: relative; }
+.tap::before {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 50%;
+  height: max(26px, 100%);
+  transform: translateY(-50%);
+}
+
 .lede {
   font-size: clamp(1.06rem, 0.98rem + 0.42vw, 1.35rem);
   line-height: 1.5;
@@ -101,15 +111,27 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .rule { height: 1px; background: var(--rule); border: 0; width: 100%; }
 
-/* Small numeric index used across scenes, e.g. 01 / 04 */
+/* Small numeric index used across scenes, e.g. 01 / 04. One treatment
+   everywhere: a tracked brass cap that indexes a thing without outranking it. */
 .index {
   font-family: var(--sans);
-  font-size: var(--step-label);
-  font-weight: 500;
-  letter-spacing: 0.13em;
+  font-size: clamp(0.72rem, 0.68rem + 0.16vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
   color: var(--brass);
 }
+
+/* The one arrow on the site. Sized in em so it follows whatever it sits
+   beside; shaft + head, never a bare chevron. Use <svg class="arrow"
+   viewBox="0 0 22 10"><use href="#arrow"/></svg> or the inline path below. */
+.arrow {
+  width: 1.6em; height: auto; flex: none;
+  transition: transform 460ms var(--ease-out);
+}
+.arrow path { stroke: currentColor; stroke-width: 1; fill: none; }
+@media (prefers-reduced-motion: reduce) { .arrow { transition-duration: 1ms; } }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;

@@ -9,44 +9,54 @@ const roles = [
 ];
 ---
 <Base title="Partner" description="Partner on a 2026 pilot with the Lion Forum Institute.">
+  <!-- ── The ask, once ────────────────────────────────────────────────
+       This page opens on the address and never shows it again. One rule
+       carries the whole ask: the email sits on it, the open pilots hang
+       from it. Display → email → index, in that order, with nothing
+       floating free in the middle of the row. -->
   <section class="phead">
     <div class="shell phead__in">
       <p class="label" data-reveal>Work with us</p>
 
       <h1 class="display phead__h lines">Partner on a pilot.</h1>
 
-      <div class="phead__ask">
-        <a class="pmail" href={`mailto:${site.email}`} data-reveal="380">
-          <span class="pmail__t">{site.email}</span>
-          <span class="pmail__arrow" aria-hidden="true">
-            <span class="pmail__line"></span>
+      <div class="ask">
+        <a class="ask__mail" href={`mailto:${site.email}`} data-reveal="360">
+          <span class="ask__mail-t">{site.email}</span>
+          <span class="ask__mail-arrow" aria-hidden="true">
+            <span class="ask__mail-line"></span>
             <svg viewBox="0 0 11 12"><path d="M4 1.5 9.5 6 4 10.5" stroke="currentColor" stroke-width="1" fill="none"/></svg>
           </span>
         </a>
-        <p class="phead__sub" data-reveal="460">Name the pilot and the role. A person answers.</p>
-      </div>
 
-      <div class="phead__index" data-reveal="300">
-        <span class="label phead__index-l">Open pilots · 2026</span>
-        <ul>
-          {pilots.map((p) => (
-            <li><span class="index">{p.index}</span><span class="phead__index-n">{p.title}</span></li>
+        <span class="label ask__l" data-reveal="440">Open pilots · 2026</span>
+
+        <span class="ask__rule" data-reveal="400" aria-hidden="true"></span>
+
+        <p class="ask__sub" data-reveal="500">Name the pilot and the role. A person answers.</p>
+
+        <ul class="ask__index">
+          {pilots.map((p, i) => (
+            <li data-reveal={String(500 + i * 60)}>
+              <span class="index">{p.index}</span><span class="ask__index-n">{p.title}</span>
+            </li>
           ))}
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- The one hard cut in the scroll: ground changes, and the three doors
-       arrive tight underneath the address rather than a screen later. -->
+  <!-- The one hard cut in the scroll: the ground changes and the three
+       doors arrive. Numeral is the index, the verb is the content. -->
   <section class="on-cream proles">
     <div class="shell proles__in">
       <p class="label" data-reveal>Three ways in</p>
       <ol class="proles__list">
         {roles.map((r, i) => (
-          <li data-reveal={String(100 + i * 110)}>
-            <span class="proles__n">{String(i + 1).padStart(2, '0')}</span>
-            <h2 class="display display--m">{r.t}</h2>
+          <li data-reveal={String(80 + i * 90)}>
+            <span class="proles__rule" aria-hidden="true"></span>
+            <span class="index proles__n">{String(i + 1).padStart(2, '0')}</span>
+            <h2 class="proles__t">{r.t}</h2>
             <p>{r.p}</p>
           </li>
         ))}
@@ -54,132 +64,160 @@ const roles = [
     </div>
   </section>
 
-  <!-- Deliberate breath. The page is tight everywhere else; this is the one
-       place it is allowed to be generous, right before the quiet second door. -->
-  <div class="pbreath" aria-hidden="true"></div>
 </Base>
 
 <style>
-  /* The end of the scroll should feel like arrival: one line, one address,
-     and the list of what you would be joining held in the corner.
-     No min-height — the hero is as tall as it needs to be and no taller,
-     so the first screen opens on type instead of on a void. */
   .phead {
-    padding-block: calc(var(--nav-h) + clamp(5.75rem, 3.6rem + 4.5vw, 8rem)) clamp(2rem, 3.6vw, 3.5rem);
+    padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(3.5rem, 2rem + 3.4vw, 5.5rem);
   }
-  .phead__in {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: clamp(1.5rem, 3vw, 2.8rem);
-    align-items: start;
-  }
-  .phead__in > .label { grid-column: 1 / -1; margin-bottom: clamp(0.6rem, 1.4vw, 1.4rem); }
+  .phead__in { display: grid; }
+  .phead__in > .label { margin-bottom: clamp(0.7rem, 1.5vw, 1.5rem); }
 
   /* One hero size for the whole site, sitting between --step-xl (footer close)
      and --step-hero (homepage). Local: the token scale has no step here. */
   .phead__h {
-    grid-column: 1 / -1;
     font-size: clamp(3.1rem, 1rem + 6.3vw, 7rem);
     line-height: 0.94; letter-spacing: -0.028em;
     max-width: 13ch;
   }
   .phead__h :global(.line) { padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  /* Motion as rank: the statement rises long and slow, everything under the
+     rule arrives fast and tight behind it. Local override of the base
+     durations — no change to the engine. */
+  .phead__h :global(.line > span) { transition-duration: 1400ms; }
+  .ask [data-reveal] { --reveal-y: 8px; transition-duration: 460ms, 560ms; }
 
-  .phead__ask {
-    grid-column: 1; display: grid; gap: clamp(0.85rem, 1.5vw, 1.2rem);
-    justify-items: start; align-content: start;
+  /* ── The ask ──
+     Two rows split by one hairline. Above it: the address and the label
+     that names what hangs below. Below it: the gloss and the open pilots. */
+  .ask {
+    margin-top: clamp(2.4rem, 1.4rem + 3.2vw, 4.4rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: end;
   }
-  .phead__sub { color: var(--fg-mute); font-size: var(--step-xs); max-width: 34ch; }
-
-  .pmail {
-    display: inline-grid; grid-auto-flow: column; align-items: center;
+  .ask__mail {
+    grid-column: 1; grid-row: 1;
+    display: inline-flex; align-items: center;
     gap: clamp(0.9rem, 2vw, 1.6rem);
-    padding-bottom: clamp(0.5rem, 1vw, 0.8rem);
-    border-bottom: 1px solid color-mix(in srgb, var(--brass) 50%, transparent);
-    transition: border-color 420ms var(--ease-out);
+    padding-bottom: clamp(0.45rem, 0.9vw, 0.75rem);
     max-width: 100%;
   }
-  .pmail__t {
-    font-family: var(--sans); font-weight: 400;
-    font-size: clamp(1.15rem, 0.85rem + 1.35vw, 2.05rem);
-    letter-spacing: -0.012em; line-height: 1.1;
+  .ask__mail-t {
+    font-family: var(--sans); font-weight: 350;
+    font-size: clamp(1.25rem, 0.68rem + 2.45vw, 3.1rem);
+    letter-spacing: -0.018em; line-height: 1.06;
     color: var(--cream);
+    transition: color 380ms var(--ease-out);
     overflow-wrap: anywhere;
   }
-  .pmail__arrow { display: flex; align-items: center; width: clamp(34px, 4vw, 58px); height: 12px; color: var(--brass); flex: none; transition: transform 560ms var(--ease-out); }
-  .pmail__line { flex: 1 1 auto; height: 1px; background: currentColor; }
-  .pmail svg { width: 11px; height: 12px; margin-left: -1px; flex: none; }
-  .pmail:hover { border-bottom-color: var(--brass); }
-  .pmail:hover .pmail__arrow { transform: translateX(8px); }
+  .ask__mail-arrow {
+    display: flex; align-items: center;
+    width: clamp(22px, 3.4vw, 54px); height: 12px; color: var(--brass); flex: none;
+    transition: transform 560ms var(--ease-out);
+  }
+  .ask__mail-line { flex: 1 1 auto; height: 1px; background: currentColor; }
+  .ask__mail svg { width: 11px; height: 12px; margin-left: -1px; flex: none; }
+  .ask__mail:hover .ask__mail-t { color: var(--brass); }
+  .ask__mail:hover .ask__mail-arrow { transform: translateX(9px); }
 
-  /* The four open pilots are the only concrete nouns on the page, so they are
-     set as content, not as a caption. Only the label stays micro. */
-  .phead__index {
-    grid-column: 2; justify-self: end; text-align: right;
-    display: grid; gap: clamp(1rem, 1.8vw, 1.5rem); align-content: start;
+  .ask__l {
+    grid-column: 2; grid-row: 1;
+    justify-self: end; align-self: end;
+    color: var(--fg-faint);
+    padding-bottom: clamp(0.7rem, 1.3vw, 1.05rem);
+    white-space: nowrap;
   }
-  .phead__index-l { color: var(--fg-faint); }
-  /* Two hard columns so the indices line up instead of raggedly trailing
-     the names — corner information should read as a table, not a list. */
-  .phead__index ul {
-    list-style: none; margin: 0; padding: 0;
+
+  /* The one rule on the page. Everything in the ask is measured from it. */
+  .ask__rule {
+    grid-column: 1 / -1; grid-row: 2;
+    display: block; height: 1px;
+    background: color-mix(in srgb, var(--brass) 50%, transparent);
+    transform-origin: left;
+  }
+
+  .ask__sub {
+    grid-column: 1; grid-row: 3; align-self: start;
+    margin-top: clamp(0.95rem, 1.7vw, 1.45rem);
+    color: var(--fg-mute); font-size: var(--step-xs); max-width: 44ch;
+  }
+
+  /* Hung from the rule, not floating opposite the address: one rank down in
+     size, aligned to the same right edge as the label above it. */
+  .ask__index {
+    grid-column: 2; grid-row: 3; align-self: start;
+    list-style: none; margin: clamp(0.85rem, 1.5vw, 1.25rem) 0 0; padding: 0;
     display: grid; grid-template-columns: max-content max-content;
-    justify-content: end; column-gap: clamp(0.8rem, 1.4vw, 1.2rem); row-gap: clamp(0.3rem, 0.7vw, 0.55rem);
-    text-align: left;
+    justify-content: end;
+    column-gap: clamp(0.7rem, 1.2vw, 1rem);
+    row-gap: clamp(0.18rem, 0.5vw, 0.4rem);
   }
-  .phead__index li { display: contents; }
-  .phead__index .index { align-self: baseline; }
-  .phead__index-n {
-    font-size: clamp(1.15rem, 0.9rem + 0.75vw, 1.5rem);
-    line-height: 1.22; letter-spacing: -0.008em;
-    color: var(--fg);
+  .ask__index li { display: contents; }
+  .ask__index .index { align-self: baseline; }
+  .ask__index-n {
+    font-size: clamp(1rem, 0.9rem + 0.42vw, 1.25rem);
+    line-height: 1.3; letter-spacing: -0.004em;
+    color: var(--fg-mute);
   }
 
   /* ── Three ways in — the cream field ──
-     Tight top padding on purpose: the cut lands right under the address rule. */
+     The numeral indexes; it does not outrank. It is a tracked cap sitting on
+     the column rule, and the verb underneath it carries the weight. */
   .proles {
-    padding-block: clamp(2rem, 2.4vw, 2.6rem) clamp(4rem, 2rem + 4vw, 6rem);
+    padding-block: clamp(3rem, 1.6rem + 3.6vw, 5.5rem) clamp(4rem, 2rem + 4.4vw, 6.5rem);
   }
-  .proles__in { display: grid; gap: clamp(1.75rem, 3vw, 2.6rem); }
+  .proles__in { display: grid; gap: clamp(2rem, 3.4vw, 3.2rem); }
   .proles__list {
     list-style: none; margin: 0; padding: 0;
     display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: clamp(1.5rem, 3.4vw, 3rem);
+    gap: clamp(1.75rem, 3.4vw, 3.4rem);
   }
   .proles__list li {
-    display: grid; gap: clamp(0.5rem, 0.9vw, 0.8rem);
-    align-content: start; padding-top: 1rem;
-    border-top: 1px solid var(--rule);
+    display: grid; gap: clamp(0.55rem, 1vw, 0.9rem);
+    align-content: start;
   }
-  .proles__n {
-    font-family: var(--serif); font-weight: 300;
-    font-size: clamp(1.5rem, 1.05rem + 1.4vw, 2.35rem);
-    line-height: 1; color: var(--brass);
-    font-variant-numeric: tabular-nums;
+  /* Shared .index primitive; only the gap under it is local. */
+  .proles__n { margin-bottom: clamp(0.15rem, 0.4vw, 0.35rem); }
+  /* The rule caps the column; the numeral sits on it and the verb owns the
+     rest. The index never outranks the thing it indexes. */
+  .proles__rule { display: block; height: 1px; background: var(--rule); margin-bottom: clamp(0.75rem, 1.4vw, 1.15rem); }
+  .proles__t {
+    font-family: var(--serif); font-weight: 320;
+    font-size: clamp(1.5rem, 1.1rem + 1.35vw, 2.15rem);
+    line-height: 1.08; letter-spacing: -0.015em;
   }
-  .proles__list h2 { font-weight: 320; }
-  .proles__list p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 26ch; }
-
-  .pbreath { height: clamp(2.5rem, 12vw, 11rem); }
+  .proles__list p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 28ch; }
+  .proles__list [data-reveal] { --reveal-y: 8px; transition-duration: 460ms, 620ms; }
 
   @media (max-width: 900px) {
-    .proles__list { grid-template-columns: 1fr; gap: 1.25rem; }
+    .proles__list { grid-template-columns: 1fr; gap: clamp(1.5rem, 5vw, 2rem); }
   }
 
   @media (max-width: 860px) {
-    .phead { padding-block-start: calc(var(--nav-h) + 5.75rem); }
-    .phead__in { grid-template-columns: 1fr; row-gap: clamp(1.4rem, 5vw, 2rem); }
+    .phead { padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(2.5rem, 9vw, 3.5rem); }
     .phead__h { max-width: 100%; }
-    .phead__ask { grid-column: 1; }
-    .phead__index {
-      grid-column: 1; justify-self: start; text-align: left;
-      margin-top: clamp(1.5rem, 6vw, 2.5rem);
+
+    .ask { grid-template-columns: minmax(0, 1fr); }
+    /* The address must never break across lines — it is the whole ask. */
+    .ask__mail { grid-column: 1; grid-row: 1; gap: 0.65rem; }
+    .ask__mail-arrow { width: 18px; }
+    .ask__l {
+      grid-column: 1; grid-row: 4;
+      justify-self: start; align-self: start;
+      padding-bottom: 0; margin-top: clamp(2.2rem, 8vw, 2.8rem);
     }
-    .phead__index ul { justify-content: start; }
+    .ask__rule { grid-row: 2; }
+    .ask__sub { grid-column: 1; grid-row: 3; }
+    .ask__index {
+      grid-column: 1; grid-row: 5;
+      justify-content: start; margin-top: clamp(0.7rem, 3vw, 1rem);
+      row-gap: clamp(0.25rem, 1.2vw, 0.45rem);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .pmail, .pmail__arrow { transition-duration: 1ms; }
+    .ask__mail-t, .ask__mail-arrow { transition-duration: 1ms; }
   }
 </style>

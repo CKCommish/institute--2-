@@ -17,13 +17,13 @@
 
   /* Accent — brass. Used for rules, indices, one hover state. */
   --brass: #C4A469;
-  --brass-deep: #8F7238;
+  --brass-deep: #7E6431;
 
   /* Semantic */
   --bg: var(--ink-900);
   --fg: var(--cream);
   --fg-mute: color-mix(in srgb, var(--cream) 58%, transparent);
-  --fg-faint: color-mix(in srgb, var(--cream) 30%, transparent);
+  --fg-faint: color-mix(in srgb, var(--cream) 50%, transparent);
   --rule: color-mix(in srgb, var(--cream) 14%, transparent);
   --rule-soft: color-mix(in srgb, var(--cream) 8%, transparent);
 
@@ -48,6 +48,10 @@
   --stack-3: clamp(1.75rem, 1.3rem + 1.8vw, 3rem);
   --stack-4: clamp(3rem, 2rem + 4vw, 6rem);
 
+  /* Air between the fixed bar and the first line of an inner page. One value,
+     so every page starts on the same shelf. */
+  --head-pad: clamp(4rem, 2.2rem + 4.6vw, 7.25rem);
+
   --measure: 34ch;
   --measure-wide: 46ch;
   --max: 1560px;
@@ -67,7 +71,7 @@
   --bg: var(--cream);
   --fg: var(--ink-900);
   --fg-mute: color-mix(in srgb, var(--ink-900) 62%, transparent);
-  --fg-faint: color-mix(in srgb, var(--ink-900) 34%, transparent);
+  --fg-faint: color-mix(in srgb, var(--ink-900) 58%, transparent);
   --rule: color-mix(in srgb, var(--ink-900) 16%, transparent);
   --rule-soft: color-mix(in srgb, var(--ink-900) 9%, transparent);
   --brass: var(--brass-deep);

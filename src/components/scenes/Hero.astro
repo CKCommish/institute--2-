@@ -2,50 +2,59 @@
 import Figure from '../Figure.astro';
 import { pilots } from '../../data/site.js';
 ---
-<!-- Three deliberate horizontal registers, top to bottom:
-     1. the stamp rail — who this is (left) and where the frame is (right)
-     2. the poster — the thesis, at the top of the frame, at hero scale
-     3. the ledger rail — the four 2026 pilots, inside the first screen
-     The photograph holds the middle. Nothing floats between registers. -->
+<!-- Three registers, corner-anchored, with an open photographic band between
+     the poster and the ledger:
+
+       1. caption rail   top-right only — the nav holds the top-left corner
+       2. the poster     upper-left: a quiet lead-in clause, then the claim
+       3. the ledger     the four 2026 partners, NAMED, inside the first screen
+
+     The lower half's job is proof. The four institutions that agreed to run a
+     pilot are the only credential this page has, so they are set as the
+     second-largest voice in the frame — not as a duration tag. Three ranked
+     sizes per cell: brass numeral, partner name, project whisper. -->
 <section class="hero" aria-labelledby="hero-h">
-  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.58} focal="36% 58%" parallax={5} loading="eager" class="hero__bg" />
+  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.5} focal="40% 56%" parallax={5} loading="eager" class="hero__bg" />
   <div class="hero__veil" aria-hidden="true"></div>
 
-  <!-- Register 1. The eyebrow finishes into the H1 — read together they are
-       the brief's sentence in full. The locator is the photograph's own
-       caption (Greenville, Mississippi — Highsmith, LOC), set on the same
-       optical line so the rail reads as one rule, not two orphans. -->
+  <!-- Register 1. -->
   <div class="hero__top shell">
-    <p class="label hero__eyebrow">
-      <span class="hero__dot" aria-hidden="true"></span>The Lion Forum Institute exists
+    <p class="label hero__place">
+      <span class="hero__dot" aria-hidden="true"></span>Greenville, Mississippi
     </p>
-    <p class="label hero__place">Greenville, Mississippi</p>
   </div>
 
-  <!-- Register 2. -->
+  <!-- Register 2. Two voices inside one sentence: the lead-in clause at the
+       page's mid tier, the claim at display scale. Read together they are the
+       brief's sentence in full, and the h1 carries the whole of it. -->
   <div class="hero__mid shell">
-    <h1 class="display display--hero hero__h lines" id="hero-h">
-      To ensure the technologies of tomorrow strengthen American families today.
+    <h1 class="hero__h" id="hero-h">
+      <span class="hero__kicker">The Lion Forum Institute exists to ensure</span>
+      <span class="display hero__poster">the technologies of tomorrow strengthen American families today.</span>
     </h1>
-
-    <p class="hero__lede" data-reveal="520">
-      Short, measurable pilots inside institutions families already trust.
-    </p>
   </div>
 
   <!-- Register 3. -->
   <div class="hero__index shell">
+    <div class="hero__index-head">
+      <span class="label hero__index-label">Four pilots · 2026</span>
+      <a class="hero__scroll tap" href="#why">
+        <span class="label">Scroll</span>
+        <span class="hero__scroll-line" aria-hidden="true"></span>
+      </a>
+    </div>
+
     <span class="hero__rule" aria-hidden="true"></span>
-    <span class="label hero__index-label">Pilots · 2026</span>
-    <ul class="hero__index-list">
+
+    <ul class="hero__cells">
       {pilots.map((p) => (
-        <li><span class="index">{p.index}</span>{p.title}</li>
+        <li class="hcell">
+          <span class="hcell__i tnum">{p.index}</span>
+          <span class="hcell__name">{p.partner}</span>
+          <span class="hcell__sub">{p.title}</span>
+        </li>
       ))}
     </ul>
-    <a class="hero__scroll" href="#why">
-      <span class="label">Scroll</span>
-      <span class="hero__scroll-line" aria-hidden="true"></span>
-    </a>
   </div>
 </section>
 
@@ -60,37 +69,36 @@ import { pilots } from '../../data/site.js';
   }
   .hero__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -2; }
 
-  /* Legibility scrim, weighted to the top now that the poster sits there.
-     One open window across the lower-middle so the river still reads as a
-     photograph. Local to this component — no new token invented. */
+  /* Legibility scrim. Two loaded corners — upper-left under the poster,
+     lower band under the ledger — and a deliberately open middle-right so the
+     river is still a photograph and not a texture. Local to this component. */
   .hero__veil {
     position: absolute; inset: 0; z-index: -1; pointer-events: none;
     background:
-      radial-gradient(64% 44% at 88% 76%, color-mix(in srgb, var(--brass) 11%, transparent) 0%, transparent 68%),
-      radial-gradient(78% 52% at 4% 4%, color-mix(in srgb, var(--ink-900) 74%, transparent) 0%, transparent 72%),
+      radial-gradient(72% 50% at 0% 2%, color-mix(in srgb, var(--ink-900) 82%, transparent) 0%, transparent 74%),
+      radial-gradient(56% 40% at 94% 84%, color-mix(in srgb, var(--brass) 10%, transparent) 0%, transparent 70%),
       linear-gradient(180deg,
-        color-mix(in srgb, var(--ink-900) 84%, transparent) 0%,
-        color-mix(in srgb, var(--ink-900) 66%, transparent) 24%,
-        color-mix(in srgb, var(--ink-900) 32%, transparent) 50%,
-        color-mix(in srgb, var(--ink-900) 22%, transparent) 68%,
-        color-mix(in srgb, var(--ink-900) 68%, transparent) 90%,
-        color-mix(in srgb, var(--ink-900) 96%, transparent) 100%);
+        color-mix(in srgb, var(--ink-900) 60%, transparent) 0%,
+        color-mix(in srgb, var(--ink-900) 34%, transparent) 26%,
+        color-mix(in srgb, var(--ink-900) 14%, transparent) 46%,
+        color-mix(in srgb, var(--ink-900) 26%, transparent) 62%,
+        color-mix(in srgb, var(--ink-900) 74%, transparent) 84%,
+        color-mix(in srgb, var(--ink-900) 97%, transparent) 100%);
   }
 
-  /* ── Register 1: the stamp rail ───────────────────────────────────── */
+  /* ── Register 1: the caption rail ─────────────────────────────────
+     One anchor only. The nav bar already owns the top-left corner, so a
+     second mark there is a duplicate, not a composition. */
   .hero__top {
     width: 100%;
     padding-top: calc(var(--nav-h) + clamp(0.9rem, 3vh, 2rem));
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1.5rem;
+    justify-content: flex-end;
   }
-  .hero__eyebrow {
-    display: flex; align-items: baseline; gap: 0.75rem;
-    color: var(--cream);
+  .hero__place {
+    display: flex; align-items: baseline; gap: 0.7rem;
+    color: color-mix(in srgb, var(--cream) 58%, transparent);
   }
-  .hero__place { color: color-mix(in srgb, var(--cream) 52%, transparent); text-align: right; }
 
   .hero__dot {
     width: 5px; height: 5px; border-radius: 50%; background: var(--brass);
@@ -103,78 +111,133 @@ import { pilots } from '../../data/site.js';
     0%, 70%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brass) 55%, transparent); }
     35% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--brass) 0%, transparent); }
   }
-
-  /* the whole rail arrives as one object, before the poster */
   .hero__top { opacity: 0; animation: heroIn 640ms var(--ease-out) 120ms forwards; }
 
-  /* ── Register 2: the poster ───────────────────────────────────────── */
+  /* ── Register 2: the poster ───────────────────────────────────────
+     Sits at the TOP of the open band, not centred in it, so the photograph
+     keeps the middle-right of the frame. */
   .hero__mid {
     width: 100%;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
-    padding-top: clamp(0.75rem, 2.4vh, 1.7rem);
-    padding-bottom: clamp(1rem, 3vh, 2rem);
+    align-self: start;
+    padding-top: clamp(0.9rem, 2.6vh, 2rem);
+  }
+  .hero__h { margin: 0; font-weight: inherit; }
+
+  /* THE MID TIER. The page had nothing between 16px and 40px; this is the
+     step, used here as the sentence's opening clause. Local — no token for
+     it exists and this piece may not add one. */
+  .hero__kicker {
+    display: block;
+    font-family: var(--sans);
+    font-size: clamp(1.02rem, 0.7rem + 0.9vw, 1.56rem);
+    font-weight: 330;
+    line-height: 1.3;
+    letter-spacing: -0.006em;
+    text-transform: none;
+    color: color-mix(in srgb, var(--cream) 66%, transparent);
+    max-width: 42ch;
+    text-wrap: balance;
+    margin-bottom: clamp(0.7rem, 1.5vh, 1.15rem);
+    opacity: 0;
+    animation: heroIn 720ms var(--ease-out) 220ms forwards;
   }
 
-  /* Font size comes from .display--hero → --step-hero. The thesis line is the
-     largest type on the site; nothing below it may outrank it. */
-  .hero__h {
-    line-height: 0.94;
-    letter-spacing: -0.032em;
+  /* Nine words, not sixteen, and a measure fixed in em so the line breaks are
+     identical at every viewport width instead of drifting with the clamp. */
+  .hero__poster {
+    display: block;
+    font-size: clamp(2.5rem, 0.35rem + 6.1vw, 5.9rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    max-width: min(10.4em, 100%);
     text-wrap: initial;
     hyphens: none;
-    max-width: 24ch;
-  }
 
-  /* Right-anchored, left-set: the one supporting register, hung in the
-     bottom-right of the open band so the photograph keeps the middle. */
-  .hero__lede {
-    align-self: end;
-    justify-self: end;
-    max-width: 26ch;
-    font-size: clamp(1.06rem, 0.94rem + 0.5vw, 1.35rem);
-    line-height: 1.42;
-    font-weight: 340;
-    letter-spacing: -0.004em;
-    color: color-mix(in srgb, var(--cream) 82%, transparent);
-    text-wrap: pretty;
+    /* The claim is inked in, top down, so the hero has a hierarchy in time as
+       well as in size: rail, clause, claim, ledger. A soft-edged mask rather
+       than the house .lines reveal — .lines is split on fonts.ready and marked
+       in-view by an observer that has already fired at the top of the page, so
+       whichever wins the race decides whether the hero animates at all. This
+       is load-timed and therefore always the same. Local to this component. */
+    -webkit-mask-image: linear-gradient(180deg, #000 0 58%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0 58%, transparent 100%);
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: 0 0; mask-position: 0 0;
+    -webkit-mask-size: 100% 0%; mask-size: 100% 0%;
+    animation: posterInk 980ms var(--ease-out) 240ms forwards;
   }
+  @keyframes posterInk { to { -webkit-mask-size: 100% 190%; mask-size: 100% 190%; } }
 
-  /* ── Register 3: the 2026 ledger rail ─────────────────────────────── */
+  /* ── Register 3: the 2026 ledger ──────────────────────────────────
+     Three ranked sizes per cell. The partner name is the loud one. */
   .hero__index {
     width: 100%;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    column-gap: clamp(1.25rem, 3vw, 3rem);
-    row-gap: 0.9rem;
-    padding-bottom: clamp(1.5rem, 4vh, 2.75rem);
+    padding-bottom: clamp(1.75rem, 4.4vh, 3.1rem);
   }
+  .hero__index-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(0.7rem, 1.6vh, 1.1rem);
+  }
+  .hero__index-label { color: var(--cream); white-space: nowrap; }
+
   .hero__rule {
-    grid-column: 1 / -1;
-    height: 1px; width: 100%;
+    display: block; height: 1px; width: 100%;
     background: var(--rule);
     transform-origin: left;
-    margin-bottom: clamp(0.9rem, 2.2vh, 1.6rem);
     transform: scaleX(0);
-    animation: heroDraw 1000ms var(--ease-out) 520ms forwards;
+    animation: heroDraw 1000ms var(--ease-out) 640ms forwards;
   }
 
-  .hero__index-label { white-space: nowrap; color: var(--cream); }
-  /* Local step below --step-xs: the rail must sit under the deck, not beside it. */
-  .hero__index-list {
-    list-style: none; padding: 0; margin: 0;
-    display: flex; flex-wrap: wrap;
-    gap: 0.55rem clamp(1rem, 2.6vw, 2.8rem);
-    font-size: clamp(0.85rem, 0.82rem + 0.13vw, 0.95rem);
-    color: color-mix(in srgb, var(--cream) 64%, transparent);
+  .hero__cells {
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2.4vw, 2.75rem);
+    row-gap: 1.1rem;
+    padding-top: clamp(0.85rem, 1.9vh, 1.3rem);
   }
-  .hero__index-list li { display: flex; align-items: baseline; gap: 0.65ch; white-space: nowrap; }
+  .hcell {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.7rem;
+    align-items: baseline;
+  }
+  .hcell__i {
+    font-family: var(--sans);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    color: var(--brass);
+    grid-row: 1;
+  }
+  /* The proof. ~15px, near-full cream, no tracking — deliberately NOT the
+     same voice as the whisper under it. */
+  .hcell__name {
+    grid-row: 1;
+    font-size: clamp(0.92rem, 0.85rem + 0.22vw, 1.02rem);
+    font-weight: 400;
+    line-height: 1.22;
+    letter-spacing: -0.004em;
+    color: color-mix(in srgb, var(--cream) 90%, transparent);
+    text-wrap: balance;
+  }
+  /* The whisper. ~10.5px, 40% — a caption, and it reads like one. */
+  .hcell__sub {
+    grid-column: 2;
+    font-size: 0.655rem;
+    font-weight: 500;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-top: 0.5rem;
+    color: var(--fg-faint);
+  }
 
   .hero__scroll { display: flex; align-items: center; gap: 0.75rem; }
   .hero__scroll-line {
     display: block; width: 34px; height: 1px;
-    background: color-mix(in srgb, var(--cream) 40%, transparent);
+    background: color-mix(in srgb, var(--cream) 34%, transparent);
     position: relative; overflow: hidden;
   }
   .hero__scroll-line::after {
@@ -183,20 +246,19 @@ import { pilots } from '../../data/site.js';
     animation: sweep 2.8s var(--ease-io) infinite;
   }
 
-  /* The rail sits low in the first screen, where an IntersectionObserver
-     reveal would never fire. Staged on load instead — local to this component. */
-  .hero__index-label,
-  .hero__index-list li,
+  /* The ledger sits low in the first screen, where an IntersectionObserver
+     reveal would never fire. Staged on load instead — local to this piece. */
+  .hero__index-head,
+  .hcell,
   .hero__scroll {
     opacity: 0;
     animation: heroIn 720ms var(--ease-out) forwards;
   }
-  .hero__index-label { animation-delay: 640ms; }
-  .hero__index-list li:nth-child(1) { animation-delay: 700ms; }
-  .hero__index-list li:nth-child(2) { animation-delay: 760ms; }
-  .hero__index-list li:nth-child(3) { animation-delay: 820ms; }
-  .hero__index-list li:nth-child(4) { animation-delay: 880ms; }
-  .hero__scroll { animation-delay: 960ms; }
+  .hero__index-head { animation-delay: 560ms; }
+  .hcell:nth-child(1) { animation-delay: 740ms; }
+  .hcell:nth-child(2) { animation-delay: 800ms; }
+  .hcell:nth-child(3) { animation-delay: 860ms; }
+  .hcell:nth-child(4) { animation-delay: 920ms; }
 
   @keyframes heroIn { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
   @keyframes heroDraw { to { transform: none; } }
@@ -206,35 +268,37 @@ import { pilots } from '../../data/site.js';
     .hero__dot,
     .hero__scroll-line::after { animation: none; }
     .hero__scroll-line::after { transform: none; opacity: .5; }
+    .hero__poster {
+      -webkit-mask-image: none; mask-image: none;
+      animation: none;
+    }
     .hero__top,
-    .hero__index-label,
-    .hero__index-list li,
+    .hero__kicker,
+    .hero__index-head,
+    .hcell,
     .hero__scroll { opacity: 1; animation: none; }
     .hero__rule { transform: none; animation: none; }
   }
 
-  @media (max-width: 1180px) {
-    .hero__h { max-width: none; }
-  }
-
-  /* Below this the four titles cannot sit on one line beside the label and
-     the scroll cue, so the rail becomes two registers instead of one. */
+  /* Four names cannot hold one line each below this; the ledger folds to a
+     2 × 2 block and stays a ledger. */
   @media (max-width: 900px) {
-    .hero__lede { justify-self: start; max-width: 30ch; }
-    .hero__index { grid-template-columns: minmax(0, 1fr) auto; }
-    .hero__index-list {
-      grid-column: 1 / -1; order: 3;
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.5rem 1rem;
+    .hero__cells {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: clamp(0.9rem, 2.4vh, 1.4rem);
+      align-items: start;
     }
-    .hero__index-list li { white-space: normal; }
+    /* Two of the four names run to two lines here; reserving both keeps the
+       whispers on one baseline so the block stays a ledger. */
+    .hcell__name { min-height: 2.44em; }
   }
 
-  @media (max-width: 760px) {
-    /* one anchor per corner is enough at this width */
-    .hero__place { display: none; }
-    .hero__h { letter-spacing: -0.028em; }
-    .hero__lede { align-self: end; max-width: 34ch; }
+  @media (max-width: 620px) {
+    .hero__poster { letter-spacing: -0.026em; }
+    .hero__scroll-line { width: 22px; }
+    /* At two cells across, 0.17em tracking pushes the longest project titles
+       onto a second line and the ledger stops reading as rows. */
+    .hcell__sub { font-size: 0.62rem; letter-spacing: 0.12em; }
+    .hero__cells { column-gap: 0.9rem; }
   }
-
 </style>

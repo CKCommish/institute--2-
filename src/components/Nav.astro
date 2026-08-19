@@ -28,6 +28,11 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
       <span class="pill__t" data-burger-label>Menu</span>
     </button>
   </div>
+
+  <!-- The bar's scroll affordance: a hairline that fills as the page runs
+       out. Only visible once you have started, so the first screen is clean.
+       --nav-p is written by the sync() below; no token or engine change. -->
+  <span class="nav__prog" aria-hidden="true"></span>
 </header>
 
 <div class="menu" id="menu" hidden data-menu>
@@ -76,6 +81,16 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .nav.is-scrolled::before { opacity: 1; }
   .nav.is-inverted { --nav-fg: var(--ink-900); --nav-scrim: var(--cream); }
 
+  .nav__prog {
+    position: absolute; left: 0; bottom: 0; z-index: 1;
+    display: block; height: 1px; width: 100%;
+    background: var(--brass);
+    transform: scaleX(var(--nav-p, 0)); transform-origin: left;
+    opacity: 0; transition: opacity 460ms var(--ease-out);
+    pointer-events: none;
+  }
+  .nav.is-scrolled .nav__prog { opacity: 0.6; }
+
   .nav__in {
     position: relative;
     height: 100%;
@@ -96,9 +111,10 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     text-transform: uppercase;
     line-height: 1;
     white-space: nowrap;
+    padding-block: 0.5rem; margin-block: -0.5rem;
   }
   .mark__a { font-weight: 600; }
-  .mark__b { font-weight: 400; color: color-mix(in srgb, currentColor 42%, transparent); transition: color 420ms var(--ease-out); }
+  .mark__b { font-weight: 400; color: color-mix(in srgb, currentColor 52%, transparent); transition: color 420ms var(--ease-out); }
   .mark:hover .mark__b { color: currentColor; }
 
   /* ── Links: nearly invisible until asked for ── */
@@ -106,7 +122,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .nav__link {
     font-size: var(--step-label); font-weight: 500;
     letter-spacing: 0.145em; text-transform: uppercase;
-    color: color-mix(in srgb, currentColor 42%, transparent);
+    color: color-mix(in srgb, currentColor 52%, transparent);
     transition: color 340ms var(--ease-out);
     position: relative; padding-block: 0.5rem;
     white-space: nowrap;
@@ -125,20 +141,24 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      Hairline brass pill; fills on hover. Radius/fill are local to the chrome —
      no token exists for a pill and none should. */
   .pill {
-    display: inline-flex; align-items: center; gap: 0.72ch;
-    padding: 0.62em 1.05em 0.6em;
-    border: 1px solid color-mix(in srgb, var(--brass) 42%, transparent);
+    display: inline-flex; align-items: center; gap: 0.7ch;
+    padding: 0.5em 0.85em 0.48em;
+    min-height: 26px;
+    border: 1px solid color-mix(in srgb, var(--brass) 20%, transparent);
     border-radius: 999px;
     font-size: var(--step-label); font-weight: 500;
-    letter-spacing: 0.145em; text-transform: uppercase;
+    letter-spacing: 0.115em; text-transform: uppercase;
     line-height: 1; white-space: nowrap;
-    color: currentColor;
+    color: color-mix(in srgb, currentColor 72%, transparent);
     transition: background-color 420ms var(--ease-out), border-color 420ms var(--ease-out), color 420ms var(--ease-out);
   }
-  .pill .star { width: 8px; height: 8px; color: var(--brass); flex: none; transition: transform 620ms var(--ease-out), color 420ms var(--ease-out); }
+  .pill .star { width: 7px; height: 7px; color: var(--brass); flex: none; transition: transform 620ms var(--ease-out), color 420ms var(--ease-out); }
   .pill:hover { background: var(--brass); border-color: var(--brass); color: var(--ink-900); }
   .pill:hover .star { transform: rotate(90deg); color: var(--ink-900); }
-  .pill.is-active { border-color: var(--brass); }
+  /* Already on the page the pill points at: the ring comes off, so the bar
+     never carries a lit button for a door you are standing in. */
+  .pill.is-active { border-color: transparent; color: color-mix(in srgb, currentColor 55%, transparent); }
+  .pill.is-active:hover { color: var(--ink-900); border-color: var(--brass); }
   .nav.is-inverted .pill:hover { color: var(--cream); }
 
   .pill--burger { display: none; }
@@ -157,6 +177,10 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     opacity: 0; pointer-events: none;
     transition: opacity 420ms var(--ease-out);
   }
+  /* [hidden] sets display:none at UA weight; .menu's own display:grid was
+     beating it, so the six menu links stayed in the tab order of every page
+     at every width. Restore it explicitly. */
+  .menu[hidden] { display: none; }
   .menu[data-open] { opacity: 1; pointer-events: auto; }
   .menu__in { padding: calc(var(--nav-h) + 2rem) var(--gutter) var(--gutter); width: 100%; }
   .menu__links { display: grid; gap: 0.14em; }
@@ -190,7 +214,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .nav, .nav::before, .mark__b, .nav__link::after, .pill, .pill .star,
+    .nav, .nav::before, .nav__prog, .mark__b, .nav__link::after, .pill, .pill .star,
     .menu, .menu__links a, .menu__cta, .menu__foot { transition-duration: 1ms !important; }
   }
 </style>
@@ -210,6 +234,8 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     const sync = () => {
       queued = false;
       nav.classList.toggle('is-scrolled', window.scrollY > 24);
+      const run = document.documentElement.scrollHeight - window.innerHeight;
+      nav.style.setProperty('--nav-p', run > 0 ? Math.min(1, window.scrollY / run).toFixed(4) : '0');
       const y = nav.offsetHeight * 0.55;
       const inverted =
         !menu?.hasAttribute('data-open') &&
@@ -238,6 +264,20 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     };
     burger.addEventListener('click', () => set(burger.getAttribute('aria-expanded') !== 'true'));
     menu.addEventListener('click', (e) => { if (e.target.closest('a')) set(false); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') { set(false); burger.focus(); }
+    });
+
+    /* The panel covers the page, so Tab must stay inside it: the burger (which
+       is the close control) plus everything in the sheet, and nothing behind. */
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab' || burger.getAttribute('aria-expanded') !== 'true') return;
+      const ring = [burger, ...menu.querySelectorAll('a[href], button:not([disabled])')];
+      const i = ring.indexOf(document.activeElement);
+      const next = e.shiftKey
+        ? ring[(i <= 0 ? ring.length : i) - 1]
+        : ring[(i + 1) % ring.length];
+      if (next) { e.preventDefault(); next.focus(); }
+    });
   }
 </script>

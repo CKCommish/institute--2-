@@ -1,18 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
-import { forum, site } from '../data/site.js';
+import { forum, pilots, site } from '../data/site.js';
 
 /* The room plate names the file it wants first and falls back to the interior
    in public/media/ — Figure takes the first candidate that is on disk. */
-const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
-/* The closing frame is the water, held tall: a coda to the hero, not a repeat
-   of it. A dedicated crop can land later under the first name. */
-const codaPlate = ['/media/forum-water.jpg', forum.image];
-
-/* The register in the hero's top corner is the place, split at its comma so it
-   sets as two right-aligned lines. */
-const [placeA, placeB] = forum.place.split(', ');
+const roomPlate = [forum.imageDetail, '/media/forum-room.jpg', '/media/institute.jpg'];
+/* The coda is the water again, but taken as a horizon band rather than a
+   screen: a different shape and a different crop, so it reads as a close and
+   not as a repeat. A dedicated dusk frame takes over the moment it lands. */
+const codaPlate = ['/media/forum-water.jpg', '/media/forum-dusk.jpg', forum.image];
 
 /* The three constituencies, enumerated. They belong in src/data/site.js, but
    that file may not be restructured this round, so the list is held here and
@@ -22,28 +19,25 @@ const room = ['Founders', 'Investors', 'Elected officials'];
 const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion Forum')}`;
 ---
 <Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
-  <!-- 1 ── full bleed. Locator in the top corner, name at the foot. -->
+  <!-- 1 ── full bleed. One lockup in one corner: tick, name, place, hairline. -->
   <section class="fh">
     <Figure src={forum.image} alt="" ratio="auto" grade={0.6} parallax={6} scrim="bottom" loading="eager" class="fh__bg" />
 
     <div class="shell fh__in">
-      <div class="fh__reg">
-        <i class="fh__regTick" aria-hidden="true"></i>
-        <p class="fh__regLine">{placeA}</p>
-        <p class="fh__regLine fh__regLine--2">{placeB}</p>
-      </div>
-
       <div class="fh__foot">
-        <div class="fh__tick" aria-hidden="true"></div>
-        <h1 class="display display--hero fh__h lines">{forum.name}</h1>
+        <div class="fh__lock">
+          <div class="fh__tick" aria-hidden="true"></div>
+          <h1 class="display display--hero fh__h lines">{forum.name}</h1>
+          <p class="fh__place">{forum.place}</p>
 
-        <div class="fh__bar">
-          <span class="fh__rule" aria-hidden="true"></span>
-          <div class="fh__cells">
-            <span class="label fh__cell fh__cell--b">{forum.access}</span>
-            <span class="label fh__cell fh__cue">
-              Scroll<i class="fh__cueLine" aria-hidden="true"></i>
-            </span>
+          <div class="fh__bar">
+            <span class="fh__rule" aria-hidden="true"></span>
+            <div class="fh__cells">
+              <span class="label fh__cell fh__cell--b">{forum.access}</span>
+              <span class="label fh__cell fh__cue">
+                Scroll<i class="fh__cueLine" aria-hidden="true"></i>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -52,76 +46,125 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
 
   <!-- 2 ── the sentence, subordinate to the name, with the room enumerated
        under it on the hero's hairline again. -->
-  <section class="fsay">
-    <div class="shell fsay__in">
-      <p class="label fsay__k" data-reveal>The convening</p>
+  <section class="fsec fsay">
+    <div class="shell">
+      <div class="fsec__ruleWrap" data-reveal><span class="fsec__rule"></span></div>
 
-      <div class="fsay__body">
-        <p class="display display--l fsay__p lines">{forum.line}</p>
+      <div class="fgrid fsec__in">
+        <p class="frail">
+          <span class="index frail__no">01</span>
+          <span class="label frail__k">The convening</span>
+        </p>
 
-        <div class="fsay__ledger">
-          <span class="fsay__rule" data-reveal="380" aria-hidden="true"></span>
-          <ul class="fsay__cells">
-            {room.map((r, i) => (
-              <li class="fsay__cell" data-reveal={String(440 + i * 90)}>
-                <span class="index fsay__no">{String(i + 1).padStart(2, '0')}</span>
-                <span class="label fsay__name">{r}</span>
-              </li>
-            ))}
-          </ul>
+        <div class="fsay__body">
+          <p class="display display--l fsay__p lines">{forum.line}</p>
+
+          <div class="fsay__ledger">
+            <span class="fsay__hair" data-reveal="380" aria-hidden="true"></span>
+            <ul class="fsay__cells">
+              {room.map((r, i) => (
+                <li class="fsay__cell" data-reveal={String(440 + i * 150)}>
+                  <span class="index fsay__no">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="label fsay__name">{r}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 3 ── the room. The tallest object on the page; the margin beside it is
-       a full-height rule with the caption set along it. -->
-  <section class="fplate">
-    <figure class="shell fplate__in">
-      <figcaption class="fplate__cap">
-        <i class="fplate__tick" data-reveal="300" aria-hidden="true"></i>
-        <span class="fplate__vline" data-reveal="360" aria-hidden="true"></span>
-        <span class="cap fplate__text" data-reveal="460">{forum.caption}</span>
-      </figcaption>
+  <!-- 3 ── the room. The tallest object on the page; the rail beside it holds
+       the section mark at its left edge and the caption down its right. -->
+  <section class="fsec fplate">
+    <figure class="shell">
+      <div class="fsec__ruleWrap" data-reveal="40"><span class="fsec__rule"></span></div>
 
-      <div class="fplate__frame">
-        <Figure src={roomPlate} alt="" ratio="auto" grade={0.72} parallax={7}
-                focal="50% 46%" enter="wipe" sizes="(max-width: 860px) 100vw, 66vw" />
+      <div class="fgrid fsec__in fplate__in">
+        <figcaption class="fplate__cap">
+          <p class="frail">
+            <span class="index frail__no">02</span>
+            <span class="label frail__k">The room</span>
+          </p>
+
+          <span class="fplate__vline" data-reveal="360" aria-hidden="true"></span>
+          <span class="cap fplate__text" data-reveal="460">{forum.caption}</span>
+        </figcaption>
+
+        <div class="fplate__frame">
+          <Figure src={roomPlate} alt="" ratio="auto" grade={0.72} parallax={7}
+                  focal="50% 46%" enter="wipe" sizes="(max-width: 860px) 100vw, 66vw" />
+        </div>
       </div>
     </figure>
   </section>
 
-  <!-- 4 ── the Institute's relationship, on the other axis: words in the left
-       five columns, the water held full height in the right seven. -->
-  <section class="frole">
-    <div class="shell frole__in">
-      <div class="frole__body">
-        <div class="frole__head">
-          <div class="frole__ruleWrap" data-reveal="60"><span class="frole__rule"></span></div>
-          <p class="label frole__k" data-reveal="140">The Institute's role</p>
+  <!-- 4 ── the Institute's relationship, on the page's own grid: the mark in
+       the rail, the sentence and the slate it puts in the room in the field. -->
+  <section class="fsec frole">
+    <div class="shell">
+      <div class="fsec__ruleWrap" data-reveal="40"><span class="fsec__rule"></span></div>
+
+      <div class="fgrid fsec__in">
+        <p class="frail">
+          <span class="index frail__no">03</span>
+          <span class="label frail__k">The Institute's role</span>
+        </p>
+
+        <div class="frole__body">
+          <p class="frole__p lines">{forum.role}</p>
+
+          <div class="fled">
+            <p class="label fled__k" data-reveal="200">The 2026 pilots</p>
+            <ul class="fled__rows">
+              {pilots.map((p, i) => (
+                <li class="fled__row" data-reveal={String(280 + i * 150)}>
+                  <span class="index fled__no">{p.index}</span>
+                  <span class="fled__partner">{p.partner}</span>
+                  <span class="label fled__title">{p.title}</span>
+                  <span class="label fled__field">{p.field}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-
-        <p class="frole__p lines">{forum.role}</p>
       </div>
+    </div>
 
-      <div class="frole__frame">
-        <Figure src={codaPlate} alt="" ratio="auto" grade={0.82} parallax={9}
-                focal="50% 88%" zoom={1.9} sizes="(max-width: 860px) 100vw, 56vw">
-          <a class="frole__cta" href={inquire} data-reveal="600">
-            <span class="frole__ctaRule" aria-hidden="true"></span>
-            <span class="frole__ctaText">
-              {forum.cta}
-              <svg viewBox="0 0 14 10" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
-            </span>
-          </a>
-        </Figure>
+    <!-- the coda: the water again, held as a horizon band, with the page's
+         one quiet ask standing in its corner. -->
+    <div class="fcoda">
+      <Figure src={codaPlate} alt="" ratio="auto" grade={0.8} parallax={7}
+              focal="50% 72%" zoom={1.8} scrim="bottom" sizes="100vw" />
+
+      <div class="shell fcoda__in">
+        <a class="fcoda__cta" href={inquire}>
+          <span class="fcoda__rule" aria-hidden="true"></span>
+          <span class="fcoda__text">
+            {forum.cta}
+            <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+          </span>
+        </a>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  /* Three ranks of small type, not two. `--step-s` sets the hero register
+  /* The bar is not this page's to edit, but on this page the hero display and
+     the §2 ledger both pass directly under it. Local hardening of the scrim
+     the nav already owns: taller, and opaque across the bar's own row. */
+  :global(.nav.is-scrolled)::before {
+    height: calc(var(--nav-h) + 4.4rem);
+    background: linear-gradient(to bottom,
+      var(--nav-scrim, #050D16) 0%,
+      var(--nav-scrim, #050D16) 44%,
+      color-mix(in srgb, var(--nav-scrim, #050D16) 58%, transparent) 72%,
+      transparent 100%);
+  }
+
+  /* Three ranks of small type, not two. `--step-s` sets the ledger value
      (~19px), `.cap` is the photograph's own sentence-case voice (~13.5px) and
      the global `.label` is the tracked marker (~11.7px). Local because the
      middle rank is a Forum/Figure idea. */
@@ -135,6 +178,35 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
     color: color-mix(in srgb, var(--cream) 66%, transparent);
   }
 
+  /* ── The page grid ───────────────────────────────────────────────
+     One measure for every beat below the hero: a 3-column caption rail,
+     one gutter, a 9-column field. Nothing on this page starts anywhere else. */
+  .fgrid {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    column-gap: clamp(1rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  /* Each beat opens with one hairline across the whole measure, and hangs its
+     index + name from it in the rail. Three identical heads, three sections. */
+  .fsec__ruleWrap { --reveal-y: 0px; display: block; }
+  .fsec__rule {
+    display: block; height: 1px; width: 100%;
+    background: var(--rule);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 1000ms var(--ease-io) 40ms;
+  }
+  .fsec__ruleWrap.is-in .fsec__rule { transform: scaleX(1); }
+  .fsec__in { padding-top: clamp(0.9rem, 1.5vw, 1.35rem); }
+
+  .frail {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(0.9rem, 1.6vw, 1.5rem);
+    align-self: start;
+  }
+
   /* ── 1. Hero ─────────────────────────────────────────────────────── */
   .fh {
     position: relative;
@@ -146,33 +218,15 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
   .fh__in {
     width: 100%;
     display: grid;
-    grid-template-rows: auto 1fr;
+    align-items: end;
     padding-block: var(--nav-h) clamp(1.5rem, 2.6vw, 2.6rem);
   }
 
-  /* The second anchored corner: the locator, set at reading size against the
-     sky so the frame is composed top and bottom rather than bottom only. */
-  .fh__reg {
-    justify-self: end;
-    text-align: right;
-    margin-top: clamp(3rem, 7.5vw, 7rem);
-    max-width: 20ch;
-  }
-  .fh__regTick {
-    display: block; margin-left: auto;
-    width: clamp(26px, 2.4vw, 38px); height: 1px;
-    background: var(--brass);
-    margin-bottom: clamp(0.7rem, 1vw, 1rem);
-  }
-  .fh__regLine {
-    font-size: var(--step-s);
-    line-height: 1.32;
-    font-weight: 380;
-    color: color-mix(in srgb, var(--cream) 88%, transparent);
-  }
-  .fh__regLine--2 { color: color-mix(in srgb, var(--cream) 58%, transparent); }
-
   .fh__foot { align-self: end; }
+  /* One object, not two corner stickers: the tick, the name, the place and the
+     hairline all share the display's left rail, and the hairline ends where
+     the display ends — fit-content on the lockup measures the h1 for us. */
+  .fh__lock { width: fit-content; max-width: 100%; }
 
   /* brass tick — a graphic anchor above the name, no words spent */
   .fh__tick {
@@ -183,7 +237,19 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
 
   .fh__h { max-width: 13ch; }
 
-  .fh__bar { margin-top: clamp(2.5rem, 6vw, 5rem); }
+  /* The rank the ladder was missing: one step between the 134px name and the
+     11.7px markers, carrying the only fact the hero needs — where it is. */
+  .fh__place {
+    font-family: var(--serif);
+    font-size: var(--step-m);
+    line-height: 1.16;
+    font-weight: 300;
+    letter-spacing: -0.008em;
+    color: color-mix(in srgb, var(--cream) 66%, transparent);
+    margin-top: clamp(0.7rem, 1.2vw, 1.1rem);
+  }
+
+  .fh__bar { margin-top: clamp(1.9rem, 4vw, 3.4rem); }
 
   /* Local motion primitive: the hero sits above motion.js's reveal rootMargin
      (-12%), so scroll-triggered reveal never fires here. This block is a
@@ -192,18 +258,16 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
     display: block; height: 1px; width: 100%;
     background: color-mix(in srgb, var(--cream) 26%, transparent);
     transform: scaleX(0); transform-origin: left;
-    animation: fhDraw 1150ms var(--ease-io) 340ms forwards;
+    animation: fhDraw 1150ms var(--ease-io) 420ms forwards;
   }
-  .fh__tick, .fh__cell, .fh__regTick, .fh__regLine {
+  .fh__tick, .fh__cell, .fh__place {
     opacity: 0;
     animation: fhIn var(--dur-2) var(--ease-out) forwards;
   }
   .fh__tick { animation-delay: 140ms; }
-  .fh__regTick { animation-delay: 200ms; }
-  .fh__regLine { animation-delay: 280ms; }
-  .fh__regLine--2 { animation-delay: 360ms; }
-  .fh__cell:nth-child(1) { animation-delay: 620ms; }
-  .fh__cell:nth-child(2) { animation-delay: 700ms; }
+  .fh__place { animation-delay: 520ms; }
+  .fh__cell:nth-child(1) { animation-delay: 700ms; }
+  .fh__cell:nth-child(2) { animation-delay: 780ms; }
   @keyframes fhIn  { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
   @keyframes fhDraw { to { transform: scaleX(1); } }
 
@@ -216,35 +280,31 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
   }
   .fh__cell--b { color: var(--brass); }
 
-  .fh__cue { display: inline-flex; align-items: center; gap: 0.85em; color: color-mix(in srgb, var(--cream) 66%, transparent); }
+  .fh__cue { display: inline-flex; align-items: center; gap: 0.85em; }
+  /* Same cue as the homepage hero: a 34px hairline with one brass sweep. Two
+     hero screens on one site do not get two scroll affordances. */
   .fh__cueLine {
     position: relative; display: block;
-    width: 1px; height: 26px; overflow: hidden;
-    background: color-mix(in srgb, var(--cream) 22%, transparent);
+    width: 34px; height: 1px; overflow: hidden;
+    background: color-mix(in srgb, var(--cream) 34%, transparent);
     align-self: center;
   }
   .fh__cueLine::after {
     content: ''; position: absolute; inset: 0;
     background: var(--brass);
-    animation: fhCue 2600ms var(--ease-io) infinite;
+    transform: translateX(-100%);
+    animation: fhCue 2800ms var(--ease-io) infinite;
   }
   @keyframes fhCue {
-    0%   { transform: translateY(-100%); }
-    55%  { transform: translateY(100%); }
-    100% { transform: translateY(100%); }
+    0%   { transform: translateX(-100%); }
+    55%  { transform: translateX(100%); }
+    100% { transform: translateX(100%); }
   }
 
   /* ── 2. The sentence + the room, enumerated ──────────────────────── */
   /* Half a viewport, not a whole one: this beat is the hero's subordinate. */
-  .fsay { padding-block: clamp(3.25rem, 2.2rem + 4.4vw, 6.5rem) clamp(3rem, 2rem + 4vw, 6rem); }
-  .fsay__in {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
-    column-gap: clamp(1rem, 4vw, 4rem);
-    align-items: start;
-  }
-  .fsay__k { padding-top: 0.7em; }
-  .fsay__p { max-width: 21ch; }
+  .fsay { padding-block: clamp(2.75rem, 1.9rem + 3.6vw, 5.25rem) clamp(2.25rem, 1.6rem + 2.8vw, 4rem); }
+  .fsay__p { max-width: 21ch; margin-top: -0.16em; }
   /* The shared .lines mask (base.css) clips descenders at this size. Give the
      mask box room locally and lengthen the travel to keep it hidden. The spans
      are built at runtime, so they need :global(). The +180ms offset ranks this
@@ -258,15 +318,15 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
 
   /* The second object, so a full screen is not spent on one sentence: the
      hero's hairline row, repeated, carrying who is in the room. */
-  .fsay__ledger { margin-top: clamp(2.5rem, 4.5vw, 4.25rem); }
-  .fsay__rule {
+  .fsay__ledger { margin-top: clamp(2rem, 3.4vw, 3.25rem); }
+  .fsay__hair {
     --reveal-y: 0px;
     display: block; height: 1px; width: 100%;
     background: var(--rule);
     transform-origin: left;
+    transition: transform 950ms var(--ease-io), opacity 1ms;
   }
-  .fsay__rule:not(.is-in) { transform: scaleX(0); }
-  .fsay__rule { transition: transform 950ms var(--ease-io), opacity 1ms; }
+  .fsay__hair:not(.is-in) { transform: scaleX(0); }
   .fsay__cells {
     list-style: none; padding: 0; margin: 0;
     display: grid;
@@ -279,35 +339,26 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
   .fsay__name { color: color-mix(in srgb, var(--cream) 74%, transparent); }
 
   /* ── 3. The room ─────────────────────────────────────────────────── */
-  .fplate { padding-block: clamp(1rem, 2vw, 2.5rem) clamp(3rem, 6vw, 7rem); }
-  .fplate__in {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
-    column-gap: clamp(1rem, 4vw, 4rem);
-    align-items: stretch;
-  }
+  .fplate { padding-block: clamp(0.75rem, 1.6vw, 2rem) clamp(2rem, 3.6vw, 4rem); }
+  .fplate__in { align-items: stretch; }
   /* The one object on the page that is neither full-bleed nor a paragraph:
      held to the 9-column measure and taken to nearly the full viewport, so
      the scroll changes width, height and tempo all at once. */
   .fplate__frame {
     position: relative;
     isolation: isolate;
-    height: clamp(520px, 88svh, 900px);
+    height: clamp(500px, 80svh, 800px);
   }
-  /* The margin is structural, not spare: a brass tick, a full-height hairline
-     and the caption set vertically along it, flush to the frame's edge. */
+  /* The rail is inhabited twice: the section mark on its left edge, and a
+     full-height hairline with the caption set along it on its right, flush to
+     the frame. It is a column, not a reserved margin. */
   .fplate__cap {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
     justify-items: end;
     gap: clamp(0.85rem, 1.4vw, 1.4rem);
-    padding-top: clamp(0.35rem, 0.7vw, 0.7rem);
   }
-  .fplate__tick {
-    --reveal-y: 0px;
-    display: block; width: clamp(24px, 2.6vw, 40px); height: 1px;
-    background: var(--brass);
-  }
+  .fplate__cap .frail { justify-self: start; }
   .fplate__vline {
     --reveal-y: 0px;
     display: block; width: 1px; height: 100%; align-self: stretch;
@@ -325,43 +376,19 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
     white-space: nowrap;
   }
 
-  /* ── 4. Role + CTA, on the other axis ────────────────────────────── */
-  .frole { padding-block: clamp(2.5rem, 4.5vw, 5.5rem) clamp(3rem, 5vw, 6rem); }
-  .frole__in {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    column-gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: stretch;
-  }
-  /* Words left, picture right — the inverse of the two beats above it. */
-  /* One block, set against the picture's top edge, and then a long fall of
-     empty ground beneath it — the words are the smaller object here. */
-  .frole__body {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.5rem, 2.4vw, 2.1rem);
-    padding-top: clamp(0.25rem, 0.8vw, 0.8rem);
-  }
-  .frole__head { display: grid; gap: clamp(0.9rem, 1.35vw, 1.25rem); }
-  /* Held to the text column, not the page: the hero's hairline is a full-width
-     break, this one only opens a column. */
-  .frole__ruleWrap { --reveal-y: 0px; display: block; }
-  .frole__rule {
-    display: block; height: 1px; width: 100%;
-    background: var(--rule);
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 900ms var(--ease-io) 60ms;
-  }
-  .frole__ruleWrap.is-in .frole__rule { transform: scaleX(1); }
+  /* ── 4. Role, the slate, and the coda ────────────────────────────── */
+  .frole { padding-block: clamp(2rem, 3.4vw, 4rem) 0; }
+  .frole__body { display: grid; gap: clamp(2.2rem, 4vw, 3.6rem); }
   .frole__p {
     font-family: var(--serif);
     font-size: var(--step-m);
-    line-height: 1.22;
+    line-height: 1.24;
     font-weight: 300;
     letter-spacing: -0.011em;
-    color: color-mix(in srgb, var(--cream) 86%, transparent);
-    max-width: 24ch;
+    color: color-mix(in srgb, var(--cream) 88%, transparent);
+    max-width: 30ch;
     text-wrap: pretty;
+    margin-top: -0.14em;
   }
   .frole__p :global(.line) { padding-bottom: 0.14em; margin-bottom: -0.14em; }
   .frole__p :global(.line > span) {
@@ -370,49 +397,78 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
   }
   .frole__p.is-in :global(.line > span) { transform: none; }
 
-  /* The one ask on the page, set INSIDE the photograph's bottom corner. It is
-     the last thing to arrive, and it never stacks above the footer's ask. */
-  .frole__cta {
-    position: absolute;
-    z-index: 7;
-    left: clamp(1.1rem, 2.4vw, 2.25rem);
-    bottom: clamp(1.1rem, 2.2vw, 2rem);
+  /* The page's second enumeration, on the §2 ledger's own pattern: hairline
+     rows, a tracked marker and a reading-size value. What the sentence above
+     it means, stated rather than described. */
+  .fled__k { color: var(--fg-faint); }
+  .fled__rows {
+    list-style: none; margin: 0; padding: 0;
+    margin-top: clamp(0.8rem, 1.2vw, 1.1rem);
+    border-top: 1px solid var(--rule);
+  }
+  .fled__row {
+    display: grid;
+    /* Two anchored edges, nothing floating between them: the partner reads off
+       the field's left rail, the pilot and its subject stack against its right. */
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: baseline;
+    column-gap: clamp(0.9rem, 2.4vw, 2.4rem);
+    padding-block: clamp(0.8rem, 1.35vw, 1.1rem);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .fled__no { opacity: 0.9; }
+  .fled__partner {
+    font-size: var(--step-s);
+    font-weight: 380;
+    line-height: 1.2;
+    color: color-mix(in srgb, var(--cream) 92%, transparent);
+  }
+  .fled__title { text-align: right; color: color-mix(in srgb, var(--cream) 58%, transparent); }
+  .fled__field { min-width: 5.6rem; text-align: right; color: var(--fg-faint); }
+
+  /* The beat the reader leaves on is a picture: the water again, taken as a
+     band across the whole page rather than a second screen of it. */
+  .fcoda {
+    position: relative;
+    isolation: isolate;
+    height: clamp(250px, 34svh, 400px);
+    margin-top: clamp(2.5rem, 4vw, 4.5rem);
+  }
+  .fcoda__in {
+    position: absolute; inset: auto 0 0 0; z-index: 7;
+    padding-bottom: clamp(1.4rem, 2.6vw, 2.6rem);
+  }
+  /* The one ask on the page, standing on the same left rail as everything
+     else, inside the last picture. It never stacks above the footer's ask. */
+  .fcoda__cta {
     display: grid;
     gap: clamp(0.7rem, 1.1vw, 1rem);
+    justify-items: start;
     font-size: var(--step-label); letter-spacing: 0.145em;
     text-transform: uppercase; font-weight: 500;
     color: var(--cream);
   }
-  .frole__ctaRule {
+  .fcoda__rule {
     display: block; height: 1px; width: clamp(30px, 4vw, 58px);
     background: var(--brass);
     transition: width 520ms var(--ease-out);
   }
-  .frole__cta:hover .frole__ctaRule { width: clamp(48px, 7vw, 96px); }
-  .frole__ctaText { display: inline-flex; align-items: center; gap: 0.9ch; position: relative; }
-  .frole__cta svg { width: 0.95em; height: auto; transition: transform 460ms var(--ease-out); }
-  .frole__cta:hover svg { transform: translateX(4px); }
+  .fcoda__cta:hover .fcoda__rule { width: clamp(48px, 7vw, 96px); }
+  .fcoda__text { display: inline-flex; align-items: center; gap: 0.9ch; position: relative; }
+  .fcoda__cta:hover :global(.arrow) { transform: translateX(4px); }
   /* local hover rule — the shared .link underline assumes inline-block */
-  .frole__ctaText::after {
+  .fcoda__text::after {
     content: ''; position: absolute; left: 0; right: 0; bottom: -0.45em; height: 1px;
     background: currentColor; transform: scaleX(0); transform-origin: right;
     transition: transform 520ms var(--ease-out);
   }
-  .frole__cta:hover .frole__ctaText::after { transform: scaleX(1); transform-origin: left; }
-
-  /* Runs off the right edge of the page: the beat the reader leaves on is a
-     picture, not another column of type. */
-  .frole__frame {
-    position: relative;
-    isolation: isolate;
-    height: clamp(440px, 74svh, 720px);
-    margin-right: calc(var(--gutter) * -1);
-  }
+  .fcoda__cta:hover .fcoda__text::after { transform: scaleX(1); transform-origin: left; }
 
   /* ── Mobile ──────────────────────────────────────────────────────── */
   @media (max-width: 860px) {
-    .fsay__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.25rem, 4vw, 2rem); }
-    .fsay__k { padding-top: 0; }
+    .fgrid { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.25rem, 4vw, 2rem); }
+    .fh__lock { width: auto; }
+
     .fsay__p { max-width: 15ch; }
     .fsay__cells { grid-template-columns: minmax(0, 1fr); gap: 0; }
     /* one ledger line per row, each on its own rule */
@@ -426,45 +482,47 @@ const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion For
     /* On a phone the 9-column trick is gone, so the plate takes its contrast
        the other way: edge to edge, and still by far the tallest beat. */
     .fplate { padding-block: clamp(0.5rem, 2vw, 1.5rem) clamp(2rem, 6vw, 3rem); }
-    .fplate__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(0.9rem, 3vw, 1.2rem); }
+    .fplate__in { row-gap: clamp(0.9rem, 3vw, 1.2rem); }
     .fplate__frame {
-      order: -1;
       height: clamp(440px, 76svh, 720px);
       margin-inline: calc(var(--gutter) * -1);
     }
     .fplate__cap {
       grid-template-rows: none;
-      grid-template-columns: auto minmax(0, 1fr);
-      align-items: center;
+      grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+      align-items: baseline;
       justify-items: start;
-      gap: 0.9rem;
+      column-gap: clamp(1rem, 4vw, 2rem);
     }
     .fplate__vline { display: none; }
-    .fplate__text { writing-mode: horizontal-tb; transform: none; white-space: normal; max-width: 30ch; }
+    .fplate__text { writing-mode: horizontal-tb; transform: none; white-space: normal; justify-self: end; text-align: right; }
 
-    /* Text, the ask, then the picture — so the page does not end on two calls
-       to action stacked one above the other. */
     .frole { padding-block: clamp(2.25rem, 7vw, 3rem) 0; }
-    .frole__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(2.25rem, 8vw, 3rem); }
-    .frole__body { gap: clamp(1.4rem, 5vw, 2rem); padding-block: 0; }
-    .frole__p { max-width: 20ch; }
-    .frole__ruleWrap { width: 42%; }
-    .frole__frame {
-      height: clamp(360px, 56svh, 520px);
-      margin-inline: calc(var(--gutter) * -1);
+    .frole__p { max-width: 22ch; }
+    /* index + partner and the field on one line, the pilot beneath it */
+    .fled__row {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas: 'no partner field' '. title title';
+      row-gap: 0.35rem;
+      padding-block: clamp(0.7rem, 2.6vw, 0.95rem);
     }
+    .fled__no { grid-area: no; }
+    .fled__partner { grid-area: partner; }
+    .fled__title { grid-area: title; text-align: left; }
+    .fled__field { grid-area: field; min-width: 0; }
+
+    .fcoda { height: clamp(240px, 40svh, 340px); }
   }
   @media (max-width: 620px) {
     .fh__h { max-width: 9ch; }
-    .fh__reg { margin-top: clamp(2.25rem, 9vw, 4rem); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .frole__rule { transition-duration: 1ms; }
+    .fsec__rule { transition-duration: 1ms; }
     .fh__rule { animation: none; transform: scaleX(1); }
-    .fh__tick, .fh__cell, .fh__regTick, .fh__regLine { animation: none; opacity: 1; }
-    .fh__cueLine::after { animation: none; transform: translateY(0); }
-    .fsay__rule, .fplate__vline { transition-duration: 1ms; transform: none; }
+    .fh__tick, .fh__cell, .fh__place { animation: none; opacity: 1; }
+    .fh__cueLine::after { animation: none; transform: none; opacity: .5; }
+    .fsay__hair, .fplate__vline { transition-duration: 1ms; transform: none; }
     .fsay__p :global(.line > span), .frole__p :global(.line > span) { transition-delay: 0ms; }
   }
 </style>
