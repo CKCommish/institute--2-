@@ -41,8 +41,44 @@ hero image is gone by frame 2. A `position: sticky` or fixed full-bleed plate
 with content scrolling over it needs no WebGL, no library, and nothing outside
 the existing palette and grade.
 
-Five critics across three waves have been unable to name one moment on this site
-a designer would screenshot. This is the strongest available candidate.
+Fifteen critics across three waves have been unable to name one moment on this
+site a designer would screenshot. This is the strongest available candidate, and
+it is the only structural idea the reference has that we do not.
+
+## The grammar, read off the frames
+
+`refs/oryzo-motion/desktop-scroll-1.png` and `-2.png` are thirty frames sampled
+during a continuous wheel scroll. Read together they show one move, repeated:
+
+1. **The subject is held.** The coaster sits in the same place on screen for
+   roughly fifteen consecutive frames — about two and a half viewport heights of
+   scrolling. It never scrolls away.
+2. **The environment falls away.** Frames 1-3 push the camera in and let the
+   desk scene darken to near-black, isolating the subject. That is a tonal
+   reset *inside a single scene*, not between two sections.
+3. **The subject transforms continuously.** Across the held frames the coaster
+   rotates from flat top-down, through edge-on, to face-on. It is never static
+   and never jumps.
+4. **The text is what travels.** "ISN'T JUST A COASTER." fades up, holds, fades
+   out; "Powered by AI" fades up in its place — all while the subject stays put.
+
+That is the whole thing: **hold the visual, move the type.** Our site does the
+exact inverse — the type holds its column and the photographs scroll past it.
+
+## The 2D translation, which needs no WebGL
+
+Every element of that grammar has an honest CSS equivalent:
+
+| Oryzo | Ours |
+| --- | --- |
+| fixed WebGL canvas | `position: sticky` full-bleed figure, held 2-3 viewport heights |
+| camera push-in | scroll-linked scale on the held image (we already have `data-settle`) |
+| environment darkening to isolate the subject | scroll-linked grade on the held figure — a tonal event inside one scene |
+| object rotating | cross-fade to a second photograph inside the held frame |
+| text beats fading through | successive short beats revealed and retired over the held image |
+
+This is the existing palette, the existing grade, the existing motion engine and
+`position: sticky`. Nothing new is required and nothing in the brief is broken.
 
 ## Caveat
 
