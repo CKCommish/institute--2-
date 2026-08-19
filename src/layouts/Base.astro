@@ -8,6 +8,8 @@ const {
   theme = 'ink',
 } = Astro.props;
 const full = title ? `${title} — Lion Forum Institute` : 'Lion Forum Institute';
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/og.jpg', Astro.site).href;
 ---
 <!doctype html>
 <html lang="en" data-theme={theme}>
@@ -20,6 +22,16 @@ const full = title ? `${title} — Lion Forum Institute` : 'Lion Forum Institute
     <meta property="og:title" content={full} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Lion Forum Institute" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={full} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/newsreader-normal-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/libre-franklin-normal-latin.woff2" as="font" type="font/woff2" crossorigin />

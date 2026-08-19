@@ -3,40 +3,50 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/scenes/Hero.astro';
 import WhyNow from '../components/scenes/WhyNow.astro';
 import MethodScene from '../components/scenes/MethodScene.astro';
+import Stake from '../components/scroll-Stake.astro';
 import PilotsScene from '../components/scenes/PilotsScene.astro';
 import ForumScene from '../components/scenes/ForumScene.astro';
 import PeopleScene from '../components/scenes/PeopleScene.astro';
 ---
-<!-- Six beats. No two adjacent scenes land at the same weight, on the same
+<!-- Seven beats. No two adjacent scenes land at the same weight, on the same
      ground, or in the same composition:
        Hero      photograph · poster left, named ledger low     100svh
        WhyNow    cream · narrow left column, vertical rule, claim right
        Method    ink-900 · CENTRED — the only centred scene on the site
+       Stake     photograph · ONE sentence, set RIGHT               108svh
        Pilots    ink-900 · the long ledger, flush left
-       Forum     photograph · the room                           94svh
+       Forum     photograph · the room                            94svh
        People    ink-900 head, then a full-bleed ink-800 WALL of names
 
-     THREE ARMATURES, not one. The site's default move — micro label at the
-     left rail, hairline ruled the full frame, block hung beneath — belongs
-     to Hero, Pilots and Forum. WhyNow turns it ninety degrees (the division
-     is vertical, the major column is the right one). Method abandons the
-     left edge entirely and sets on the centre line. Method and Pilots are
-     consecutive and used to open identically; they no longer share a mark.
+     FOUR ARMATURES. The site's default move — micro label at the left rail,
+     hairline ruled the full frame, block hung beneath — belongs to Hero,
+     Pilots and Forum. WhyNow turns it ninety degrees (the division is
+     vertical, the major column is the right one). Method abandons the left
+     edge and sets on the centre line. Stake abandons the armature entirely:
+     no label, no rule, no counter, no eyebrow, one sentence set right.
 
-     TWO TONAL EVENTS, spaced. Cream at 16% of the scroll (WhyNow) and the
-     ink-800 board wall at 76% (People). The photograph at 0% and the
-     photograph at 54% sit between them. The back half used to hold one
-     value for 1,700px; it does not now. Ground changes stay inside the
-     three-per-page budget: cream, panel, and the two full-bleed frames.
+     THE EXCEPTION, SPENT ONCE. Stake is 108svh — taller than the viewport
+     it is read in, the only element on the site that is. It exists because
+     four documentary photographs were in the repo, referenced in the DOM,
+     and rendered to nobody: they lived inside a 224x280px hover plate that
+     never loaded and is display:none on a phone, and the 1,059px Pilots
+     ledger below held no image at all. One of them is now the largest object
+     on the page, on every viewport. It is also the hinge between Method
+     (abstract) and Pilots (concrete), which were consecutive and opened with
+     the identical three-element overture.
 
-     Method precedes Pilots so the abstract is spent before the concrete
-     arrives, and so the densest scene runs straight into the photograph.
+     TONAL PACING. Cream at 15% of the scroll, the Stake photograph at 32%,
+     the Forum photograph at 61%, the ink-800 board wall at 82%. The back
+     half used to hold one value for 1,700px; it does not now, and no two
+     events are closer than a full screen apart.
+
      The People wall runs flush into the footer, so the page ends on a hard
      tonal edge rather than on 290px of empty navy. -->
 <Base>
   <Hero />
   <WhyNow />
   <MethodScene />
+  <Stake />
   <PilotsScene />
   <ForumScene />
   <PeopleScene />

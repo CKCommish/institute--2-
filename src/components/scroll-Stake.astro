@@ -1,0 +1,95 @@
+---
+import Figure from './Figure.astro';
+import { stake } from '../data/site.js';
+---
+{/*
+  THE STAKE — the page's one exception, spent once.
+
+  Two facts drove it. The homepage's four best photographs — the Special
+  Olympics runner, the Muskingum towers, the mother and infant, the welding
+  shop — existed only inside a 224x280px hover plate: measured at eight
+  scroll positions they were opacity:0 and naturalWidth:0, so the browser
+  never fetched them, and on a phone the plate is display:none. Four
+  documentary photographs, referenced in the DOM, rendered to nobody. And
+  the 1,059px Pilots ledger that follows this scene holds no image at all.
+
+  So one of them is in the layout now, and it is not in a card. It is the
+  scene: full-bleed, 108svh — TALLER THAN THE VIEWPORT, which is the whole
+  move. You cannot see the top and the bottom of this photograph at the same
+  time. Nothing else on this site is bigger than the frame it is read in.
+
+  It also breaks the column. A left-edge histogram of <main> put 27 text
+  elements at exactly x=51; the site's default overture is a micro label at
+  that rail, a hairline ruled the full width, a block hung beneath. This
+  scene has no label, no rule, no counter and no eyebrow — it is the only
+  scene on the site with a single piece of type in it — and that type is set
+  RIGHT, into the wall behind the mother, in the negative space the crop was
+  chosen to leave. The scrim is mirrored to match (align="right"), so the ink
+  is placed where the sentence lands and the left two-thirds of the frame,
+  where the subject is, keeps its picture.
+
+  MOTION is the one vector this page had not spent here: the figure enters on
+  a bottom-up wipe (the house `enter="wipe"`), and it is the slowest parallax
+  on the page, so the photograph is still arriving after the sentence has
+  landed. No new vector, no new easing.
+
+  WHY HERE. Method is abstract, Pilots is concrete, and they were consecutive
+  and opened identically — same label, same full-width rule, same
+  right-aligned counter, one after the other. The photograph is the hinge:
+  the mechanism, then the people it is for, then the four pilots by name.
+
+  The crop drops the second adult at the right edge (zoom 1.22 off a 32%
+  focal) for one reason: it is where the sentence goes. The corner credit is
+  the house treatment and stays the only other mark in the frame.
+*/}
+<section class="stake" aria-labelledby="stake-h">
+  <Figure src={stake.image} alt="" ratio="auto"
+          grade={0.30} zoom={1.22} focal="30% 42%"
+          zoomSm={1.6} focalSm="40% 40%"
+          parallax={3} enter="wipe" loading="lazy"
+          scrim="bottom" align="right" reach={0.62} rise={0.5} ink={1.05} vig={0.5}
+          credit={stake.credit} creditPos="top-left"
+          class="stake__bg" />
+
+  <div class="shell stake__in">
+    <h2 class="display display--poster stake__h lines" id="stake-h">{stake.line}</h2>
+  </div>
+</section>
+
+<style>
+  .stake {
+    position: relative;
+    /* Taller than the screen it is read on. The only element on the site
+       that is. 700px is the floor for a short laptop; 1100 the ceiling so a
+       tall monitor does not turn it into a second page. */
+    min-height: clamp(700px, 108svh, 1100px);
+    display: grid;
+    align-items: end;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .stake__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
+
+  .stake__in {
+    width: 100%;
+    padding-block: 0 clamp(1.5rem, 2.8vw, 2.6rem);
+  }
+
+  /* Set RIGHT — the one block on this page that does not begin at the rail.
+     The measure is em-fixed so the sentence breaks the same way at every
+     width, and the rag is right so the block's hard edge is the frame's
+     right margin, opposite the subject. */
+  .stake__h {
+    margin: 0 0 0 auto;
+    max-width: min(11.4em, 100%);
+    text-align: right;
+    line-height: 1.0;
+    letter-spacing: -0.024em;
+    text-wrap: initial;
+  }
+
+  @media (max-width: 820px) {
+    .stake { min-height: clamp(620px, 104svh, 900px); }
+    .stake__h { max-width: min(13ch, 100%); letter-spacing: -0.02em; }
+  }
+</style>
