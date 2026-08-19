@@ -127,7 +127,7 @@ export const forum = {
   name: 'The Lion Forum',
   place: 'Kennedy Compound, Hyannis Port',
   access: 'By invitation',
-  line: 'A convening of founders, investors, and elected officials.',
+  line: 'The people who build sit with the people who decide.',
   role: 'The Institute is a lead sponsor. Pilots find their partners here, and report their results back.',
   caption: 'Before the room fills.',
   cta: 'Inquire about the Forum',

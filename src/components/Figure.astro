@@ -11,7 +11,9 @@
                figure has dark corners to sit against.
      4. GRAIN  one fine monochrome tile over everything, so photograph and
                plate share the same surface.
-     5. ENTER  `enter="wipe"` upgrades the default fade to a bottom-up mask
+     5. ZOOM   `zoom={1.8}` crops into the frame around `focal`, so one
+               photograph can appear once wide and once as a detail.
+     6. ENTER  `enter="wipe"` upgrades the default fade to a bottom-up mask
                wipe plus a 1.07 → 1.0 settle, for the one figure on a page
                that is meant to be the largest object on it.
 
@@ -30,6 +32,7 @@ const {
   focal = '50% 50%',
   loading = 'lazy',
   grain = 1,
+  zoom = 1,             // >1 crops into the frame: a detail, not a second wide
   scrim = 'none',      // 'bottom' → extra ink ramp so cream type can sit on it
   fill,                // absolutely fill the parent; defaults on for ratio="auto"
   enter = 'fade',      // 'fade' (default) | 'wipe'
@@ -90,6 +93,7 @@ const style = [
   `--grade:${grade}`,
   `--focal:${focal}`,
   `--grain:${grain}`,
+  `--zoom:${zoom}`,
   `--lx:${lx}%`,
   `--ly:${ly}%`,
   `--ang:${ang}deg`,
@@ -122,6 +126,7 @@ const style = [
     )}
   </div>
 
+  <div class="fig__tint" aria-hidden="true"></div>
   <div class="fig__scrim" aria-hidden="true"></div>
   <div class="fig__vig" aria-hidden="true"></div>
   <div class="fig__grain" aria-hidden="true"></div>
@@ -196,19 +201,37 @@ const style = [
       contrast(calc(1 + var(--grade) * 0.09))
       brightness(calc(1 - var(--grade) * 0.13));
     opacity: 0;
-    transform: scale(1.08);
+    /* the crop is taken around the same point the frame is composed on */
+    transform-origin: var(--focal);
+    transform: scale(calc(1.08 * var(--zoom, 1)));
     transition:
       opacity 1000ms var(--ease-out),
       transform 1700ms var(--ease-out);
   }
-  .fig[data-state='ready'] .fig__media img { opacity: 1; transform: scale(1.02); }
+  .fig[data-state='ready'] .fig__media img { opacity: 1; transform: scale(calc(1.02 * var(--zoom, 1))); }
   .fig[data-state='failed'] .fig__media img { opacity: 0; }
 
-  /* 3 ── the navy grade, only where a photograph actually sits ─────── */
-  .fig__scrim {
+  /* 3 ── the navy grade, only where a photograph actually sits ─────
+     Two parts. The tint pulls every photograph's hue toward the ground the
+     site is built on, so a harbour at dusk, a meeting room and a power line
+     read as one commission rather than three stock frames. The scrim under
+     it is the ink ramp that cream type sits against. */
+  .fig__tint {
     position: absolute;
     inset: 0;
     z-index: 2;
+    pointer-events: none;
+    background: #0C2440;
+    mix-blend-mode: color;
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+  }
+  .fig[data-state='ready'] .fig__tint { opacity: calc(var(--grade) * 0.42); }
+
+  .fig__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
     pointer-events: none;
     opacity: 0;
     transition: opacity 900ms var(--ease-out);
@@ -224,7 +247,7 @@ const style = [
   .fig__vig {
     position: absolute;
     inset: 0;
-    z-index: 3;
+    z-index: 4;
     pointer-events: none;
     background: radial-gradient(112% 88% at 50% 40%,
       transparent 30%,
@@ -233,7 +256,7 @@ const style = [
   .fig__grain {
     position: absolute;
     inset: 0;
-    z-index: 4;
+    z-index: 5;
     pointer-events: none;
     opacity: calc(0.062 * var(--grain));
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
@@ -244,7 +267,7 @@ const style = [
   /* Optional bottom ink ramp for scenes that set display type over the media */
   .fig--ramp::after {
     content: '';
-    position: absolute; inset: 0; z-index: 5; pointer-events: none;
+    position: absolute; inset: 0; z-index: 6; pointer-events: none;
     background: linear-gradient(to top,
       var(--ink-900) 0%,
       color-mix(in srgb, var(--ink-900) 74%, transparent) 16%,
@@ -279,14 +302,14 @@ const style = [
     transition: transform 1900ms var(--ease-out);
   }
   .fig--wipe.is-in .fig__plate { transform: none; }
-  .fig--wipe[data-state='ready'] .fig__media img { transform: scale(1.07); }
-  .fig--wipe.is-in[data-state='ready'] .fig__media img { transform: scale(1); }
+  .fig--wipe[data-state='ready'] .fig__media img { transform: scale(calc(1.07 * var(--zoom, 1))); }
+  .fig--wipe.is-in[data-state='ready'] .fig__media img { transform: scale(var(--zoom, 1)); }
 
   @media (prefers-reduced-motion: reduce) {
-    .fig__media img { transition-duration: 1ms; transform: scale(1.02); }
-    .fig__scrim { transition-duration: 1ms; }
+    .fig__media img { transition-duration: 1ms; transform: scale(calc(1.02 * var(--zoom, 1))); }
+    .fig__scrim, .fig__tint { transition-duration: 1ms; }
     .fig--wipe { -webkit-mask-image: none; mask-image: none; transition: none; }
-    .fig--wipe .fig__plate,
-    .fig--wipe[data-state='ready'] .fig__media img { transform: none; transition: none; }
+    .fig--wipe .fig__plate { transform: none; transition: none; }
+    .fig--wipe[data-state='ready'] .fig__media img { transform: scale(var(--zoom, 1)); transition: none; }
   }
 </style>

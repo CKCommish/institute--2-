@@ -1,50 +1,87 @@
 ---
 import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
-import { forum } from '../data/site.js';
+import { forum, site } from '../data/site.js';
 
-/* The room plate has no dedicated frame of its own yet. It names the file it
-   wants first and falls back to the interior in public/media/ — Figure takes
-   the first candidate that is actually on disk at build time. */
+/* The room plate names the file it wants first and falls back to the interior
+   in public/media/ — Figure takes the first candidate that is on disk. */
 const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
+/* The closing frame is the water, held tall: a coda to the hero, not a repeat
+   of it. A dedicated crop can land later under the first name. */
+const codaPlate = ['/media/forum-water.jpg', forum.image];
+
+/* The register in the hero's top corner is the place, split at its comma so it
+   sets as two right-aligned lines. */
+const [placeA, placeB] = forum.place.split(', ');
+
+/* The three constituencies, enumerated. They belong in src/data/site.js, but
+   that file may not be restructured this round, so the list is held here and
+   the sentence it glosses stays in the data. */
+const room = ['Founders', 'Investors', 'Elected officials'];
+
+const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion Forum')}`;
 ---
 <Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
-  <!-- 1 ── full bleed. Name, then a hairline carrying the three facts. -->
+  <!-- 1 ── full bleed. Locator in the top corner, name at the foot. -->
   <section class="fh">
     <Figure src={forum.image} alt="" ratio="auto" grade={0.6} parallax={6} scrim="bottom" loading="eager" class="fh__bg" />
 
     <div class="shell fh__in">
-      <div class="fh__tick" aria-hidden="true"></div>
-      <h1 class="display display--hero fh__h lines">{forum.name}</h1>
+      <div class="fh__reg">
+        <i class="fh__regTick" aria-hidden="true"></i>
+        <p class="fh__regLine">{placeA}</p>
+        <p class="fh__regLine fh__regLine--2">{placeB}</p>
+      </div>
 
-      <div class="fh__bar">
-        <span class="fh__rule" aria-hidden="true"></span>
-        <div class="fh__cells">
-          <span class="cap fh__cell">{forum.place}</span>
-          <span class="label fh__cell fh__cell--b">{forum.access}</span>
-          <span class="label fh__cell fh__cue">
-            Scroll<i class="fh__cueLine" aria-hidden="true"></i>
-          </span>
+      <div class="fh__foot">
+        <div class="fh__tick" aria-hidden="true"></div>
+        <h1 class="display display--hero fh__h lines">{forum.name}</h1>
+
+        <div class="fh__bar">
+          <span class="fh__rule" aria-hidden="true"></span>
+          <div class="fh__cells">
+            <span class="label fh__cell fh__cell--b">{forum.access}</span>
+            <span class="label fh__cell fh__cue">
+              Scroll<i class="fh__cueLine" aria-hidden="true"></i>
+            </span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 2 ── one sentence, alone, at display size. -->
-  <section class="scene fsay">
+  <!-- 2 ── the sentence, subordinate to the name, with the room enumerated
+       under it on the hero's hairline again. -->
+  <section class="fsay">
     <div class="shell fsay__in">
       <p class="label fsay__k" data-reveal>The convening</p>
-      <p class="display display--xl fsay__p lines">{forum.line}</p>
+
+      <div class="fsay__body">
+        <p class="display display--l fsay__p lines">{forum.line}</p>
+
+        <div class="fsay__ledger">
+          <span class="fsay__rule" data-reveal="380" aria-hidden="true"></span>
+          <ul class="fsay__cells">
+            {room.map((r, i) => (
+              <li class="fsay__cell" data-reveal={String(440 + i * 90)}>
+                <span class="index fsay__no">{String(i + 1).padStart(2, '0')}</span>
+                <span class="label fsay__name">{r}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- 3 ── the room. The tallest object on the page, and the only one held to
-       the text measure: the margin beside it carries the caption. -->
+  <!-- 3 ── the room. The tallest object on the page; the margin beside it is
+       a full-height rule with the caption set along it. -->
   <section class="fplate">
     <figure class="shell fplate__in">
       <figcaption class="fplate__cap">
-        <i class="fplate__tick" data-reveal="360" aria-hidden="true"></i>
-        <span class="cap" data-reveal="440">{forum.caption}</span>
+        <i class="fplate__tick" data-reveal="300" aria-hidden="true"></i>
+        <span class="fplate__vline" data-reveal="360" aria-hidden="true"></span>
+        <span class="cap fplate__text" data-reveal="460">{forum.caption}</span>
       </figcaption>
 
       <div class="fplate__frame">
@@ -54,39 +91,48 @@ const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
     </figure>
   </section>
 
-  <!-- 4 ── the Institute's relationship to it, and the quiet CTA. -->
+  <!-- 4 ── the Institute's relationship, on the other axis: words in the left
+       five columns, the water held full height in the right seven. -->
   <section class="frole">
-    <div class="shell">
-      <div class="frole__in">
-        <div class="frole__side">
+    <div class="shell frole__in">
+      <div class="frole__body">
+        <div class="frole__head">
           <div class="frole__ruleWrap" data-reveal="60"><span class="frole__rule"></span></div>
           <p class="label frole__k" data-reveal="140">The Institute's role</p>
         </div>
-        <div class="frole__body">
-          <p class="frole__p lines">{forum.role}</p>
-          <a class="frole__cta" href="/partner/" data-reveal="300">
-            {forum.cta}
-            <svg viewBox="0 0 14 10" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
+
+        <p class="frole__p lines">{forum.role}</p>
+      </div>
+
+      <div class="frole__frame">
+        <Figure src={codaPlate} alt="" ratio="auto" grade={0.82} parallax={9}
+                focal="50% 88%" zoom={1.9} sizes="(max-width: 860px) 100vw, 56vw">
+          <a class="frole__cta" href={inquire} data-reveal="600">
+            <span class="frole__ctaRule" aria-hidden="true"></span>
+            <span class="frole__ctaText">
+              {forum.cta}
+              <svg viewBox="0 0 14 10" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
+            </span>
           </a>
-        </div>
+        </Figure>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  /* Two ranks of small type. `.label` (global) is the section marker: tracked,
-     uppercase, 11.7px. `.cap` is the photograph's own voice: sentence case,
-     untracked, smaller, quieter — so the page's small type is not one flat
-     band of interchangeable objects. Local because it is a Forum/Figure idea. */
+  /* Three ranks of small type, not two. `--step-s` sets the hero register
+     (~19px), `.cap` is the photograph's own sentence-case voice (~13.5px) and
+     the global `.label` is the tracked marker (~11.7px). Local because the
+     middle rank is a Forum/Figure idea. */
   .cap {
     font-family: var(--sans);
-    font-size: clamp(0.62rem, 0.6rem + 0.1vw, 0.665rem);
-    font-weight: 400;
-    letter-spacing: 0.012em;
-    line-height: 1.35;
+    font-size: clamp(0.78rem, 0.74rem + 0.16vw, 0.845rem);
+    font-weight: 380;
+    letter-spacing: 0.008em;
+    line-height: 1.4;
     text-transform: none;
-    color: color-mix(in srgb, var(--cream) 58%, transparent);
+    color: color-mix(in srgb, var(--cream) 66%, transparent);
   }
 
   /* ── 1. Hero ─────────────────────────────────────────────────────── */
@@ -94,14 +140,39 @@ const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
     position: relative;
     min-height: 100svh;
     display: grid;
-    align-items: end;
     isolation: isolate;
   }
   .fh__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
   .fh__in {
     width: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr;
     padding-block: var(--nav-h) clamp(1.5rem, 2.6vw, 2.6rem);
   }
+
+  /* The second anchored corner: the locator, set at reading size against the
+     sky so the frame is composed top and bottom rather than bottom only. */
+  .fh__reg {
+    justify-self: end;
+    text-align: right;
+    margin-top: clamp(3rem, 7.5vw, 7rem);
+    max-width: 20ch;
+  }
+  .fh__regTick {
+    display: block; margin-left: auto;
+    width: clamp(26px, 2.4vw, 38px); height: 1px;
+    background: var(--brass);
+    margin-bottom: clamp(0.7rem, 1vw, 1rem);
+  }
+  .fh__regLine {
+    font-size: var(--step-s);
+    line-height: 1.32;
+    font-weight: 380;
+    color: color-mix(in srgb, var(--cream) 88%, transparent);
+  }
+  .fh__regLine--2 { color: color-mix(in srgb, var(--cream) 58%, transparent); }
+
+  .fh__foot { align-self: end; }
 
   /* brass tick — a graphic anchor above the name, no words spent */
   .fh__tick {
@@ -114,29 +185,31 @@ const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
 
   .fh__bar { margin-top: clamp(2.5rem, 6vw, 5rem); }
 
-  /* Local motion primitive: the hero bar sits below motion.js's reveal
-     rootMargin (-12%), so scroll-triggered reveal never fires above the fold.
-     This block is a load-time entrance instead — same easings, no observer. */
+  /* Local motion primitive: the hero sits above motion.js's reveal rootMargin
+     (-12%), so scroll-triggered reveal never fires here. This block is a
+     load-time entrance instead — same easings, no observer. */
   .fh__rule {
     display: block; height: 1px; width: 100%;
     background: color-mix(in srgb, var(--cream) 26%, transparent);
     transform: scaleX(0); transform-origin: left;
     animation: fhDraw 1150ms var(--ease-io) 340ms forwards;
   }
-  .fh__tick, .fh__cell {
+  .fh__tick, .fh__cell, .fh__regTick, .fh__regLine {
     opacity: 0;
     animation: fhIn var(--dur-2) var(--ease-out) forwards;
   }
   .fh__tick { animation-delay: 140ms; }
+  .fh__regTick { animation-delay: 200ms; }
+  .fh__regLine { animation-delay: 280ms; }
+  .fh__regLine--2 { animation-delay: 360ms; }
   .fh__cell:nth-child(1) { animation-delay: 620ms; }
   .fh__cell:nth-child(2) { animation-delay: 700ms; }
-  .fh__cell:nth-child(3) { animation-delay: 780ms; }
   @keyframes fhIn  { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
   @keyframes fhDraw { to { transform: scaleX(1); } }
 
   .fh__cells {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr auto;
     align-items: baseline;
     gap: clamp(1.25rem, 4vw, 3.5rem);
     padding-top: clamp(0.85rem, 1.4vw, 1.15rem);
@@ -161,24 +234,49 @@ const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
     100% { transform: translateY(100%); }
   }
 
-  /* ── 2. The sentence ─────────────────────────────────────────────── */
-  /* Deliberately shorter than --scene-pad: this beat must not measure the
-     same as the photograph below it. */
-  .fsay { padding-block: clamp(3rem, 2.4rem + 4.8vw, 8rem); }
+  /* ── 2. The sentence + the room, enumerated ──────────────────────── */
+  /* Half a viewport, not a whole one: this beat is the hero's subordinate. */
+  .fsay { padding-block: clamp(3.25rem, 2.2rem + 4.4vw, 6.5rem) clamp(3rem, 2rem + 4vw, 6rem); }
   .fsay__in {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
     column-gap: clamp(1rem, 4vw, 4rem);
     align-items: start;
   }
-  .fsay__k { padding-top: 0.85em; }
-  .fsay__p { max-width: 16ch; }
+  .fsay__k { padding-top: 0.7em; }
+  .fsay__p { max-width: 21ch; }
   /* The shared .lines mask (base.css) clips descenders at this size. Give the
-     mask box room locally and lengthen the travel to keep it hidden. The
-     spans are built at runtime, so they need :global(). */
+     mask box room locally and lengthen the travel to keep it hidden. The spans
+     are built at runtime, so they need :global(). The +180ms offset ranks this
+     behind the label: motion.js writes --line-delay per line, we add to it. */
   .fsay__p :global(.line) { padding-bottom: 0.16em; margin-bottom: -0.16em; }
-  .fsay__p :global(.line > span) { transform: translate3d(0, 130%, 0); }
+  .fsay__p :global(.line > span) {
+    transform: translate3d(0, 130%, 0);
+    transition-delay: calc(var(--line-delay, 0ms) + 180ms);
+  }
   .fsay__p.is-in :global(.line > span) { transform: none; }
+
+  /* The second object, so a full screen is not spent on one sentence: the
+     hero's hairline row, repeated, carrying who is in the room. */
+  .fsay__ledger { margin-top: clamp(2.5rem, 4.5vw, 4.25rem); }
+  .fsay__rule {
+    --reveal-y: 0px;
+    display: block; height: 1px; width: 100%;
+    background: var(--rule);
+    transform-origin: left;
+  }
+  .fsay__rule:not(.is-in) { transform: scaleX(0); }
+  .fsay__rule { transition: transform 950ms var(--ease-io), opacity 1ms; }
+  .fsay__cells {
+    list-style: none; padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding-top: clamp(0.9rem, 1.3vw, 1.15rem);
+  }
+  .fsay__cell { display: flex; align-items: baseline; gap: 0.9em; }
+  .fsay__no { opacity: 0.85; }
+  .fsay__name { color: color-mix(in srgb, var(--cream) 74%, transparent); }
 
   /* ── 3. The room ─────────────────────────────────────────────────── */
   .fplate { padding-block: clamp(1rem, 2vw, 2.5rem) clamp(3rem, 6vw, 7rem); }
@@ -186,7 +284,7 @@ const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
     column-gap: clamp(1rem, 4vw, 4rem);
-    align-items: start;
+    align-items: stretch;
   }
   /* The one object on the page that is neither full-bleed nor a paragraph:
      held to the 9-column measure and taken to nearly the full viewport, so
@@ -196,30 +294,56 @@ const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
     isolation: isolate;
     height: clamp(520px, 88svh, 900px);
   }
-  /* The caption rides the photograph's top edge, so the frame and the words
-     that name it arrive in the same glance. */
+  /* The margin is structural, not spare: a brass tick, a full-height hairline
+     and the caption set vertically along it, flush to the frame's edge. */
   .fplate__cap {
     display: grid;
-    justify-items: start;
-    gap: clamp(0.7rem, 1vw, 1rem);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    justify-items: end;
+    gap: clamp(0.85rem, 1.4vw, 1.4rem);
     padding-top: clamp(0.35rem, 0.7vw, 0.7rem);
-    max-width: 22ch;
   }
   .fplate__tick {
     --reveal-y: 0px;
     display: block; width: clamp(24px, 2.6vw, 40px); height: 1px;
     background: var(--brass);
   }
+  .fplate__vline {
+    --reveal-y: 0px;
+    display: block; width: 1px; height: 100%; align-self: stretch;
+    background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--cream) 22%, transparent),
+      color-mix(in srgb, var(--cream) 6%, transparent));
+    transform-origin: top;
+    transition: transform 1100ms var(--ease-io), opacity 1ms;
+  }
+  .fplate__vline:not(.is-in) { transform: scaleY(0); }
+  .fplate__text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    --reveal-y: 0px;
+    white-space: nowrap;
+  }
 
-  /* ── 4. Role + CTA ───────────────────────────────────────────────── */
-  .frole { --fgap: clamp(1rem, 4vw, 4rem); padding-block: clamp(3rem, 5.5vw, 7rem) clamp(3.5rem, 6vw, 7.5rem); }
+  /* ── 4. Role + CTA, on the other axis ────────────────────────────── */
+  .frole { padding-block: clamp(2.5rem, 4.5vw, 5.5rem) clamp(3rem, 5vw, 6rem); }
   .frole__in {
     display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
-    column-gap: var(--fgap);
-    align-items: start;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: stretch;
   }
-  /* Held to the label field, not the page: the hero's hairline is a full-width
+  /* Words left, picture right — the inverse of the two beats above it. */
+  /* One block, set against the picture's top edge, and then a long fall of
+     empty ground beneath it — the words are the smaller object here. */
+  .frole__body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 2.4vw, 2.1rem);
+    padding-top: clamp(0.25rem, 0.8vw, 0.8rem);
+  }
+  .frole__head { display: grid; gap: clamp(0.9rem, 1.35vw, 1.25rem); }
+  /* Held to the text column, not the page: the hero's hairline is a full-width
      break, this one only opens a column. */
   .frole__ruleWrap { --reveal-y: 0px; display: block; }
   .frole__rule {
@@ -229,49 +353,75 @@ const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
     transition: transform 900ms var(--ease-io) 60ms;
   }
   .frole__ruleWrap.is-in .frole__rule { transform: scaleX(1); }
-  .frole__k { padding-top: clamp(0.9rem, 1.35vw, 1.25rem); }
-  .frole__body { display: grid; gap: clamp(2rem, 3.6vw, 3.25rem); justify-items: start; }
-  /* The missing intermediate step: between the 86px thesis and the 12px
-     labels the page had nothing but body copy. The Institute's role is the
-     one place worth spending a mid-display size on. */
   .frole__p {
     font-family: var(--serif);
-    font-size: clamp(1.5rem, 1.02rem + 1.9vw, 2.55rem);
-    line-height: 1.2;
+    font-size: var(--step-m);
+    line-height: 1.22;
     font-weight: 300;
-    letter-spacing: -0.012em;
-    color: color-mix(in srgb, var(--cream) 84%, transparent);
-    max-width: 26ch;
+    letter-spacing: -0.011em;
+    color: color-mix(in srgb, var(--cream) 86%, transparent);
+    max-width: 24ch;
     text-wrap: pretty;
   }
   .frole__p :global(.line) { padding-bottom: 0.14em; margin-bottom: -0.14em; }
-  .frole__p :global(.line > span) { transform: translate3d(0, 120%, 0); }
+  .frole__p :global(.line > span) {
+    transform: translate3d(0, 120%, 0);
+    transition-delay: calc(var(--line-delay, 0ms) + 160ms);
+  }
   .frole__p.is-in :global(.line > span) { transform: none; }
 
+  /* The one ask on the page, set INSIDE the photograph's bottom corner. It is
+     the last thing to arrive, and it never stacks above the footer's ask. */
   .frole__cta {
-    display: inline-flex; align-items: center; gap: 0.9ch;
+    position: absolute;
+    z-index: 7;
+    left: clamp(1.1rem, 2.4vw, 2.25rem);
+    bottom: clamp(1.1rem, 2.2vw, 2rem);
+    display: grid;
+    gap: clamp(0.7rem, 1.1vw, 1rem);
     font-size: var(--step-label); letter-spacing: 0.145em;
     text-transform: uppercase; font-weight: 500;
     color: var(--cream);
-    position: relative;
   }
+  .frole__ctaRule {
+    display: block; height: 1px; width: clamp(30px, 4vw, 58px);
+    background: var(--brass);
+    transition: width 520ms var(--ease-out);
+  }
+  .frole__cta:hover .frole__ctaRule { width: clamp(48px, 7vw, 96px); }
+  .frole__ctaText { display: inline-flex; align-items: center; gap: 0.9ch; position: relative; }
   .frole__cta svg { width: 0.95em; height: auto; transition: transform 460ms var(--ease-out); }
   .frole__cta:hover svg { transform: translateX(4px); }
   /* local hover rule — the shared .link underline assumes inline-block */
-  .frole__cta::after {
+  .frole__ctaText::after {
     content: ''; position: absolute; left: 0; right: 0; bottom: -0.45em; height: 1px;
     background: currentColor; transform: scaleX(0); transform-origin: right;
     transition: transform 520ms var(--ease-out);
   }
-  .frole__cta:hover::after { transform: scaleX(1); transform-origin: left; }
+  .frole__cta:hover .frole__ctaText::after { transform: scaleX(1); transform-origin: left; }
+
+  /* Runs off the right edge of the page: the beat the reader leaves on is a
+     picture, not another column of type. */
+  .frole__frame {
+    position: relative;
+    isolation: isolate;
+    height: clamp(440px, 74svh, 720px);
+    margin-right: calc(var(--gutter) * -1);
+  }
 
   /* ── Mobile ──────────────────────────────────────────────────────── */
   @media (max-width: 860px) {
-    .fsay__in, .frole__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 5vw, 2.25rem); }
+    .fsay__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.25rem, 4vw, 2rem); }
     .fsay__k { padding-top: 0; }
-    .frole__k { padding-top: clamp(0.9rem, 3vw, 1.2rem); }
-    .fsay__p { max-width: 13ch; }
-    .frole__p { max-width: 20ch; }
+    .fsay__p { max-width: 15ch; }
+    .fsay__cells { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    /* one ledger line per row, each on its own rule */
+    .fsay__cell {
+      justify-content: start;
+      gap: 1.4em;
+      padding-block: clamp(0.6rem, 2.4vw, 0.9rem);
+      border-bottom: 1px solid var(--rule-soft);
+    }
 
     /* On a phone the 9-column trick is gone, so the plate takes its contrast
        the other way: edge to edge, and still by far the tallest beat. */
@@ -282,20 +432,39 @@ const roomPlate = [forum.imageDetail, '/media/institute.jpg'];
       height: clamp(440px, 76svh, 720px);
       margin-inline: calc(var(--gutter) * -1);
     }
-    .fplate__cap { max-width: 26ch; }
-    /* keep the two hairlines different ranks where the margin column is gone */
+    .fplate__cap {
+      grid-template-rows: none;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      justify-items: start;
+      gap: 0.9rem;
+    }
+    .fplate__vline { display: none; }
+    .fplate__text { writing-mode: horizontal-tb; transform: none; white-space: normal; max-width: 30ch; }
+
+    /* Text, the ask, then the picture — so the page does not end on two calls
+       to action stacked one above the other. */
+    .frole { padding-block: clamp(2.25rem, 7vw, 3rem) 0; }
+    .frole__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(2.25rem, 8vw, 3rem); }
+    .frole__body { gap: clamp(1.4rem, 5vw, 2rem); padding-block: 0; }
+    .frole__p { max-width: 20ch; }
     .frole__ruleWrap { width: 42%; }
+    .frole__frame {
+      height: clamp(360px, 56svh, 520px);
+      margin-inline: calc(var(--gutter) * -1);
+    }
   }
   @media (max-width: 620px) {
     .fh__h { max-width: 9ch; }
-    .fh__cells { grid-template-columns: 1fr auto; row-gap: 0.9rem; }
-    .fh__cell:first-child { grid-column: 1 / -1; }
+    .fh__reg { margin-top: clamp(2.25rem, 9vw, 4rem); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .frole__rule { transition-duration: 1ms; }
     .fh__rule { animation: none; transform: scaleX(1); }
-    .fh__tick, .fh__cell { animation: none; opacity: 1; }
+    .fh__tick, .fh__cell, .fh__regTick, .fh__regLine { animation: none; opacity: 1; }
     .fh__cueLine::after { animation: none; transform: translateY(0); }
+    .fsay__rule, .fplate__vline { transition-duration: 1ms; transform: none; }
+    .fsay__p :global(.line > span), .frole__p :global(.line > span) { transition-delay: 0ms; }
   }
 </style>
