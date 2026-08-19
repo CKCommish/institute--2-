@@ -29,6 +29,9 @@ export const pilots = [
     goal: 'Follow-up care completed within ninety days.',
     horizon: '3–12 months',
     image: '/media/pilot-health.jpg',
+    /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
+       a pilot's name set over a full-bleed frame reads as a caption for it. */
+    credit: 'Unified track event · U.S. Army',
   },
   {
     id: 'clean-data-centers',
@@ -42,6 +45,9 @@ export const pilots = [
     goal: 'Those terms inside one state siting agreement.',
     horizon: '3–12 months',
     image: '/media/pilot-energy.jpg',
+    /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
+       a pilot's name set over a full-bleed frame reads as a caption for it. */
+    credit: 'Muskingum County, Ohio',
   },
   {
     id: 'infant-mortality',
@@ -55,6 +61,9 @@ export const pilots = [
     goal: 'Weeks of warning, in a model other cities can run.',
     horizon: '3–12 months',
     image: '/media/pilot-maternal.jpg',
+    /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
+       a pilot's name set over a full-bleed frame reads as a caption for it. */
+    credit: 'U.S. Department of Agriculture',
   },
   {
     id: 'career-pathways',
@@ -68,6 +77,9 @@ export const pilots = [
     goal: 'More students land in a defined pathway.',
     horizon: '3–12 months',
     image: '/media/pilot-education.jpg',
+    /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
+       a pilot's name set over a full-bleed frame reads as a caption for it. */
+    credit: 'Adrian, Oregon',
   },
 ];
 

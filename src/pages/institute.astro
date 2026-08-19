@@ -23,16 +23,15 @@ const spec = [
        between. Right plate: the spec, then the media chip. -->
   <section class="ihead">
     <div class="shell ihead__in">
-      <p class="eyebrow ihead__k" data-reveal>The Institute</p>
+      <p class="eyebrow ihead__k" data-reveal>How we work</p>
       <p class="bridge ihead__bridge" data-reveal="120">
         A pilot needs money, a technology, and a real place to run.
       </p>
 
       <div class="ihead__lead">
         <h1 class="display display--poster ihead__h lines">We sit between the builders and the institutions.</h1>
-        <a class="ihead__cue" href="#bridge" data-reveal="620">
-          <span class="label">The bridge</span>
-          <span class="ihead__cue-r" aria-hidden="true"></span>
+        <a class="cue tap ihead__cue" href="#bridge" data-reveal="620">
+          <span class="label">The bridge</span><i class="cue__line" aria-hidden="true"></i>
         </a>
       </div>
 
@@ -51,9 +50,15 @@ const spec = [
 
       <!-- Corner media, cropped to a detail so it reads as a chip pinned to
            the plate edge rather than a second wide frame. -->
+      <!-- An empty meeting room with an American flag, set beside "We sit
+           between the builders and the institutions" and above a diagram
+           whose hub reads THE INSTITUTE, is one caption away from claiming to
+           be the Institute's own room. It is not. refs/PHOTO-FACTS.md asks
+           for the credit; every other photograph on the site carries one. -->
       <Figure
         src="/media/institute.jpg" alt="" ratio="2 / 1" ratioSm="3 / 2"
         grade={0.6} zoom={1.18} focal="50% 50%" enter="wipe" class="ichip"
+        credit="Library of Congress" creditPos="bottom-right"
         sizes="(max-width: 860px) 92vw, 34vw" />
 
       </div>
@@ -70,18 +75,18 @@ const spec = [
         <span class="brg__rail brg__rail--a" aria-hidden="true"><i></i></span>
         <p class="label label--brass brg__k brg__k--a" style="--d:0ms">Who builds it</p>
         <ul class="brg__list brg__list--a" role="list">
-          {builds.map((b, i) => <li style={`--d:${80 + i * 80}ms`}>{b}</li>)}
+          {builds.map((b, i) => <li class="bridge bridge--lift bridge--fg" style={`--d:${80 + i * 80}ms`}>{b}</li>)}
         </ul>
 
         <span class="brg__rail brg__rail--b" aria-hidden="true"><i></i></span>
         <p class="label label--brass brg__k brg__k--b" style="--d:260ms">Who runs it</p>
         <ul class="brg__list brg__list--b" role="list">
-          {runs.map((r, i) => <li style={`--d:${340 + i * 80}ms`}>{r}</li>)}
+          {runs.map((r, i) => <li class="bridge bridge--lift bridge--fg" style={`--d:${340 + i * 80}ms`}>{r}</li>)}
         </ul>
 
         <span class="brg__hub">
           <span class="brg__dot" aria-hidden="true"></span>
-          <span class="label brg__hub-t">The Institute</span>
+          <span class="label label--lit brg__hub-t">The Institute</span>
         </span>
       </div>
 
@@ -131,7 +136,7 @@ const spec = [
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     column-gap: clamp(2rem, 5vw, 5rem);
     row-gap: clamp(1.6rem, 2.8vw, 2.6rem);
-    align-items: stretch;
+    align-items: start;
   }
   .ihead__k { grid-column: 1 / -1; }
   /* The rung that was missing. It spans the plate but is measured short, so
@@ -142,8 +147,10 @@ const spec = [
     margin-bottom: clamp(0.9rem, 2vw, 1.9rem);
   }
 
-  /* Both columns stretch to the taller of the two, so the scroll cue and the
-     media chip land on the same plate edge instead of leaving one half short. */
+  /* The columns do NOT stretch to the taller of the two. Forcing the left
+     plate to the media chip's depth stranded the scroll cue ~290px under the
+     statement, alone, bounded only by the viewport edge — a pause with one
+     side. The cue now closes the block it belongs to. */
   .ihead__lead {
     grid-column: 1;
     display: flex; flex-direction: column;
@@ -180,6 +187,11 @@ const spec = [
     border-top: 1px solid var(--rule);
   }
   .spec__row:last-child { border-bottom: 1px solid var(--rule); }
+  /* Off the 11.66px pile. Twenty-three elements on this page were sitting at
+     the micro rung; the spec keys are page content, not chrome, so they move
+     up to the .index size the ledger numerals already use. */
+  /* The house .label geometry, full stop. It carried a local 13.1px/0.1em,
+     which is the .index rung wearing a label's job — a fifth micro mark. */
   .spec__k { white-space: nowrap; }
   .spec__v {
     margin: 0; text-align: right;
@@ -193,24 +205,8 @@ const spec = [
      bottom corner, sharing a baseline. The cue is the same object as the two
      hero screens — word, then a 34px hairline with one brass sweep in it. */
   .ichip { margin-top: auto; }
-  .ihead__cue {
-    margin-top: auto; align-self: flex-start;
-    display: inline-flex; align-items: center; gap: 0.75rem;
-    padding-block: 0.45rem; margin-bottom: -0.45rem;
-    transition: color 380ms var(--ease-out);
-  }
-  .ihead__cue-r {
-    display: block; width: 34px; height: 1px;
-    background: var(--mark);
-    position: relative; overflow: hidden;
-  }
-  .ihead__cue-r::after {
-    content: ''; position: absolute; inset: 0; background: var(--brass);
-    transform: translateX(-100%);
-    animation: cueSweep 2.8s var(--ease-io) infinite;
-  }
-  .ihead__cue:hover { color: var(--brass); }
-  @keyframes cueSweep { 0% { transform: translateX(-100%); } 55%, 100% { transform: translateX(100%); } }
+  /* Placement only — the mark is the shared .cue primitive. */
+  .ihead__cue { align-self: flex-start; }
 
   /* ── The bridge ───────────────────────────────────────────────────
      One grid: row 1 is both arm labels, rows 2–5 are the names. Both
@@ -249,9 +245,14 @@ const spec = [
   .brg__k--a { grid-column: 1; text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
   .brg__k--b { grid-column: 3; padding-left: clamp(1rem, 2vw, 1.8rem); }
 
+  /* The two arms are the site's other sans voice at the small display rung,
+     so they take the same declared class the hero's clause takes rather than
+     re-writing var(--step-sub) here. --step-sub is a serif rung; .bridge--lift
+     is the only door through it. */
   .brg__list li {
     list-style: none;
-    font-size: var(--step-sub); line-height: 1.16; color: var(--fg);
+    line-height: 1.16;
+    color: var(--fg);
   }
   .brg__list--a li { grid-column: 1; text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
   .brg__list--b li { grid-column: 3; padding-left: clamp(1rem, 2vw, 1.8rem); }
@@ -298,7 +299,7 @@ const spec = [
   .brg.is-in .brg__hub::before, .brg.is-in .brg__hub::after { transform: none; }
 
   .brg__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brass); }
-  .brg__hub-t { color: var(--fg); white-space: nowrap; }
+  .brg__hub-t { white-space: nowrap; }
 
   /* The series-breaker, used once on this page. A held pause above it, bounded
      by the diagram on one side and by the line itself on the other. */
@@ -348,6 +349,9 @@ const spec = [
     .ihead__h { max-width: 100%; }
     .ihead__bridge { max-width: 30ch; margin-bottom: clamp(0.3rem, 2vw, 0.8rem); }
     .spec { padding-top: 0; }
+    /* The one row a reader will try to press. Its own box clears 44px. */
+    .spec__v :global(a) { display: inline-block; padding-block: 0.7rem; }
+    .spec__row { padding-block: 0.35rem; }
     .ichip { margin-top: 0; }
     .ihead__cue { display: none; }
 
@@ -356,12 +360,28 @@ const spec = [
        `order` reorders the flow; the node becomes a full-width band bounded
        by two rules, which is what a hinge looks like without a diagram. */
     .ibridge { padding-block: clamp(2rem, 6vw, 3rem) clamp(3.5rem, 12vw, 5rem); }
+    /* The diagram survives the breakpoint. One brass rail runs the full
+       height of the left gutter, both arms hang off it, and the hub is
+       notched onto it — two sides meeting at one point, drawn vertically.
+       It used to delete the rails and the connectors and become three
+       stacked lists with a section-header band in the middle. */
     .brg {
+      --brg-gut: clamp(1.5rem, 7vw, 2.4rem);
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: none;
       row-gap: clamp(0.35rem, 1.6vw, 0.6rem);
+      padding-left: var(--brg-gut);
     }
-    .brg__rail { display: none; }
+    .brg__rail {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      grid-row: auto; grid-column: auto;
+      justify-self: start;
+    }
+    .brg__rail--b { display: none; }
+    .brg__rail--a i {
+      background: color-mix(in srgb, var(--brass) 58%, transparent);
+      --d: 120ms;
+    }
     .brg__k, .brg__list li { grid-column: 1; grid-row: auto; text-align: left; }
     .brg__k--a, .brg__k--b { padding-left: 0; padding-right: 0; }
     .brg__list--a li:nth-child(n), .brg__list--b li:nth-child(n) {
@@ -376,23 +396,25 @@ const spec = [
 
     .brg__hub {
       grid-column: 1; grid-row: auto;
-      justify-self: stretch; align-self: auto;
+      justify-self: start; align-self: auto;
       margin-block: clamp(1.5rem, 6.5vw, 2.2rem);
-      display: flex; align-items: center; justify-content: flex-start; gap: 0.8rem;
-      padding: clamp(1rem, 4.4vw, 1.4rem) clamp(0.9rem, 4vw, 1.2rem);
-      border: 0;
-      border-top: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
-      border-bottom: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
-      background: color-mix(in srgb, var(--brass) 6%, transparent);
+      display: inline-flex; align-items: center; justify-content: flex-start; gap: 0.7rem;
+      padding: clamp(0.7rem, 3vw, 0.95rem) clamp(0.85rem, 3.6vw, 1.15rem);
+      background: color-mix(in srgb, var(--brass) 8%, var(--ink-900));
     }
-    .brg__hub::before, .brg__hub::after { content: none; }
+    /* The notch: one connector running left, from the hub back to the rail. */
+    .brg__hub::after { content: none; }
+    .brg__hub::before {
+      content: ''; right: 100%; width: var(--brg-gut);
+      transform: scaleX(0); transform-origin: right;
+    }
+    .brg.is-in .brg__hub::before { transform: none; }
     /* Below ~700px the feature rung stops reading as a break, so the break is
        carried by space and alignment instead. */
     .brg__thesis { margin-inline: 0; text-align: left; max-width: 14ch; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ihead__cue-r::after { animation: none; transform: none; opacity: 0.5; }
     .brg__k, .brg__list li, .brg__hub { opacity: 1 !important; transform: none !important; transition-duration: 1ms !important; }
     .brg__rail i, .brg__hub::before, .brg__hub::after { transform: none !important; transition-duration: 1ms !important; }
   }

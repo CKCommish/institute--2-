@@ -3,55 +3,49 @@ import { whyNow, whyNowLead } from '../../data/site.js';
 ---
 <!-- The page's one inversion, and its only silent scene.
 
-     It is composed the opposite way round from the hero: the hero loads its
-     top-left corner and lets the photograph fall away beneath it; this loads
-     the FOOT of the frame and holds cream above it. Two scenes in a row
-     cannot land the same way, and the cut from a dark top-weighted screen
-     into a light bottom-weighted one is the beat.
+     WHAT CHANGED, ROUND 3. The held interval used to be 290px of a 630px
+     section — 46% — containing two brass hairlines that measured nothing,
+     terminated on nothing, and pointed at nothing. A measure that measures
+     nothing is worse than air. Both are gone. The interval is now bounded
+     by MARKS instead of by a viewport edge and a bracket:
 
-     WHAT CHANGED. The held space used to be a 394px void — 56% of the
-     section — with an 11.7px label stranded at the top of it and a 75px
-     claim at the bottom, and nothing in between. The intent was legible in
-     this comment and nowhere in the pixels, because a pause is only a pause
-     when something bounds it at both ends. Now:
+       eyebrow (left) ─────────────────── bridge (right rail)
+       ── one rule, corner to corner ──                        ← top jaw
+              [ the held pause, --pause, ~118px ]
+       claim, three lines of 86px across the foot               ← bottom jaw
 
-       eyebrow   11.7px   names the scene
-       bridge    26.6px   says what weight is coming            ← the rung
-       ─ drop ─           a hairline runs the length of the rest
-       claim     86.1px   the fact, on the foot of the frame
-       rule + footnote    and points into the scene that answers it
+     The scene also stops opening the way the other five do. Every other
+     scene on this page starts with an 11.7px label at the top-left rail and
+     nothing else on that line; here the lead runs the full width — the name
+     of the scene at one corner, the sentence that sets up the claim at the
+     other — so the top edge is a composed line rather than a tick.
 
-     The rest is the same length; it is now an interval between two marks,
-     with a line measuring it, instead of an empty top half.
-
-     MOTION. The rest of the page arrives on one vector — masked fade-up at
-     staggered delays. This scene deliberately does not use it. The drop line
-     WIPES downward out of the bridge (territory), and the claim is on
-     SETTLE (weight): scroll-linked, continuous, reversible, no entry
-     trigger. It is already there when the scene arrives and it resolves
-     under the reader instead of firing at them, which is the whole argument
-     of a silent scene. Settle is used once on this page, here, on the thing
-     the page is actually about. -->
+     MOTION. Three classes of object, three vectors, one rule each and no
+     more: the WORDS arrive (reveal), the RULE is territory and is uncovered
+     from the right, growing out from under the bridge it hangs off; the
+     CLAIM is weight and is on settle — scroll-linked, continuous,
+     reversible, already there when the scene arrives and resolving under
+     the reader rather than firing at them. Settle is used once on this
+     page, here, on the thing the page is actually about. -->
 <section class="why on-cream" id="why" aria-labelledby="why-h">
   <div class="shell why__lead">
     <p class="eyebrow why__eyebrow" data-reveal>Why now</p>
-    <p class="bridge why__bridge" data-reveal="150">{whyNowLead}</p>
+    <p class="bridge why__bridge" data-reveal="140">{whyNowLead}</p>
   </div>
 
-  <!-- The pause. Bounded above by the bridge, below by the claim, and
-       measured by a hairline that grows down between them. -->
-  <div class="shell why__gap" aria-hidden="true">
-    <span class="why__drop" data-wipe="top" data-delay="340"></span>
+  <!-- The top jaw. Corner to corner, so the pause under it is an interval
+       between two marks and not the top half of a blank page. -->
+  <div class="shell why__ruleWrap">
+    <span class="why__rule" aria-hidden="true" data-wipe="right" data-delay="260"></span>
   </div>
 
   <div class="shell why__foot">
-    <h2 class="display display--poster why__h" id="why-h" data-settle="0.46">
+    <h2 class="display display--poster why__h" id="why-h" data-settle="0.5">
       {whyNow}<span class="why__ast" aria-hidden="true">*</span>
     </h2>
-    <span class="why__rule" aria-hidden="true" data-wipe="left" data-delay="120"></span>
-    <a class="label tap why__note" href="#method" data-reveal="300">
+    <a class="label tap why__note" href="#method" data-reveal="320">
       <span class="why__note-ast" aria-hidden="true">*</span>Our answer
-      <span class="why__note-arrow" aria-hidden="true"></span>
+      <svg class="arrow arrow--down why__note-arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
     </a>
   </div>
 </section>
@@ -59,61 +53,75 @@ import { whyNow, whyNowLead } from '../../data/site.js';
 <style>
   .why {
     position: relative;
-    min-height: min(70svh, 680px);
     display: grid;
-    /* The middle row is the pause: never shorter than the house --pause,
-       and the only row that absorbs slack, so a tall viewport lengthens the
-       held interval rather than opening a hole under the label. */
-    grid-template-rows: auto minmax(var(--pause), 1fr) auto;
-    padding-top: clamp(1.5rem, 4.2vh, 3rem);
-    padding-bottom: clamp(1.5rem, 4vh, 2.8rem);
+    /* Four rows: lead, rule, THE PAUSE, foot. The pause is the only row
+       that absorbs slack, and it is floored at the house --pause — a held
+       rest, bounded above by the rule and below by the claim. It is capped
+       so a tall viewport cannot reopen the hole this scene was built to
+       close. */
+    grid-template-rows: auto auto minmax(var(--pause), 1fr) auto;
+    min-height: min(64svh, 620px);
+    padding-top: clamp(1.6rem, 4.4vh, 3.1rem);
+    padding-bottom: clamp(1.9rem, 5vh, 3.4rem);
     overflow: hidden;
   }
 
-  /* ── The lead: eyebrow → bridge ───────────────────────────────────── */
-  .why__lead { width: 100%; }
-  .why__bridge { margin-top: clamp(0.85rem, 2.2vh, 1.35rem); }
+  /* ── The lead: the scene's name at one corner, its set-up at the other ── */
+  .why__lead {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+  .why__eyebrow { flex: none; }
+  .why__bridge {
+    margin: 0;
+    text-align: right;
+    max-width: 30ch;
+  }
 
-  /* ── The pause, and the line that measures it ─────────────────────── */
-  .why__gap { width: 100%; display: flex; }
-  .why__drop {
+  /* ── The top jaw ──────────────────────────────────────────────────── */
+  .why__ruleWrap { width: 100%; margin-top: clamp(1rem, 2.6vh, 1.7rem); }
+  .why__rule {
     display: block;
-    width: 1px;
-    align-self: stretch;
-    /* Brass, like the rule under the claim: the two together bracket the
-       claim on its left and its foot, so the held space is inside a frame
-       rather than beside one. */
-    background: var(--brass);
-    margin-block: clamp(0.9rem, 2.4vh, 1.6rem);
+    height: 1px;
+    width: 100%;
+    background: var(--rule);
+    /* --dur-4 is the length of a full-bleed figure uncovering. A 1px rule
+       crossing 1337px at that speed is still travelling long after the
+       words have landed, which is the point of a silent scene. */
+    transition-duration: 1180ms;
   }
 
   /* ── The claim, on the foot of the frame ──────────────────────────── */
   .why__foot {
     align-self: end;
     display: grid;
-    row-gap: clamp(1.5rem, 4vh, 2.6rem);
+    row-gap: clamp(1.4rem, 3.6vh, 2.3rem);
   }
 
-  /* --step-poster: one rank under the hero banner, which is the only thing
-     on the site allowed to be louder. Measure in em so the break holds at
-     every width; text-wrap: initial so balance does not move it. */
+  /* --step-poster: one rank under the hero, which is the only thing on the
+     site allowed to be louder. The measure is set in em and tight enough to
+     break the sentence over THREE lines, not two: 258px of type across the
+     foot is what bounds the pause above it. Bottom-heavy on purpose — the
+     hero loads its top-left corner, this one loads its foot. */
   .why__h {
     margin: 0;
     line-height: 1.0;
     letter-spacing: -0.026em;
-    max-width: min(13.2em, 100%);
+    max-width: min(9.6em, 100%);
     text-wrap: initial;
 
-    /* Weight, tuned up from the house defaults: this is the one element on
-       the page carrying the vector, so it has to be readable as motion. */
-    --settle-scale: 0.935;
-    --settle-shift: 4vh;
+    /* Tuned up from the house defaults: this is the one element on the page
+       carrying the vector, so it has to be legible as motion. */
+    --settle-scale: 0.94;
+    --settle-shift: 3.6vh;
     --settle-origin: 0% 100%;
   }
 
-  /* Footnote mark, hung off the end of the claim and answered in the bottom
-     corner. Inline now rather than pinned to the last masked line — this
-     scene no longer splits into lines. */
+  /* Footnote mark, hung off the end of the claim and answered in the open
+     right-hand corner the tight measure leaves behind. */
   .why__ast {
     color: var(--brass);
     font-size: 0.34em;
@@ -122,23 +130,11 @@ import { whyNow, whyNowLead } from '../../data/site.js';
     letter-spacing: 0;
   }
 
-  .why__rule {
-    display: block;
-    height: 1px;
-    width: 100%;
-    background: var(--brass);
-    /* --dur-4 is the length of a full-bleed figure uncovering. A 1px rule
-       crossing the same distance at that speed is still travelling long
-       after the words have landed. */
-    transition-duration: 980ms;
-  }
-
   .why__note {
     justify-self: end;
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    margin-top: calc(clamp(1.5rem, 4vh, 2.6rem) * -0.55);
     transition: color 420ms var(--ease-out);
   }
   .why__note:hover { color: var(--fg); }
@@ -146,31 +142,43 @@ import { whyNow, whyNowLead } from '../../data/site.js';
   .why__note-ast { font-family: var(--serif); font-size: 1.3em; color: var(--brass); line-height: 1; }
 
   /* Direction, not decoration: the footnote points into the scene that
-     answers it. Local primitive — no chevron token exists. */
+     answers it. It is the house arrow turned a quarter, not a second glyph
+     drawn out of two borders — the site has ONE arrow. */
   .why__note-arrow {
-    width: 7px; height: 7px;
-    border-right: 1px solid var(--brass);
-    border-bottom: 1px solid var(--brass);
-    transform: rotate(45deg) translate(-1px, -1px);
-    margin-left: 0.35rem;
-    transition: transform 420ms var(--ease-out);
+    width: 1.15em;
+    color: var(--brass);
+    margin-left: 0.15rem;
   }
-  .why__note:hover .why__note-arrow { transform: rotate(45deg) translate(2px, 2px); }
+  .why__note:hover .why__note-arrow { transform: rotate(90deg) translateX(3px); }
 
   .why__eyebrow[data-reveal],
   .why__bridge[data-reveal] { transition-duration: 560ms, 700ms; }
 
+  @media (max-width: 860px) {
+    /* Two corners need width. Below this the lead stacks and the bridge
+       returns to the rail, but it keeps its full measure so the rule under
+       it still reads as the foot of a block rather than a stray line. */
+    .why__lead {
+      display: block;
+    }
+    .why__bridge {
+      text-align: left;
+      max-width: 34ch;
+      margin-top: clamp(0.75rem, 2vh, 1.1rem);
+    }
+  }
+
   @media (max-width: 700px) {
     .why {
-      min-height: min(60svh, 500px);
-      padding-top: clamp(1.25rem, 3.2vh, 2rem);
+      min-height: min(52svh, 430px);
+      padding-top: clamp(1.3rem, 3.4vh, 2.1rem);
       /* Below ~700px the display range compresses and the interval has to
          be carried by space alone; keep it, but do not let it eat the
          screen the claim needs. */
-      grid-template-rows: auto minmax(calc(var(--pause) * 0.72), 1fr) auto;
+      grid-template-rows: auto auto minmax(calc(var(--pause) * 0.42), 1fr) auto;
     }
     .why__h { max-width: none; letter-spacing: -0.022em; }
-    .why__foot { row-gap: clamp(1.25rem, 3vh, 1.9rem); }
+    .why__foot { row-gap: clamp(1.1rem, 2.8vh, 1.7rem); }
   }
 
   @media (prefers-reduced-motion: reduce) {

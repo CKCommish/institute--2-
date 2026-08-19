@@ -61,7 +61,7 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
           <svg class="arrow foot__arrow" viewBox="0 0 22 10" aria-hidden="true">
             <path d="M16 1l5 4-5 4M21 5H0"/>
           </svg>
-          <span class="label foot__go-t">{scene.action}</span>
+          <span class="label label--lit foot__go-t">{scene.action}</span>
         </span>
       </a>
 
@@ -132,18 +132,20 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
   /* The house arrow, at the house size. No second arrow construction. */
   .foot__go { display: inline-flex; align-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem); }
   .foot__arrow { width: clamp(26px, 2.6vw, 34px); color: var(--brass); }
-  .foot__go-t { color: var(--fg); transition: color 380ms var(--ease-out); }
+  .foot__go-t { transition: color 380ms var(--ease-out); }
   .foot__cta:hover .foot__arrow { transform: translateX(9px); }
   .foot__cta:hover .foot__go-t { color: var(--brass); }
 
-  /* Two ranks below the ask: a micro label and one 19px line. */
+  /* Two ranks below the ask. It used to be set at --step-lede, which made the
+     quiet door optically HEAVIER than the primary action's verb sitting on the
+     same baseline row. Body rung: subordinate at a glance, still a real door. */
   .foot__second {
     grid-column: 2; grid-row: 3; align-self: end; justify-self: end;
     display: grid; gap: 0.6rem; justify-items: end; text-align: right;
     padding-bottom: 0.3rem;
   }
   .foot__second-t {
-    font-size: var(--step-lede); line-height: 1.25; color: var(--fg-mute);
+    font-size: var(--step-body); line-height: 1.35; color: var(--fg-mute);
     padding-bottom: 0.3rem;
     border-bottom: 1px solid var(--rule);
     transition: color 380ms var(--ease-out), border-color 380ms var(--ease-out);

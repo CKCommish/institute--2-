@@ -12,11 +12,11 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
 
     <nav class="nav__links" aria-label="Primary">
       {nav.map((n) => (
-        <a href={n.href} class:list={['label', 'nav__link', { 'is-active': isActive(n.href) }]}>{n.label}</a>
+        <a href={n.href} class:list={['label', 'nav__link', { 'is-active': isActive(n.href) }]} aria-current={isActive(n.href) ? 'page' : undefined}>{n.label}</a>
       ))}
     </nav>
 
-    <a href={cta.href} class:list={['label', 'pill', { 'is-active': ctaActive }]}>
+    <a href={cta.href} class:list={['label', 'pill', { 'is-active': ctaActive }]} aria-current={ctaActive ? 'page' : undefined}>
       <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
       <span>{cta.label}</span>
     </a>
@@ -35,12 +35,12 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
 
 <div class="menu" id="menu" hidden data-menu>
   <div class="menu__in">
-    <nav class="menu__links" aria-label="Primary">
+    <nav class="menu__links" aria-label="Menu">
       {nav.map((n, i) => (
-        <a class="display display--poster" href={n.href} style={`--i:${i}`}><span class="index">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
+        <a class="display display--poster" href={n.href} style={`--i:${i}`} aria-current={isActive(n.href) ? 'page' : undefined}><span class="index">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
       ))}
     </nav>
-    <a class="label menu__cta" href={cta.href} style={`--i:${nav.length}`}>
+    <a class="label menu__cta" href={cta.href} style={`--i:${nav.length}`} aria-current={ctaActive ? 'page' : undefined}>
       <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
       {cta.label}
     </a>
@@ -71,13 +71,14 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      which is why live copy showed through on every page. */
   .nav::before {
     content: ''; position: absolute; inset: 0 0 auto 0;
-    height: calc(100% + 4.75rem);
+    height: calc(100% + 5.5rem);
     background: linear-gradient(
       to bottom,
       var(--nav-scrim) 0%,
-      var(--nav-scrim) 58%,
-      color-mix(in srgb, var(--nav-scrim) 76%, transparent) 72%,
-      color-mix(in srgb, var(--nav-scrim) 32%, transparent) 87%,
+      var(--nav-scrim) 64%,
+      color-mix(in srgb, var(--nav-scrim) 84%, transparent) 76%,
+      color-mix(in srgb, var(--nav-scrim) 44%, transparent) 87%,
+      color-mix(in srgb, var(--nav-scrim) 14%, transparent) 94%,
       transparent 100%
     );
     opacity: 0; transition: opacity 460ms var(--ease-out);
@@ -95,6 +96,9 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     pointer-events: none;
   }
   .nav.is-scrolled .nav__prog { opacity: 0.6; }
+  /* While the sheet is open the bar sits on top of it, and a hairline
+     reporting how far down a page you cannot see you are is noise. */
+  .nav.is-menu .nav__prog { opacity: 0; }
 
   .nav__in {
     position: relative;
@@ -138,7 +142,10 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     border: 1px solid color-mix(in srgb, var(--brass) 20%, transparent);
     border-radius: 999px;
     white-space: nowrap;
-    color: color-mix(in srgb, currentColor 72%, transparent);
+    /* The bar owns exactly two brightnesses: 54% for the quiet register and
+       full for the lit one. The pill used to sit at 72% — a singleton level
+       with one member. It is the lit object; it is lit. */
+    color: currentColor;
     transition: background-color 420ms var(--ease-out), border-color 420ms var(--ease-out), color 420ms var(--ease-out);
   }
   .pill .star { width: 7px; height: 7px; color: var(--brass); flex: none; transition: transform 620ms var(--ease-out), color 420ms var(--ease-out); }
@@ -146,7 +153,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .pill:hover .star { transform: rotate(90deg); color: var(--ink-900); }
   /* Already on the page the pill points at: the ring comes off, so the bar
      never carries a lit button for a door you are standing in. */
-  .pill.is-active { border-color: transparent; color: color-mix(in srgb, currentColor 55%, transparent); }
+  .pill.is-active { border-color: transparent; color: color-mix(in srgb, currentColor 54%, transparent); }
   .pill.is-active:hover { color: var(--ink-900); border-color: var(--brass); }
   .nav.is-inverted .pill:hover { color: var(--cream); }
 
@@ -162,7 +169,16 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .menu {
     position: fixed; inset: 0; z-index: 99;
     background: var(--ink-900); color: var(--cream);
-    display: grid; align-items: center;
+    display: grid;
+    /* `safe` centre, not centre: on a landscape phone (844×390) the sheet is
+       546px tall in a 390px window, and a centred grid item overflows at BOTH
+       ends — the address and the location line sat below the fold with no way
+       to reach them, because the panel is fixed and the page behind it is
+       locked. Safe alignment falls back to start when it would overflow, and
+       the panel scrolls itself. */
+    align-items: safe center;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     opacity: 0; pointer-events: none;
     transition: opacity 420ms var(--ease-out);
   }
@@ -198,6 +214,16 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .menu__foot {
     margin-top: 3.2rem; display: grid; gap: 0.75rem; justify-items: start;
     font-size: var(--step-body); color: var(--fg-mute);
+  }
+
+  /* A phone on its side is 390px tall, and the poster rung alone is taller
+     than that window. Drop the sheet one rung so all six doors are on screen
+     at once; the scroll above is only the safety net. */
+  @media (max-height: 520px) {
+    .menu__in { padding-top: calc(var(--nav-h) + 1rem); }
+    .menu__links a { font-size: var(--step-sub); }
+    .menu__cta { margin-top: 1.4rem; }
+    .menu__foot { margin-top: 1.6rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -246,6 +272,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
       if (burgerLabel) burgerLabel.textContent = open ? 'Close' : 'Menu';
       if (open) { menu.hidden = false; requestAnimationFrame(() => menu.setAttribute('data-open', '')); }
       else { menu.removeAttribute('data-open'); setTimeout(() => { menu.hidden = true; }, 420); }
+      nav?.classList.toggle('is-menu', open);
       document.documentElement.style.overflow = open ? 'hidden' : '';
       if (window.__navSync) window.__navSync();
     };

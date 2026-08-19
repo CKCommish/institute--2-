@@ -1,0 +1,91 @@
+---
+/* THE NINETY-DAY SCALE — the one artefact on this page.
+
+   Every pilot on this site runs 3 to 12 months, start to published result.
+   Pilot 01 promises follow-up care completed within NINETY DAYS. That is a
+   claim about a quantity, so it is drawn as one: a twelve-month axis, ticked
+   by month, with the ninety days the pilot is accountable for filled in
+   brass against the rest of the window.
+
+   It is also the page's one motion idea that is about MEASUREMENT rather
+   than arrival — the brass span is wiped open left to right along the axis,
+   so the scale is read as being taken, not as appearing. */
+const { months = 12, span = 3 } = Astro.props;
+const ticks = Array.from({ length: months }, (_, i) => i + 1);
+const marks = [0, 3, 6, 9, 12];
+---
+<figure class="mscale" aria-label={`A twelve month pilot window with the first ${span} months marked: ninety days to completed follow-up care.`}>
+  <div class="mscale__track">
+    <div class="mscale__ticks" aria-hidden="true">
+      {ticks.map((t) => <span class:list={['mscale__tick', t % 3 === 0 && 'is-major']}></span>)}
+    </div>
+    <div class="mscale__fill" aria-hidden="true" data-wipe="left" data-delay="120"
+         style={`width:${(span / months) * 100}%`}></div>
+  </div>
+
+  <div class="mscale__nums" aria-hidden="true">
+    {marks.map((m) => (
+      <span class="index mscale__n" style={`left:${(m / months) * 100}%`}>{m}</span>
+    ))}
+  </div>
+
+  <figcaption class="mscale__cap">
+    <span class="label label--brass" data-reveal="220">Ninety days · follow-up complete</span>
+    <span class="label mscale__cap-r" data-reveal="300">Month twelve · result published</span>
+  </figcaption>
+</figure>
+
+<style>
+  .mscale { margin: 0; display: grid; row-gap: 0.55rem; }
+
+  .mscale__track {
+    position: relative;
+    height: clamp(2.1rem, 3.6vw, 3.1rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  .mscale__ticks {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: repeat(12, 1fr);
+  }
+  /* every month is a tick; every quarter is a taller one */
+  .mscale__tick { position: relative; }
+  .mscale__tick::after {
+    content: ''; position: absolute; right: 0; bottom: 0;
+    width: 1px; height: 34%; background: var(--mark);
+  }
+  .mscale__tick.is-major::after { height: 62%; background: var(--fg-meta); }
+
+  .mscale__fill {
+    position: absolute; left: 0; bottom: -1px; height: 64%;
+    border-bottom: 2px solid var(--brass);
+    /* drawn, not faded: a bounded rectangle with all four edges stated */
+    background: color-mix(in srgb, var(--brass) 20%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--brass) 62%, transparent);
+  }
+  /* the span is closed at its own end, so ninety days is a bounded quantity
+     rather than a fade running off into the rest of the window */
+  .mscale__fill::after {
+    content: ''; position: absolute; right: 0; bottom: 0;
+    width: 1px; height: 100%; background: var(--brass);
+  }
+  .mscale__fill::before {
+    content: ''; position: absolute; left: 0; bottom: 0;
+    width: 1px; height: 100%; background: var(--brass);
+  }
+
+  .mscale__nums { position: relative; height: 1.1em; }
+  .mscale__n { position: absolute; top: 0; transform: translateX(-50%); }
+  .mscale__n:first-child { transform: none; }
+  .mscale__n:last-child { transform: translateX(-100%); }
+
+  .mscale__cap {
+    display: flex; justify-content: space-between; gap: 1.5rem;
+    padding-top: 0.15rem;
+  }
+  .mscale__cap-r { text-align: right; }
+
+  @media (max-width: 560px) {
+    .mscale__cap { display: grid; row-gap: 0.5rem; }
+    .mscale__cap-r { text-align: left; }
+  }
+</style>

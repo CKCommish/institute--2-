@@ -406,8 +406,11 @@ const style = [
   .fig__over { position: relative; z-index: 9; }
 
   @media (max-width: 620px) {
-    /* On a phone the credit is the first thing to crowd a display line. */
-    .fig__credit { font-size: 0.62rem; letter-spacing: 0.1em; }
+    /* The credit stays in the .label register on every viewport — a local
+       size here was the site's fourth micro scale, invented in a corner. On a
+       phone it only needs to stop crowding the display line, which is a
+       position problem, not a size one. */
+    .fig__credit { max-width: 22ch; line-height: 1.4; }
   }
 
   @media (prefers-reduced-motion: reduce) {

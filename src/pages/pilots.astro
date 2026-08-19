@@ -26,14 +26,19 @@ const shape = {
   'career-pathways': 'close',
 };
 
-/* Per-frame grade only — the navy multiply that pulls each photograph into
-   the palette. The maternal frame is a warm interior and needs more of it;
-   02 is a plate now rather than a bed for type, so it carries less. */
+/* Per-frame grade — the navy multiply that pulls each photograph into the
+   palette. Round 5: it was doing too much. Three of the four frames were
+   graded to within seven luminance points of blank ground, so the page had
+   no moment where anything was SEEN, only moments where type was set on
+   darkness. The grade now sits where the tint still unifies the four but the
+   photograph survives it; the ink cream type needs is carried by the band's
+   own ramps, which are shorter and steeper so they buy legibility at the two
+   edges instead of over the whole frame. */
 const grades = {
-  'healthy-athletes': 0.64,
-  'clean-data-centers': 0.5,
-  'infant-mortality': 0.74,
-  'career-pathways': 0.62,
+  'healthy-athletes': 0.30,
+  'clean-data-centers': 0.42,
+  'infant-mortality': 0.40,
+  'career-pathways': 0.34,
 };
 /* 03 is composed from the top, so its crop drops to keep the faces in the
    open half of the frame rather than behind the display type. */
@@ -75,7 +80,6 @@ const focals = {
                 <span class="index pc__i">{p.index}</span>
                 <span class="display pc__t">{p.title}</span>
                 <span class="pc__lead" aria-hidden="true"></span>
-                <span class="label pc__f">{p.field}</span>
               </a>
             </li>
           ))}
@@ -90,7 +94,7 @@ const focals = {
       shape={shape[p.id] ?? 'close'}
       grade={grades[p.id] ?? 0.6}
       focal={focals[p.id] || '50% 50%'}
-      parallax={i === 0 ? 7 : 5}
+      parallax={p.id === 'clean-data-centers' ? 0 : i === 0 ? 7 : 5}
       loading={i === 0 ? 'eager' : 'lazy'}
     />
   ))}
@@ -146,6 +150,9 @@ const focals = {
     grid-column: 1 / -1;
     height: 1px; background: var(--rule);
     margin-top: clamp(1.25rem, 3vw, 2.25rem);
+    /* both columns hang off THIS line — pull the next grid row up against it
+       so the numeral and the contents share one horizon */
+    margin-bottom: calc(var(--stack-2) * -1);
   }
 
   /* hung off the rule, level with the first row of the contents. The air
@@ -153,14 +160,17 @@ const focals = {
   .phead__left {
     grid-column: 1;
     align-self: start;
-    padding-top: clamp(0.9rem, 1.8vw, 1.35rem);
+    /* hung directly off that same hairline, so the page's one quantity and
+       the page's contents read as one object across the spread rather than a
+       stranded numeral in an empty column */
+    padding-top: clamp(0.8rem, 1.6vw, 1.15rem);
   }
 
   /* the one measurable frame every pilot shares, pulled out of the card
      rails (where it repeated four times) and set once, at size */
   .phead__fig { margin: 0; display: grid; gap: clamp(0.5rem, 1vw, 0.8rem); }
   .phead__fig-n {
-    font-size: var(--step-head);
+    font-size: var(--step-poster);
     line-height: 0.9;
     letter-spacing: -0.02em;
     color: var(--fg);
@@ -168,19 +178,18 @@ const focals = {
   }
   .phead__fig-l { line-height: 1.5; }
 
-  .phead__index { grid-column: 2; }
+  .phead__index { grid-column: 2; padding-top: clamp(0.35rem, 0.8vw, 0.6rem); }
   .phead__index ol { list-style: none; margin: 0; padding: 0; }
 
   /* number · title · hairline leader · field */
   .pc {
     display: grid;
-    grid-template-columns: 2.4rem minmax(0, auto) minmax(1.25rem, 1fr) auto;
+    grid-template-columns: 2.4rem minmax(0, auto) minmax(1.25rem, 1fr);
     align-items: baseline;
     gap: 0.9rem;
     padding-block: clamp(0.7rem, 1.4vw, 1rem);
     border-bottom: 1px solid var(--rule-soft);
   }
-  .phead__index li:first-child .pc { border-top: 1px solid var(--rule-soft); }
   .pc__t {
     font-size: var(--step-sub);
     line-height: 1.05;
@@ -195,11 +204,9 @@ const focals = {
     border-bottom: 1px solid var(--rule-soft);
     transition: border-color 380ms var(--ease-out);
   }
-  .pc__f { transition: color 320ms var(--ease-out); }
   @media (hover: hover) {
     .pc:hover .pc__t { color: var(--fg); transform: translateX(0.2rem); }
     .pc:hover .pc__lead { border-color: color-mix(in srgb, var(--brass) 62%, transparent); }
-    .pc:hover .pc__f { color: var(--brass); }
   }
   .pc:focus-visible { outline-offset: 6px; }
 
@@ -214,10 +221,11 @@ const focals = {
     }
     .phead__fig-l { max-width: 24ch; }
     .phead__index { grid-column: 1; max-width: 34rem; margin-top: clamp(1.25rem, 4vw, 2.25rem); }
+    .phead__rule { margin-bottom: 0; }
   }
 
   @media (max-width: 760px) {
-    .pc { grid-template-columns: 2rem minmax(0, auto) minmax(1rem, 1fr) auto; gap: 0.7rem; }
+    .pc { grid-template-columns: 2rem minmax(0, auto) minmax(1rem, 1fr); gap: 0.7rem; }
     .pc__t { font-size: clamp(1.2rem, 1rem + 2.4vw, 1.6rem); }
   }
 
@@ -227,12 +235,11 @@ const focals = {
   }
 
   @media (max-width: 420px) {
-    .pc__f { display: none; }
     .pc { grid-template-columns: 2rem minmax(0, 1fr); }
     .pc__lead { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .pc__t, .pc__lead, .pc__f { transition-duration: 1ms; }
+    .pc__t, .pc__lead { transition-duration: 1ms; }
   }
 </style>

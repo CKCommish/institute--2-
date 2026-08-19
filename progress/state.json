@@ -1,64 +1,64 @@
 {
-  "updated": "2026-08-19 02:17 UTC",
-  "wave": 2,
-  "waveTitle": "System pass, then apply \u2014 chasing \"wowed\", not \"wins\"",
-  "summary": "Wave 1 closed: all five pieces now WIN their blind comparison against the reference, but no critic was wowed. Five independent critics converged on the same root causes \u2014 a hole in the type scale (an 11.7px label against a 75px display with no rung between), twenty-five undifferentiated micro-labels across six brightness levels, exactly one motion primitive, and metronome pacing. Wave 2 rebuilds the system first, then applies it piece by piece. The pass bar is now \"would you keep this in a folder of references\", not \"did it win\".",
+  "updated": "2026-08-19 18:55 UTC",
+  "wave": 3,
+  "waveTitle": "From disciplined to designed",
+  "summary": "Wave 2 closed: ours won all fifteen blind comparisons \u2014 several clean sweeps (15/15, 14/15, 12/12) \u2014 the audit reports zero issues across twelve page-views, and every Wave 1 root cause is measurably dead. Fifteen critics for fifteen still refused to be wowed, in almost the same words: \"it wins by not making mistakes rather than by making anything.\" Wave 3 goes after that: one compositional armature repeated on every scene, one tonal event in 5,814px, and a navy grade flattening excellent photography to within seven luminance points of blank background.",
   "pieces": [
     {
       "id": "scroll",
       "name": "Scroll narrative & homepage scenes",
       "status": "looping",
-      "round": 4,
-      "verdict": "won 6/8",
-      "gap": "Why now: a 394px void, 56% of the scene, with no rung between an 11.7px label and a 75.2px claim"
+      "round": 7,
+      "verdict": "won 12/15 \u00b7 13/15",
+      "gap": "Six scenes drawn with one move; the hero is the quietest banner on the site"
     },
     {
       "id": "pilots",
       "name": "Pilot cards & pilot detail",
       "status": "looping",
-      "round": 4,
-      "verdict": "won 6/6",
-      "gap": "PROBLEM/APPROACH/GOAL repeats an identical 209px slab under all four pilots"
+      "round": 7,
+      "verdict": "won 12/12 \u00b7 10/12",
+      "gap": "The anchor payoff sits at 53px with 865px of unbounded void beside it"
     },
     {
       "id": "people",
       "name": "People grid",
       "status": "looping",
-      "round": 4,
-      "verdict": "won 3/5",
-      "gap": "The 16-name board is a well-set table, not a composition \u2014 cited by four separate critics"
+      "round": 7,
+      "verdict": "won 10/11 \u00b7 9/10",
+      "gap": "The design ranks two co-founders who hold the same title"
     },
     {
       "id": "forum",
       "name": "Forum & photography treatment",
       "status": "looping",
-      "round": 4,
-      "verdict": "won 4/5",
-      "gap": "Three type sizes and ~25 identical micro-labels; the photograph is the least composed thing on the page"
+      "round": 7,
+      "verdict": "won 9/10 \u00b7 7/9",
+      "gap": "No reading size anywhere: four slogans, a harbour and a mailto"
     },
     {
       "id": "type",
       "name": "Type, colour, motion",
-      "status": "building",
+      "status": "passed",
       "round": 0,
-      "verdict": "\u2014",
-      "gap": "Rebuilding the scale, the micro registers and the motion vocabulary"
+      "verdict": "done",
+      "gap": "Nine-rung ladder, three micro registers, three motion vectors \u2014 all shipped"
     },
     {
       "id": "mobile",
       "name": "Mobile",
-      "status": "queued",
+      "status": "passed",
       "round": 0,
-      "verdict": "\u2014",
-      "gap": "Queued behind the apply pass"
+      "verdict": "done",
+      "gap": "Focus trap, tap targets and tablet/wide breakpoints closed"
     },
     {
       "id": "chrome",
       "name": "Nav, footer, Institute & Partner",
       "status": "looping",
-      "round": 4,
-      "verdict": "won 9/11",
-      "gap": "Both losses were heroes: /institute/ jumps 19px to 107px with nothing between"
+      "round": 7,
+      "verdict": "won 15/15 \u00b7 12/12",
+      "gap": "The one designed object is 8% of the page; the sentence restating it takes the rest"
     },
     {
       "id": "media",
@@ -66,7 +66,7 @@
       "status": "passed",
       "round": 0,
       "verdict": "done",
-      "gap": "Seven public-domain frames; production-build image bug found and fixed"
+      "gap": "Seven public-domain frames; regrade underway so the pictures read as pictures"
     }
   ],
   "log": [
@@ -89,6 +89,18 @@
     {
       "t": "Wave 2",
       "m": "Design system rebuilt by a single owner (type ladder, three micro registers, two new motion primitives), then five builder/critic loops apply it, then mobile and accessibility, then coherence."
+    },
+    {
+      "t": "Wave 2 closed",
+      "m": "33 agents. Ours won 15 of 15 blind comparisons; zero wows. Audit clean: 0 issues, 0 dead links, homepage body copy 86 words."
+    },
+    {
+      "t": "Decision",
+      "m": "The People page was ranking the two co-founders \u2014 one on a lighter plate at 86px with a bordered credential column, the other at 53px on flat ground, same title. Wave 3 gives them parity; that is an editorial claim a design should not make on its own."
+    },
+    {
+      "t": "Wave 3",
+      "m": "Regrade the photography and extend the ground system first, then five owners break the single left-column armature and earn one designed moment per page."
     }
   ]
 }

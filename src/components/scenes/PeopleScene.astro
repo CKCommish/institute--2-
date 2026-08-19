@@ -83,7 +83,7 @@ const cohorts = cohortsOf(board);
           ))}
         </ul>
       </div>
-      <a class="link tap label people__more" href="/people/" data-reveal="220">All people</a>
+      <a class="link tap label label--lit people__more" href="/people/" data-reveal="220">All people</a>
     </div>
   </div>
 </section>
@@ -157,9 +157,9 @@ const cohorts = cohortsOf(board);
   /* The word space between two units supplies the gap on the right, so the
      middot is only padded on the left. */
   .people__sep { color: var(--brass); padding-left: 0.3em; }
-  .people__more { justify-self: start; font-weight: 500; color: var(--fg-mute); }
+  .people__more { justify-self: start; }
   @media (hover: hover) {
-    .people__more:hover { color: var(--fg); }
+    .people__more:hover { color: var(--brass); }
   }
   /* If the script never runs, nothing may stay under its mask. */
   :global(html:not(.js)) .people__cohorts li,

@@ -19,37 +19,43 @@ const roles = [
     <div class="shell phead__in">
       <p class="eyebrow" data-reveal>Work with us</p>
       <p class="bridge phead__bridge" data-reveal="120">
-        Four pilots are open for 2026. Each one still needs money, a technology,
-        or somewhere real to run.
+        Every pilot still needs money, a technology, or somewhere real to
+        run it. Most need two of the three.
       </p>
 
       <div class="phead__lead">
-        <h1 class="display display--poster phead__h lines">Partner on a pilot.</h1>
+        <h1 class="display display--feature phead__h lines">Partner on a pilot.</h1>
 
         <div class="ask">
           <span class="ask__rule" data-wipe="left" data-delay="420" aria-hidden="true"></span>
 
           <a class="ask__mail" href={`mailto:${site.email}`} data-reveal="520">
-            <span class="ask__mail-t">{site.email}</span>
             <svg class="arrow ask__arrow" viewBox="0 0 22 10" aria-hidden="true">
               <path d="M16 1l5 4-5 4M21 5H0"/>
             </svg>
+            <span class="ask__mail-t">{site.email}</span>
           </a>
 
           <p class="ask__sub" data-reveal="580">Name the pilot and the role. A person answers.</p>
         </div>
       </div>
 
-      <!-- The right plate carries the four doors by name, so the ask is not
-           an abstraction. Territory: it uncovers, it does not lift. -->
+      <!-- The payload, and it is set as the payload. The four pilots and the
+           people who own them are the only concrete facts on this route, so
+           they are the largest reading matter on it: titles at --step-sub,
+           owners at body weight in full cream. The slogan answers to them.
+           The column head shares the eyebrow's line, so the plate is bounded
+           at the top instead of opening on 200px of empty navy. -->
       <div class="phead__side">
-        <p class="label pindex__k">Open pilots · 2026</p>
+        <p class="label pindex__k" data-reveal="160">Four pilots, open for 2026</p>
         <ul class="pindex" data-wipe="left" data-delay="300">
-          {pilots.map((p) => (
-            <li>
-              <span class="index">{p.index}</span>
-              <span class="pindex__n">{p.title}</span>
-              <span class="label pindex__f">{p.partner}</span>
+          {pilots.map((p, i) => (
+            <li class:list={['pindex__r', { 'is-turn': i === 2 }]}>
+              <a class="pindex__a" href="/pilots/">
+                <span class="index pindex__i">{p.index}</span>
+                <span class="display display--sub pindex__n">{p.title}</span>
+                <span class="pindex__f">{p.partner}</span>
+              </a>
             </li>
           ))}
         </ul>
@@ -65,9 +71,11 @@ const roles = [
         <p class="eyebrow" data-reveal>Three ways in</p>
         <h2 class="display display--head proles__h" data-settle="0.62">Every pilot needs all three.</h2>
       </div>
-      <ol class="proles__list" data-seq="110" data-seq-from="60">
+      <!-- The page's one spatial idea: three doors opening outward from a
+           single point, as one gesture. Not three identical lift-fades. -->
+      <ol class="proles__list" data-wipe="center" data-delay="120">
         {roles.map((r, i) => (
-          <li data-reveal>
+          <li>
             <span class="proles__rule" aria-hidden="true"></span>
             <span class="index proles__n">{String(i + 1).padStart(2, '0')}</span>
             <h3 class="display display--sub proles__t">{r.t}</h3>
@@ -81,100 +89,123 @@ const roles = [
 </Base>
 
 <style>
+  /* ── The ask ──────────────────────────────────────────────────────
+     Two plates under a two-row header, exactly as /institute/: eyebrow and
+     bridge span the width so the poster line and the pilot ledger open on
+     the same horizon. */
   .phead {
     padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(3.5rem, 2rem + 3.4vw, 5.5rem);
   }
-  .phead__in { display: grid; }
-  .phead__in > .label { margin-bottom: clamp(0.7rem, 1.5vw, 1.5rem); }
+  .phead__in {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: clamp(1.6rem, 2.8vw, 2.6rem);
+    align-items: stretch;
+  }
+  .phead__in > .eyebrow { grid-column: 1; grid-row: 1; }
+  .phead__bridge {
+    grid-column: 1; grid-row: 2;
+    max-width: 34ch;
+    margin-bottom: clamp(0.9rem, 2vw, 1.9rem);
+  }
+  .phead__lead { grid-column: 1; grid-row: 3; display: flex; flex-direction: column; }
+  /* Starts on the eyebrow's row, not 200px below it. */
+  .phead__side {
+    grid-column: 2; grid-row: 1 / span 3;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    gap: clamp(0.7rem, 1.2vw, 1rem);
+  }
 
-  /* One hero size for the whole site, sitting between --step-xl (footer close)
-     and --step-hero (homepage). Local: the token scale has no step here. */
+  /* --step-feature: the series-breaker, used once on the page, and it is the
+     page's own title. At --step-head it was outranked by the cream section's
+     headline lower down — a page whose H1 is smaller than a subhead. The
+     breaker moved up here and the cream head stepped down to --step-head.
+     Still well under the poster rung, so the pilot ledger keeps its weight. */
   .phead__h {
-    font-size: clamp(3.1rem, 1rem + 6.3vw, 7rem);
-    line-height: 0.94; letter-spacing: -0.028em;
+    line-height: 0.96; letter-spacing: -0.024em;
     max-width: 13ch;
   }
   .phead__h :global(.line) { padding-bottom: 0.08em; margin-bottom: -0.08em; }
   /* Motion as rank: the statement rises long and slow, everything under the
-     rule arrives fast and tight behind it. Local override of the base
-     durations — no change to the engine. */
+     rule arrives fast and tight behind it. */
   .phead__h :global(.line > span) { transition-duration: 1400ms; }
   .ask [data-reveal] { --reveal-y: 8px; transition-duration: 460ms, 560ms; }
 
-  /* ── The ask ──
-     Two rows split by one hairline. Above it: the address and the label
-     that names what hangs below. Below it: the gloss and the open pilots. */
+  /* ONE focal point. The page prints the ask once, at --step-feature; the
+     address is the ACTION under it, at the bridge rung, so 86px answers to
+     27px instead of to a second 50px line on the same row. */
   .ask {
-    margin-top: clamp(2.4rem, 1.4rem + 3.2vw, 4.4rem);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    column-gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: end;
+    margin-top: auto;
+    padding-top: clamp(2.4rem, 1.4rem + 3.2vw, 4.4rem);
+    display: grid; justify-items: start;
   }
+  .ask__rule {
+    display: block; height: 1px; align-self: start;
+    background: color-mix(in srgb, var(--brass) 50%, transparent);
+    width: 100%; transform-origin: left;
+    margin-bottom: clamp(0.95rem, 1.7vw, 1.5rem);
+  }
+  /* Real padding, not a .tap pseudo: the address is the page's one action and
+     its own box has to clear the touch minimum. */
   .ask__mail {
-    grid-column: 1; grid-row: 1;
-    display: inline-flex; align-items: center;
-    gap: clamp(0.9rem, 2vw, 1.6rem);
-    padding-bottom: clamp(0.45rem, 0.9vw, 0.75rem);
-    max-width: 100%;
+    display: inline-flex; align-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem);
+    max-width: 100%; padding-block: 0.35rem; margin-block: -0.35rem;
   }
+  .ask__arrow { width: clamp(26px, 2.6vw, 34px); color: var(--brass); flex: none; }
   .ask__mail-t {
-    font-family: var(--sans); font-weight: 350;
-    font-size: clamp(1.25rem, 0.68rem + 2.45vw, 3.1rem);
-    letter-spacing: -0.018em; line-height: 1.06;
-    color: var(--cream);
+    font-family: var(--sans); font-weight: 400;
+    font-size: var(--step-bridge);
+    letter-spacing: -0.006em; line-height: 1.2;
+    color: var(--fg);
     transition: color 380ms var(--ease-out);
     overflow-wrap: anywhere;
   }
-  .ask__mail-arrow {
-    display: flex; align-items: center;
-    width: clamp(22px, 3.4vw, 54px); height: 12px; color: var(--brass); flex: none;
-    transition: transform 560ms var(--ease-out);
-  }
-  .ask__mail-line { flex: 1 1 auto; height: 1px; background: currentColor; }
-  .ask__mail svg { width: 11px; height: 12px; margin-left: -1px; flex: none; }
   .ask__mail:hover .ask__mail-t { color: var(--brass); }
-  .ask__mail:hover .ask__mail-arrow { transform: translateX(9px); }
-
-  .ask__l {
-    grid-column: 2; grid-row: 1;
-    justify-self: end; align-self: end;
-    color: var(--fg-faint);
-    padding-bottom: clamp(0.7rem, 1.3vw, 1.05rem);
-    white-space: nowrap;
-  }
-
-  /* The one rule on the page. Everything in the ask is measured from it. */
-  .ask__rule {
-    grid-column: 1 / -1; grid-row: 2;
-    display: block; height: 1px;
-    background: color-mix(in srgb, var(--brass) 50%, transparent);
-    transform-origin: left;
-  }
-
+  .ask__mail:hover .ask__arrow { transform: translateX(9px); }
   .ask__sub {
-    grid-column: 1; grid-row: 3; align-self: start;
-    margin-top: clamp(0.95rem, 1.7vw, 1.45rem);
-    color: var(--fg-mute); font-size: var(--step-xs); max-width: 44ch;
+    margin-top: clamp(0.7rem, 1.3vw, 1.05rem);
+    color: var(--fg-meta); font-size: var(--step-body); max-width: 44ch;
   }
 
-  /* Hung from the rule, not floating opposite the address: one rank down in
-     size, aligned to the same right edge as the label above it. */
-  .ask__index {
-    grid-column: 2; grid-row: 3; align-self: start;
-    list-style: none; margin: clamp(0.85rem, 1.5vw, 1.25rem) 0 0; padding: 0;
-    display: grid; grid-template-columns: max-content max-content;
-    justify-content: end;
-    column-gap: clamp(0.7rem, 1.2vw, 1rem);
-    row-gap: clamp(0.18rem, 0.5vw, 0.4rem);
+  /* ── The four doors, by name ──
+     Hairline-ruled rows on the right plate — the same object as the spec
+     card on /institute/, so the two inner heroes share one construction. */
+  .pindex { list-style: none; margin: 0; padding: 0; }
+  .pindex__r { border-top: 1px solid var(--rule); }
+  .pindex__r:last-child { border-bottom: 1px solid var(--rule); }
+  /* The caesura. Four rows at one pitch is a tick; a breath at the halfway
+     mark makes it a list of two pairs. The rule there carries brass. */
+  .pindex__r.is-turn {
+    border-top-color: color-mix(in srgb, var(--brass) 42%, transparent);
+    margin-top: clamp(0.9rem, 2.2vw, 1.8rem);
   }
-  .ask__index li { display: contents; }
-  .ask__index .index { align-self: baseline; }
-  .ask__index-n {
-    font-size: clamp(1rem, 0.9rem + 0.42vw, 1.25rem);
-    line-height: 1.3; letter-spacing: -0.004em;
-    color: var(--fg-mute);
+  .pindex__a {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: clamp(0.8rem, 1.6vw, 1.2rem);
+    row-gap: 0.2rem;
+    align-items: baseline;
+    padding-block: clamp(0.75rem, 1.5vw, 1.25rem);
   }
+  .pindex__i { align-self: baseline; }
+  /* A pilot's name is set in the serif everywhere it appears on this site —
+     the home list, all four cards on /pilots/. It was the one place it was a
+     sans line, which made the same four objects read as a different class of
+     thing on this route. .display--sub, like everything else. */
+  .pindex__n {
+    color: var(--fg);
+    transition: color 340ms var(--ease-out);
+  }
+  /* Inslee and Cardona are the most interesting words on the route. They no
+     longer sit at 11px and 54%. */
+  .pindex__f {
+    grid-column: 2;
+    font-size: var(--step-body); line-height: 1.3;
+    color: var(--fg);
+  }
+  .pindex__a:hover .pindex__n { color: var(--brass); }
+  .pindex__k { color: var(--fg-meta); }
 
   /* ── Three ways in — the cream field ──
      The numeral indexes; it does not outrank. It is a tracked cap sitting on
@@ -182,53 +213,46 @@ const roles = [
   .proles {
     padding-block: clamp(3rem, 1.6rem + 3.6vw, 5.5rem) clamp(4rem, 2rem + 4.4vw, 6.5rem);
   }
-  .proles__in { display: grid; gap: clamp(2rem, 3.4vw, 3.2rem); }
+  .proles__in { display: grid; gap: clamp(2.2rem, 3.8vw, 3.6rem); }
+  .proles__head { display: grid; gap: clamp(0.9rem, 1.8vw, 1.5rem); }
+  /* One rung under the H1: three columns at --step-sub under a --step-head
+     line, which answers to the title rather than competing with it. */
+  .proles__h { max-width: 14ch; line-height: 1.02; }
   .proles__list {
     list-style: none; margin: 0; padding: 0;
     display: grid; grid-template-columns: repeat(3, 1fr);
     gap: clamp(1.75rem, 3.4vw, 3.4rem);
   }
-  .proles__list li {
-    display: grid; gap: clamp(0.55rem, 1vw, 0.9rem);
-    align-content: start;
-  }
-  /* Shared .index primitive; only the gap under it is local. */
+  .proles__list li { display: grid; gap: clamp(0.55rem, 1vw, 0.9rem); align-content: start; }
+
   .proles__n { margin-bottom: clamp(0.15rem, 0.4vw, 0.35rem); }
-  /* The rule caps the column; the numeral sits on it and the verb owns the
-     rest. The index never outranks the thing it indexes. */
   .proles__rule { display: block; height: 1px; background: var(--rule); margin-bottom: clamp(0.75rem, 1.4vw, 1.15rem); }
-  .proles__t {
-    font-family: var(--serif); font-weight: 320;
-    font-size: clamp(1.5rem, 1.1rem + 1.35vw, 2.15rem);
-    line-height: 1.08; letter-spacing: -0.015em;
-  }
-  .proles__list p { color: var(--fg-mute); font-size: var(--step-xs); max-width: 28ch; }
-  .proles__list [data-reveal] { --reveal-y: 8px; transition-duration: 460ms, 620ms; }
+  .proles__t { font-weight: 320; line-height: 1.08; }
+  .proles__list p { color: var(--fg-mute); font-size: var(--step-body); max-width: 28ch; }
+
 
   @media (max-width: 900px) {
     .proles__list { grid-template-columns: 1fr; gap: clamp(1.5rem, 5vw, 2rem); }
+    /* The centre wipe is three doors opening outward from one point. With one
+       column there is no outward: the mask just eats the first letter of every
+       line for a second and a half. Re-anchor it to the left rule the rows
+       already hang from. Only while it is still covered — `.is-in` still ends
+       at inset(0 0 0 0). */
+    .proles__list:not(.is-in) { clip-path: inset(0 100% 0 0); }
   }
 
   @media (max-width: 860px) {
     .phead { padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(2.5rem, 9vw, 3.5rem); }
-    .phead__h { max-width: 100%; }
-
-    .ask { grid-template-columns: minmax(0, 1fr); }
-    /* The address must never break across lines — it is the whole ask. */
-    .ask__mail { grid-column: 1; grid-row: 1; gap: 0.65rem; }
-    .ask__mail-arrow { width: 18px; }
-    .ask__l {
-      grid-column: 1; grid-row: 4;
-      justify-self: start; align-self: start;
-      padding-bottom: 0; margin-top: clamp(2.2rem, 8vw, 2.8rem);
+    .phead__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 6vw, 2.2rem); }
+    .phead__lead, .phead__side { grid-column: 1; }
+    .phead__h { max-width: 14ch; }
+    .phead__in > .eyebrow, .phead__bridge, .phead__lead, .phead__side {
+      grid-column: 1; grid-row: auto;
     }
-    .ask__rule { grid-row: 2; }
-    .ask__sub { grid-column: 1; grid-row: 3; }
-    .ask__index {
-      grid-column: 1; grid-row: 5;
-      justify-content: start; margin-top: clamp(0.7rem, 3vw, 1rem);
-      row-gap: clamp(0.25rem, 1.2vw, 0.45rem);
-    }
+    .phead__bridge { max-width: 30ch; margin-bottom: clamp(0.3rem, 2vw, 0.8rem); }
+    .ask { padding-top: clamp(2rem, 8vw, 2.8rem); }
+    /* Below ~700px the feature rung stops reading as a break; space carries it. */
+    .proles__h { max-width: 12ch; }
   }
 
   @media (prefers-reduced-motion: reduce) {

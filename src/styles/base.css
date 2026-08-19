@@ -38,6 +38,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   border-radius: 1px;
 }
 
+/* The bar is fixed and opaque, so anything the browser scrolls to has to
+   stop below it: a #hash, the skip link, and — the way this was found — a
+   keyboard walking BACK up the page with Shift+Tab, which lands the target
+   at the top of the viewport rather than the bottom. Without this the two
+   top rows of the home ledger and the address on /partner/ arrive under the
+   nav. Zero specificity, so the pages that already set their own win. */
+:where(a[href], button, [tabindex], [id]) {
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
 /* ── Type primitives ─────────────────────────────────────────────── */
 .display {
   font-family: var(--serif);
@@ -88,6 +98,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .bridge--fg { color: var(--fg); }
 
+/* The bridge, lifted one rung to --step-sub. There is a real second sans
+   voice on this site — the hero's lead-in clause, the arms of the bridge
+   diagram on /institute/ — and it was being hand-rolled in three places,
+   which is how --step-sub ended up rendering in BOTH families and stopped
+   being one rung. It is declared once here so the ladder can be read off
+   the stylesheet: --step-sub is a SERIF display rung, except through this
+   class, and this class is the only door. Use it sparingly; the default
+   bridge is the one above. */
+.bridge--lift { font-size: var(--step-sub); }
+
 /* ── The three micro registers ───────────────────────────────────────
    Below 16px this site owns exactly THREE marks. Each has one job, one
    size, one tracking, one weight, one colour. If a new small label does
@@ -106,8 +126,19 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
                 Never carries a word. 13.1px / 600 / 0.18em / --brass.
 
    Do not invent a fourth by changing tracking or by mixing a size in.
-   `.label--brass` promotes a label to accent colour and is the only
-   sanctioned variant.
+   A label has exactly TWO sanctioned variants, both colour-only:
+
+     .label--brass  the accent register — a field name that indexes.
+     .label--lit    --fg instead of --fg-meta, for the label of something
+                    ACTIONABLE or ACTIVE: the verb under the footer's ask,
+                    a "more" link, the lit node of a diagram, a caption
+                    burned into a photograph. Nothing else changes.
+
+   `.label--lit` exists because seven components had each written
+   `color: var(--fg)` on their own label and the site was carrying four
+   brightnesses of one class again. If a label needs to be brighter, it
+   needs this class; if it needs to be dimmer, it does not need a class,
+   it needs to be somewhere else.
    -------------------------------------------------------------------- */
 .eyebrow {
   font-family: var(--sans);
@@ -132,16 +163,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .label--brass,
 .meta--brass { color: var(--brass); }
+.label--lit,
+.meta--lit { color: var(--fg); }
 
-/* A micro-label link is 11px tall; a finger is not. .tap gives any inline
-   label-sized link a 26px hit box without moving a pixel of the layout. */
-.tap { position: relative; }
-.tap::before {
-  content: '';
-  position: absolute; left: 0; right: 0; top: 50%;
-  height: max(26px, 100%);
-  transform: translateY(-50%);
+/* A micro-label link is 11px tall; a finger is not. .tap gives any
+   label-sized link a 27px hit box without moving a pixel of the layout:
+   block padding, cancelled by an equal negative margin. Same device the
+   wordmark and the Forum cue already use, written once.
+
+   It used to paint that box on an ::before overlay instead. The browser
+   hit-tests a pseudo-element, so the target really was 26px — but the
+   anchor's own geometry stayed 11px, which is what an audit, a devtools
+   inspector and WCAG's target-size measurement all read. Give the element
+   the box rather than a picture of it. */
+a.tap {
+  position: relative;
+  padding-block: 0.5rem;
+  margin-block: -0.5rem;
 }
+/* .link hangs its underline off the padding edge; keep it under the word. */
+a.link.tap::after { bottom: calc(0.5rem - 2px); }
 
 .lede {
   font-size: clamp(1.06rem, 0.98rem + 0.42vw, 1.35rem);
@@ -197,7 +238,55 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   transition: transform 460ms var(--ease-out);
 }
 .arrow path { stroke: currentColor; stroke-width: 1; fill: none; }
+/* The same arrow, turned. A footnote that points DOWN into the scene that
+   answers it is still the house arrow — it is not a chevron, and it is not
+   a pair of rotated borders, which is what /#why was drawing. */
+.arrow--down { transform: rotate(90deg); }
 @media (prefers-reduced-motion: reduce) { .arrow { transition-duration: 1ms; } }
+
+/* ── The cue ─────────────────────────────────────────────────────────
+   The one "there is more below this" mark. A label, then a 34px hairline
+   with a single brass sweep travelling through it. It was written three
+   times — hero, /forum/ masthead, /institute/ plate — with three keyframe
+   names, two hairline inks and one of the three not even a link. One
+   object now, and it is always a link, because a cue that cannot be
+   followed is decoration.
+
+       <a class="cue tap" href="#next">
+         <span class="label">Scroll</span><i class="cue__line" aria-hidden="true"></i>
+       </a>                                                              */
+.cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: color 380ms var(--ease-out);
+}
+.cue:hover { color: var(--brass); }
+.cue__line {
+  position: relative;
+  display: block;
+  width: 34px; height: 1px;
+  flex: none;
+  align-self: center;
+  overflow: hidden;
+  background: var(--mark);
+}
+.cue__line::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--brass);
+  transform: translateX(-100%);
+  animation: cueSweep 2800ms var(--ease-io) infinite;
+}
+@keyframes cueSweep {
+  0%        { transform: translateX(-100%); }
+  55%, 100% { transform: translateX(100%); }
+}
+@media (max-width: 620px) { .cue__line { width: 22px; } }
+@media (prefers-reduced-motion: reduce) {
+  .cue { transition-duration: 1ms; }
+  .cue__line::after { animation: none; transform: none; opacity: 0.5; }
+}
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;

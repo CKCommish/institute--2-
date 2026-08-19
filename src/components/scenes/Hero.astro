@@ -14,7 +14,7 @@ import { pilots } from '../../data/site.js';
      second-largest voice in the frame — not as a duration tag. Three ranked
      sizes per cell: brass numeral, partner name, project whisper. -->
 <section class="hero" aria-labelledby="hero-h">
-  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.5} focal="40% 56%" parallax={5} loading="eager" class="hero__bg" />
+  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.34} focal="36% 64%" parallax={5} loading="eager" class="hero__bg" />
   <div class="hero__veil" aria-hidden="true"></div>
 
   <!-- Register 1. -->
@@ -29,7 +29,7 @@ import { pilots } from '../../data/site.js';
        brief's sentence in full, and the h1 carries the whole of it. -->
   <div class="hero__mid shell">
     <h1 class="hero__h" id="hero-h">
-      <span class="bridge hero__kicker">The Lion Forum Institute exists to ensure</span>
+      <span class="bridge bridge--lift hero__kicker">The Lion Forum Institute exists to ensure</span>
       <span class="display hero__poster">the technologies of tomorrow strengthen American families today.</span>
     </h1>
   </div>
@@ -38,9 +38,8 @@ import { pilots } from '../../data/site.js';
   <div class="hero__index shell">
     <div class="hero__index-head">
       <span class="eyebrow hero__index-label">Four pilots · 2026</span>
-      <a class="hero__scroll tap" href="#why">
-        <span class="label">Scroll</span>
-        <span class="hero__scroll-line" aria-hidden="true"></span>
+      <a class="cue tap hero__scroll" href="#why">
+        <span class="label">Scroll</span><i class="cue__line" aria-hidden="true"></i>
       </a>
     </div>
 
@@ -77,13 +76,20 @@ import { pilots } from '../../data/site.js';
     background:
       radial-gradient(72% 50% at 0% 2%, color-mix(in srgb, var(--ink-900) 82%, transparent) 0%, transparent 74%),
       radial-gradient(56% 40% at 94% 84%, color-mix(in srgb, var(--brass) 10%, transparent) 0%, transparent 70%),
+      /* The band from 46% to 86% is where the figure at the water's edge
+         stands. It used to run 14 → 26 → 74% ink on top of a 0.5 navy
+         multiply, which put the subject near 8% luminance: the frame read
+         as a black gradient rather than a photograph. Lifted here, and the
+         multiply lowered to 0.34, so the figure and the far bank carry
+         information. The foot still closes to 88% because the ledger sits
+         on it. */
       linear-gradient(180deg,
-        color-mix(in srgb, var(--ink-900) 60%, transparent) 0%,
-        color-mix(in srgb, var(--ink-900) 34%, transparent) 26%,
-        color-mix(in srgb, var(--ink-900) 14%, transparent) 46%,
-        color-mix(in srgb, var(--ink-900) 26%, transparent) 62%,
-        color-mix(in srgb, var(--ink-900) 74%, transparent) 84%,
-        color-mix(in srgb, var(--ink-900) 97%, transparent) 100%);
+        color-mix(in srgb, var(--ink-900) 56%, transparent) 0%,
+        color-mix(in srgb, var(--ink-900) 28%, transparent) 26%,
+        color-mix(in srgb, var(--ink-900) 8%, transparent) 46%,
+        color-mix(in srgb, var(--ink-900) 10%, transparent) 66%,
+        color-mix(in srgb, var(--ink-900) 44%, transparent) 86%,
+        color-mix(in srgb, var(--ink-900) 88%, transparent) 100%);
   }
 
   /* ── Register 1: the caption rail ─────────────────────────────────
@@ -125,6 +131,12 @@ import { pilots } from '../../data/site.js';
      and not two. Only the block behaviour and the load stage are local. */
   .hero__kicker {
     display: block;
+    /* Raised one rung, 26.6 → 33.8, via the shared .bridge--lift: the jump
+       from clause to claim was 3.5x while every other transition on the page
+       is under 2x. The ladder here is 11.7 rail → 33.8 clause → 93 claim,
+       i.e. 2.9x then 2.8x. The size lives in base.css so this is not a third
+       hand-rolled sans display rung. */
+    max-width: 26ch;
     margin-bottom: clamp(0.7rem, 1.5vh, 1.15rem);
     opacity: 0;
     animation: heroIn 720ms var(--ease-out) 220ms forwards;
@@ -207,18 +219,7 @@ import { pilots } from '../../data/site.js';
     margin-top: 0.5rem;
   }
 
-  .hero__scroll { display: flex; align-items: center; gap: 0.75rem; }
-  .hero__scroll-line {
-    display: block; width: 34px; height: 1px;
-    background: color-mix(in srgb, var(--cream) 34%, transparent);
-    position: relative; overflow: hidden;
-  }
-  .hero__scroll-line::after {
-    content: ''; position: absolute; inset: 0; background: var(--brass);
-    transform: translateX(-100%);
-    animation: sweep 2.8s var(--ease-io) infinite;
-  }
-
+  /* Geometry only — the cue itself is the shared .cue primitive. */
   /* The ledger sits low in the first screen, where an IntersectionObserver
      reveal would never fire. Staged on load instead — local to this piece. */
   .hero__index-head,
@@ -235,12 +236,9 @@ import { pilots } from '../../data/site.js';
 
   @keyframes heroIn { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
   @keyframes heroDraw { to { transform: none; } }
-  @keyframes sweep { 0% { transform: translateX(-100%); } 55%, 100% { transform: translateX(100%); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero__dot,
-    .hero__scroll-line::after { animation: none; }
-    .hero__scroll-line::after { transform: none; opacity: .5; }
+    .hero__dot { animation: none; }
     .hero__poster {
       -webkit-mask-image: none; mask-image: none;
       animation: none;
@@ -292,7 +290,6 @@ import { pilots } from '../../data/site.js';
 
   @media (max-width: 620px) {
     .hero__poster { letter-spacing: -0.026em; }
-    .hero__scroll-line { width: 22px; }
   }
 
   /* Measured: the longest partner name and the longest project title stop

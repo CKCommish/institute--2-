@@ -18,21 +18,34 @@ const claim = forum.line
 
     1  masthead    the photograph wide, type stacked in one corner of it
     2  the claim    type only, flush left, nothing beside it
-    3  the plate    the same photograph as a DETAIL, full bleed, silent,
-                    and half a viewport taller than the masthead
-    4  the role     type in a rail, the page's one ask under it
+    3  the plate    the SAME photograph cut to a 16:5.5 band — masts and
+                    breakwater, the sky gone — held for two thirds of a
+                    viewport and carrying exactly one line
+    4  the role     type in a rail, the page's one ask under it at the
+                    bridge rung, so the close is an arrival and not a footnote
 
   Each beat also owns a different motion primitive, so motion ranks the page
   by kind and not only by delay: the masthead lifts its lines on load, the
-  claim SETTLES under scroll, the plate WIPES open on both axes, the role
-  reveals. One photograph, seen twice — the brief asks for one.
+  claim SETTLES under scroll and its two italic verbs arrive 200ms behind the
+  roman so the hinge of the sentence is its own event, the plate WIPES open on
+  both axes and then APPROACHES (1.055 → 1.000, scroll-linked), the role
+  reveals. One photograph, seen twice — wide, then close.
+
+  THE PAGE HAS TWO RAILS, NOT ONE. It used to run entirely down x=51 — 14 of
+  29 marks on one edge and a 460px column on the right empty for 3151px of
+  scroll. Now the beat numerals hang on the FAR edge of the measure with the
+  hairline spanning between, the plate's one mark sits on that same right
+  edge, and the ask right-aligns to it. §4's role sentence went flush under
+  its eyebrow: the one moment the page changes axis is the moment it asks,
+  not its quietest aside.
 
   The type ladder, top to bottom: 126 banner · 86 poster · 53 head ·
-  26.6 bridge (×2) · 16 body · 13 index · 11.7 micro. No adjacent hole.
+  26.6 bridge and numerals · 16 body · 11.7 micro. The 13.1px index rung is
+  gone — at 13.1 it read as the 13.6px wordmark and added nothing 44px from
+  the eyebrow it indexed.
 
-  Micro type: EIGHT marks on the page, in three registers — three .eyebrow
-  (one per scene, brightest), two .index (brass numerals), the photograph's
-  .label credit, the scroll cue, the CTA. There were twenty-five.
+  Micro type: SEVEN marks, three registers — three .eyebrow (one per scene),
+  the photograph's .label credit, the scroll cue. There were twenty-five.
 */}
 <Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
   <!-- 1 ── the masthead. Kicker, dateline, name: the ladder the hero was
@@ -59,9 +72,9 @@ const claim = forum.line
 
         <div class="fh__bar">
           <span class="fh__rule" aria-hidden="true"></span>
-          <span class="label fh__cue">
-            Scroll<i class="fh__cueLine" aria-hidden="true"></i>
-          </span>
+          <a class="cue tap fh__cue" href="#fsay-h">
+            <span class="label">Scroll</span><i class="cue__line" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -71,56 +84,64 @@ const claim = forum.line
        only thing on the page that moves with the scroll rather than at it. -->
   <section class="fsay" aria-labelledby="fsay-h">
     <div class="shell">
-      <span class="fsay__rule" data-wipe="left" aria-hidden="true"></span>
+      <div class="frow">
+        <span class="frow__rule" aria-hidden="true" data-wipe="left"></span>
+        <span class="fnum" data-reveal="220">01</span>
+      </div>
 
       <div class="fsay__head">
-        <span class="index">01</span>
         <p class="eyebrow">The convening</p>
       </div>
 
       <p class="bridge fsay__who" data-reveal="120">{forum.who}</p>
 
-      <h2 class="display display--poster fsay__p" id="fsay-h" data-settle="0.52" set:html={claim}></h2>
+      <div class="fsay__claim" data-reveal>
+        <h2 class="display display--poster fsay__p" id="fsay-h" data-settle="0.52" set:html={claim}></h2>
+      </div>
     </div>
   </section>
 
-  <!-- 3 ── the plate. The largest object on the page, held for a viewport
-       and a sixth, and carrying no words at all: the same harbour as the
-       masthead, taken close. Already credited above, so it stays silent. It
-       opens on both axes, which is the one motion on the page that behaves
-       like territory rather than like type. -->
+  <!-- 3 ── the plate. The same harbour, cut hard: a 16:5.5 band on the
+       masts and the breakwater with the sky taken off it, so the page carries
+       two photographic weights rather than one drawn twice. It is shorter
+       than a viewport on purpose — a pause bounded by the claim above and the
+       ask below, never by a screen edge — and it carries one mark, the bridge
+       rung set low against the water, which is what turns held space into a
+       held breath. It opens on both axes, then closes the last five percent
+       of its scale as you scroll it, so the band reads as an approach. -->
   <div class="fplate" data-wipe="center-y">
-    <Figure src={forum.image} alt="A harbour at dusk: moored sailboats inside a stone breakwater."
-            ratio="auto" grade={0.5} grain={0.8}
-            focal="8% 80%" zoom={1.55}
-            focalSm="24% 92%" zoomSm={1.6}
-            parallax={9} sizes="100vw" />
+    <div class="fplate__frame" data-settle="0.42">
+      <Figure src={forum.image} alt="A harbour at dusk: a moored sailboat and its mast against a stone breakwater."
+              ratio="auto" grade={0.52} grain={0.85}
+              focal="21% 92%" zoom={4.2}
+              focalSm="23% 93%" zoomSm={4.6}
+              parallax={5} sizes="100vw" />
+    </div>
+    <p class="bridge fplate__note">{forum.caption}</p>
   </div>
 
   <!-- 4 ── the role, and the one ask. The mark sits BESIDE the sentence here
        and above it in beat 2, so the two type beats are not one drawing. -->
   <section class="frole" aria-labelledby="frole-h">
     <div class="shell">
-      <span class="frole__rule" data-wipe="left" aria-hidden="true"></span>
+      <div class="frow">
+        <span class="frow__rule" aria-hidden="true" data-wipe="left"></span>
+        <span class="fnum" data-reveal="220">02</span>
+      </div>
 
       <div class="frole__in" data-seq="150" data-seq-from="60">
-        <div class="frole__rail">
-          <div class="frole__mark" data-reveal>
-            <span class="index">02</span>
-            <p class="eyebrow">The Institute&rsquo;s role</p>
-          </div>
-
-          <a class="frole__cta tap" href={inquire} data-reveal>
-            <span class="frole__ctaRule" aria-hidden="true"></span>
-            <span class="label frole__ctaText">
-              {forum.cta}
-              <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
-            </span>
-          </a>
-        </div>
+        <p class="eyebrow" data-reveal>The Institute&rsquo;s role</p>
 
         <h2 class="display display--head frole__p" id="frole-h" data-reveal>{forum.role}</h2>
       </div>
+
+      <a class="frole__cta" href={inquire} data-reveal="240">
+        <span class="frole__ctaRule" aria-hidden="true"></span>
+        <span class="bridge frole__ctaText">
+          {forum.cta}
+          <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+        </span>
+      </a>
     </div>
   </section>
 </Base>
@@ -203,35 +224,52 @@ const claim = forum.line
   @keyframes fhIn   { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
   @keyframes fhDraw { to { transform: scaleX(1); } }
 
-  .fh__cue { display: inline-flex; align-items: center; gap: 0.85em; }
-  /* Same cue as the homepage hero: a 34px hairline with one brass sweep. Two
-     hero screens on one site do not get two scroll affordances. */
-  .fh__cueLine {
-    position: relative; display: block;
-    width: 34px; height: 1px; overflow: hidden;
-    background: var(--mark);
-    align-self: center;
-  }
-  .fh__cueLine::after {
-    content: ''; position: absolute; inset: 0;
-    background: var(--brass);
-    transform: translateX(-100%);
-    animation: fhCue 2800ms var(--ease-io) infinite;
-  }
-  @keyframes fhCue {
-    0%   { transform: translateX(-100%); }
-    55%  { transform: translateX(100%); }
-    100% { transform: translateX(100%); }
-  }
+  /* The shared .cue primitive from base.css. It used to be a <span>, i.e. a
+     word that says Scroll and cannot be followed; it is a link now, like the
+     other two on the site. */
 
   /* ── 2. The claim ────────────────────────────────────────────────── */
   /* The pause at the foot of this beat is bounded on both sides — the claim
      above it, the plate below it — which is the only way held space reads as
      confidence instead of as a hole. */
   .fsay { padding-block: clamp(3rem, 2rem + 4.4vw, 6.5rem) var(--pause); }
-  .fsay__rule {
+  /* THE MEASURED ROW. The page's width was carrying nothing: 14 of 29 marks
+     began at the same x and a 460px column on the right was empty for the
+     whole scroll. The beat numerals are the one element here whose job is
+     positional, so they now hang on the RIGHT edge of the measure and the
+     hairline runs the full width between the rail and them. The rule stops
+     being a decorative underline and starts being a span with a mark at each
+     end — which is the only thing that makes 1338px read as a measure. */
+  /* The wipe belongs to the RULE, not to the row. It used to sit on .frow,
+     which meant (a) the numeral at the far end of a 1337px measure was still
+     being uncovered a second and a half after the rule started, arriving as a
+     vertical slice of a glyph rather than as a numeral, and (b) the row kept
+     `clip-path: inset(0)` at rest, which permanently shaved the numeral's
+     optical overhang off. Territory wipes; the mark arrives. */
+  .frow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: clamp(1.25rem, 4vw, 3.25rem);
+  }
+  .frow__rule {
     display: block; height: 1px; width: 100%;
     background: var(--rule);
+    margin-bottom: 0.34em;
+  }
+  /* Brass tabular numerals at the BRIDGE rung, not the 13px index one. At 13px
+     they sat 0.5px from the wordmark — two sizes reading as one — and 44px from
+     the eyebrow they indexed, adding nothing. At 26.6px on the far edge they
+     are the page's right-hand rail. Numerals only; never a word. */
+  .fnum {
+    font-family: var(--sans);
+    font-size: var(--step-bridge);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    font-variant-numeric: tabular-nums;
+    color: var(--brass);
+    margin-right: -0.14em;
   }
   .fsay__head {
     display: flex;
@@ -243,6 +281,32 @@ const claim = forum.line
      a column, not three scattered ones. The interval that matters is the one
      under them, before the claim. */
   .fsay__who { margin-top: clamp(0.85rem, 1.5vw, 1.35rem); }
+  /* The wrapper carries the reveal so the two italic verbs can hang off its
+     .is-in; the h2 itself carries the settle. Two elements, two transforms,
+     no fight. */
+  .fsay__claim { --reveal-y: 0px; }
+  /* THE HINGE. "build" and "decide" are the only two words in the sentence
+     that are not roman, and they are the whole claim: they arrive 210ms after
+     the line they sit in, so the page's best sentence has an event of its own
+     rather than one more staggered fade. */
+  /* Bound to --settle, not to .is-in: the hinge is now scroll-linked and
+     REVERSIBLE, so a reader who scrubs back over the claim can find the
+     two-holes-in-the-sentence moment again instead of it living once for
+     500ms. Each verb has its own threshold on the same ramp, so they still
+     arrive behind the roman and behind each other. */
+  .fsay__p :global(em) {
+    display: inline-block;
+    --hinge: clamp(0, calc((var(--settle, 1) - 0.42) / 0.34), 1);
+    /* floored, not zeroed: at rest the verbs are present but unresolved, so
+       a still of this page is a whole sentence at two brightnesses rather
+       than a sentence with two words missing. The event is the resolve. */
+    opacity: calc(0.26 + 0.74 * var(--hinge));
+    transform: translate3d(0, calc((1 - var(--hinge)) * 0.16em), 0);
+  }
+  .fsay__p :global(em:last-of-type) {
+    --hinge: clamp(0, calc((var(--settle, 1) - 0.60) / 0.34), 1);
+  }
+
   .fsay__p {
     max-width: 17ch;
     margin-top: clamp(2rem, 4.2vw, 3.6rem);
@@ -253,34 +317,61 @@ const claim = forum.line
   }
 
   /* ── 3. The plate ────────────────────────────────────────────────── */
-  /* Full bleed, and deliberately taller than the masthead: the scroll has to
-     register this as the largest thing it has met. No type sits on it. */
+  /* A BAND, not a screen. Roughly 16:5.5 at 1440 and always shorter than the
+     viewport, so the pause is bounded by the claim above and the ask below
+     rather than by two screen edges — which was the same held-space failure
+     the rest of the site was fixing, relocated to a photograph. The crop is
+     hard (zoom 2.0 on the masts) so this is a different photographic weight
+     from the wide masthead, not the same frame drawn twice. */
   .fplate {
     position: relative;
     isolation: isolate;
-    height: clamp(560px, 116svh, 1180px);
+    overflow: hidden;
+    height: clamp(400px, 62svh, 600px);
+  }
+  /* THE APPROACH. Scroll-linked, reversible: the band sits 5.5% large while
+     it is arriving and closes to 1.000 at reading position, so the duration
+     of the pause is something the reader is doing rather than watching. */
+  .fplate__frame {
+    position: absolute;
+    inset: 0;
+    --settle-scale: 1.055;
+    --settle-shift: 0vh;
+    --settle-origin: 50% 50%;
+  }
+  /* ONE MARK ON THE WATER. The bridge rung, set low-left against the horizon
+     at the meta brightness so it holds the space without competing with the
+     claim it follows. It is not a caption of place — the photograph's own
+     credit is in the masthead and says Block Island. */
+  /* The plate's one mark sits on the RIGHT edge, against the rail the
+     numerals established, so the photograph is not a third thing hung off
+     x=51. It is not a caption of place — the photograph's credit is in the
+     masthead and says Block Island. */
+  .fplate__note {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(1.4rem, 3.4vw, 2.9rem);
+    z-index: 2;
+    margin: 0;
+    max-width: 18ch;
+    text-align: right;
+    color: var(--fg);
+    text-shadow: 0 1px 18px rgba(3, 9, 16, 0.85);
   }
 
   /* ── 4. The role, and the ask ────────────────────────────────────── */
   /* The close is tight on purpose: the footer's own rule is the next mark,
      so the space under the ask stays bounded instead of trailing off. */
-  .frole { padding-block: clamp(3rem, 2rem + 4.4vw, 6.5rem) clamp(2.5rem, 1.6rem + 3vw, 4.5rem); }
-  .frole__rule {
-    display: block; height: 1px; width: 100%;
-    background: var(--rule);
-  }
+  .frole { padding-block: clamp(3rem, 2rem + 4.4vw, 6.5rem) clamp(2rem, 1.2rem + 2vw, 3.2rem); }
+  /* The indent used to be spent HERE, on the page's quietest beat, while the
+     ask fell back onto the rail with everything else. Swapped: the role sits
+     flush under its eyebrow like every other beat, and the one moment the
+     page changes axis is the moment it asks. */
   .frole__in {
     display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
-    column-gap: clamp(1rem, 4vw, 4rem);
-    align-items: start;
+    row-gap: clamp(0.85rem, 1.5vw, 1.35rem);
+    justify-items: start;
     padding-top: clamp(0.9rem, 1.5vw, 1.35rem);
-  }
-  .frole__rail { display: grid; justify-items: start; align-content: start; }
-  .frole__mark {
-    display: flex;
-    align-items: baseline;
-    gap: clamp(0.9rem, 1.6vw, 1.5rem);
   }
   .frole__p {
     max-width: 24ch;
@@ -291,17 +382,35 @@ const claim = forum.line
 
   /* The one ask on the page. It is the .label register at link brightness —
      a state, not a fourth micro scale. */
+  /* THE ARRIVAL. Right-aligned against the far edge of the measure — the one
+     mark on the page that does not begin at the rail, so "Inquire about the
+     Forum" arrives instead of continuing. It lands on the same edge the two
+     brass numerals and the plate's note established, so the change of axis is
+     a return to something already drawn, not a stray. */
   .frole__cta {
     display: grid;
     gap: clamp(0.7rem, 1.1vw, 1rem);
-    justify-items: start;
+    justify-items: end;
+    justify-self: end;
+    text-align: right;
     /* the extra block padding is the finger, not the layout: it lifts the
        11px anchor to a real hit box without moving the rule */
     padding-block: 0.4rem 0.6rem;
-    margin-top: clamp(2.2rem, 5.6vw, 4.6rem);
+    margin-top: clamp(2.4rem, 6vw, 5rem);
     color: var(--fg);
   }
-  .frole__ctaText { color: var(--fg); display: inline-flex; align-items: center; gap: 0.9ch; position: relative; }
+  /* The ask sits at the BRIDGE rung, not in the micro register: it is the
+     page's arrival and it must outrank the small links in the footer below
+     instead of tying with them. No new size — the rung is already on the
+     page twice. */
+  .frole__ctaText {
+    color: var(--fg);
+    display: inline-flex; align-items: baseline; gap: 0.6ch;
+    position: relative;
+    max-width: none;
+    text-transform: none;
+  }
+  .frole__ctaText :global(.arrow) { width: 0.72em; align-self: center; transition: transform 520ms var(--ease-out); }
   .frole__ctaRule {
     display: block; height: 1px; width: clamp(34px, 5vw, 72px);
     background: var(--brass);
@@ -311,7 +420,7 @@ const claim = forum.line
   .frole__cta:hover :global(.arrow) { transform: translateX(4px); }
   /* local hover rule — the shared .link underline assumes inline-block */
   .frole__ctaText::after {
-    content: ''; position: absolute; left: 0; right: 0; bottom: -0.45em; height: 1px;
+    content: ''; position: absolute; left: 0; right: 0; bottom: -0.24em; height: 1px;
     background: currentColor; transform: scaleX(0); transform-origin: right;
     transition: transform 520ms var(--ease-out);
   }
@@ -325,22 +434,22 @@ const claim = forum.line
     .fsay { padding-block: clamp(2.5rem, 8vw, 3.5rem) clamp(2.75rem, 10vw, 4.5rem); }
     .fsay__p { max-width: 13ch; }
 
-    /* The display range compresses below ~700px, so the plate carries its
-       break with height and silence rather than with a size step. */
-    /* Below ~700px the display range compresses and a size step stops
-       reading as a break, so the plate carries the break with height and
-       silence instead — and it still ends taller than the masthead. */
-    .fplate { height: clamp(560px, 104svh, 900px); }
+    /* On a phone the band gets proportionally taller — a 16:5.5 strip at
+       390px is 71px of photograph — but it still stops short of the viewport
+       so the pause stays bounded by marks on both sides inside one scroll. */
+    .fplate { height: clamp(340px, 52svh, 460px); }
+    .fplate__note { max-width: 14ch; }
 
     .frole { padding-block: clamp(2.5rem, 8vw, 3.5rem) clamp(3rem, 10vw, 4.5rem); }
-    .frole__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.25rem, 4vw, 2rem); }
     .frole__p { max-width: 22ch; }
-    /* The rail collapses into the column, but the ask must never climb above
-       the sentence it belongs to. */
-    .frole__rail { display: contents; }
-    .frole__mark { order: 1; }
-    .frole__p { order: 2; }
-    .frole__cta { order: 3; margin-top: clamp(1.9rem, 7vw, 2.6rem); }
+    /* Below 860 the measure is too narrow for a second axis to read as a
+       decision, so the ask carries its arrival with space and the brass rule
+       instead, back on the rail. */
+    .frole__cta {
+      justify-items: start; justify-self: start; text-align: left;
+      margin-top: clamp(1.9rem, 7vw, 2.6rem);
+    }
+    .fplate__note { text-align: left; left: var(--gutter); right: auto; }
   }
   @media (max-width: 620px) {
     .fh__h { max-width: 9ch; }
@@ -349,6 +458,7 @@ const claim = forum.line
   @media (prefers-reduced-motion: reduce) {
     .fh__rule { animation: none; transform: scaleX(1); }
     .fh__tick, .fh__brow, .fh__place, .fh__cue { animation: none; opacity: 1; }
-    .fh__cueLine::after { animation: none; transform: none; opacity: .5; }
+    .fsay__p :global(em) { opacity: 1; transform: none; }
+    .fsay__p :global(em), .fsay__p :global(em:last-of-type) { --hinge: 1; }
   }
 </style>
