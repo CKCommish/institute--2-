@@ -8,3 +8,7 @@ tools/rawconnect.mjs
 tools/proxy-relay.mjs
 dist-*/
 progress/blind*/
+# agent scratch files — keep the repo root clean
+*-tmp.mjs
+tmp-*.mjs
+/verify-*/

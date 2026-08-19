@@ -183,3 +183,13 @@ export const whyNowLead = 'Everything that follows starts with one fact.';
 
 export const whyNow =
   'AI is moving faster than public institutions can absorb it.';
+
+/* THE STAKE — the homepage's photographic interlude, between the method and
+   the pilots that run it. One sentence: the mission's operating clause, the
+   half the hero does not carry. The hero says what the institute exists to
+   ensure; this says what it measures. Nothing else is set in the scene. */
+export const stake = {
+  image: '/media/pilot-maternal.jpg',
+  line: 'Health, education and work — for the median family.',
+  credit: 'U.S. Department of Agriculture',
+};
