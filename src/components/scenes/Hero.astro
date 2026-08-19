@@ -14,15 +14,15 @@ import { pilots } from '../../data/site.js';
      second-largest voice in the frame — not as a duration tag. Three ranked
      sizes per cell: brass numeral, partner name, project whisper. -->
 <section class="hero" aria-labelledby="hero-h">
-  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.34} focal="36% 64%" parallax={5} loading="eager" class="hero__bg" />
+  <!-- Register 1 rides on the figure: the location credit is Figure's own
+       object (.label, --fg-meta, brass dot, corner-anchored), the same one
+       every other full-bleed scene carries. It used to be re-drawn here as
+       .hero__place + .hero__dot, with a pulsing beacon ring nothing else on
+       the site has — a second construction of a system object, and a piece of
+       animated decoration on a civic institute's front door. -->
+  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.34} focal="36% 64%" parallax={5} loading="eager"
+          credit="Greenville, Mississippi" creditPos="top-right" class="hero__bg" />
   <div class="hero__veil" aria-hidden="true"></div>
-
-  <!-- Register 1. -->
-  <div class="hero__top shell">
-    <p class="label hero__place">
-      <span class="hero__dot" aria-hidden="true"></span>Greenville, Mississippi
-    </p>
-  </div>
 
   <!-- Register 2. Two voices inside one sentence: the lead-in clause at the
        page's mid tier, the claim at display scale. Read together they are the
@@ -62,7 +62,7 @@ import { pilots } from '../../data/site.js';
     position: relative;
     min-height: 100svh;
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto;
     isolation: isolate;
     overflow: hidden;
   }
@@ -92,37 +92,17 @@ import { pilots } from '../../data/site.js';
         color-mix(in srgb, var(--ink-900) 88%, transparent) 100%);
   }
 
-  /* ── Register 1: the caption rail ─────────────────────────────────
-     One anchor only. The nav bar already owns the top-left corner, so a
-     second mark there is a duplicate, not a composition. */
-  .hero__top {
-    width: 100%;
-    padding-top: calc(var(--nav-h) + clamp(0.9rem, 3vh, 2rem));
-    display: flex;
-    justify-content: flex-end;
-  }
-  .hero__place { display: flex; align-items: baseline; gap: 0.7rem; }
-
-  .hero__dot {
-    width: 5px; height: 5px; border-radius: 50%; background: var(--brass);
-    transform: translateY(-0.1em);
-    flex: none;
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--brass) 60%, transparent);
-    animation: pulse 3.6s var(--ease-out) infinite;
-  }
-  @keyframes pulse {
-    0%, 70%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brass) 55%, transparent); }
-    35% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--brass) 0%, transparent); }
-  }
-  .hero__top { opacity: 0; animation: heroIn 640ms var(--ease-out) 120ms forwards; }
-
   /* ── Register 2: the poster ───────────────────────────────────────
      Sits at the TOP of the open band, not centred in it, so the photograph
      keeps the middle-right of the frame. */
+  /* The shelf under the fixed bar. It used to be produced by the caption
+     rail's own padding one row above; the caption is Figure's now, so the
+     poster carries the offset itself — one value, in one place, so the hero
+     cannot drift away from the shelf every inner page starts on. */
   .hero__mid {
     width: 100%;
     align-self: start;
-    padding-top: clamp(0.9rem, 2.6vh, 2rem);
+    padding-top: calc(var(--nav-h) + clamp(1.8rem, 5.4vh, 3.4rem));
   }
   .hero__h { margin: 0; font-weight: inherit; }
 
@@ -246,12 +226,10 @@ import { pilots } from '../../data/site.js';
   @keyframes heroDraw { to { transform: none; } }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero__dot { animation: none; }
     .hero__poster {
       -webkit-mask-image: none; mask-image: none;
       animation: none;
     }
-    .hero__top,
     .hero__kicker,
     .hero__index-head,
     .hcell,

@@ -59,7 +59,10 @@ import { method } from '../../data/site.js';
 <style>
   .method {
     position: relative;
-    padding-block: clamp(4rem, 2rem + 6vw, 8rem);
+    /* Asymmetric on purpose: the Stake photograph runs hard into the foot of
+       this scene, so the bottom pad is half the top one. A full scene pad
+       above a full-bleed frame reads as a seam, not a pause. */
+    padding-block: clamp(4rem, 2rem + 6vw, 8rem) clamp(2.25rem, 1rem + 3vw, 4rem);
   }
   .method__in {
     display: grid;

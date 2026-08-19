@@ -584,7 +584,12 @@ const style = [
        size here was the site's fourth micro scale, invented in a corner. On a
        phone it only needs to stop crowding the display line, which is a
        position problem, not a size one. */
-    .fig__credit { max-width: 22ch; line-height: 1.4; }
+    /* 22ch broke the two longest PLACE credits onto a second line — and a
+       top-anchored credit that grows a second line grows down into whatever
+       the scene set under the bar. Every location string the site uses fits
+       in 26; only the two long agency credits wrap, and both of those sit at
+       the foot of a frame where a second line costs nothing. */
+    .fig__credit { max-width: 26ch; line-height: 1.4; }
   }
 
   @media (prefers-reduced-motion: reduce) {

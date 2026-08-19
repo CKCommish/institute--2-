@@ -6,9 +6,10 @@ import { method } from '../data/site.js';
 const builds = ['Technology companies', 'Founders', 'Research labs'];
 const runs = ['Health systems', 'Universities', 'Community organizations', 'Government'];
 
-/* The hero's caption card. Four hairline-ruled rows pinned to the right plate
-   edge — the second thing you read after the statement, and the thing that
-   makes the right half of the first screen carry information. */
+/* The spec used to be a card pinned to the right of the statement. It is now
+   a rail: four hairline cells across the full width, directly under the
+   photograph, so the first screen is a picture and the second thing you read
+   is a horizontal register rather than a second column. */
 const spec = [
   { k: 'Horizon', v: '3–12 months' },
   { k: 'Scope', v: 'One problem, one owner' },
@@ -17,58 +18,44 @@ const spec = [
 ];
 ---
 <Base title="Institute" description="How the Lion Forum Institute works: short pilots, real partners, published results.">
-  <!-- ── Hero plate ──────────────────────────────────────────────────
-       The plate climbs one rung at a time — eyebrow, bridge clause, then
-       the statement — instead of jumping 12px to 107px with nothing in
-       between. Right plate: the spec, then the media chip. -->
-  <section class="ihead">
-    <div class="shell ihead__in">
-      <p class="eyebrow ihead__k" data-reveal>How we work</p>
-      <p class="bridge ihead__bridge" data-reveal="120">
-        A pilot needs money, a technology, and a real place to run.
-      </p>
+  <!-- ── The room ────────────────────────────────────────────────────
+       The page's one exception, and it is a photograph rather than a
+       typographic trick: a long table with chairs down both sides, a flag on
+       the axis, mirrored doors left and right. It is the bridge, photographed
+       — so it is given the whole first screen at full bleed and the statement
+       is set INTO it, low left, where the frame's own floor is empty.
+       It used to be a 622×336 card in the right column under a spec table. -->
+  <section class="ihero">
+    <Figure
+      src="/media/institute.jpg" alt="" ratio="auto" loading="eager"
+      grade={0.52} focal="50% 44%" zoom={1.06} lift={1.05} vig={0.34}
+      scrim="bottom" reach={1} rise={0.78} ink={1.06}
+      credit="Library of Congress" creditPos="bottom-right"
+      class="ihero__bg" sizes="100vw" />
 
-      <div class="ihead__lead">
-        <h1 class="display display--poster ihead__h lines">We sit between the builders and the institutions.</h1>
-        <a class="cue tap ihead__cue" href="#bridge" data-reveal="620">
-          <span class="label">The bridge</span><i class="cue__line" aria-hidden="true"></i>
-        </a>
-      </div>
-
-      <div class="ihead__side">
-
-      <!-- Territory, not a sentence: the spec is a place on the plate, so it
-           uncovers along its own axis instead of lifting in row by row. -->
-      <dl class="spec" data-wipe="left" data-delay="260">
-        {spec.map((s) => (
-          <div class="spec__row">
-            <dt class="label spec__k">{s.k}</dt>
-            <dd class="spec__v">{s.href ? <a class="link tap" href={s.href}>{s.v}</a> : s.v}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <!-- Corner media, cropped to a detail so it reads as a chip pinned to
-           the plate edge rather than a second wide frame. -->
-      <!-- An empty meeting room with an American flag, set beside "We sit
-           between the builders and the institutions" and above a diagram
-           whose hub reads THE INSTITUTE, is one caption away from claiming to
-           be the Institute's own room. It is not. refs/PHOTO-FACTS.md asks
-           for the credit; every other photograph on the site carries one. -->
-      <Figure
-        src="/media/institute.jpg" alt="" ratio="2 / 1" ratioSm="3 / 2"
-        grade={0.6} zoom={1.18} focal="50% 50%" enter="wipe" class="ichip" vig={0.4}
-        credit="Library of Congress" creditPos="bottom-right"
-        sizes="(max-width: 860px) 92vw, 34vw" />
-
-      </div>
+    <div class="shell ihero__in">
+      <p class="eyebrow ihero__k">How we work</p>
+      <p class="bridge ihero__bridge">A pilot needs money, a technology, and a real place to run.</p>
+      <h1 class="display display--poster ihero__h">We sit between the builders and the institutions.</h1>
     </div>
+  </section>
+
+  <!-- The spec, as a rail across the page rather than a card beside it. -->
+  <section class="ispec">
+    <dl class="shell ispec__in" data-wipe="left" data-delay="120">
+      {spec.map((s) => (
+        <div class="ispec__c">
+          <dt class="label ispec__k">{s.k}</dt>
+          <dd class="ispec__v">{s.href ? <a class="link tap" href={s.href}>{s.v}</a> : s.v}</dd>
+        </div>
+      ))}
+    </dl>
   </section>
 
   <!-- ── The one idea on the page ────────────────────────────────────
        One shared five-row baseline grid: both arms sit on the same rows,
        both rails run the same length, and the connectors are the last
-       thing to arrive — left arm, right arm, rails, connectors, thesis. -->
+       thing to arrive — left arm, right arm, rails, connectors. -->
   <section class="on-panel ibridge" id="bridge">
     <div class="shell ibridge__in">
       <p class="eyebrow ibridge__k" data-reveal>The bridge</p>
@@ -76,33 +63,34 @@ const spec = [
         <span class="brg__rail brg__rail--a" aria-hidden="true"><i></i></span>
         <p class="label label--brass brg__k brg__k--a" style="--d:0ms">Who builds it</p>
         <ul class="brg__list brg__list--a" role="list">
-          {builds.map((b, i) => <li class="bridge bridge--lift bridge--fg" style={`--d:${80 + i * 80}ms`}>{b}</li>)}
+          {builds.map((b, i) => <li class="bridge bridge--fg bridge--lift" style={`--d:${80 + i * 80}ms`}>{b}</li>)}
         </ul>
 
         <span class="brg__rail brg__rail--b" aria-hidden="true"><i></i></span>
         <p class="label label--brass brg__k brg__k--b" style="--d:260ms">Who runs it</p>
         <ul class="brg__list brg__list--b" role="list">
-          {runs.map((r, i) => <li class="bridge bridge--lift bridge--fg" style={`--d:${340 + i * 80}ms`}>{r}</li>)}
+          {runs.map((r, i) => <li class="bridge bridge--fg bridge--lift" style={`--d:${340 + i * 80}ms`}>{r}</li>)}
         </ul>
 
         <span class="brg__hub on-plate">
           <span class="brg__dot" aria-hidden="true"></span>
-          <span class="display display--sub brg__hub-t">The Institute</span>
+          <span class="display brg__hub-t">The Institute</span>
         </span>
       </div>
-
-      <!-- The page's claim, and the one thing on it set at the series-breaking
-           rung. Scroll-linked weight: it arrives slightly large and low and
-           resolves as it reaches reading position. -->
-      <p class="display display--feature brg__thesis" data-settle="0.62">Neither side can run the pilot alone.</p>
     </div>
   </section>
 
+  <!-- ── The page turned over ────────────────────────────────────────
+       One sentence, full bleed, on cream. The system keeps exactly one of
+       these per page and this is what it is for: the diagram above states
+       the arrangement, this states why it has to exist. -->
+  <section class="on-cream iclaim">
+    <p class="display display--feature iclaim__t shell" data-settle="0.62">Neither side can run the pilot alone.</p>
+  </section>
+
   <!-- ── How a pilot runs ────────────────────────────────────────────
-       A ledger, not a card row: three full-width entries, one rule each.
-       /partner/ runs three parallel doors as columns; these are three
-       steps in order, so they are set as a sequence. -->
-  <section class="on-cream imeth">
+       A ledger, not a card row: three full-width entries, one rule each. -->
+  <section class="imeth">
     <div class="shell imeth__in">
       <div class="imeth__head">
         <p class="eyebrow imeth__k" data-reveal>The method</p>
@@ -125,137 +113,92 @@ const spec = [
 </Base>
 
 <style>
-  /* ── Hero ─────────────────────────────────────────────────────────
-     Two columns under a two-row header. The header (eyebrow + bridge)
-     spans both plates, so the statement's cap-line and the spec's first
-     rule still open on the same horizon. */
-  .ihead {
-    padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(1.25rem, 1.4vw, 1.5rem);
+  /* ── The room ─────────────────────────────────────────────────────
+     Full bleed, one screen, type set low-left into the photograph's own
+     empty floor. The scrim is directional and reaches the full width, so
+     the corner credit is protected too. */
+  .ihero {
+    position: relative;
+    isolation: isolate; overflow: hidden;
+    min-height: min(94svh, 50rem);
+    display: grid; align-items: end;
+    padding-block: calc(var(--nav-h) + 1rem) clamp(2rem, 4.5vh, 3.4rem);
   }
-  .ihead__in {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: clamp(1.6rem, 2.8vw, 2.6rem);
-    align-items: start;
-  }
-  .ihead__k { grid-column: 1 / -1; }
-  /* The rung that was missing. It spans the plate but is measured short, so
-     the right column stays clear of it. */
-  .ihead__bridge {
-    grid-column: 1 / -1;
-    max-width: 34ch;
-    margin-bottom: clamp(0.9rem, 2vw, 1.9rem);
-  }
+  :global(.ihero__bg) { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
 
-  /* The columns do NOT stretch to the taller of the two. Forcing the left
-     plate to the media chip's depth stranded the scroll cue ~290px under the
-     statement, alone, bounded only by the viewport edge — a pause with one
-     side. The cue now closes the block it belongs to. */
-  .ihead__lead {
-    grid-column: 1;
-    display: flex; flex-direction: column;
-    gap: clamp(1.5rem, 2.6vw, 2.5rem);
+  .ihero__in { width: 100%; display: grid; justify-items: start; }
+  .ihero__k { opacity: 0; animation: iheroIn 640ms var(--ease-out) 140ms forwards; }
+  .ihero__bridge {
+    max-width: 32ch;
+    margin-block: clamp(0.5rem, 1.2vh, 0.9rem) clamp(0.8rem, 1.8vh, 1.4rem);
+    opacity: 0; animation: iheroIn 720ms var(--ease-out) 240ms forwards;
   }
-  .ihead__side {
-    grid-column: 2;
-    display: flex; flex-direction: column;
-    gap: clamp(1.6rem, 3vw, 2.8rem);
+  /* The statement is inked in top-down over the picture, the same load-timed
+     mask the homepage banner uses — an observer-driven reveal cannot be
+     trusted at the very top of a page. */
+  .ihero__h {
+    line-height: 0.95; letter-spacing: -0.028em;
+    max-width: min(15ch, 100%);
+    -webkit-mask-image: linear-gradient(180deg, #000 0 58%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0 58%, transparent 100%);
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: 0 0; mask-position: 0 0;
+    -webkit-mask-size: 100% 0%; mask-size: 100% 0%;
+    animation: iheroInk 1000ms var(--ease-out) 300ms forwards;
   }
-  /* --step-poster: the poster line of an inner page. The homepage hero is the
-     one banner on the site and this now sits a rung under it, where it
-     belongs — it used to be set larger than the hero it reports to. */
-  .ihead__h {
-    line-height: 0.94; letter-spacing: -0.028em;
-    max-width: 14ch;
-  }
-  .ihead__h :global(.line) { padding-bottom: 0.08em; margin-bottom: -0.08em; }
-  /* Motion is rank, not decoration. The statement rises long and slow; every
-     supporting row arrives faster, tighter and closer behind it. Local
-     overrides of the base durations — the engine is untouched. */
-  .ihead__h :global(.line > span) { transition-duration: 1450ms; }
-  .ihead__bridge, .ihead__cue { --reveal-y: 8px; transition-duration: 460ms, 560ms; }
+  @keyframes iheroInk { to { -webkit-mask-size: 100% 190%; mask-size: 100% 190%; } }
+  @keyframes iheroIn { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
 
-  /* ── Caption card ──
-     Hairline rows across the full right column, label left, value right.
-     No padding on top: the first rule lands on the display's cap-line, so
-     the right rail opens on the same horizon as the statement. */
-  .spec { margin: 0; padding-top: 0; }
-  .spec__row {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: clamp(0.8rem, 2vw, 1.6rem);
-    padding-block: clamp(0.62rem, 1.1vw, 0.95rem);
+  /* ── The spec, as a rail ──────────────────────────────────────────
+     Four cells across the full measure under one rule. Horizontal, so the
+     page's second register is not a second column. */
+  .ispec { padding-block: clamp(1.4rem, 2.4vw, 2.4rem) clamp(2.5rem, 4vw, 4rem); }
+  .ispec__in {
+    margin: 0;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2.4vw, 2.6rem);
     border-top: 1px solid var(--rule);
   }
-  .spec__row:last-child { border-bottom: 1px solid var(--rule); }
-  /* Off the 11.66px pile. Twenty-three elements on this page were sitting at
-     the micro rung; the spec keys are page content, not chrome, so they move
-     up to the .index size the ledger numerals already use. */
-  /* The house .label geometry, full stop. It carried a local 13.1px/0.1em,
-     which is the .index rung wearing a label's job — a fifth micro mark. */
-  .spec__k { white-space: nowrap; }
-  .spec__v {
-    margin: 0; text-align: right;
-    font-size: var(--step-lede);
-    line-height: 1.25; letter-spacing: -0.006em;
-    color: var(--fg);
+  .ispec__c { padding-top: clamp(0.7rem, 1.2vw, 1.1rem); display: grid; gap: 0.45rem; align-content: start; }
+  .ispec__k { white-space: nowrap; }
+  .ispec__v {
+    margin: 0; font-size: var(--step-lede);
+    line-height: 1.25; letter-spacing: -0.006em; color: var(--fg);
   }
-  .spec__v :global(a:hover) { color: var(--brass); }
+  .ispec__v :global(a:hover) { color: var(--brass); }
 
-  /* Media chip + scroll cue close the plate: one object pinned to each
-     bottom corner, sharing a baseline. The cue is the same object as the two
-     hero screens — word, then a 34px hairline with one brass sweep in it. */
-  .ichip { margin-top: auto; }
-  /* Placement only — the mark is the shared .cue primitive. */
-  .ihead__cue { align-self: flex-start; }
-
-  /* ── The bridge ───────────────────────────────────────────────────
-     One grid: row 1 is both arm labels, rows 2–5 are the names. Both
-     rails span 1 / -1, so they are the same length and terminate on the
-     grid rather than in mid-air. */
   /* ── THE SPAN ─────────────────────────────────────────────────────
-     The page's one exception, and the only composition on this site that
-     is not flush-left under a full-width rule. Everything else here — the
-     hero, the ledger, every scene on every other route — opens at the left
-     gutter and runs right. This one is centred, symmetric and bounded, on
-     its own ground, and it is given a whole screen. That is the point: the
-     institute's entire claim is that it sits BETWEEN two parties, and a
-     left-aligned band cannot say between. A centred one can.
+     The only composition on this site that is not flush-left under a
+     full-width rule: centred, symmetric, bounded, on its own ground, given
+     a whole screen. The institute's entire claim is that it sits BETWEEN
+     two parties, and a left-aligned band cannot say between.
 
      Value is elevation, drawn literally: the band is .on-panel (L* 9) set
-     into the page (L* 3), and the hub is .on-plate (L* 15) resting on the
-     band. Three grounds, one idea. */
+     into the page (L* 3), and the hub is .on-plate (L* 15) resting on it. */
   .ibridge {
     border-block: 1px solid var(--rule);
-    padding-block: clamp(3rem, 1rem + 4vw, 6rem);
+    padding-block: clamp(3.5rem, 1rem + 5vw, 7rem);
   }
   .ibridge__in {
-    display: grid;
-    align-content: center;
-    justify-items: center;
-    gap: clamp(2.2rem, 4vw, 4rem);
-    min-height: min(86svh, 46rem);
+    display: grid; align-content: center; justify-items: center;
+    gap: clamp(2.4rem, 4.5vw, 4.5rem);
+    min-height: min(80svh, 44rem);
   }
   .ibridge__k { justify-self: start; }
   .brg { width: 100%; }
   .brg {
-    --brg-gap: clamp(2.5rem, 6vw, 6.5rem);
-    --hub-w: clamp(12rem, 19vw, 18rem);
+    --brg-gap: clamp(1.6rem, 3.2vw, 3.4rem);
+    --hub-w: clamp(13rem, 26vw, 24rem);
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--hub-w) minmax(0, 1fr);
-    /* Declared, not implicit: `1 / -1` on the rails and the hub only means
-       "the whole diagram" if the explicit grid actually has these five rows. */
     grid-template-rows: auto repeat(4, auto);
     column-gap: var(--brg-gap);
-    row-gap: clamp(0.7rem, 1.9vw, 1.5rem);
+    row-gap: clamp(0.5rem, 1.4vw, 1.1rem);
   }
-  /* The whole diagram is staged from one observer so the order is exact.
-     Neutralise the generic reveal on the wrapper; the children carry it. */
   .brg[data-reveal] { opacity: 1; transform: none; transition: none; }
 
   .brg__list { display: contents; }
-  /* Short, close rises: these are the supporting rank. */
   .brg__k, .brg__list li {
     opacity: 0; transform: translate3d(0, 8px, 0);
     transition:
@@ -264,18 +207,21 @@ const spec = [
   }
   .brg.is-in .brg__k, .brg.is-in .brg__list li { opacity: 1; transform: none; }
 
-  .brg__k { grid-row: 1; margin-bottom: clamp(0.35rem, 0.9vw, 0.7rem); }
+  .brg__k { grid-row: 1; margin-bottom: clamp(0.5rem, 1.1vw, 0.9rem); }
   .brg__k--a { grid-column: 1; text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
   .brg__k--b { grid-column: 3; padding-left: clamp(1rem, 2vw, 1.8rem); }
 
-  /* The two arms are the site's other sans voice at the small display rung,
-     so they take the same declared class the hero's clause takes rather than
-     re-writing var(--step-sub) here. --step-sub is a serif rung; .bridge--lift
-     is the only door through it. */
+  /* The two arms are the page's body, not its caption — but they are still a
+     DIAGRAM, and they were set in hand-rolled Libre Franklin Light at
+     --step-head: a 53px sans display voice that exists nowhere else on the
+     site and outshouted the hub it is supposed to point at. .bridge--lift is
+     the one sanctioned sans display rung (base.css says so, and names these
+     arms), so the arms take it. The page's loudest object is now the cream
+     claim below, which is the one thing this page is for. */
   .brg__list li {
     list-style: none;
-    line-height: 1.16;
-    color: var(--fg);
+    line-height: 1.14;
+    max-width: none;
   }
   .brg__list--a li { grid-column: 1; text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
   .brg__list--b li { grid-column: 3; padding-left: clamp(1rem, 2vw, 1.8rem); }
@@ -298,17 +244,14 @@ const spec = [
   .brg__rail--b i { --d: 590ms; }
   .brg.is-in .brg__rail i { transform: none; }
 
-  /* Hub + the two connectors, which draw inward from each rail to the box.
-     Local delays; no motion primitive added. */
-  /* The hub is an OBJECT, not a caption: it takes the plate ground, it has
-     edges you could point at, and it carries its name in the serif at the
-     display rung the two arms answer to. It used to be an 11.7px label in
-     a 187px box — a footnote at the centre of the page's one diagram. */
+  /* The hub is an OBJECT: plate ground, edges you could point at, its name in
+     the serif at the poster rung. The two connectors run from each rail and
+     TOUCH it — a half-connected diagram reads as timidity. */
   .brg__hub {
     grid-column: 2; grid-row: 1 / -1; align-self: center;
     position: relative;
-    display: grid; justify-items: center; gap: clamp(0.75rem, 1.4vw, 1.1rem);
-    padding: clamp(1.4rem, 2.6vw, 2.4rem) clamp(1rem, 2vw, 1.7rem);
+    display: grid; justify-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem);
+    padding: clamp(1.8rem, 3.2vw, 3rem) clamp(1rem, 2vw, 1.8rem);
     border: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
     opacity: 0;
     transition: opacity 460ms var(--ease-out) 640ms;
@@ -316,7 +259,7 @@ const spec = [
   .brg.is-in .brg__hub { opacity: 1; }
   .brg__hub::before, .brg__hub::after {
     content: ''; position: absolute; top: 50%;
-    width: var(--brg-gap); height: 1px;
+    width: calc(var(--brg-gap) + 1px); height: 1px;
     background: var(--brass);
     transition: transform 420ms var(--ease-out) 720ms;
   }
@@ -325,15 +268,16 @@ const spec = [
   .brg.is-in .brg__hub::before, .brg.is-in .brg__hub::after { transform: none; }
 
   .brg__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brass); }
-  .brg__hub-t { white-space: nowrap; line-height: 1; color: var(--fg); }
+  .brg__hub-t {
+    font-size: var(--step-sub);
+    white-space: nowrap; line-height: 1; color: var(--fg); text-align: center;
+  }
 
-  /* The series-breaker, used once on this page. A held pause above it, bounded
-     by the diagram on one side and by the line itself on the other. */
-  .brg__thesis {
-    margin: clamp(1rem, 2vw, 2.5rem) auto 0;
-    max-width: 18ch; text-align: center;
-    line-height: 1.04;
-    color: var(--fg);
+  /* ── The claim, on cream ──────────────────────────────────────── */
+  .iclaim { padding-block: clamp(4rem, 2rem + 6vw, 8rem); }
+  .iclaim__t {
+    margin: 0 auto; max-width: 20ch; text-align: center;
+    line-height: 1.04; color: var(--fg);
     --settle-shift: 2.4vh;
   }
 
@@ -346,9 +290,6 @@ const spec = [
   .imeth .display--head { max-width: 16ch; }
   .imeth__head h2 :global(.line > span) { transition-duration: 1450ms; }
 
-  /* Two columns only. The gloss belongs under the title it glosses — a third
-     column set at 11px on the far side of a 1300px row is decoration, not
-     information. Same treatment on every width. */
   .ledger { list-style: none; margin: 0; padding: 0; }
   .ledger li {
     display: grid;
@@ -360,47 +301,36 @@ const spec = [
   }
   .ledger li:last-child { border-bottom: 1px solid var(--rule); }
   .ledger li[data-reveal] { --reveal-y: 8px; transition-duration: 440ms, 560ms; }
-  /* Shared .index primitive; only the optical drop onto the row is local. */
   .ledger__n { padding-top: 0.55em; }
   .ledger__b { display: grid; gap: clamp(0.3rem, 0.7vw, 0.55rem); }
   .ledger__t { font-weight: 320; }
   .ledger__p { color: var(--fg-mute); font-size: var(--step-body); max-width: 34ch; }
 
-  @media (max-width: 860px) {
-    /* head offset comes from --head-pad; nothing local to override */
-    .ihead__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 6vw, 2.2rem); }
-    .ihead__lead, .ihead__side { grid-column: 1; }
-    .ihead__lead { gap: clamp(1.2rem, 5vw, 1.8rem); }
-    .ihead__side { gap: clamp(1.4rem, 6vw, 2rem); }
-    .ihead__h { max-width: 100%; }
-    .ihead__bridge { max-width: 30ch; margin-bottom: clamp(0.3rem, 2vw, 0.8rem); }
-    .spec { padding-top: 0; }
-    /* The one row a reader will try to press. Its own box clears 44px. */
-    .spec__v :global(a) { display: inline-block; padding-block: 0.7rem; }
-    .spec__row { padding-block: 0.35rem; }
-    .ichip { margin-top: 0; }
-    .ihead__cue { display: none; }
+  @media (max-width: 900px) {
+    .ispec__in { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(1rem, 3vw, 1.4rem); }
+    .ispec__c { border-top: none; }
+    .ispec__v :global(a) { display: inline-block; padding-block: 0.5rem; }
+  }
 
-    /* One column, and the node genuinely sits between the two lists rather
-       than trailing them with a connector running off into empty space.
-       `order` reorders the flow; the node becomes a full-width band bounded
-       by two rules, which is what a hinge looks like without a diagram. */
+  @media (max-width: 860px) {
+    /* The corner credit is two lines at this width; the statement has to
+       finish above it, not through it. */
+    .ihero { min-height: min(92svh, 42rem); padding-bottom: clamp(3.4rem, 12vw, 4.4rem); }
+    .ihero__h { max-width: 100%; }
+    .ihero__bridge { max-width: 28ch; }
+
     .ibridge { padding-block: clamp(2.75rem, 10vw, 4rem) clamp(3.5rem, 12vw, 5rem); }
-    /* No forced screen height on a phone: the diagram is already the tallest
-       object on the route once it runs vertically. Left-aligned again — the
-       centred composition is a desktop move and a 390px column has no
-       between to draw. */
+    /* No forced screen height on a phone: the diagram is the tallest object
+       on the route once it runs vertically. */
     .ibridge__in { min-height: 0; justify-items: stretch; gap: clamp(1.8rem, 7vw, 2.6rem); }
     /* The diagram survives the breakpoint. One brass rail runs the full
        height of the left gutter, both arms hang off it, and the hub is
-       notched onto it — two sides meeting at one point, drawn vertically.
-       It used to delete the rails and the connectors and become three
-       stacked lists with a section-header band in the middle. */
+       notched onto it — two sides meeting at one point, drawn vertically. */
     .brg {
-      --brg-gut: clamp(1.5rem, 7vw, 2.4rem);
+      --brg-gut: clamp(1.4rem, 6vw, 2.2rem);
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: none;
-      row-gap: clamp(0.35rem, 1.6vw, 0.6rem);
+      row-gap: clamp(0.2rem, 1.2vw, 0.5rem);
       padding-left: var(--brg-gut);
     }
     .brg__rail {
@@ -418,6 +348,7 @@ const spec = [
     .brg__list--a li:nth-child(n), .brg__list--b li:nth-child(n) {
       padding-left: 0; padding-right: 0;
       grid-row: auto; grid-column: 1; text-align: left;
+      text-wrap: initial;
     }
     .brg__k--a { order: 1; }
     .brg__list--a li { order: 2; }
@@ -428,11 +359,10 @@ const spec = [
     .brg__hub {
       grid-column: 1; grid-row: auto;
       justify-self: start; align-self: auto;
-      margin-block: clamp(1.5rem, 6.5vw, 2.2rem);
+      margin-block: clamp(1.4rem, 6vw, 2rem);
       display: inline-flex; align-items: center; justify-content: flex-start; gap: 0.8rem;
-      padding: clamp(0.85rem, 3.4vw, 1.15rem) clamp(1rem, 4vw, 1.4rem);
+      padding: clamp(0.9rem, 3.4vw, 1.2rem) clamp(1.1rem, 4vw, 1.5rem);
     }
-    .brg__hub-t { font-size: var(--step-sub); }
     /* The notch: one connector running left, from the hub back to the rail. */
     .brg__hub::after { content: none; }
     .brg__hub::before {
@@ -440,12 +370,12 @@ const spec = [
       transform: scaleX(0); transform-origin: right;
     }
     .brg.is-in .brg__hub::before { transform: none; }
-    /* Below ~700px the feature rung stops reading as a break, so the break is
-       carried by space and alignment instead. */
-    .brg__thesis { margin-inline: 0; text-align: left; max-width: 14ch; }
+    .iclaim__t { text-align: left; margin-inline: 0; max-width: 16ch; }
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .ihero__k, .ihero__bridge { opacity: 1 !important; animation: none !important; }
+    .ihero__h { -webkit-mask-image: none; mask-image: none; animation: none !important; }
     .brg__k, .brg__list li, .brg__hub { opacity: 1 !important; transform: none !important; transition-duration: 1ms !important; }
     .brg__rail i, .brg__hub::before, .brg__hub::after { transform: none !important; transition-duration: 1ms !important; }
   }

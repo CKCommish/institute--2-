@@ -27,6 +27,11 @@ export const pilots = [
     problem: 'Screenings find the problem. Care rarely follows.',
     approach: 'An app that carries the result home.',
     goal: 'Follow-up care completed within ninety days.',
+    /* The same sentence, split where the twelve-month axis splits it:
+       the head is set above the axis, the tail starts at the closing
+       edge of the ninety-day span. See components/pilots-scale.astro. */
+    goalHead: 'Follow-up care completed within',
+    goalTail: 'ninety days.',
     horizon: '3–12 months',
     image: '/media/pilot-health.jpg',
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
@@ -143,8 +148,11 @@ export const forum = {
      display line above can be a claim rather than a list. */
   who: 'Founders, investors, elected officials.',
   line: 'The people who build sit with the people who decide.',
-  role: 'The Institute is a lead sponsor. Pilots find their partners here, and report their results back.',
-  caption: 'Before the room fills.',
+  /* THE CLOSE, set on cream at the series-breaker rung. One sentence that
+     states the relationship, one that says what the Institute does with it.
+     No third line — the brief's supporting-line budget is spent here. */
+  role: 'The Institute is a lead sponsor of the Lion Forum.',
+  roleNote: 'Pilots find their partners in this room, and come back to it to report what happened.',
   /* The substance beat. A foundation officer or a policy lead has to leave
      this page knowing what the convening is, who is in it, and why the
      Institute is there. Three entries, one sentence each — the brief's
@@ -185,11 +193,13 @@ export const whyNow =
   'AI is moving faster than public institutions can absorb it.';
 
 /* THE STAKE — the homepage's photographic interlude, between the method and
-   the pilots that run it. One sentence: the mission's operating clause, the
-   half the hero does not carry. The hero says what the institute exists to
-   ensure; this says what it measures. Nothing else is set in the scene. */
+   the pilots that run it. FOUR WORDS, and they are the brief's own test: the
+   institute is judged on the median family, not on the frontier. The hero
+   says what the institute exists to ensure; this says who it is for. It is
+   also the whole of the scene's copy — the sentence has to be short enough
+   to set in a narrow column beside the subject rather than across her. */
 export const stake = {
   image: '/media/pilot-maternal.jpg',
-  line: 'Health, education and work — for the median family.',
+  line: 'For the median family.',
   credit: 'U.S. Department of Agriculture',
 };

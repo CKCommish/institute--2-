@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Figure from '../components/Figure.astro';
 import { founders, board } from '../data/site.js';
 import { cohortsOf, boardBridge, mastheadBridge } from '../components/people-cohorts.js';
 
@@ -10,9 +11,8 @@ import { cohortsOf, boardBridge, mastheadBridge } from '../components/people-coh
    they belong in both bays of the diptych or in neither — the parity of the
    two records is the point of this scene. */
 
-const people = founders.map((f, i) => ({
+const people = founders.map((f) => ({
   ...f,
-  index: String(i + 1).padStart(2, '0'),
   credentials: f.detail.replace(/\.\s*$/, '').split(/\.\s+/),
 }));
 
@@ -85,11 +85,12 @@ const founderCount = String(founders.length).padStart(2, '0');
       <div class="dip">
         {people.map((f) => (
           <article class="fr" data-reveal="140">
-            <p class="fr__meta">
-              <span class="index tnum">{f.index}</span>
-              <span class="label">{f.role}</span>
-            </p>
-            <h3 class="display display--head fr__name">{f.name}</h3>
+            <div class="fr__id">
+              <p class="fr__meta">
+                <span class="label">{f.role}</span>
+              </p>
+              <h3 class="display display--head fr__name">{f.name}</h3>
+            </div>
             <div class="fr__cred">
               <p class="label label--lit fr__credhead">{beforeLabel}</p>
               <ul class="fr__list">
@@ -110,24 +111,48 @@ const founderCount = String(founders.length).padStart(2, '0');
       top and bottom by a rule, six rows deep instead of sixteen. Each
       column wipes down as a territory, so the section arrives in three
       moves rather than in sixteen identical blinks. */}
+  {/* THE SEAM. The page's one photograph, and the only place on it a picture
+      can arrive without interrupting a reading: the turn from navy to cream.
+      It is an empty meeting room — the room this roster is being assembled
+      to fill — and the section's own head is set into its lower-left rather
+      than printed above it. The room is not the Institute's; the credit says
+      whose it is, per refs/PHOTO-FACTS.md. */}
+  <section class="seam" aria-hidden="false">
+    <Figure
+      src="/media/institute.jpg" alt="An empty committee room: sixteen chairs set around a long table beneath a flag."
+      ratio="auto" ratioSm="3 / 4" grade={0.45} lift={1.1}
+      zoom={1.02} focal="50% 52%" zoomSm={1.28} focalSm="50% 56%"
+      scrim="bottom" rise={0.52} reach={1} ink={0.9} vig={0.3} enter="wipe"
+      credit="Library of Congress" creditPos="bottom-right" />
+
+    {/* There used to be a 16 set here, centred on the room's axis at 245px —
+        "a size that exists nowhere else in the ladder", which was the case
+        for removing it rather than the case for keeping it. It was twice
+        --step-banner, so the loudest object on the whole site sat on an
+        inner page rather than on the front door; it repeated a number this
+        page already states in its masthead; and a display numeral centred on
+        sixteen chairs in a room the Institute does not own is exactly the
+        reading refs/PHOTO-FACTS.md exists to prevent. The photograph is the
+        turn from navy to cream and does not need a caption burned into it. */}
+    <div class="shell seam__in">
+      <p class="eyebrow" data-reveal>Prospective board</p>
+      <p class="label seam__l" data-reveal="120">Names put forward</p>
+    </div>
+  </section>
+
   <section class="scene on-cream bd" id="board" aria-labelledby="board-h">
     <div class="shell">
       <header class="bd__head">
-        <p class="eyebrow" data-reveal>Prospective board</p>
-        {/* The scene opens on a ruled line rather than on a label, so the
-            air to the right of the bridge is a bounded field and not the
-            page running out. */}
+        {/* The scene opens on a ruled line rather than on a label — the label
+            is on the photograph above, where it was set into the room. */}
         <hr class="rule bd__rule" data-wipe="left" data-delay="60" />
         <p class="bridge bd__bridge" data-reveal="110">{boardBridge}</p>
-        {/* The claim runs the full measure and the tally is set on the foot
-            of its short last line, so the two masses close the scene's width
-            between them instead of leaving the margin to do it. */}
+        {/* The one deliberate departure from x=51 on this page. Every other
+            line here opens on the left rule; the claim starts a column in
+            and runs past the right one, so the page's loudest sentence is
+            the one thing that does not obey its grid. */}
         <div class="bd__claim">
           <h2 class="display display--feature bd__h lines" id="board-h">Advising the pilots. Opening the doors they need.</h2>
-          <p class="bd__tally" data-reveal="260">
-            <span class="index tnum">{boardCount}</span>
-            <span class="label">Names put forward</span>
-          </p>
         </div>
       </header>
 
@@ -147,7 +172,7 @@ const founderCount = String(founders.length).padStart(2, '0');
           have read a single row. */}
       <div class="wall">
         {cohorts.map((c, ci) => (
-          <section class="co" data-wipe="top" data-delay={String(140 + ci * 130)} aria-labelledby={c.id}>
+          <section class:list={['co', ci === 0 && 'co--lead']} data-wipe="top" data-delay={String(140 + ci * 130)} aria-labelledby={c.id}>
             <h3 class="co__head" id={c.id}>
               <span class="index tnum">{c.count}</span>
               <span class="label">{c.label}</span>
@@ -172,6 +197,12 @@ const founderCount = String(founders.length).padStart(2, '0');
 
 <style>
   /* ── Masthead ───────────────────────────────────────────────────── */
+  /* --head-pad IS the shelf. It was being multiplied by 0.72 here to buy
+     back vertical space, which put this page's first line 29px higher than
+     /pilots/'s and gave the site a second answer to "where does a page start
+     under the bar". A fraction of a shared token is a new token. If a page
+     needs to be shorter it takes it out of its own stack, not out of the
+     one measurement every route is supposed to agree on. */
   .pm { padding-block: calc(var(--nav-h) + var(--head-pad)) 0; }
   .pm__in { display: grid; }
   .pm__bridge {
@@ -179,7 +210,7 @@ const founderCount = String(founders.length).padStart(2, '0');
     max-width: 30ch;
   }
   .pm__main {
-    margin-top: clamp(2rem, 4.2vw, 3.75rem);
+    margin-top: clamp(1.7rem, 3.2vw, 2.9rem);
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: clamp(2rem, 5vw, 5.5rem);
@@ -221,7 +252,7 @@ const founderCount = String(founders.length).padStart(2, '0');
   @media (hover: hover) {
     .pm__idx-i:hover .pm__idx-l { color: var(--fg); }
   }
-  .pm__rule { margin-top: clamp(2.5rem, 5vw, 4.25rem); }
+  .pm__rule { margin-top: clamp(2rem, 3.8vw, 3.2rem); }
 
   /* ── Founders ───────────────────────────────────────────────────── */
   /* A band set into the page, full-bleed, opening on the masthead's rule so
@@ -250,18 +281,24 @@ const founderCount = String(founders.length).padStart(2, '0');
     /* Three shared rows — rank, name, credentials. The two records sit on
        the same three lines whatever the names do, which is the parity
        made visible rather than asserted. */
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto;
     align-items: start;
   }
   .dip > .fr {
     display: grid;
-    grid-row: span 3;
+    grid-row: span 2;
     grid-template-rows: subgrid;
     align-content: start;
   }
+  /* The spine sits on the axis between the two records, and the two records
+     are the same width. The pull-left and the push-right have to be the SAME
+     number for that to be true: they were 36px and 72px, so the second
+     founder's column was 36px narrower than the first's and his record stood
+     twice as far off the spine as hers. "Two equal bays" has to be measured,
+     not asserted. */
   .dip > .fr + .fr {
     border-left: 1px solid var(--rule);
-    padding-left: clamp(2rem, 5vw, 5.5rem);
+    padding-left: clamp(1rem, 2.5vw, 2.75rem);
     margin-left: calc(-1 * clamp(1rem, 2.5vw, 2.75rem));
   }
 
@@ -271,15 +308,24 @@ const founderCount = String(founders.length).padStart(2, '0');
     gap: 0.9rem;
     margin-bottom: clamp(0.85rem, 1.6vw, 1.35rem);
   }
-  .fr__name {
-    max-width: 13ch;
-    text-wrap: balance;
+  /* ONE LINE, CROSSING THE SPREAD. Both names are set on the same hairline
+     rather than hung from the same ceiling: the rule is the floor of the
+     name row in both bays, and each name grows UP off it by however many
+     lines it needs. A three-line name and a one-line name then differ where
+     a reader reads air — above — instead of leaving a 402x108 hole under
+     the shorter one. Nothing about the two records differs by choice. */
+  /* Rank line and name travel together and stand on the rule: a one-line
+     name and a three-line name are two records on one baseline, not one
+     record with a hole under it. */
+  .fr__id { align-self: end; }
+  .fr__name { max-width: 13ch; text-wrap: balance; }
+  .fr__cred {
+    border-top: 1px solid var(--rule);
+    margin-top: clamp(1.1rem, 2.2vw, 1.8rem);
+    padding-top: clamp(0.9rem, 1.7vw, 1.35rem);
   }
-  .fr__cred { padding-top: clamp(1.6rem, 3.2vw, 2.6rem); }
   .fr__credhead {
-    padding-bottom: clamp(0.8rem, 1.5vw, 1.15rem);
     margin-bottom: clamp(0.85rem, 1.7vw, 1.3rem);
-    border-bottom: 1px solid var(--rule);
   }
   .fr__list {
     list-style: none; margin: 0; padding: 0;
@@ -290,9 +336,44 @@ const founderCount = String(founders.length).padStart(2, '0');
     color: var(--fg-mute);
   }
 
+  /* ── The seam ───────────────────────────────────────────────────── */
+  /* The page turns over here, and the turn is a photograph. It counts as one
+     of the page's three ground changes (tokens.css, rule 4), which is why
+     the founders band and this frame and the cream field are all there is. */
+  .seam {
+    position: relative;
+    display: grid;
+    align-content: end;
+    /* A FULL-VIEWPORT EVENT. This band was 490px on a 3944px page — a 2.94:1
+       strip, sized like a divider. The one asset here that typography cannot
+       reproduce now gets a whole screen, and the room is shown at 1.02 zoom
+       so it holds its own scale instead of being cropped to a letterbox. */
+    min-height: clamp(30rem, 96vh, 60rem);
+    isolation: isolate;
+    background: var(--ink-900);
+  }
+  .seam__in {
+    position: relative;
+    z-index: 3;
+    padding-block: clamp(1.6rem, 3vw, 2.6rem);
+    display: grid;
+    justify-items: start;
+    row-gap: clamp(0.35rem, 0.7vw, 0.6rem);
+  }
+  .seam__l { color: var(--fg-mute); }
+
+  /* The count, on the room's axis. Off the type ladder by design: the
+     largest rung on the site is 86px and this is ~245px, because a rung is a
+     rank and this is not competing with anything — it is the picture's own
+     caption, set in the one part of the frame the photograph left empty
+     (the foreground under the table, measured at L* 4). Cream on near-black,
+     comfortably inside the large-text legibility budget. */
+
   /* ── Prospective board ──────────────────────────────────────────── */
   .bd {
-    padding-block: clamp(5rem, 2.5rem + 8vw, 10rem) clamp(3rem, 5vw, 5.5rem);
+    /* The photograph above is the break; the cream field does not need to
+       open on 10rem of nothing as well. */
+    padding-block: clamp(3rem, 1.5rem + 4.5vw, 6rem) clamp(3rem, 5vw, 5.5rem);
     scroll-margin-top: var(--nav-h);
   }
   .bd__head {
@@ -319,10 +400,10 @@ const founderCount = String(founders.length).padStart(2, '0');
      rail with a micro-label parked in the far corner. */
   .bd__claim {
     margin-top: clamp(1.6rem, 3.2vw, 2.75rem);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    column-gap: clamp(1.5rem, 3.5vw, 4rem);
-    align-items: end;
+    /* Returned to the left rule. It used to hang at x=296, an edge nothing
+       else on the page shared, so it read as an arbitrary indent rather than
+       as a decision. The page gets one grid break and the photograph has it. */
+    margin-left: 0;
   }
   .bd__h {
     max-width: none;
@@ -334,13 +415,6 @@ const founderCount = String(founders.length).padStart(2, '0');
     --dur-3: 1400ms;
   }
   .bd__head { align-items: baseline; }
-  .bd__tally {
-    display: grid;
-    justify-items: end;
-    row-gap: 0.3rem;
-    text-align: right;
-    padding-bottom: 0.28em;
-  }
   .bd__h :global(.line) { padding-bottom: 0.09em; margin-bottom: -0.09em; }
   .bd__h :global(.line > span) { transition-delay: calc(var(--line-delay, 0ms) + 120ms); }
 
@@ -395,22 +469,37 @@ const founderCount = String(founders.length).padStart(2, '0');
      the office he held. The pieces are wildly different widths and the run
      fills greedily, so the right rag is decided by the lengths of the titles
      in the room — which is the only ordering principle this scene has. */
-  .ent { display: inline-block; }
-  .ent::after {
-    content: '·';
-    color: var(--brass);
-    padding-inline: 0.72em 0.78em;
-    font-size: var(--step-lede);
+  /* Ticked off a hairline, not separated by a point. A middot belongs to the
+     entry before it, so an entry that ends a line hangs its separator into
+     the rag — visible at two places in the last round. A leading rule cannot:
+     it marks the start of an entry wherever the entry happens to fall, and at
+     the head of a wrapped line it reads as the wall's own ruling. */
+  .ent {
+    display: inline-block;
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(0.7rem, 1.1vw, 1rem);
+    margin-right: clamp(1.1rem, 2.2vw, 2.2rem);
   }
-  .ent:last-child::after { content: none; }
   .ent__n {
     font-family: var(--serif);
     font-weight: 340;
-    font-size: var(--step-sub);
-    letter-spacing: -0.016em;
+    font-size: var(--step-bridge);
+    letter-spacing: -0.014em;
     color: var(--fg);
     white-space: nowrap;
   }
+  /* THE TRANCHE THAT IS NOT A REPETITION. Three bands at one pitch is a
+     table by its third appearance. The first band — the people who have
+     governed at scale, which is the claim the bridge above actually makes —
+     is set two rungs up; the other two sit at the bridge rung and read as
+     the room around it. Nobody inside a band is ranked against anybody. */
+  .co--lead .ent { margin-right: clamp(1.4rem, 2.8vw, 2.8rem); }
+  .co--lead .ent__n {
+    font-size: var(--step-head);
+    letter-spacing: -0.019em;
+  }
+  .co--lead .co__field { line-height: 1.35; }
+  .co--lead .ent__t { font-size: var(--step-lede); }
   /* The office is the payload of this scene. Because the field is a run, a
      long office simply takes more of the wall than a short one — the calibre
      of the room is the area it covers, and nobody had to be ranked to say so. */
@@ -458,8 +547,7 @@ const founderCount = String(founders.length).padStart(2, '0');
   @media (max-width: 760px) {
     /* At this width the claim is a stack, and both display lines are
        balanced so neither closes on a one-word orphan. */
-    .bd__claim { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.1rem, 3.4vw, 1.6rem); }
-    .bd__tally { justify-items: start; text-align: left; padding-bottom: 0; }
+    .bd__claim { margin-left: 0; margin-right: 0; }
     .bd__h, .pm__h { text-wrap: balance; }
     .ent:first-child .ent__n { line-height: 1.02; }
   }
@@ -469,12 +557,25 @@ const founderCount = String(founders.length).padStart(2, '0');
     .co__def { margin-left: 0; flex-basis: 100%; max-width: 40ch; }
   }
   @media (max-width: 620px) {
+    /* A 34vw band is 130px on a phone: the room stops being a room. The
+       seam keeps a readable frame instead of a stripe. */
+    .seam { min-height: min(88vh, 40rem); }
     /* The field stops wrapping and runs one entry per row, ticked off the
        same hairline — still a wall, read down instead of across. */
     /* Below 620 a run at two registers is soup. The field becomes a stack,
        one entry per row, ticked off a single hairline — still a wall, read
        down instead of across. */
+    /* The lead band reads down, one entry per row. The other two stay a
+       two-up flow: collapsing all three to a single column turned the cream
+       half into sixteen identical rows over 1400px and cost the page its
+       only density contrast at the breakpoint. */
     .co__field { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 1.1rem; max-width: none; line-height: 1.3; }
+    .co:not(.co--lead) .co__field {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 1rem; row-gap: 0.9rem;
+    }
+    .co:not(.co--lead) .ent__n { font-size: var(--step-body); }
+    .co:not(.co--lead) .ent__t { font-size: var(--step-micro); letter-spacing: 0.01em; }
     .ent { display: grid; row-gap: 0.2rem; padding-left: 1rem; border-left: 1px solid var(--rule); }
     .ent::after { content: none; }
     .ent__n { white-space: normal; }

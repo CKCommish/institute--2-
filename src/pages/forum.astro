@@ -16,43 +16,77 @@ const claim = forum.line
 {/*
   FIVE BEATS, AND NO TWO OF THEM ARE DRAWN THE SAME WAY.
 
-    1  masthead    the photograph wide, type stacked in one corner of it
-    2  the claim    type only, flush left, nothing beside it
-    3  the ledger   the page's ONE change of ground and ONE change of axis:
-                    a band set into the page, three terms hanging right-
-                    aligned against three sentences at READING SIZE
-    4  the plate    the SAME photograph cut to a 16:5.5 band — masts and
-                    breakwater, the sky gone — held for two thirds of a
-                    viewport and carrying exactly one line
-    5  the role     type in a rail, the page's one ask under it at the
-                    bridge rung, so the close is an arrival and not a footnote
+    1  masthead   the photograph wide, and the ONLY place on this site where
+                   the picture, not the grid, decides where type goes: the
+                   name is set into the frame's empty half
+    2  the claim   type only, flush left, nothing beside it
+    3  the ledger  the reading size, and the page's first change of axis:
+                   three terms hanging right-aligned against three sentences
+    4  the plate   the SAME photograph seen CLOSE — the moored hull, the
+                   buoys, the water — a band shorter than a viewport,
+                   carrying no type at all
+    5  the close   THE PAGE TURNED OVER
 
-  Each beat also owns a different motion primitive, so motion ranks the page
-  by kind and not only by delay: the masthead lifts its lines on load, the
-  claim SETTLES under scroll and its two italic verbs arrive 200ms behind the
-  roman so the hinge of the sentence is its own event, the plate WIPES open on
-  both axes and then APPROACHES (1.055 → 1.000, scroll-linked), the role
-  reveals. One photograph, seen twice — wide, then close.
+  THE FRAME HAD AN EMPTY HALF AND THE PAGE WAS NOT USING IT. The sloop, its
+  two masts and the breakwater all live in the left 62% of the masthead; the
+  right 540px was open water and sky carrying nothing, while the display stack
+  sat at x=51 with the forward mast passing through the "T" of "The". That is
+  a collision, not an interlock. The name now hangs off the RIGHT rail in the
+  water, two lines deep, and the subject keeps its own third; the scrim is
+  MIRRORED to match (align="right"), so the ink is laid where the words are
+  and the boat keeps its light. The kicker and the dateline came out of the
+  stack — at 55–60% of the frame they sat on L* 62 sky, four points past what
+  the micro register can carry — and are now the left end of the foot band,
+  where the ramp is at full weight. Small and dark at the lower left, enormous
+  and light at the upper right, one rule running between them.
 
-  THE PAGE HAS TWO RAILS, NOT ONE. It used to run entirely down x=51 — 14 of
-  29 marks on one edge and a 460px column on the right empty for 3151px of
-  scroll. Now the beat numerals hang on the FAR edge of the measure with the
-  hairline spanning between, the plate's one mark sits on that same right
-  edge, and the ask right-aligns to it. §4's role sentence went flush under
-  its eyebrow: the one moment the page changes axis is the moment it asks,
-  not its quietest aside.
+  THE EXCEPTION, AND THERE IS ONLY ONE ON THE PAGE GROUND. Everything between
+  §2 and §4 is cream type on navy opening flush at x=51. §5 is full-bleed cream arriving directly off the
+  dark plate: L* 15 → L* 92, the largest tonal step the system owns, spent
+  once, on the only thing a foundation officer came to this page to find out —
+  what the Institute's relationship to this convening actually is. It is also
+  the one beat that does not begin at the rail: the eyebrow holds a narrow
+  left rail, the sentence starts at ~34% at --step-feature (the series-breaker,
+  used ONCE on this page, here) and runs into the right-hand column the rest
+  of the page leaves empty. Restraint plus one exception is composition.
 
-  THE LADDER HAD NO READING SIZE. Five sizes ran in main — 11.7, 26.6, 53,
-  86, 126 — and the 11.7 → 26.6 step was 2.27x, the widest gap on the site
-  and well past the system's own 1.6x rule. The page also forked the ladder:
-  it set its own 26.6px beat numeral instead of the house .index. Both are
-  closed. Top to bottom now: 126 banner · 86 poster · 53 head · 26.6 bridge ·
+  GROUND BUDGET: hero photograph · plate photograph · cream. Three, the
+  ceiling. Which is why the ledger's .on-panel band came off — a 13-point step
+  on a 255 scale was spending a ground event and reading as nothing.
+
+  THE PLATE WAS THE PAGE'S BEST IDEA AND ITS WORST EXECUTION. "One photograph,
+  seen twice — wide, then close" was right; zoom 4.2 at focal 21%/92% was not.
+  That point lands on open water, so the close half held less structure than
+  the flat panel above it and was past the source file's pixel budget besides.
+  It is now zoom 3.6 on 28%/77%: the moored hull itself, its reflection, the
+  dinghies and the near water — the horizon, the sky, the breakwater and the
+  lattice tower all out of frame, so the close is a DIFFERENT SUBJECT rather
+  than the same furniture at a longer lens. At 2.6 the crop still held sky,
+  horizon and tower and read as a second photograph. It carries no type — the bridge line that used to sit on
+  the water was a fourth slogan on a page already being sold with slogans.
+  Its one mark is the photograph's own credit, in Figure's corner voice, in
+  the deep zone of a bottom-left ramp, which is the only place on a photograph
+  the meta register is legal.
+
+  THE ASK IS SINGULAR. It used to be made twice within 330px — here, and again
+  in the footer's secondary door, which on this route is a link to this page.
+  The footer's is suppressed on /forum/ only.
+
+  TWO LOCATION STRINGS, TWO JOBS, and they no longer share a viewport.
+  "Kennedy Compound, Hyannis Port" describes the CONVENING and stays in the
+  masthead's display stack at the bridge rung. "Block Island, Rhode Island"
+  describes the PHOTOGRAPH and has moved to the plate, 2000px down the page,
+  in the dim credit register. See refs/PHOTO-FACTS.md.
+
+  Motion ranks the page by KIND, not only by delay: the masthead lifts its
+  lines on load, the claim SETTLES under scroll and its two italic verbs
+  arrive behind the roman so the hinge of the sentence is its own event, the
+  plate WIPES open on both axes and then APPROACHES (1.055 → 1.000,
+  scroll-linked), the ledger and the close reveal.
+
+  Ladder, top to bottom: 126 banner · 86 poster · 67 feature · 26.6 bridge ·
   19 lede · 16 body · 13.1 index · 11.7 micro.
-
-  Micro type: SEVEN marks, three registers — three .eyebrow (one per scene),
-  the photograph's .label credit, the scroll cue. There were twenty-five.
-*/}
-<Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
+*/}<Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
   <!-- 1 ── the masthead. Kicker, dateline, name: the ladder the hero was
        missing, so 11.7px never stands directly against 126px again.
 
@@ -63,24 +97,33 @@ const claim = forum.line
        sits in the opposite corner in the dim credit register that every
        full-bleed scene on this site uses. See refs/PHOTO-FACTS.md. -->
   <section class="fh">
+    {/* The credit is not optional on this frame, it is the frame's whole
+        problem. The event line below reads as a caption the moment it is the
+        only place-name on the picture, and the picture is a harbour on Block
+        Island, 200 miles from Hyannis Port. Credit top-right, opposite the
+        event line in the foot band: two location strings, two corners, two
+        registers, so a reader cannot collapse them. refs/PHOTO-FACTS.md. */}
     <Figure src={forum.image} alt="" ratio="auto" grade={0.6}
             focal="40% 50%" focalSm="26% 50%"
-            parallax={6} scrim="bottom" loading="eager"
-            credit={forum.credit} creditPos="top-right" class="fh__bg" />
+            parallax={6} scrim="bottom" align="right" reach={0.60} rise={0.62}
+            loading="eager"
+            credit={forum.credit} creditPos="top-right"
+            class="fh__bg" />
 
     <div class="shell fh__in">
       <div class="fh__lock">
-        <span class="fh__tick" aria-hidden="true"></span>
-        <p class="eyebrow fh__brow">{forum.access}</p>
-        <p class="bridge fh__place">{forum.place}</p>
-        <h1 class="display display--banner fh__h lines">{forum.name}</h1>
+        <h1 class="display display--poster fh__h lines">{forum.name}</h1>
+      </div>
 
-        <div class="fh__bar">
-          <span class="fh__rule" aria-hidden="true"></span>
-          <a class="cue tap fh__cue" href="#fsay-h">
-            <span class="label">Scroll</span><i class="cue__line" aria-hidden="true"></i>
-          </a>
+      <div class="fh__bar">
+        <div class="fh__meta">
+          <p class="eyebrow fh__brow">{forum.access}</p>
+          <p class="bridge fh__place">{forum.place}</p>
         </div>
+        <span class="fh__rule" aria-hidden="true"></span>
+        <a class="cue tap fh__cue" href="#fsay-h">
+          <span class="label">Scroll</span><i class="cue__line" aria-hidden="true"></i>
+        </a>
       </div>
     </div>
   </section>
@@ -120,10 +163,13 @@ const claim = forum.line
        and its axis sits near 38% of the measure. Every other beat here opens
        flush at the rail; this one does not, which is the whole point.
 
-       Ground: .on-panel, a band SET INTO the page — full-bleed, own rules,
-       never a card. It is the page's third ground event after the two
-       photographs, which is the ceiling. -->
-  <section class="on-panel fbrief" aria-labelledby="fbrief-h">
+       It sits on the page ground. It used to be an .on-panel band, but a
+       13-point step on a 255 scale is not a tonal event and it was costing
+       one of the page's three ground changes; the rules do the ranking and
+       the change of value is spent on §5 instead. The hairlines are pulled
+       back to the text measure — they used to over-span the sentences under
+       them by 419px in all four rows. -->
+  <section class="fbrief" aria-labelledby="fbrief-h">
     <div class="shell">
       <div class="frow">
         <span class="frow__rule" aria-hidden="true" data-wipe="left"></span>
@@ -146,49 +192,69 @@ const claim = forum.line
     </div>
   </section>
 
-  <!-- 4 ── the plate. The same harbour, cut hard: a 16:5.5 band on the
-       masts and the breakwater with the sky taken off it, so the page carries
-       two photographic weights rather than one drawn twice. It is shorter
-       than a viewport on purpose — a pause bounded by the claim above and the
-       ask below, never by a screen edge — and it carries one mark, the bridge
-       rung set low against the water, which is what turns held space into a
-       held breath. It opens on both axes, then closes the last five percent
-       of its scale as you scroll it, so the band reads as an approach. -->
+  <!-- 4 ── the plate. The same harbour seen CLOSE — the moored hull, the
+       buoys, the near water, the sky taken off — so the page carries two
+       photographic weights rather than one frame drawn twice. Shorter than a
+       viewport on purpose: the pause is bounded by the ledger above and the
+       cream below, never by a screen edge. It carries no type; its one mark
+       is the photograph's own credit. It opens on both axes, then closes the
+       last five percent of its scale as you scroll it. -->
   <div class="fplate" data-wipe="center-y">
     <div class="fplate__frame" data-settle="0.42">
-      <Figure src={forum.image} alt="A harbour at dusk: a moored sailboat and its mast against a stone breakwater."
+      <Figure src={forum.image} alt="A harbour at dusk: a moored hull, its mast foot, and the near end of the stone breakwater."
               ratio="auto" grade={0.52} grain={0.85}
-              focal="21% 92%" zoom={4.2}
-              focalSm="23% 93%" zoomSm={4.6}
+              focal="28% 77%" zoom={3.6}
+              focalSm="28% 76%" zoomSm={4.2}
+              scrim="bottom-left" ink={0.7} vig={0.25}
+              credit={forum.credit} creditPos="bottom-left"
               parallax={5} sizes="100vw" />
     </div>
-    <p class="bridge fplate__note">{forum.caption}</p>
   </div>
 
-  <!-- 5 ── the role, and the one ask. The mark sits BESIDE the sentence here
-       and above it in beat 2, so the two type beats are not one drawing. -->
-  <section class="frole" aria-labelledby="frole-h">
-    <div class="shell">
+  <!-- 5 ── THE CLOSE, and the page's one exception.
+
+       Everything above this line is cream type on navy, opening flush at the
+       left rail. This is the page turned over: full-bleed cream, arriving
+       directly off the dark plate, so the largest tonal step available on the
+       site — L* 15 to L* 92 — lands on the one thing a programme officer came
+       here to find out, which is what the Institute's relationship to this
+       convening actually is.
+
+       It is also the one beat that does not begin at x=51. The rule and the
+       numeral quote the page's own row construction so the break is a return
+       and not a stray; below it the composition shifts right, the sentence is
+       set at --step-feature (the series-breaker, used ONCE, here), and it runs
+       into the 460px of right-hand column the rest of the page left empty.
+
+       The footer's quieter "Inquire about the Lion Forum" door is suppressed
+       on this route — it points at this page, and this page has just asked. -->
+  <section class="on-cream frole" aria-labelledby="frole-h" data-settle="0.86">
+    <span class="frole__cut" aria-hidden="true"></span>
+    <div class="shell frole__shell">
       <div class="frow">
         <span class="frow__rule" aria-hidden="true" data-wipe="left"></span>
         <span class="index fnum" data-reveal="220">03</span>
       </div>
 
-      <div class="frole__in" data-seq="150" data-seq-from="60">
-        <p class="eyebrow" data-reveal>The Institute&rsquo;s role</p>
+      <div class="frole__grid">
+        <p class="eyebrow frole__brow" data-reveal>The Institute&rsquo;s role</p>
 
-        <h2 class="display display--head frole__p" id="frole-h" data-reveal>{forum.role}</h2>
+        <div class="frole__body" data-seq="150" data-seq-from="60">
+          <h2 class="display display--feature frole__p" id="frole-h" data-reveal>{forum.role}</h2>
+          <p class="frole__note" data-reveal="120">{forum.roleNote}</p>
+
+          <a class="frole__cta" href={inquire} data-reveal="240">
+            <span class="frole__ctaRule" aria-hidden="true"></span>
+            <span class="bridge frole__ctaText">
+              {forum.cta}
+              <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+            </span>
+          </a>
+        </div>
       </div>
-
-      <a class="frole__cta" href={inquire} data-reveal="240">
-        <span class="frole__ctaRule" aria-hidden="true"></span>
-        <span class="bridge frole__ctaText">
-          {forum.cta}
-          <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
-        </span>
-      </a>
     </div>
   </section>
+
 </Base>
 
 <style>
@@ -214,13 +280,31 @@ const claim = forum.line
   .fh__in {
     width: 100%;
     display: grid;
-    align-items: end;
+    grid-template-rows: 1fr auto;
+    align-content: end;
     padding-block: var(--nav-h) clamp(1.5rem, 2.6vw, 2.6rem);
   }
-  /* One object, not four corner stickers: tick, kicker, dateline, name and
-     hairline all share the display's left rail, and the hairline ends where
-     the name ends — fit-content measures the h1 for us. */
-  .fh__lock { align-self: end; width: fit-content; max-width: 100%; }
+  /* TYPE SET INTO THE NEGATIVE SPACE, not at the rail.
+
+     This photograph has an empty half. The sloop, its two masts and the
+     breakwater all live in the left 62%; the right 540px is open water,
+     horizon and sky carrying nothing. The display stack used to sit at
+     x=51, which put 126px serif directly across the rigging — the forward
+     mast passed through the "T" of "The". A collision, not an interlock.
+
+     The stack now hangs off the RIGHT rail, in the water, and the picture's
+     subject is left alone in its own third. It is the only beat on the page
+     that does not open at x=51, and the only place on the site where a
+     photograph's composition, rather than the grid, decides where type goes.
+     The scrim is mirrored to match (align="right" on the Figure) so the ink
+     is laid where the words actually are and the sloop keeps its light. */
+  .fh__lock {
+    align-self: end;
+    justify-self: end;
+    width: fit-content;
+    max-width: min(100%, 42ch);
+    text-align: left;
+  }
 
   /* brass tick — a graphic anchor above the stack, no words spent */
   .fh__tick {
@@ -230,24 +314,36 @@ const claim = forum.line
     margin-bottom: clamp(0.9rem, 1.6vw, 1.6rem);
   }
 
-  .fh__brow { margin-bottom: clamp(0.75rem, 1.2vw, 1.1rem); }
-
   /* THE BRIDGE. The event's location, in the display stack with the name and
      in the page's mid voice — never in the credit register, which belongs to
      the photograph and says Block Island. */
-  .fh__place {
-    max-width: 26ch;
-    margin-bottom: clamp(0.5rem, 1vw, 0.9rem);
-  }
-  .fh__h { max-width: 13ch; }
+  /* 9ch turns the name over after "Lion", so the name is a two-line block
+     ~470px wide that sits entirely in the open water at the right of the
+     frame. The picture's subject keeps its own third and the page's largest
+     type stands in the empty one — neither is in front of the other. */
+  .fh__h { max-width: 9ch; }
 
+  /* The bar left the lock: it now spans the full shell, so the rule runs the
+     whole horizon from the empty left rail to the cue, and the display block
+     hanging above its right end is measured by it. */
+  /* THE FOOT BAND. The kicker and the dateline used to sit above the name,
+     which put 12px micro-caps and a 27px bridge line at 55–60% of the frame
+     — over open sky at L* 57–62, four points past what the register can
+     carry, and the meter said so. They belong in the deep zone or nowhere.
+     They are now the left end of the bar strip at the foot of the frame,
+     where the ramp is at full weight: the fact of the convening set small
+     and dark under the name set enormous and light, a diagonal across the
+     harbour with the rule running between them. */
   .fh__bar {
+    grid-row: 2;
     margin-top: clamp(1.6rem, 3.2vw, 2.9rem);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: clamp(1.25rem, 4vw, 3.5rem);
+    gap: clamp(1.25rem, 2.6vw, 2.4rem);
   }
+  .fh__meta { display: grid; gap: 0.35rem; }
+  .fh__brow, .fh__place { margin: 0; max-width: none; }
 
   /* Local motion primitive: the masthead sits above motion.js's reveal
      rootMargin, so a scroll trigger can never fire here. Load-timed instead,
@@ -366,10 +462,16 @@ const claim = forum.line
   /* ONE GRID, four rows: the eyebrow is the first term and the lede is the
      first definition, so the ledger's axis is established by the beat's own
      heading rather than arriving underneath it. */
+  /* ONE AXIS AND ONE RIGHT EDGE. The lead row and the three rows below used
+     to sit on different grids — the lead's terms hung at x=369, the rows'
+     at x=305, a 143px offset repeated nowhere else on the site, which reads
+     as drift rather than as a decision. Both now share this one grid, and
+     the grid is the full measure, so the row hairlines end where the §02
+     rule and its numeral end instead of stopping 394px short of them. */
   .fdef {
     display: grid;
-    grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
-    column-gap: clamp(1.25rem, 4vw, 3.25rem);
+    grid-template-columns: minmax(0, 0.24fr) minmax(0, 0.76fr);
+    column-gap: clamp(1.25rem, 3vw, 2.6rem);
     align-items: baseline;
   }
   .fdef__t {
@@ -380,8 +482,13 @@ const claim = forum.line
     transform: translateY(0.12em);
   }
   .fbrief__top { padding-top: clamp(1.1rem, 2vw, 1.7rem); }
-  .fbrief__lede { max-width: 30ch; margin: 0; color: var(--fg); }
+  .fbrief__lede { max-width: 34ch; margin: 0; color: var(--fg); }
 
+  /* THE RULES ARE EARNED OR THEY ARE PULLED BACK. They used to span the full
+     1338px measure while every sentence in the list ended by x≈968 — 419px of
+     hairline with nothing under it, four times. The list now measures itself:
+     the block is capped so the rules end where the sentences do. The full-
+     width span belongs to .frow, whose rule has a mark at its far end. */
   .fdefs { margin: clamp(1.9rem, 3.6vw, 3.2rem) 0 0; }
   .fdef--row {
     border-top: 1px solid var(--rule);
@@ -394,7 +501,7 @@ const claim = forum.line
     font-size: var(--step-body);
     line-height: 1.58;
     color: var(--fg-mute);
-    max-width: 44ch;
+    max-width: 62ch;
     text-wrap: pretty;
   }
 
@@ -421,70 +528,90 @@ const claim = forum.line
     --settle-shift: 0vh;
     --settle-origin: 50% 50%;
   }
-  /* ONE MARK ON THE WATER. The bridge rung, set low-left against the horizon
-     at the meta brightness so it holds the space without competing with the
-     claim it follows. It is not a caption of place — the photograph's own
-     credit is in the masthead and says Block Island. */
-  /* The plate's one mark sits on the RIGHT edge, against the rail the
-     numerals established, so the photograph is not a third thing hung off
-     x=51. It is not a caption of place — the photograph's credit is in the
-     masthead and says Block Island. */
-  .fplate__note {
+  /* The band carries NO type. Its one mark is the photograph's own credit —
+     Figure's corner voice, in the deep zone of a bottom-left ramp, which is
+     the only place on a photograph the meta register is legal. The bridge
+     line that used to sit on the water was a fourth slogan on a page that
+     was already being sold with slogans; the plate's job is the picture. */
+
+  /* ── 5. The close, on cream ─────────────────────────────────────── */
+  /* THE PAGE TURNED OVER. Full-bleed .on-cream, arriving directly off the
+     dark plate: L* 15 → L* 92, the largest step the system owns, spent once,
+     on the page's actual job. .on-cream retunes the ink levels, the rules and
+     --brass (to --brass-deep) for the light ground — never paint it by hand.
+     Ground budget: hero photograph, plate photograph, this. Three, the
+     ceiling, which is why the ledger's .on-panel band came off — a 13-point
+     step on a 255 scale was costing a ground event and reading as nothing. */
+  .frole {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: clamp(3.2rem, 2rem + 5vw, 7rem) clamp(2rem, 1.4rem + 1.8vw, 3rem);
+  }
+  .frole__shell { position: relative; z-index: 0; }
+
+  /* THE CUT, ANIMATED. This edge — L* 15 off the plate to L* 92 — is the
+     largest tonal event on the site, and it was the only one the page did
+     not move: the hero parallaxes, the claim settles, the plate approaches,
+     and then the page's biggest moment simply appeared.
+
+     A navy curtain sits over the cream and retracts to the left as the
+     reader scrolls into the section, so the ground itself turns over rather
+     than arriving already turned. It is scroll-linked, therefore reversible,
+     and it is the same left-to-right vector the page's rules already wipe
+     along — a fourth motion KIND would be decoration; this is the third,
+     used at the one place that deserves it. */
+  .frole__cut {
     position: absolute;
-    right: var(--gutter);
-    bottom: clamp(1.4rem, 3.4vw, 2.9rem);
-    z-index: 2;
-    margin: 0;
-    max-width: 18ch;
-    text-align: right;
-    color: var(--fg);
-    text-shadow: 0 1px 18px rgba(3, 9, 16, 0.85);
+    inset: -1px;
+    z-index: 1;
+    pointer-events: none;
+    background: var(--ink-900);
+    --cut: clamp(0, calc((var(--settle, 1) - 0.06) / 0.34), 1);
+    transform: scaleX(calc(1 - var(--cut)));
+    transform-origin: 100% 50%;
   }
-
-  /* ── 4. The role, and the ask ────────────────────────────────────── */
-  /* The close is tight on purpose: the footer's own rule is the next mark,
-     so the space under the ask stays bounded instead of trailing off. */
-  .frole { padding-block: clamp(3rem, 2rem + 4.4vw, 6.5rem) clamp(2rem, 1.2rem + 2vw, 3.2rem); }
-  /* The indent used to be spent HERE, on the page's quietest beat, while the
-     ask fell back onto the rail with everything else. Swapped: the role sits
-     flush under its eyebrow like every other beat, and the one moment the
-     page changes axis is the moment it asks. */
-  .frole__in {
+  /* THE ONE BEAT THAT DOES NOT BEGIN AT THE RAIL. Above it the page opens
+     flush left five times; here the eyebrow holds a narrow rail and the
+     sentence starts at ~34% and runs into the right-hand column the rest of
+     the page left empty for 3151px. */
+  .frole__grid {
     display: grid;
-    row-gap: clamp(0.85rem, 1.5vw, 1.35rem);
-    justify-items: start;
-    padding-top: clamp(0.9rem, 1.5vw, 1.35rem);
+    grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr);
+    column-gap: clamp(1.25rem, 4vw, 3.25rem);
+    padding-top: clamp(1.1rem, 2vw, 1.9rem);
   }
+  .frole__brow { margin: 0; transform: translateY(0.55em); }
+  .frole__body { display: grid; justify-items: start; }
+  /* THE SERIES-BREAKER, used once. --step-feature exists to lift one thing
+     out of a set; on this page the set is four beats at head/poster/banner
+     and this is the fifth, on the opposite ground, at the rung none of them
+     use. It is allowed a wide measure because the width is the point. */
   .frole__p {
-    max-width: 24ch;
+    max-width: 20ch;
     color: var(--fg);
+    text-wrap: balance;
+    margin: 0 0 clamp(1.1rem, 2vw, 1.7rem);
+  }
+  .frole__note {
+    margin: 0;
+    font-size: var(--step-lede);
+    line-height: 1.5;
+    color: var(--fg-mute);
+    max-width: 36ch;
     text-wrap: pretty;
-    margin-top: -0.14em;
   }
 
-  /* The one ask on the page. It is the .label register at link brightness —
-     a state, not a fourth micro scale. */
-  /* THE ARRIVAL. Right-aligned against the far edge of the measure — the one
-     mark on the page that does not begin at the rail, so "Inquire about the
-     Forum" arrives instead of continuing. It lands on the same edge the two
-     brass numerals and the plate's note established, so the change of axis is
-     a return to something already drawn, not a stray. */
+  /* The one ask on the page. The footer's quieter Forum door is suppressed on
+     this route (see below), so this is the close, singular. */
   .frole__cta {
     display: grid;
     gap: clamp(0.7rem, 1.1vw, 1rem);
-    justify-items: end;
-    justify-self: end;
-    text-align: right;
-    /* the extra block padding is the finger, not the layout: it lifts the
-       11px anchor to a real hit box without moving the rule */
+    justify-items: start;
     padding-block: 0.4rem 0.6rem;
-    margin-top: clamp(2.4rem, 6vw, 5rem);
+    margin-top: clamp(2.2rem, 5vw, 4rem);
     color: var(--fg);
   }
-  /* The ask sits at the BRIDGE rung, not in the micro register: it is the
-     page's arrival and it must outrank the small links in the footer below
-     instead of tying with them. No new size — the rung is already on the
-     page twice. */
   .frole__ctaText {
     color: var(--fg);
     display: inline-flex; align-items: baseline; gap: 0.6ch;
@@ -500,7 +627,6 @@ const claim = forum.line
   }
   .frole__cta:hover .frole__ctaRule { width: clamp(54px, 9vw, 132px); }
   .frole__cta:hover :global(.arrow) { transform: translateX(4px); }
-  /* local hover rule — the shared .link underline assumes inline-block */
   .frole__ctaText::after {
     content: ''; position: absolute; left: 0; right: 0; bottom: -0.24em; height: 1px;
     background: currentColor; transform: scaleX(0); transform-origin: right;
@@ -508,42 +634,58 @@ const claim = forum.line
   }
   .frole__cta:hover .frole__ctaText::after { transform: scaleX(1); transform-origin: left; }
 
+  /* THE DUPLICATE ASK. The footer's secondary door is "Inquire about the Lion
+     Forum" → /forum/. On this route that is a link to the page you are on,
+     330px under an ask with the same words, so the page had two endings and
+     one of them was a self-reference. Suppressed here only. */
+  :global(.foot .foot__second) { display: none !important; }
+
   /* ── Mobile ──────────────────────────────────────────────────────── */
   @media (max-width: 860px) {
-    .fh__lock { width: auto; }
-    .fh__place { max-width: 20ch; }
+    /* No open half to set into at 390: the lock comes back to the rail, the
+       name turns over, and the bar stacks its meta above the rule. */
+    .fh__lock { width: auto; justify-self: stretch; max-width: 100%; }
+    .fh__bar { grid-template-columns: minmax(0, 1fr) auto; row-gap: 1.1rem; }
+    .fh__meta { grid-column: 1 / -1; }
 
     .fsay { padding-block: clamp(2.5rem, 8vw, 3.5rem) clamp(2.75rem, 10vw, 4.5rem); }
     .fsay__p { max-width: 13ch; }
 
-    /* On a phone the band gets proportionally taller — a 16:5.5 strip at
-       390px is 71px of photograph — but it still stops short of the viewport
-       so the pause stays bounded by marks on both sides inside one scroll. */
-    /* Below 860 the second axis is a 140px column and stops being a
-       decision, so the ledger stacks: term over sentence, back on the rail,
-       and the rules do the ranking instead. */
     .fbrief { padding-block: clamp(2.2rem, 8vw, 3.2rem) clamp(2.6rem, 9vw, 3.8rem); }
-    .fdef { grid-template-columns: minmax(0, 1fr); row-gap: 0.7rem; }
-    .fdef__t { text-align: left; transform: none; }
+    /* THE SECOND AXIS SURVIVES THE PHONE. The ledger used to stack flush left
+       below 860, which left the whole mobile page as one column at x=24 for
+       2934px. The terms now HANG in the left margin at micro size instead —
+       a 4.6rem rail, right-aligned against a narrow sentence measure. That is
+       the same decision the desktop makes, taken at a size a phone can pay
+       for. The heading row still stacks: a lede does not belong in 26ch. */
+    .fdef { grid-template-columns: 4.6rem minmax(0, 1fr); column-gap: 0.9rem; }
+    .fdef__d { max-width: none; }
+    .fdef__t { text-align: right; transform: translateY(0.14em); }
+    .fbrief__top { grid-template-columns: minmax(0, 1fr); row-gap: 0.7rem; }
+    .fbrief__top .fdef__t { text-align: left; transform: none; }
     .fbrief__lede { max-width: 26ch; }
-    .fdef__d { max-width: 38ch; }
+    .fdefs { max-width: 100%; }
+    .fdef__d { max-width: none; }
 
     .fplate { height: clamp(340px, 52svh, 460px); }
-    .fplate__note { max-width: 14ch; }
 
-    .frole { padding-block: clamp(2.5rem, 8vw, 3.5rem) clamp(3rem, 10vw, 4.5rem); }
-    .frole__p { max-width: 22ch; }
-    /* Below 860 the measure is too narrow for a second axis to read as a
-       decision, so the ask carries its arrival with space and the brass rule
-       instead, back on the rail. */
-    .frole__cta {
-      justify-items: start; justify-self: start; text-align: left;
-      margin-top: clamp(1.9rem, 7vw, 2.6rem);
-    }
-    .fplate__note { text-align: left; left: var(--gutter); right: auto; }
+    .frole { padding-block: clamp(2.8rem, 9vw, 4rem) clamp(2.2rem, 7vw, 3.2rem); }
+    /* THE EXCEPTION SURVIVES THE PHONE. This used to stack flush at x=24,
+       which meant the page's one compositional break did not exist on the
+       format most readers will see — 390 reverted to a single armature for
+       its whole length. A 34% rail is 110px and stops being a decision, so
+       the close borrows the ledger's own mobile move instead: the eyebrow
+       HANGS right-aligned in a 4.6rem rail and the sentence starts inside
+       it. Same axis as §02, taken at a size a phone can pay for, and the
+       close is still the only beat below the breakpoint that is indented. */
+    .frole__grid { grid-template-columns: 5.8rem minmax(0, 1fr); column-gap: 0.9rem; }
+    .frole__brow { text-align: right; transform: translateY(0.5em); }
+    .frole__p { max-width: 16ch; }
+    .frole__note { max-width: 30ch; }
+    .frole__cta { margin-top: clamp(1.9rem, 7vw, 2.6rem); }
   }
   @media (max-width: 620px) {
-    .fh__h { max-width: 9ch; }
+    .fh__h { max-width: 7ch; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -551,5 +693,6 @@ const claim = forum.line
     .fh__tick, .fh__brow, .fh__place, .fh__cue { animation: none; opacity: 1; }
     .fsay__p :global(em) { opacity: 1; transform: none; }
     .fsay__p :global(em), .fsay__p :global(em:last-of-type) { --hinge: 1; }
+    .frole__cut { display: none; }
   }
 </style>

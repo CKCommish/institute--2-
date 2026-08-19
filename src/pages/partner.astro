@@ -1,6 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
+import Figure from '../components/Figure.astro';
 import { site, pilots } from '../data/site.js';
+
+/* Same photograph as pilot 01, so it takes pilot 01's credit rather than a
+   second string that can drift away from it. */
+const health = pilots.find((p) => p.image.includes('pilot-health')) || pilots[0];
 
 const roles = [
   { t: 'Fund it', p: 'Underwrite one pilot, end to end.' },
@@ -16,6 +21,19 @@ const roles = [
        one big thing; the address is the action under it, a rung down, on the
        rule. Eyebrow → bridge → poster, so the climb has a step in it. -->
   <section class="phead">
+    <!-- The one photograph on this route, and the only warm, sunlit frame on
+         the site: a child running at a Unified Special Olympics meet — pilot
+         01, four rows below. It runs the full height of the first screen and
+         bleeds off the right edge, so the ask is set against a person rather
+         than against 640px of empty navy. -->
+    <Figure
+      src="/media/pilot-health-portrait.jpg" alt="" ratio="auto" loading="eager"
+      grade={0.34} focal="46% 34%" zoom={1.04} lift={1.06} vig={0.3}
+      scrim="bottom" align="right" reach={0.5} rise={0.42} ink={0.9}
+      credit={health.credit} creditPos="bottom-right"
+      class="phead__fig" sizes="(max-width: 860px) 100vw, 44vw" />
+    <span class="phead__veil" aria-hidden="true"></span>
+
     <div class="shell phead__in">
       <p class="eyebrow" data-reveal>Work with us</p>
       <p class="bridge phead__bridge" data-reveal="120">
@@ -50,7 +68,7 @@ const roles = [
        are now the page's body: a band set into the page, four full-width
        rows, each name at the section-headline rung with the principal who
        owns it beside it. -->
-  <section class="on-panel pfour" id="pilots">
+  <section class="pfour" id="pilots">
     <div class="shell pfour__in">
       <div class="pfour__head">
         <p class="eyebrow" data-reveal>Open for 2026</p>
@@ -77,7 +95,7 @@ const roles = [
 
   <!-- The one hard cut in the scroll: the ground changes and the three
        doors arrive. Numeral is the index, the verb is the content. -->
-  <section class="on-cream proles">
+  <section class="on-panel proles">
     <div class="shell proles__in">
       <div class="proles__head">
         <p class="eyebrow" data-reveal>Three ways in</p>
@@ -107,13 +125,38 @@ const roles = [
      on the page read as marginalia. The ask now takes the whole measure and
      stops; the pilots get their own band underneath, full width. */
   .phead {
+    --fig-w: clamp(20rem, 42vw, 40rem);
+    position: relative; isolation: isolate;
+    min-height: min(94svh, 52rem);
+    display: grid; align-content: end;
     padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(3.5rem, 2rem + 3.4vw, 5.5rem);
   }
+  /* The photograph holds the right two-fifths of the first screen, floor to
+     bar, and bleeds off the edge of the page. It is not a card: it has no
+     rule, no caption and no left margin between it and the type — the ask is
+     simply set against it. The scrim protects the bar strip only; nothing is
+     written on the picture, so the picture keeps its own light. */
+  .phead :global(.phead__fig) {
+    position: absolute; z-index: -1; aspect-ratio: auto;
+    /* Figure paints `inset: 0` on every fill figure, so `left` has to be
+       released explicitly or the column pins to the wrong wall. */
+    top: 0; bottom: 0; right: 0; left: auto;
+    width: var(--fig-w);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16%);
+    mask-image: linear-gradient(to right, transparent 0, #000 16%);
+  }
+  /* Inert on a wide screen: nothing is written on the picture there. Below
+     860px the frame becomes the ground the ask sits on, and the foot has to
+     carry cream type — so the ink arrives with the breakpoint, not before. */
+  .phead__veil { display: none; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
   .phead__in {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     row-gap: clamp(1.2rem, 2.2vw, 2rem);
     justify-items: start;
+    /* The type keeps clear of the picture: the measure ends where the
+       photograph's left edge begins, plus a gutter. */
+    padding-right: calc(var(--fig-w) - var(--gutter) + clamp(1.5rem, 3vw, 3rem));
   }
   .phead__bridge {
     max-width: 34ch;
@@ -142,12 +185,15 @@ const roles = [
      right two-fifths of the first screen was open navy running out into the
      viewport edge, which reads as absence rather than as a pause. A held
      pause has to be bounded on both sides; this is the second side. */
+  /* The measure is narrower than it was — the photograph has the right two
+     fifths — so the address and its instruction stack instead of sharing a
+     row and breaking the address mid-domain. */
   .ask {
     padding-top: clamp(2.4rem, 1.4rem + 3.2vw, 4.4rem);
     width: 100%;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content;
-    column-gap: clamp(1.5rem, 4vw, 4rem);
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(0.7rem, 1.4vw, 1.1rem);
     align-items: baseline;
   }
   .ask__rule {
@@ -175,7 +221,7 @@ const roles = [
   .ask__mail:hover .ask__mail-t { color: var(--brass); }
   .ask__mail:hover .ask__arrow { transform: translateX(9px); }
   .ask__sub {
-    grid-column: 2; justify-self: end; text-align: right;
+    grid-column: 1; justify-self: start; text-align: left;
     color: var(--fg-meta); font-size: var(--step-body); max-width: 34ch;
   }
 
@@ -183,8 +229,11 @@ const roles = [
      A band set into the page, and the only place on this route where the
      ground changes before the cream. Four rows, one rule each, the name at
      the section-headline rung: 53px, not 19px in a rail. */
+  /* On the page's own ground now, not in a panel: the route's tonal event is
+     the photograph above, and a band here would have made this page run the
+     same three-act ground sequence as /institute/ in the same order. */
   .pfour {
-    border-block: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
     padding-block: clamp(3rem, 1.6rem + 3.6vw, 5.5rem) clamp(3.5rem, 1.8rem + 4vw, 6rem);
   }
   .pfour__in { display: grid; gap: clamp(2rem, 3.4vw, 3.2rem); }
@@ -258,16 +307,31 @@ const roles = [
   }
 
   @media (max-width: 860px) {
-    .phead { padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(2.5rem, 9vw, 3.5rem); }
+    /* A 42vw column is 164px on a phone — a strip, not a photograph. It
+       becomes the ground of the whole first screen instead, with the ask set
+       into its foot. */
+    .phead {
+      min-height: 100svh;
+      padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(2.5rem, 9vw, 3.5rem);
+    }
+    .phead :global(.phead__fig) {
+      inset: 0; width: auto;
+      -webkit-mask-image: none; mask-image: none;
+    }
+    .phead__in { padding-right: var(--gutter); }
+    .phead__veil {
+      display: block;
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--ink-900) 30%, transparent) 0%,
+        color-mix(in srgb, var(--ink-900) 12%, transparent) 26%,
+        color-mix(in srgb, var(--ink-900) 46%, transparent) 54%,
+        color-mix(in srgb, var(--ink-900) 88%, transparent) 78%,
+        color-mix(in srgb, var(--ink-900) 96%, transparent) 100%);
+    }
     .phead__in { row-gap: clamp(1.5rem, 6vw, 2.2rem); }
     .phead__h { max-width: 14ch; }
     .phead__bridge { max-width: 30ch; margin-bottom: clamp(0.3rem, 2vw, 0.8rem); }
-    .ask {
-      padding-top: clamp(2rem, 8vw, 2.8rem);
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: clamp(0.7rem, 3vw, 1.05rem);
-    }
-    .ask__sub { grid-column: 1; justify-self: start; text-align: left; max-width: 34ch; }
+    .ask { padding-top: clamp(2rem, 8vw, 2.8rem); }
 
     /* Four columns collapse to two: the numeral keeps its gutter, everything
        else stacks under the name. The arrow goes — a row that fills the

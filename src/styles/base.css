@@ -57,7 +57,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-optical-sizing: auto;
   text-wrap: balance;
 }
-/* Job names first; the t-shirt names are aliases so existing markup works. */
+/* Job names first; the t-shirt names are aliases so existing markup works.
+
+   --banner IS THE FRONT DOOR AND NOTHING ELSE. One element on the whole site
+   carries it: the homepage h1. An inner page's largest line is --poster; if
+   two pages both open at 126px, neither is the entrance. This was written
+   three times in one wave (the /pilots/ and /forum/ mastheads both took it)
+   which is why the rule is repeated here, next to the class, and not only in
+   the scale table in tokens.css. */
 .display--banner,
 .display--hero { font-size: var(--step-banner); line-height: 0.93; letter-spacing: -0.028em; }
 .display--poster,

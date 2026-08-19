@@ -54,6 +54,13 @@ const isAside = shape === 'aside';
    page's one series-breaker — it is also the card that breaks the run of
    full-bleed frames and the one plate held at full exposure. Card 04 closes
    at --step-sub, the small serif display rung: a coda, set quietly. */
+/* The descent above is the intent; this map has to actually produce it.
+   `turn` was on --step-poster, so card 03's name came in a rung ABOVE card
+   02's — which is the card nominated as the page's one series-breaker. The
+   run measured 86 → 67 → 86 → 34: the breaker was not the loudest thing in
+   the series it was breaking, and /pilots/ carried three --step-poster lines
+   (masthead, card 01's goal, card 03's name) instead of the two it means to.
+   --step-head restores the ladder the comment describes. */
 const rungs = {
   anchor: 'display--head',
   aside:  'display--feature',
@@ -82,7 +89,7 @@ const rung = rungs[shape] ?? 'display--head';
 const SCRIM = {
   anchor: { scrim: 'bottom', reach: 1.00, rise: 0.42, ink: 0.94, vig: 0.55 },
   aside:  { scrim: 'bottom-left', reach: 0.42, rise: 0.30, ink: 0.9, vig: 0.35 },
-  turn:   { scrim: 'top', vig: 0.30 },
+  turn:   { scrim: 'bottom-left', reach: 0.46, rise: 0.30, ink: 0.92, vig: 0.30 },
   close:  { scrim: 'none', vig: 0.35 },
 };
 const sk = SCRIM[shape] ?? SCRIM.close;
@@ -96,7 +103,7 @@ const sk = SCRIM[shape] ?? SCRIM.close;
       <div class="aside__fig" data-wipe="left">
         <div class="aside__plate" data-settle="0.5">
         <Figure
-          src={p.image} alt="" ratio="4 / 3" ratioSm="5 / 4"
+          src={p.image} alt="" ratio="auto" fill={true}
           grade={grade} focal={focal} parallax={parallax} loading={loading}
           credit={p.credit} creditPos="bottom-left"
           scrim={sk.scrim} reach={sk.reach} rise={sk.rise} ink={sk.ink} vig={sk.vig}
@@ -154,8 +161,17 @@ const sk = SCRIM[shape] ?? SCRIM.close;
       {shape !== 'close' && (
         <div class="shell say" data-reveal>
           <h2 class:list={['display', 'say__t', 'lines', rung]} id={hid}>{p.title}</h2>
-          <p class="say__tag">{p.tagline}</p>
+          {shape === 'turn' && <span class="turn__lead" aria-hidden="true" data-wipe="left" data-delay="520"></span>}
+          {shape !== 'turn' && <p class="say__tag">{p.tagline}</p>}
         </div>
+      )}
+
+      <!-- 03 only. The name is set at poster size ACROSS the top of the frame
+           and the one supporting line is set at its FOOT, in the corner the
+           ramp protects. Between them is nothing but the photograph, at
+           near-screen height: type at both ends, picture in the middle. -->
+      {shape === 'turn' && (
+        <p class="shell turn__foot bridge" data-reveal="240">{p.tagline}</p>
       )}
 
     </div>
@@ -192,21 +208,34 @@ const sk = SCRIM[shape] ?? SCRIM.close;
       <!-- PROBLEM and APPROACH are two halves of one sentence, so they are
            set as two adjacent columns under one hairline with a rule between
            them, not thrown to opposite edges of the page. -->
-      <dl class="arg__setup" data-seq="150" data-seq-from="80">
-        <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-        <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-      </dl>
-
-      <div class="arg__goal">
-        <p class="label label--brass arg__gl" data-reveal>Goal</p>
-        <!-- WEIGHT, on the one sentence the page exists to make. It runs at
-             --step-poster, a rung ABOVE the pilot's own name, across the
-             measure its rule promises. -->
-        <p class="display display--poster lines arg__g" data-settle="0.62">{p.goal}</p>
-        <!-- and the claim is closed underneath by the quantity it makes:
-             ninety days, drawn against the twelve-month window. -->
-        <Scale />
+      <!-- SETUP AND INSTRUMENT, one block. The two clauses and the axis that
+           measures them used to be three polite bands with 119px of dead
+           field between the first two and the third stranded under the
+           outcome. They are one object now: what the problem is, what we
+           will do, and the window we are accountable inside — read together,
+           in the top half of the sheet. -->
+      <div class="arg__top">
+        <dl class="arg__setup" data-seq="150" data-seq-from="80">
+          <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+          <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+        </dl>
       </div>
+    </div>
+
+    <!-- THE SENTENCE, SET THROUGH THE AXIS.
+         The outcome is a claim about a quantity, so the page stops stating
+         the quantity in words and draws it: a twelve-month axis at the full
+         width of the viewport, and the sentence set across it. The head runs
+         from the page's own left margin; the tail begins at 25% — the closing
+         edge of the ninety-day span and the x of the numeral 3. You do not
+         read that ninety days is a quarter of the window. You see it. -->
+    <div class="measure">
+      <p class="label label--brass measure__gl" data-reveal>Goal</p>
+      <p class="display display--poster measure__g" data-reveal="90">{p.goalHead ?? p.goal}</p>
+      <Scale />
+      {p.goalTail && (
+        <p class="display display--poster measure__g measure__g--hang" data-settle="0.62">{p.goalTail}</p>
+      )}
     </div>
     </div>
   )}
@@ -218,8 +247,16 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     </div>
   )}
 
+  <!-- ── THE SECOND GROUND EVENT ───────────────────────────────────────
+       The page ran dark / cream / dark and then held one navy value for the
+       whole back half — 52% of the scroll in a single tone with four photo
+       bands cut into it. The coda now rests on a PLATE (--ink-700, L* 15):
+       an object set down on the page, with its own edges, carrying the last
+       outcome. tokens.css allows three ground changes and one cream; this is
+       the third, and it is the one the page closes on. -->
   {shape === 'close' && (
-    <div class="shell arg arg--coda">
+    <div class="shell coda">
+    <div class="arg arg--coda on-plate">
       <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
       <!-- The close reverses the series — outcome first, setup after — but it
            still reads left to right and top to bottom. The reversal is carried
@@ -233,6 +270,7 @@ const sk = SCRIM[shape] ?? SCRIM.close;
         <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
         <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
       </dl>
+    </div>
     </div>
   )}
 </article>
@@ -258,7 +296,7 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     grid-template-rows: auto auto 1fr auto;
   }
   .pcard--anchor { --band: clamp(31rem, 86vh, 48rem); }
-  .pcard--turn   { --band: clamp(21rem, 58vh, 33rem); }
+  .pcard--turn   { --band: clamp(28rem, 82vh, 44rem); }
   .pcard--close  { --band: clamp(17rem, 42vh, 25rem); }
 
   /* The band paints NO ink of its own. Figure carries the whole treatment
@@ -327,6 +365,7 @@ const sk = SCRIM[shape] ?? SCRIM.close;
   }
   /* the block's own top padding is the print band's now */
   .print .arg--descent { padding-top: 0; padding-bottom: 0; }
+  .print { padding-bottom: clamp(2.6rem, 5vw, 4.5rem); }
 
   /* ── 01 ANCHOR: the argument descends ─────────────────────────────
      Setup small and left under a hairline; then a held pause, bounded above
@@ -336,7 +375,7 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     padding-top: clamp(1.4rem, 2.6vw, 2.1rem);
-    padding-bottom: clamp(3rem, 5.5vw, 5rem);
+    padding-bottom: 0;
   }
   .arg__rule {
     grid-column: 1 / -1;
@@ -358,31 +397,42 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     margin-left: calc(clamp(1.75rem, 3.4vw, 3.25rem) * -1);
   }
 
-  .arg--descent .arg__goal {
-    /* the pause: bounded by the setup above and by the goal's own rule below */
-    margin-top: var(--pause);
+  /* the setup and its instrument, ruled together: two clauses across the top,
+     the twelve-month axis under them at the same measure. One block. */
+  .arg--descent .arg__top {
     display: grid;
-    /* the rule the label sits on is the width of the claim, not of the page */
-    border-top: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
-    padding-top: clamp(0.7rem, 1.3vw, 1rem);
-    row-gap: 0;
+    row-gap: clamp(1.5rem, 3vw, 2.4rem);
   }
-  /* label to first line = about one line-height of the claim, no more */
-  .arg--descent .arg__gl { margin-bottom: clamp(0.6rem, 1.1vw, 0.85rem); }
-  .arg--descent .arg__g {
-    /* runs the full measure its rule promises — no void to the right of it */
+
+
+  /* ── THE MEASURE: the axis, and the sentence set through it ────────
+     Everything here is composed against the VIEWPORT, not against the text
+     column — that is the exception, and it is spent once, on the one object
+     this site has invented. --shell-x is the page's own left margin, so the
+     head of the sentence still starts where every other line on the page
+     starts; only the axis and the hanging tail are viewport-measured. */
+  .print { --shell-x: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter))); }
+  .measure {
+    position: relative;
+    width: 100%;
+    margin-top: clamp(1.9rem, 4vw, 3.4rem);
+  }
+  .measure__gl { margin: 0 0 clamp(0.5rem, 1vw, 0.8rem); padding-left: var(--shell-x); }
+  .measure__g {
+    margin: 0;
     max-width: none;
     color: var(--fg);
     line-height: 0.98;
     letter-spacing: -0.024em;
-    /* fills the measure its rule promises: line one runs the full column */
     text-wrap: initial;
+    padding-left: var(--shell-x);
     --settle-origin: 0% 100%;
     --settle-shift: 2.4vh;
   }
-  /* and the block is closed from beneath by the scale, so the claim is
-     bounded on all four sides by marks */
-  .arg--descent .arg__goal :global(.mscale) { margin-top: clamp(1.6rem, 3.2vw, 2.75rem); }
+  /* the axis is the space between the two halves of the sentence */
+  .measure :global(.mscale) { margin-block: clamp(0.7rem, 1.6vw, 1.25rem) 0; }
+  /* …and the tail hangs off the closing edge of the ninety-day span */
+  .measure__g--hang { padding-left: 25%; margin-top: clamp(0.15rem, 0.5vw, 0.4rem); }
 
   /* 04's nameplate stands on ground, under an open photograph. */
   .say--ground {
@@ -397,17 +447,24 @@ const sk = SCRIM[shape] ?? SCRIM.close;
   /* ── 04 CLOSE: the coda — the argument read backwards ─────────────
      Outcome first at full cream, the setup after it as one small dim note.
      Everything still reads left-to-right; the reversal is in the weight. */
+  .coda { padding-top: clamp(1rem, 2.2vw, 1.9rem); padding-bottom: clamp(1rem, 2.4vw, 2rem); }
   .arg--coda {
     display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(1.5rem, 0.3fr) minmax(0, 22rem);
-    padding-top: clamp(1.4rem, 2.6vw, 2.1rem);
-    padding-bottom: clamp(1.25rem, 2.4vw, 2rem);
+    /* the outcome used to be capped at 22ch inside a 1.35fr track, which
+       left 660px of empty plate between it and the note at the right edge —
+       an unfilled table, not a pause. The claim now runs its own track. */
+    grid-template-columns: minmax(0, 1fr) minmax(1.25rem, 0.1fr) minmax(0, 30rem);
     align-items: start;
+    /* a plate has edges. It is set down on the page, not bled off it. */
+    background: var(--bg);
+    border: 1px solid var(--rule-soft);
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3.4vw, 3rem) clamp(1.75rem, 3.4vw, 2.75rem);
   }
+  .arg--coda .arg__rule { margin-bottom: clamp(1.1rem, 2.2vw, 1.8rem); }
   .arg--coda .arg__goal {
     grid-column: 1; display: grid; gap: clamp(0.7rem, 1.4vw, 1.05rem);
   }
-  .arg--coda .arg__g { max-width: 22ch; }
+  .arg--coda .arg__g { max-width: 34ch; }
   .arg--coda .arg__setup {
     grid-column: 3; margin: 0;
     display: grid; gap: clamp(0.65rem, 1.3vw, 0.95rem);
@@ -418,38 +475,77 @@ const sk = SCRIM[shape] ?? SCRIM.close;
   }
   .arg--coda .arg__setup dd { max-width: 30ch; }
 
-  /* ── 03 TURN: the fields sit on the photograph ────────────────────── */
+  /* ── 03 TURN: the page's one piece of type set AT the picture ───────
+     Every other name on this page is a caption in a corner — 53px of ink in
+     a 750,000px frame. This one is the exception the page is allowed. The
+     name runs at --step-poster, the same rung as the printed GOAL, straight
+     across the top of a near-screen frame and over the dark left of the
+     photograph rather than politely beside it; the one supporting line is
+     set at the frame's FOOT, in the corner the ramp protects. Between them
+     is the photograph, whole, for two thirds of the height of the screen.
+     Type at both ends, picture in the middle — and nothing else on the page
+     is composed this way. */
   .pcard--turn .band > .say {
     grid-row: 2;
     align-self: start;
     grid-template-columns: minmax(0, 1fr);
-    padding-top: clamp(1.1rem, 2.2vw, 1.9rem);
+    padding-top: clamp(1.4rem, 3vw, 2.6rem);
     padding-bottom: 0;
-    row-gap: clamp(0.7rem, 1.3vw, 1.05rem);
+    row-gap: 0;
     align-items: start;
   }
-  .pcard--turn .say__tag { padding-bottom: 0; max-width: 30ch; padding-left: 0.08em; }
-  /* 03 sets its name at the TOP, so the top band has to be deeper than the
-     bar strip Figure guarantees by default. These are Figure's own placement
-     variables, retuned by the scene that needs them — the ink is still
-     painted once, in one place. Nothing is added at the foot: below the
-     tagline the photograph is simply the photograph. */
-  .pcard--turn .band :global(.fig) {
-    --sc-top-h: clamp(15rem, 36vh, 22rem);
-    --sc-top-flat: clamp(7rem, 17vh, 10.5rem);
+  /* the measure is the frame, not a column: the name is allowed to run into
+     the picture, and where the inked letters stop a hairline carries the line
+     the rest of the way to the edge — the same leader the masthead index
+     uses, so the top of this frame is one mark 1337px wide rather than a
+     577px caption with void beside it. */
+  .pcard--turn .band > .say {
+    grid-template-columns: auto minmax(1.5rem, 1fr);
+    align-items: baseline;
+    column-gap: clamp(1.25rem, 2.6vw, 2.25rem);
   }
-  /* 03's argument, on ground, under the frame: one wide row of three, the
-     only block on the page that reads across rather than down. */
+  .pcard--turn .say__t { max-width: none; }
+  .turn__lead {
+    height: 0;
+    align-self: baseline;
+    border-bottom: 1px solid color-mix(in srgb, var(--cream) 26%, transparent);
+    transform: translateY(-0.26em);
+  }
+  /* the foot line, at the bottom-left of the frame, inside the corner ramp */
+  .turn__foot {
+    grid-row: 4;
+    align-self: end;
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    max-width: 26ch;
+    color: var(--fg-mute);
+    padding-bottom: clamp(0.2rem, 0.8vw, 0.6rem);
+  }
+  /* 03 sets its name at the TOP at poster size, so the top band has to be
+     deeper than the bar strip Figure guarantees by default. These are
+     Figure's own placement variables, retuned by the scene that needs them —
+     the ink is still painted once, in one place. */
+  .pcard--turn .band :global(.fig) {
+    --sc-top-h: clamp(17rem, 42vh, 26rem);
+    --sc-top-flat: clamp(8.5rem, 22vh, 13rem);
+  }
+  /* 03's argument, on ground, under the frame: one wide row of three. It used
+     to be the tightest block on the page — 172px against card 01's 545 — and
+     read as the argument being rushed. It now runs at the aside's measure,
+     each field on its own hairline, so the fastest card still gets a full
+     breath under it. */
   .arg--row {
     margin: 0;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.25fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr);
     column-gap: clamp(1.75rem, 4vw, 4rem);
     border-top: 1px solid var(--rule);
-    padding-top: clamp(0.95rem, 1.9vw, 1.35rem);
-    padding-bottom: clamp(2rem, 4vw, 3.25rem);
-    margin-top: clamp(1.5rem, 3vw, 2.4rem);
+    padding-top: clamp(1.4rem, 2.8vw, 2.1rem);
+    padding-bottom: clamp(2.75rem, 5.5vw, 4.5rem);
+    margin-top: clamp(2rem, 4vw, 3.25rem);
   }
+  .arg--row > div { row-gap: 0.7rem; }
   .arg--row .arg__out { border-top: 0; }
 
   /* ── 02 ASIDE: the plate bleeds, the argument stands beside it ─────── */
@@ -461,7 +557,13 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     padding-right: var(--gutter);
     padding-block: clamp(2rem, 4vw, 3.75rem);
   }
-  .aside__fig { grid-column: 1; }
+  /* The plate used to be a 4/3 box that happened to end five pixels above
+     the bottom of the column beside it — a near-miss reads as a mistake, and
+     the last 88px of it were empty sky under the credit. It now FILLS the
+     row: the picture's bottom edge and the argument's last rule are the same
+     line, exactly, and the crop is taken from the middle of the frame. */
+  .aside__fig { grid-column: 1; position: relative; min-height: 18rem; }
+  .aside__plate { position: absolute; inset: 0; }
   /* WEIGHT lives on this wrapper, parallax on the media inside Figure: two
      elements, so the two transforms never fight. */
   .aside__plate { --settle-scale: 0.945; --settle-shift: 2.6vh; --settle-origin: 0% 50%; }
@@ -471,7 +573,7 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     grid-column: 2;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: clamp(1.5rem, 3vw, 2.4rem);
     max-width: 34rem;
   }
@@ -550,7 +652,7 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     /* Below ~700px the display range compresses and size alone stops reading
        as rank, so the break is carried by space and by band height instead. */
     .pcard--anchor { --band: clamp(25rem, 68vh, 34rem); }
-    .pcard--turn   { --band: clamp(20rem, 54vh, 27rem); }
+    .pcard--turn   { --band: clamp(24rem, 66vh, 32rem); }
     .pcard--close  { --band: clamp(15rem, 40vh, 21rem); }
 
     .say { grid-template-columns: minmax(0, 1fr); align-items: start; row-gap: 0.6rem; }
@@ -559,6 +661,10 @@ const sk = SCRIM[shape] ?? SCRIM.close;
 
     .arg--row { grid-template-columns: minmax(0, 1fr); row-gap: clamp(0.9rem, 3vw, 1.3rem); }
 
+    /* the corner credit wraps to two lines at this measure, so 03's foot line
+       lifts clear of it rather than reading as its first line */
+    .turn__foot { max-width: 24ch; padding-bottom: clamp(2.4rem, 8vw, 3.2rem); }
+
     /* the aside stacks, but keeps its left bleed and its ruled column */
     .aside {
       grid-template-columns: minmax(0, 1fr);
@@ -566,8 +672,19 @@ const sk = SCRIM[shape] ?? SCRIM.close;
       padding-left: 0;
       padding-block: clamp(1.5rem, 5vw, 2.5rem) clamp(2rem, 6vw, 3rem);
     }
-    .aside__fig { grid-column: 1; margin-right: var(--gutter); }
+    .aside__fig {
+      grid-column: 1; margin-right: var(--gutter);
+      position: relative; min-height: 0;
+      aspect-ratio: 5 / 4;
+    }
     .aside__side { grid-column: 1; padding-left: var(--gutter); max-width: none; }
+  }
+
+  @media (max-width: 860px) {
+    /* the axis stays full bleed and the tail stays on the ninety-day edge;
+       only the type comes down a rung so the head sets inside the measure */
+    .measure__g { font-size: clamp(1.4rem, 0.7rem + 3.5vw, 2.4rem); }
+    .measure__g--hang { padding-left: 25%; margin-top: clamp(0.4rem, 1.6vw, 0.8rem); }
   }
 
   @media (max-width: 560px) {

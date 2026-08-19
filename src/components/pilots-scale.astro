@@ -1,15 +1,20 @@
 ---
-/* THE NINETY-DAY SCALE — the one artefact on this page.
+/* THE NINETY-DAY AXIS — the one artefact this site has invented.
 
-   Every pilot on this site runs 3 to 12 months, start to published result.
-   Pilot 01 promises follow-up care completed within NINETY DAYS. That is a
-   claim about a quantity, so it is drawn as one: a twelve-month axis, ticked
-   by month, with the ninety days the pilot is accountable for filled in
-   brass against the rest of the window.
+   Round 6 drew it at 15px: a twelve-month rule with a filled 90-day block,
+   set as a footnote under a headline, in a 649px cream field. It stated the
+   quantity it was built to show and then whispered it.
 
-   It is also the page's one motion idea that is about MEASUREMENT rather
-   than arrival — the brass span is wiped open left to right along the axis,
-   so the scale is read as being taken, not as appearing. */
+   It is now the object the panel is composed around. The axis runs the full
+   width of the viewport — the only thing on 5,245px of this page besides
+   pilot 02's plate that touches both edges — at 63px, and the sentence it
+   measures is set THROUGH it: "Follow-up care completed within" above the
+   axis, and "ninety days." below it, starting at 25% — the exact x of the
+   fill's closing edge and of the numeral 3. The reader does not have to be
+   told that ninety days is a quarter of the window. The word sits on it.
+
+   Motion: the brass span is wiped open left to right along the axis, so the
+   scale reads as being taken rather than as arriving. */
 const { months = 12, span = 3 } = Astro.props;
 const ticks = Array.from({ length: months }, (_, i) => i + 1);
 const marks = [0, 3, 6, 9, 12];
@@ -25,23 +30,24 @@ const marks = [0, 3, 6, 9, 12];
 
   <div class="mscale__nums" aria-hidden="true">
     {marks.map((m) => (
-      <span class="index mscale__n" style={`left:${(m / months) * 100}%`}>{m}</span>
+      <span class:list={['index', 'mscale__n', m === 0 && 'is-first', m === months && 'is-last', m === span && 'is-edge']}
+            style={`left:${(m / months) * 100}%`}>{m}</span>
     ))}
   </div>
 
-  <figcaption class="mscale__cap">
-    <span class="label label--brass" data-reveal="220">Ninety days · follow-up complete</span>
-    <span class="label mscale__cap-r" data-reveal="300">Month twelve · result published</span>
-  </figcaption>
+  <figcaption class="mscale__cap"><span class="label">Months · the result is published at twelve</span></figcaption>
 </figure>
 
 <style>
-  .mscale { margin: 0; display: grid; row-gap: 0.55rem; }
+  /* full bleed: the axis is the page's measure, so it is drawn at the page's
+     full width. Its parent (.measure) is already 100vw, so 100% is the edge. */
+  .mscale { margin: 0; display: block; position: relative; }
 
   .mscale__track {
     position: relative;
-    height: clamp(2.1rem, 3.6vw, 3.1rem);
+    height: clamp(2.6rem, 4.4vw, 4.2rem);
     border-bottom: 1px solid var(--rule);
+    border-top: 1px solid var(--rule-soft);
   }
   .mscale__ticks {
     position: absolute; inset: 0;
@@ -51,41 +57,49 @@ const marks = [0, 3, 6, 9, 12];
   .mscale__tick { position: relative; }
   .mscale__tick::after {
     content: ''; position: absolute; right: 0; bottom: 0;
-    width: 1px; height: 34%; background: var(--mark);
+    width: 1px; height: 30%; background: var(--mark);
   }
-  .mscale__tick.is-major::after { height: 62%; background: var(--fg-meta); }
+  .mscale__tick.is-major::after { height: 58%; background: var(--fg-meta); }
 
   .mscale__fill {
-    position: absolute; left: 0; bottom: -1px; height: 64%;
+    position: absolute; left: 0; bottom: -1px; top: 0;
     border-bottom: 2px solid var(--brass);
     /* drawn, not faded: a bounded rectangle with all four edges stated */
-    background: color-mix(in srgb, var(--brass) 20%, transparent);
+    background: color-mix(in srgb, var(--brass) 22%, transparent);
     border-top: 1px solid color-mix(in srgb, var(--brass) 62%, transparent);
   }
-  /* the span is closed at its own end, so ninety days is a bounded quantity
-     rather than a fade running off into the rest of the window */
+  /* the span is closed at its own end — and that closing edge is the x the
+     second half of the sentence starts on. It is drawn at full brass and
+     carried a little below the axis so the eye follows it down to the word. */
   .mscale__fill::after {
-    content: ''; position: absolute; right: 0; bottom: 0;
-    width: 1px; height: 100%; background: var(--brass);
+    content: ''; position: absolute; right: 0; top: 0;
+    width: 1px; height: calc(100% + 0.9rem); background: var(--brass);
   }
   .mscale__fill::before {
-    content: ''; position: absolute; left: 0; bottom: 0;
-    width: 1px; height: 100%; background: var(--brass);
+    content: ''; position: absolute; left: 0; top: 0;
+    width: 1px; height: 100%; background: color-mix(in srgb, var(--brass) 55%, transparent);
   }
 
-  .mscale__nums { position: relative; height: 1.1em; }
+  .mscale__nums { position: relative; height: 1.15em; margin-top: 0.4rem; }
   .mscale__n { position: absolute; top: 0; transform: translateX(-50%); }
-  .mscale__n:first-child { transform: none; }
-  .mscale__n:last-child { transform: translateX(-100%); }
+  .mscale__n.is-first { transform: none; padding-left: 0.45rem; }
+  .mscale__n.is-last { transform: translateX(-100%); padding-right: 0.45rem; }
+  /* the 3 is not a tick label any more; it is the sentence's left margin */
+  .mscale__n.is-edge { color: var(--brass); padding-left: 0.42rem; transform: none; }
 
+  /* its own row, flush to the page's right margin — clear of the numerals */
+  /* hung out of flow into the open right of the axis's own foot, so the
+     caption costs the composition no height and the sentence's second half
+     stays hard against the rule it is measured on */
   .mscale__cap {
-    display: flex; justify-content: space-between; gap: 1.5rem;
-    padding-top: 0.15rem;
+    position: absolute; top: 100%; right: 0;
+    margin: 0.5rem 0 0;
+    padding-inline: var(--shell-x, 3rem);
+    text-align: right;
   }
-  .mscale__cap-r { text-align: right; }
 
-  @media (max-width: 560px) {
-    .mscale__cap { display: grid; row-gap: 0.5rem; }
-    .mscale__cap-r { text-align: left; }
+  @media (max-width: 860px) {
+    .mscale__track { height: clamp(2rem, 7vw, 2.8rem); }
+    .mscale__cap { position: static; text-align: left; margin-top: 0.6rem; padding-inline: var(--shell-x, 1.25rem); }
   }
 </style>
