@@ -24,7 +24,7 @@ const roles = [
       </p>
 
       <div class="phead__lead">
-        <h1 class="display display--feature phead__h lines">Partner on a pilot.</h1>
+        <h1 class="display display--poster phead__h lines">Partner on a pilot.</h1>
 
         <div class="ask">
           <span class="ask__rule" data-wipe="left" data-delay="420" aria-hidden="true"></span>
@@ -40,26 +40,38 @@ const roles = [
         </div>
       </div>
 
-      <!-- The payload, and it is set as the payload. The four pilots and the
-           people who own them are the only concrete facts on this route, so
-           they are the largest reading matter on it: titles at --step-sub,
-           owners at body weight in full cream. The slogan answers to them.
-           The column head shares the eyebrow's line, so the plate is bounded
-           at the top instead of opening on 200px of empty navy. -->
-      <div class="phead__side">
-        <p class="label pindex__k" data-reveal="160">Four pilots, open for 2026</p>
-        <ul class="pindex" data-wipe="left" data-delay="300">
-          {pilots.map((p, i) => (
-            <li class:list={['pindex__r', { 'is-turn': i === 2 }]}>
-              <a class="pindex__a" href="/pilots/">
-                <span class="index pindex__i">{p.index}</span>
-                <span class="display display--sub pindex__n">{p.title}</span>
-                <span class="pindex__f">{p.partner}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+    </div>
+  </section>
+
+  <!-- ── The payload, and now it is set as the payload ───────────────
+       These four are what a partner is actually being asked to fund. They
+       used to sit in a right-hand column at half the size of the line above
+       them — the most concrete facts on the route, set as a sidebar. They
+       are now the page's body: a band set into the page, four full-width
+       rows, each name at the section-headline rung with the principal who
+       owns it beside it. -->
+  <section class="on-panel pfour" id="pilots">
+    <div class="shell pfour__in">
+      <div class="pfour__head">
+        <p class="eyebrow" data-reveal>Open for 2026</p>
+        <p class="bridge pfour__bridge" data-reveal="120">Four pilots, four partners already at the table.</p>
       </div>
+
+      <ol class="pindex" data-seq="90" data-seq-from="40">
+        {pilots.map((p) => (
+          <li class="pindex__r" data-reveal>
+            <a class="pindex__a" href={`/pilots/#${p.id}`}>
+              <span class="index pindex__i">{p.index}</span>
+              <span class="display display--head pindex__n">{p.title}</span>
+              <span class="pindex__f">{p.partner}</span>
+              <span class="pindex__g">{p.tagline}</span>
+              <svg class="arrow pindex__arrow" viewBox="0 0 22 10" aria-hidden="true">
+                <path d="M16 1l5 4-5 4M21 5H0"/>
+              </svg>
+            </a>
+          </li>
+        ))}
+      </ol>
     </div>
   </section>
 
@@ -90,38 +102,28 @@ const roles = [
 
 <style>
   /* ── The ask ──────────────────────────────────────────────────────
-     Two plates under a two-row header, exactly as /institute/: eyebrow and
-     bridge span the width so the poster line and the pilot ledger open on
-     the same horizon. */
+     ONE column. The route used to run a 7/5 split with the four pilots
+     stacked in the right rail — which is what made the most concrete facts
+     on the page read as marginalia. The ask now takes the whole measure and
+     stops; the pilots get their own band underneath, full width. */
   .phead {
     padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(3.5rem, 2rem + 3.4vw, 5.5rem);
   }
   .phead__in {
     display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: clamp(1.6rem, 2.8vw, 2.6rem);
-    align-items: stretch;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(1.2rem, 2.2vw, 2rem);
+    justify-items: start;
   }
-  .phead__in > .eyebrow { grid-column: 1; grid-row: 1; }
   .phead__bridge {
-    grid-column: 1; grid-row: 2;
     max-width: 34ch;
     margin-bottom: clamp(0.9rem, 2vw, 1.9rem);
   }
-  .phead__lead { grid-column: 1; grid-row: 3; display: flex; flex-direction: column; }
-  /* Starts on the eyebrow's row, not 200px below it. */
-  .phead__side {
-    grid-column: 2; grid-row: 1 / span 3;
-    display: flex; flex-direction: column; justify-content: flex-start;
-    gap: clamp(0.7rem, 1.2vw, 1rem);
-  }
+  .phead__lead { display: flex; flex-direction: column; width: 100%; }
 
-  /* --step-feature: the series-breaker, used once on the page, and it is the
-     page's own title. At --step-head it was outranked by the cream section's
-     headline lower down — a page whose H1 is smaller than a subhead. The
-     breaker moved up here and the cream head stepped down to --step-head.
-     Still well under the poster rung, so the pilot ledger keeps its weight. */
+  /* --step-poster: the poster line of an inner page, matching /institute/.
+     It can carry the rung now because the page has a body under it — four
+     names at --step-head — instead of a sidebar it had to outshout. */
   .phead__h {
     line-height: 0.96; letter-spacing: -0.024em;
     max-width: 13ch;
@@ -135,12 +137,21 @@ const roles = [
   /* ONE focal point. The page prints the ask once, at --step-feature; the
      address is the ACTION under it, at the bridge rung, so 86px answers to
      27px instead of to a second 50px line on the same row. */
+  /* The rule runs the full measure and the two halves of the ask hang off
+     its ends — address at the left, instruction at the right. Without it the
+     right two-fifths of the first screen was open navy running out into the
+     viewport edge, which reads as absence rather than as a pause. A held
+     pause has to be bounded on both sides; this is the second side. */
   .ask {
-    margin-top: auto;
     padding-top: clamp(2.4rem, 1.4rem + 3.2vw, 4.4rem);
-    display: grid; justify-items: start;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    column-gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: baseline;
   }
   .ask__rule {
+    grid-column: 1 / -1;
     display: block; height: 1px; align-self: start;
     background: color-mix(in srgb, var(--brass) 50%, transparent);
     width: 100%; transform-origin: left;
@@ -164,48 +175,53 @@ const roles = [
   .ask__mail:hover .ask__mail-t { color: var(--brass); }
   .ask__mail:hover .ask__arrow { transform: translateX(9px); }
   .ask__sub {
-    margin-top: clamp(0.7rem, 1.3vw, 1.05rem);
-    color: var(--fg-meta); font-size: var(--step-body); max-width: 44ch;
+    grid-column: 2; justify-self: end; text-align: right;
+    color: var(--fg-meta); font-size: var(--step-body); max-width: 34ch;
   }
 
-  /* ── The four doors, by name ──
-     Hairline-ruled rows on the right plate — the same object as the spec
-     card on /institute/, so the two inner heroes share one construction. */
+  /* ── The four, at full width ─────────────────────────────────────
+     A band set into the page, and the only place on this route where the
+     ground changes before the cream. Four rows, one rule each, the name at
+     the section-headline rung: 53px, not 19px in a rail. */
+  .pfour {
+    border-block: 1px solid var(--rule);
+    padding-block: clamp(3rem, 1.6rem + 3.6vw, 5.5rem) clamp(3.5rem, 1.8rem + 4vw, 6rem);
+  }
+  .pfour__in { display: grid; gap: clamp(2rem, 3.4vw, 3.2rem); }
+  .pfour__head { display: grid; gap: clamp(0.8rem, 1.6vw, 1.3rem); }
+  .pfour__bridge { max-width: 32ch; }
+
   .pindex { list-style: none; margin: 0; padding: 0; }
   .pindex__r { border-top: 1px solid var(--rule); }
   .pindex__r:last-child { border-bottom: 1px solid var(--rule); }
-  /* The caesura. Four rows at one pitch is a tick; a breath at the halfway
-     mark makes it a list of two pairs. The rule there carries brass. */
-  .pindex__r.is-turn {
-    border-top-color: color-mix(in srgb, var(--brass) 42%, transparent);
-    margin-top: clamp(0.9rem, 2.2vw, 1.8rem);
-  }
+  .pindex__r[data-reveal] { --reveal-y: 8px; transition-duration: 440ms, 560ms; }
+
+  /* Name left, principal and one line right, arrow on the far edge. The row
+     is the object; everything in it is baseline-aligned to the name. */
   .pindex__a {
     display: grid;
-    grid-template-columns: max-content minmax(0, 1fr);
-    column-gap: clamp(0.8rem, 1.6vw, 1.2rem);
-    row-gap: 0.2rem;
+    grid-template-columns: max-content minmax(0, 6fr) minmax(0, 3fr) minmax(0, 4fr) max-content;
+    column-gap: clamp(1rem, 2.6vw, 2.6rem);
     align-items: baseline;
-    padding-block: clamp(0.75rem, 1.5vw, 1.25rem);
+    padding-block: clamp(1.1rem, 2.2vw, 2rem);
   }
-  .pindex__i { align-self: baseline; }
-  /* A pilot's name is set in the serif everywhere it appears on this site —
-     the home list, all four cards on /pilots/. It was the one place it was a
-     sans line, which made the same four objects read as a different class of
-     thing on this route. .display--sub, like everything else. */
+  .pindex__i { padding-top: 0.35em; }
   .pindex__n {
-    color: var(--fg);
+    color: var(--fg); line-height: 1.02;
     transition: color 340ms var(--ease-out);
   }
   /* Inslee and Cardona are the most interesting words on the route. They no
      longer sit at 11px and 54%. */
   .pindex__f {
-    grid-column: 2;
-    font-size: var(--step-body); line-height: 1.3;
-    color: var(--fg);
+    font-size: var(--step-lede); line-height: 1.3; color: var(--fg);
   }
+  .pindex__g {
+    font-size: var(--step-body); line-height: 1.4; color: var(--fg-mute);
+    max-width: 30ch;
+  }
+  .pindex__arrow { width: clamp(22px, 2vw, 28px); color: var(--brass); align-self: center; opacity: 0.55; transition: transform 460ms var(--ease-out), opacity 340ms var(--ease-out); }
   .pindex__a:hover .pindex__n { color: var(--brass); }
-  .pindex__k { color: var(--fg-meta); }
+  .pindex__a:hover .pindex__arrow { transform: translateX(9px); opacity: 1; }
 
   /* ── Three ways in — the cream field ──
      The numeral indexes; it does not outrank. It is a tracked cap sitting on
@@ -243,14 +259,32 @@ const roles = [
 
   @media (max-width: 860px) {
     .phead { padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(2.5rem, 9vw, 3.5rem); }
-    .phead__in { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 6vw, 2.2rem); }
-    .phead__lead, .phead__side { grid-column: 1; }
+    .phead__in { row-gap: clamp(1.5rem, 6vw, 2.2rem); }
     .phead__h { max-width: 14ch; }
-    .phead__in > .eyebrow, .phead__bridge, .phead__lead, .phead__side {
-      grid-column: 1; grid-row: auto;
-    }
     .phead__bridge { max-width: 30ch; margin-bottom: clamp(0.3rem, 2vw, 0.8rem); }
-    .ask { padding-top: clamp(2rem, 8vw, 2.8rem); }
+    .ask {
+      padding-top: clamp(2rem, 8vw, 2.8rem);
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: clamp(0.7rem, 3vw, 1.05rem);
+    }
+    .ask__sub { grid-column: 1; justify-self: start; text-align: left; max-width: 34ch; }
+
+    /* Four columns collapse to two: the numeral keeps its gutter, everything
+       else stacks under the name. The arrow goes — a row that fills the
+       column IS the affordance at this width. */
+    .pfour { padding-block: clamp(2.75rem, 10vw, 4rem) clamp(3.25rem, 12vw, 4.5rem); }
+    .pindex__a {
+      grid-template-columns: max-content minmax(0, 1fr);
+      column-gap: clamp(0.8rem, 4vw, 1.2rem);
+      row-gap: 0.3rem;
+      align-items: start;
+      padding-block: clamp(1rem, 4.4vw, 1.5rem);
+    }
+    .pindex__i { grid-row: 1; padding-top: 0.3em; }
+    .pindex__n { grid-column: 2; }
+    .pindex__f, .pindex__g { grid-column: 2; }
+    .pindex__g { max-width: 34ch; }
+    .pindex__arrow { display: none; }
     /* Below ~700px the feature rung stops reading as a break; space carries it. */
     .proles__h { max-width: 12ch; }
   }

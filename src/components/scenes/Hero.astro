@@ -39,7 +39,7 @@ import { pilots } from '../../data/site.js';
     <div class="hero__index-head">
       <span class="eyebrow hero__index-label">Four pilots · 2026</span>
       <a class="cue tap hero__scroll" href="#why">
-        <span class="label">Scroll</span><i class="cue__line" aria-hidden="true"></i>
+        <span class="label label--lit">Scroll</span><i class="cue__line" aria-hidden="true"></i>
       </a>
     </div>
 
@@ -137,7 +137,7 @@ import { pilots } from '../../data/site.js';
        i.e. 2.9x then 2.8x. The size lives in base.css so this is not a third
        hand-rolled sans display rung. */
     max-width: 26ch;
-    margin-bottom: clamp(0.7rem, 1.5vh, 1.15rem);
+    margin-bottom: clamp(0.55rem, 1.2vh, 0.95rem);
     opacity: 0;
     animation: heroIn 720ms var(--ease-out) 220ms forwards;
   }
@@ -146,10 +146,18 @@ import { pilots } from '../../data/site.js';
      identical at every viewport width instead of drifting with the clamp. */
   .hero__poster {
     display: block;
-    font-size: clamp(2.5rem, 0.35rem + 6.1vw, 5.9rem);
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    max-width: min(10.4em, 100%);
+    /* --step-banner. The token's whole job is to be spent ONCE per site, on
+       the hero, and it was being spent twice on inner pages and never here:
+       the front door ran a local 5.9rem clamp and was out-shouted by 35% by
+       two secondary pages. It is the banner now, at 126.2px on a 1440 frame.
+       The measure stays in em so the three line breaks are identical at
+       every width — 10.6em is the widest of the three lines ("American
+       families today.") plus its right bearing, which lands the claim
+       corner-to-corner across the frame rather than in a left column. */
+    font-size: var(--step-banner);
+    line-height: 0.93;
+    letter-spacing: -0.028em;
+    max-width: min(10.6em, 100%);
     text-wrap: initial;
     hyphens: none;
 

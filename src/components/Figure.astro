@@ -5,10 +5,20 @@
                the photograph has not landed yet, and it is seeded off `src`
                so a grid of four fallbacks reads as four different frames
                rather than one repeated swatch.
-     2. GRADE  navy multiply + desaturation over the photograph, strength
-               `grade` (0 untouched → 1 deep navy duotone).
-     3. VIGNETTE  always on, scaled by `grade`, so cream type set over any
-               figure has dark corners to sit against.
+     2. GRADE  the house treatment, and it is TWO separate jobs that used to
+               be one number and must never be folded back together:
+                 UNIFICATION (`grade`) desaturate, pull hue toward navy, one
+                   thin veil. Makes seven sources read as one commission.
+                   It costs the picture a little light, evenly.
+                 PROTECTION (`scrim`, `reach`, `rise`, `ink`) ink placed
+                   where type actually sits — the bar strip, a bottom-left
+                   corner — and nowhere else.
+               Plus a midtone LIFT, because the old treatment could only
+               subtract light: four stacked darkenings brought the lower half
+               of every full-bleed frame within a few L* of blank background.
+               Constants live in tokens.css under "The house photograph grade".
+     3. VIGNETTE  scaled by `grade` and by `vig`. `vig={0}` lets a picture
+               keep its own corners.
      4. GRAIN  one fine monochrome tile over everything, so photograph and
                plate share the same surface.
      5. ZOOM   `zoom={1.8}` crops into the frame around `focal`, so one
@@ -39,7 +49,47 @@ const {
      carry two crops, the way ratioSm already lets it carry two shapes. */
   zoomSm,
   focalSm,
-  scrim = 'none',      // 'bottom' → extra ink ramp so cream type can sit on it
+  /* ── the scrim is PLACED, not spread ──────────────────────────────
+     The old treatment was one full-width top+bottom multiply, painted at
+     the same strength across every frame. It cost the picture its whole
+     lower half in order to protect type that only ever sits in the lower
+     LEFT, and it did that even on figures carrying no type at all. The
+     scrim now names WHERE the ink goes, and `reach` says how far across
+     the frame it travels before the photograph is handed back.
+
+       'none'         no ink at all. For a photograph nothing is written on.
+       'auto'         (default) DELIBERATELY LIGHT: the bar band, plus a
+                      short deep foot that carries the corner credit. It is
+                      not enough to set a paragraph on, and that is the
+                      point — a scene that puts type on a photograph has to
+                      say where, or the system will protect nothing and the
+                      meter will say so. The old default protected everything
+                      everywhere, which is how the pictures died.
+       'bottom'       THE DIRECTIONAL RAMP. Deep at the lower left, released
+                      by ~72% across, so the right of the frame keeps its
+                      picture. Use it when the scene's type is flush-left —
+                      which on this site it almost always is.
+       'bottom-left'  a corner. Ink dies by ~56% across.
+       'top'          ink only under the bar / a top label rail.
+       'full'         full-width bottom ink, heavy. Ask for it deliberately.
+
+     The ramp protects the bottom ~55% and the bar strip. Type set in the
+     MIDDLE of a frame is a composition decision, and the scrim will not
+     black out a photograph to rescue it — move the type or move the crop.
+     ---------------------------------------------------------------- */
+  scrim = 'auto',
+  ink,                 // 0–1 multiplier on the placed scrim's weight
+  reach,               // 0–1 override: how far ACROSS the bottom ramp runs
+  rise,                // 0–1 override: how far UP the frame the ramp reaches
+  /* Which wall the ramp is heavy against. The site sets type flush-left, so
+     'left' is the house default; 'right' is for the rare scene that does not. */
+  align = 'left',
+  vig,                 // 0–1 vignette strength. 0 = open corners.
+  /* Midtone lift. brightness() is multiplicative, so true black is held at
+     black while everything above it opens up; the contrast term pushes the
+     shadows back down. This is the half of the treatment that was missing —
+     the old filter only ever subtracted light. */
+  lift = 1,
   fill,                // absolutely fill the parent; defaults on for ratio="auto"
   enter = 'fade',      // 'fade' (default) | 'wipe'
   /* PHOTO-FACTS.md: every full-bleed scene carries a small, accurate location
@@ -58,6 +108,30 @@ const {
    absolute}` silently never matches. Full-bleed figures therefore have to
    position themselves. ratio="auto" is the site's signal for "fill me". */
 const isFill = fill === undefined ? ratio === 'auto' : !!fill;
+
+/* topA  ink under the bar / top label rail (always full width)
+   botA  ink at the very bottom edge, where display type lands
+   botH  how far up the frame the bottom ramp reaches
+   reach how far ACROSS the frame the bottom ramp runs before it releases */
+const SCRIMS = {
+  none:          { topA: 0.00, botA: 0.00, botH: '0%',  reach: 1.00 },
+  auto:          { topA: 0.70, botA: 0.84, botH: '46%', reach: 1.00 },
+  bottom:        { topA: 0.68, botA: 0.91, botH: '56%', reach: 0.72 },
+  'bottom-left': { topA: 0.60, botA: 0.95, botH: '58%', reach: 0.56 },
+  'bottom-right':{ topA: 0.60, botA: 0.95, botH: '58%', reach: 0.56 },
+  top:           { topA: 0.90, botA: 0.00, botH: '0%',  reach: 1.00 },
+  full:          { topA: 0.72, botA: 0.93, botH: '62%', reach: 1.00 },
+};
+const sc = SCRIMS[scrim] || SCRIMS.auto;
+const inkK = ink === undefined ? 1 : Number(ink);
+/* A fixed bar crosses every full-bleed photograph on this site, so the top
+   band has a FLOOR on fill figures. It is a system guarantee, not a per-scene
+   decision: a scene may open its picture up, it may not un-protect the bar. */
+const topA = (isFill ? Math.max(0.90, sc.topA * inkK) : sc.topA * inkK).toFixed(3);
+const botA = (sc.botA * inkK).toFixed(3);
+const reachPct = `${Math.round((reach === undefined ? sc.reach : Number(reach)) * 100)}%`;
+const risePct = rise === undefined ? sc.botH : `${Math.round(Number(rise) * 100)}%`;
+const hasRamp = sc.botA > 0;
 
 /* Photography is dropped into public/media/ as it is sourced, and not every
    slot gets its own frame. `src` may therefore be a list of candidates: the
@@ -115,6 +189,12 @@ const style = [
   ...(zoomSm ? [`--zoom-sm:${zoomSm}`] : []),
   ...(focalSm ? [`--focal-sm:${focalSm}`] : []),
   `--grade:${grade}`,
+  `--lift:${lift}`,
+  `--vig:${vig === undefined ? 1 : vig}`,
+  `--sc-top-a:${topA}`,
+  `--sc-bot-a:${botA}`,
+  `--sc-bot-h:${risePct}`,
+  `--sc-reach:${reachPct}`,
   /* written as *-base, not as --focal / --zoom directly: an inline custom
      property beats every stylesheet rule, so the narrow-viewport override
      below could never win if these were set under their final names. */
@@ -130,7 +210,7 @@ const style = [
 ].join(';');
 ---
 <figure
-  class:list={['fig', { 'fig--fill': isFill, 'fig--ramp': scrim === 'bottom', 'fig--wipe': enter === 'wipe' }, klass]}
+  class:list={['fig', { 'fig--fill': isFill, 'fig--ramp': hasRamp && isFill, 'fig--flip': align === 'right', 'fig--wipe': enter === 'wipe' }, klass]}
   style={style}
   data-state={file ? 'loading' : 'empty'}
   data-reveal={enter === 'wipe' ? '' : undefined}
@@ -157,6 +237,7 @@ const style = [
   </div>
 
   <div class="fig__tint" aria-hidden="true"></div>
+  <div class="fig__veil" aria-hidden="true"></div>
   <div class="fig__scrim" aria-hidden="true"></div>
   <div class="fig__vig" aria-hidden="true"></div>
   <div class="fig__grain" aria-hidden="true"></div>
@@ -259,10 +340,17 @@ const style = [
     height: 100%;
     object-fit: cover;
     object-position: var(--focal);
+    /* The old filter was three subtractions: desaturate, add contrast, then
+       take 13% of the light away — on top of a multiply scrim and a vignette
+       with a 0.30 floor. Four darkenings stacked is how a dusk harbour became
+       a dark rectangle. Now: `grade` desaturates only, and the tonal move is a
+       LIFT. brightness() is multiplicative, so 0 maps to 0 — the blacks hold —
+       while the midtones open; the contrast term then pushes the shadows back
+       down so the lift never reads as a grey haze. */
     filter:
-      saturate(calc(1 - var(--grade) * 0.5))
-      contrast(calc(1 + var(--grade) * 0.09))
-      brightness(calc(1 - var(--grade) * 0.13));
+      saturate(calc(1 - var(--grade) * var(--fig-sat)))
+      brightness(calc(1 + var(--lift) * var(--fig-lift-b)))
+      contrast(calc(1 + var(--lift) * var(--fig-lift-c) + var(--grade) * 0.05));
     opacity: 0;
     /* the crop is taken around the same point the frame is composed on */
     transform-origin: var(--focal);
@@ -289,7 +377,28 @@ const style = [
     opacity: 0;
     transition: opacity 900ms var(--ease-out);
   }
-  .fig[data-state='ready'] .fig__tint { opacity: calc(var(--grade) * 0.42); }
+  /* 0.42 replaced the hue outright: a sunset went navy, a blue hour went
+     navy, and the pictures stopped being about the light they were taken in.
+     `color` blending keeps luminance either way, so this number is purely
+     "how much of the photograph's own colour survives". */
+  .fig[data-state='ready'] .fig__tint { opacity: calc(var(--grade) * var(--fig-tint)); }
+
+  /* THE VEIL — what `grade` now costs the photograph tonally, and all it
+     costs it. One thin sheet of the page's own navy across the whole frame,
+     composited normally, so every photograph sits in the same air without
+     any of them being driven into the ground. This is the part that makes
+     seven frames from seven sources read as one commission; the scrim below
+     is a separate job and only happens where type is. */
+  .fig__veil {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: rgb(7 19 34);
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+  }
+  .fig[data-state='ready'] .fig__veil { opacity: calc(var(--grade) * var(--fig-veil)); }
 
   .fig__scrim {
     position: absolute;
@@ -298,13 +407,69 @@ const style = [
     pointer-events: none;
     opacity: 0;
     transition: opacity 900ms var(--ease-out);
-    background: linear-gradient(180deg,
-      rgba(5, 13, 22, calc(var(--grade) * 0.58)) 0%,
-      rgba(7, 22, 39, calc(var(--grade) * 0.20)) 44%,
-      rgba(5, 13, 22, calc(var(--grade) * 0.80)) 100%);
-    mix-blend-mode: multiply;
   }
   .fig[data-state='ready'] .fig__scrim { opacity: 1; }
+
+  /* TOP — the chrome band. Full width, because the fixed bar is full width,
+     and SHORT, because the bar is short. The old scrim spread this same ink
+     down 44% of the frame, which is why it dulled every sky on the site and
+     still left the nav at 2:1 over a bright one. */
+  .fig__scrim::before {
+    content: '';
+    position: absolute; left: 0; right: 0; top: 0;
+    height: var(--sc-top-h, 26%);
+    /* Flat for exactly the height of the bar, then released over 2.75rem.
+       A tapered band puts its weakest ink where the bar's own 11px labels
+       are, which is why the bar measured 2:1 over a bright sky while the
+       sky underneath it was being dulled for 400px. */
+    background: linear-gradient(180deg,
+      rgba(3, 9, 16, var(--sc-top-a)) 0%,
+      rgba(3, 9, 16, var(--sc-top-a)) var(--sc-top-flat, 0px),
+      rgba(3, 9, 16, calc(var(--sc-top-a) * 0.30)) calc(var(--sc-top-flat, 0px) + 42%),
+      transparent 100%);
+  }
+  /* A fill figure's top band is pinned to the BAR, not to the frame: the same
+     26% is 234px on a hero and 60px on a strip. */
+  .fig--fill { --sc-top-h: calc(var(--nav-h) + 4.5rem); --sc-top-flat: calc(var(--nav-h) - 0.25rem); }
+
+  /* BOTTOM — the type ramp, and the only part of the treatment that is
+     allowed to be heavy. It is masked horizontally to --sc-reach, so it
+     covers the column the type is set in and hands the rest of the frame
+     back to the photograph. Normal compositing, not multiply: multiply
+     drives shadows to black and takes the picture's detail with them. */
+  .fig__scrim::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: var(--sc-bot-h);
+    /* A PLATEAU, not a wedge. A wedge peaks at the frame's bottom edge —
+       which is where the scene's padding is, not where its type is — and by
+       the time it reaches the words it has spent most of its ink. Measured on
+       the pilot cards: solid black at the foot of the frame, and the label
+       strip 34% above it sitting on L* 36 and failing at 3:1. So the ramp
+       now holds full weight across the whole band the type occupies and
+       releases at the top of it. The very bottom does not need to be the
+       darkest part — .fig--ramp::after already carries the seam. */
+    background: linear-gradient(0deg,
+      rgba(3, 9, 16, calc(var(--sc-bot-a) * 0.94)) 0%,
+      rgba(3, 9, 16, var(--sc-bot-a)) 16%,
+      rgba(3, 9, 16, calc(var(--sc-bot-a) * 0.82)) 44%,
+      rgba(3, 9, 16, calc(var(--sc-bot-a) * 0.38)) 70%,
+      transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, #000 0%,
+      #000 calc(var(--sc-reach) * 0.42), transparent var(--sc-reach));
+    mask-image: linear-gradient(to right, #000 0%,
+      #000 calc(var(--sc-reach) * 0.42), transparent var(--sc-reach));
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  }
+  /* Mirrored for a scene that sets its type against the right wall
+     (align="right"). */
+  .fig--flip .fig__scrim::after {
+    -webkit-mask-image: linear-gradient(to left, #000 0%,
+      #000 calc(var(--sc-reach) * 0.42), transparent var(--sc-reach));
+    mask-image: linear-gradient(to left, #000 0%,
+      #000 calc(var(--sc-reach) * 0.42), transparent var(--sc-reach));
+  }
 
   /* 4 ── vignette + grain, over photograph and plate alike ─────────── */
   .fig__vig {
@@ -312,9 +477,13 @@ const style = [
     inset: 0;
     z-index: 4;
     pointer-events: none;
-    background: radial-gradient(112% 88% at 50% 40%,
-      transparent 30%,
-      rgba(2, 6, 11, calc(0.30 + var(--grade) * 0.44)) 100%);
+    /* The floor used to be 0.30: every photograph on the site lost its
+       corners whether or not anything was written in them. It is now a
+       scaled term with `vig={0}` available, so a picture can keep its
+       own edges. */
+    background: radial-gradient(118% 92% at 50% 42%,
+      transparent 36%,
+      rgba(2, 6, 11, calc(var(--vig) * (var(--fig-vig-a) + var(--grade) * var(--fig-vig-b)))) 100%);
   }
   .fig__grain {
     position: absolute;
@@ -328,14 +497,19 @@ const style = [
   }
 
   /* Optional bottom ink ramp for scenes that set display type over the media */
+  /* THE SEAM, not a fade-out. A full-bleed photograph meets the page ground
+     at its bottom edge and wants a few pixels of blend so the join is not a
+     cut. It used to run 68% up the frame at the page's own ink — which is
+     to say the photograph dissolved into the background for two thirds of
+     its height, full width, whether or not a word was set there. */
   .fig--ramp::after {
     content: '';
-    position: absolute; inset: 0; z-index: 6; pointer-events: none;
+    position: absolute; left: 0; right: 0; bottom: 0; height: 15%;
+    z-index: 6; pointer-events: none;
     background: linear-gradient(to top,
       var(--ink-900) 0%,
-      color-mix(in srgb, var(--ink-900) 74%, transparent) 16%,
-      color-mix(in srgb, var(--ink-900) 30%, transparent) 42%,
-      transparent 68%);
+      color-mix(in srgb, var(--ink-900) 52%, transparent) 34%,
+      transparent 100%);
   }
 
   /* 5 ── the wipe entrance ─────────────────────────────────────────
@@ -415,7 +589,7 @@ const style = [
 
   @media (prefers-reduced-motion: reduce) {
     .fig__media img { transition-duration: 1ms; transform: scale(calc(1.02 * var(--zoom, 1))); }
-    .fig__scrim, .fig__tint { transition-duration: 1ms; }
+    .fig__scrim, .fig__tint, .fig__veil { transition-duration: 1ms; }
     .fig--wipe { -webkit-mask-image: none; mask-image: none; transition: none; }
     .fig--wipe .fig__plate { transform: none; transition: none; }
     .fig--wipe[data-state='ready'] .fig__media img { transform: scale(var(--zoom, 1)); transition: none; }

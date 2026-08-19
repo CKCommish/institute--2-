@@ -1,120 +1,163 @@
 ---
 import { method } from '../../data/site.js';
 ---
-<!-- The answer to the cream scene's asterisk, and the page's tightest beat:
-     a section thesis held on the left, the mechanism as three ranked rows on
-     the right.
+<!-- THE ARMATURE BREAK.
+     Every other scene on this page — and on this site — opens the same way:
+     an 11.7px label flush left at x=51, a hairline ruled the full width of
+     the frame under it, a right-aligned counter on the same baseline, then
+     the content hung below. A left-edge histogram of the homepage put 28
+     text elements at exactly x=51. Method and Pilots are CONSECUTIVE and
+     used to open with that identical three-element overture, one after the
+     other.
 
-     Every size in it is now a rung: 53 head / 34 step title / 27 stat /
-     16 body / 11.7 label. Nothing here is a number this component invented.
+     This scene no longer has a left edge. It is set on the frame's centre
+     line: eyebrow, thesis, then the mechanism as three equal columns
+     divided by vertical hairlines, and the one operating fact centred at
+     the foot. Nothing in it begins at x=51. The rules run down, not across.
 
-     Its motion is mixed on purpose. The words arrive (reveal / lines); the
-     three-row register is TERRITORY and is uncovered left to right in one
-     wipe, so this scene does not land the same way as the four that follow
-     it. -->
+     It also carries the page's single --step-feature — the documented
+     series-breaker, spent once, on the sentence the whole institute is:
+     three steps, three to twelve months, published whatever the result.
+
+     The ground moved with it. This band used to be .on-panel; the homepage's
+     only other tonal event was the cream at 16% of the scroll, after which
+     1,700px of the back half never changed value again. The panel is now
+     spent on the board wall at 76% instead, where the pacing needed it, and
+     this scene earns its distinction from composition rather than value.
+
+     MOTION unchanged: the words arrive, the three-column register is
+     TERRITORY and is uncovered in one wipe. -->
 <section class="method" id="method" aria-labelledby="method-h">
   <div class="shell method__in">
-    <div class="method__head">
-      <p class="eyebrow method__eyebrow" data-reveal>The method</p>
-      <p class="label tnum method__meta" data-reveal="70">01 — 03</p>
+    <p class="eyebrow method__eyebrow" data-reveal>The method</p>
+
+    <h2 class="display display--feature method__h lines" id="method-h">How we work.</h2>
+
+    <!-- TERRITORY, not arrival. Three columns on a vertical register are a
+         table, not three sentences, so the block is uncovered in one move
+         instead of fading up column by column on the same vector as
+         everything else on the page. -->
+    <div class="method__stepsWrap" data-wipe="left" data-delay="120">
+      <ol class="method__steps">
+        {method.map((m) => (
+          <li class="mstep">
+            <span class="index mstep__i">{m.index}</span>
+            <h3 class="mstep__t">{m.title}</h3>
+            <p class="mstep__p">{m.text}</p>
+          </li>
+        ))}
+      </ol>
     </div>
 
-    <span class="method__rule" aria-hidden="true" data-wipe="left" data-delay="60"></span>
-
-    <div class="method__grid">
-      <div class="method__thesis">
-        <h2 class="display display--head method__h lines" id="method-h">How we work.</h2>
-
-        <p class="method__stat" data-reveal="320">
-          <span class="method__stat-n tnum">3&ndash;12</span>
-          <span class="label method__stat-k">Months<br />per pilot</span>
-        </p>
-      </div>
-
-      <!-- TERRITORY, not arrival. Three rows on a hairline register are a
-           table, not three sentences, so the block is uncovered left to
-           right in one move instead of fading up row by row on the same
-           vector as everything else on the page. -->
-      <div class="method__stepsWrap" data-wipe="left" data-delay="120">
-        <ol class="method__steps">
-          {method.map((m) => (
-            <li class="mstep">
-              <span class="index mstep__i">{m.index}</span>
-              <h3 class="mstep__t">{m.title}</h3>
-              <p class="mstep__p">{m.text}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
+    <p class="method__stat" data-reveal="320">
+      <span class="method__stat-n tnum">3&ndash;12</span>
+      <span class="label method__stat-k">months per pilot</span>
+    </p>
   </div>
 </section>
 
 <style>
   .method {
     position: relative;
-    background: var(--ink-800);
-    padding-block: clamp(3.75rem, 2rem + 5.4vw, 7rem);
-    border-top: 1px solid var(--rule-soft);
-    border-bottom: 1px solid var(--rule-soft);
+    padding-block: clamp(4rem, 2rem + 6vw, 8rem);
   }
-  .method__in { display: grid; }
+  .method__in {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+  }
 
-  .method__head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1.5rem;
-    margin-bottom: clamp(0.7rem, 1.6vw, 1.1rem);
-  }
-  /* Local durations: the house --dur-2/--dur-3 pair runs 1.15s, so a scene
-     with six staggered objects would still be arriving two seconds after it
-     is on screen. Everything here lands inside one. */
+  .method__eyebrow { margin-bottom: clamp(1.1rem, 2.4vw, 1.9rem); }
   .method__eyebrow[data-reveal],
-  .method__meta[data-reveal],
   .method__stat[data-reveal] { transition-duration: 520ms, 640ms; }
 
-  .method__meta { text-align: right; }
-
-  /* The rule is territory too — the house wipe, not a local scaleX. */
-  .method__rule {
-    display: block; height: 1px; width: 100%; background: var(--rule);
-    transition-duration: 980ms;
+  /* The page's ONE --step-feature. Two lines at every width — the measure is
+     em-fixed so the break never drifts. */
+  .method__h {
+    margin: 0;
+    max-width: 14ch;
+    text-wrap: balance;
   }
 
-  /* ── The split ────────────────────────────────────────────────────
-     Thesis left, sequence right. Not three equal columns. */
-  .method__grid {
+  /* ── The three stops ──────────────────────────────────────────────
+     Three equal columns divided by vertical hairlines. The division is the
+     only mark in the scene, and it runs down. */
+  .method__stepsWrap {
+    width: 100%;
+    min-width: 0;
+    transition-duration: 1100ms;
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  /* The three columns share ROWS, not just a width: numeral, title and line
+     each sit on one baseline across the frame, so a title that takes two
+     lines does not drop its own caption below its neighbours'. The rows are
+     the register; the list items dissolve into it. */
+  .method__steps {
+    list-style: none; margin: 0; padding: 0;
     display: grid;
-    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.3fr);
-    column-gap: clamp(2rem, 6vw, 6.5rem);
-    padding-top: clamp(2rem, 4.4vw, 3.6rem);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto auto;
+    row-gap: 0.7rem;
+  }
+  .mstep__i { line-height: 1; }
+
+  @media (min-width: 861px) {
+    .mstep { display: contents; }
+    .mstep > * {
+      justify-self: center;
+      padding-inline: clamp(1rem, 3vw, 3rem);
+    }
+    .mstep:nth-child(1) > * { grid-column: 1; }
+    .mstep:nth-child(2) > * { grid-column: 2; }
+    .mstep:nth-child(3) > * { grid-column: 3; }
+    .mstep__i  { grid-row: 1; }
+    .mstep__t  { grid-row: 2; }
+    .mstep__p  { grid-row: 3; }
+
+    /* The division runs DOWN — a hairline on the inside edge of columns 2
+       and 3, spanning all three rows. */
+    .method__steps::before,
+    .method__steps::after {
+      content: ''; grid-row: 1 / -1; width: 1px; justify-self: start;
+      background: var(--rule-soft);
+      margin-block: 0.1rem;
+    }
+    .method__steps::before { grid-column: 2; }
+    .method__steps::after  { grid-column: 3; }
+  }
+  /* The same three steps appear as a ledger on /institute/. One object, one
+     treatment: shared .index numeral, serif title, one rank quieter here so
+     it stays under the thesis. */
+  .mstep__t {
+    font-family: var(--serif);
+    font-size: var(--step-sub);
+    font-weight: 320;
+    line-height: 1.1;
+    letter-spacing: -0.014em;
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+  .mstep__p {
+    margin: 0;
+    align-self: start;
+    font-size: var(--step-body);
+    line-height: 1.5;
+    color: var(--fg-mute);
+    max-width: 26ch;
+    text-wrap: pretty;
   }
 
-  .method__thesis {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: clamp(2rem, 5vh, 3.5rem);
-  }
-  /* The scene's ONLY display register, and deliberately quieter than the
-     section head that opens the pilots ledger below it. */
-  .method__h { max-width: 9ch; }
-
-  /* The one operating fact, hung in the corner of the column under a
-     hairline. The rule is what makes the air above it a field with a foot
-     instead of a hole between two blocks. */
+  /* The one operating fact, at the foot of the centre line, under the only
+     horizontal hairline in the scene — short, and centred with it. */
   .method__stat {
     display: flex;
     align-items: baseline;
-    gap: 0.85rem;
-  }
-  @media (min-width: 901px) {
-    .method__stat {
-      border-top: 1px solid var(--rule-soft);
-      padding-top: clamp(0.9rem, 1.8vw, 1.35rem);
-      width: 100%;
-    }
+    justify-content: center;
+    gap: 0.7rem;
+    margin: clamp(2.5rem, 5vw, 4.25rem) 0 0;
+    padding-top: clamp(1rem, 2vw, 1.5rem);
+    border-top: 1px solid var(--rule-soft);
+    width: min(20rem, 100%);
   }
   .method__stat-n {
     font-size: var(--step-bridge);
@@ -124,63 +167,23 @@ import { method } from '../../data/site.js';
     color: var(--brass);
     white-space: nowrap;
   }
-  /* .label, not a fourth micro scale invented in this component. */
   .method__stat-k { line-height: 1.5; }
 
-  /* ── The three stops ──────────────────────────────────────────────
-     Rows on a hairline register, staggered 01 → 02 → 03. Each row holds one
-     numeral, one title and one line, at three clearly different sizes. */
-  .method__stepsWrap { min-width: 0; transition-duration: 1100ms; }
-  .method__steps { list-style: none; margin: 0; padding: 0; }
-  .mstep {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    column-gap: clamp(1rem, 2.4vw, 2rem);
-    align-items: baseline;
-    padding-block: clamp(1rem, 2.2vw, 1.5rem);
-    border-top: 1px solid var(--rule-soft);
-  }
-  .mstep:first-child { border-top: 0; padding-top: 0; }
-  .mstep:last-child { padding-bottom: 0; }
-
-  .mstep__i { grid-row: 1; }
-  /* The same three steps appear as a ledger on /institute/. One object, one
-     treatment: shared .index numeral, serif title, one rank quieter here so it
-     stays under the section head. */
-  .mstep__t {
-    grid-row: 1;
-    font-family: var(--serif);
-    font-size: var(--step-sub);
-    font-weight: 320;
-    line-height: 1.1;
-    letter-spacing: -0.014em;
-  }
-  .mstep__p {
-    grid-column: 2;
-    margin-top: 0.5rem;
-    font-size: var(--step-body);
-    line-height: 1.5;
-    color: var(--fg-mute);
-    max-width: 30ch;
-  }
-
-  @media (max-width: 900px) {
-    .method__grid {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: clamp(2.25rem, 6vw, 3rem);
+  /* Three columns need width. Below this the register turns back through
+     ninety degrees — rows on horizontal hairlines — but the scene keeps its
+     centre line for the eyebrow, the thesis and the fact. */
+  @media (max-width: 860px) {
+    .method__steps { display: block; }
+    .mstep {
+      display: grid;
+      justify-items: start;
+      text-align: left;
+      padding-block: clamp(1.1rem, 4vw, 1.6rem);
+      border-top: 1px solid var(--rule-soft);
+      row-gap: 0.5rem;
     }
-    .method__thesis {
-      flex-direction: row;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1.5rem;
-    }
-    .method__h { max-width: none; }
-    .method__stat { align-self: baseline; }
-  }
-
-  @media (max-width: 520px) {
-    .method__thesis { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
-    .mstep { column-gap: 1rem; }
+    .mstep:first-child { border-top: 0; padding-top: 0; }
+    .mstep:last-child { padding-bottom: 0; }
+    .mstep__t, .mstep__p { max-width: 34ch; }
   }
 </style>

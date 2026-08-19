@@ -14,14 +14,17 @@ const claim = forum.line
   .replace(/\bdecide\b/, '<em>decide</em>');
 ---
 {/*
-  FOUR BEATS, AND NO TWO OF THEM ARE DRAWN THE SAME WAY.
+  FIVE BEATS, AND NO TWO OF THEM ARE DRAWN THE SAME WAY.
 
     1  masthead    the photograph wide, type stacked in one corner of it
     2  the claim    type only, flush left, nothing beside it
-    3  the plate    the SAME photograph cut to a 16:5.5 band — masts and
+    3  the ledger   the page's ONE change of ground and ONE change of axis:
+                    a band set into the page, three terms hanging right-
+                    aligned against three sentences at READING SIZE
+    4  the plate    the SAME photograph cut to a 16:5.5 band — masts and
                     breakwater, the sky gone — held for two thirds of a
                     viewport and carrying exactly one line
-    4  the role     type in a rail, the page's one ask under it at the
+    5  the role     type in a rail, the page's one ask under it at the
                     bridge rung, so the close is an arrival and not a footnote
 
   Each beat also owns a different motion primitive, so motion ranks the page
@@ -39,10 +42,12 @@ const claim = forum.line
   its eyebrow: the one moment the page changes axis is the moment it asks,
   not its quietest aside.
 
-  The type ladder, top to bottom: 126 banner · 86 poster · 53 head ·
-  26.6 bridge and numerals · 16 body · 11.7 micro. The 13.1px index rung is
-  gone — at 13.1 it read as the 13.6px wordmark and added nothing 44px from
-  the eyebrow it indexed.
+  THE LADDER HAD NO READING SIZE. Five sizes ran in main — 11.7, 26.6, 53,
+  86, 126 — and the 11.7 → 26.6 step was 2.27x, the widest gap on the site
+  and well past the system's own 1.6x rule. The page also forked the ladder:
+  it set its own 26.6px beat numeral instead of the house .index. Both are
+  closed. Top to bottom now: 126 banner · 86 poster · 53 head · 26.6 bridge ·
+  19 lede · 16 body · 13.1 index · 11.7 micro.
 
   Micro type: SEVEN marks, three registers — three .eyebrow (one per scene),
   the photograph's .label credit, the scroll cue. There were twenty-five.
@@ -86,7 +91,7 @@ const claim = forum.line
     <div class="shell">
       <div class="frow">
         <span class="frow__rule" aria-hidden="true" data-wipe="left"></span>
-        <span class="fnum" data-reveal="220">01</span>
+        <span class="index fnum" data-reveal="220">01</span>
       </div>
 
       <div class="fsay__head">
@@ -101,7 +106,47 @@ const claim = forum.line
     </div>
   </section>
 
-  <!-- 3 ── the plate. The same harbour, cut hard: a 16:5.5 band on the
+  <!-- 3 ── THE LEDGER, and the page's one change of axis.
+
+       This page sold the Forum with four slogans and a mailto. A programme
+       officer who wanted to know what the convening actually IS had nothing
+       on it to read: five sizes in main and not one of them a reading size.
+       This beat is the reading size, and it is the only thing on the page
+       that does not begin at the left rail.
+
+       Three entries, one sentence each — the brief's supporting-line limit
+       spent, once, on the page's actual job. The terms hang right-aligned in
+       the left column against the sentences, so the block reads as a ledger
+       and its axis sits near 38% of the measure. Every other beat here opens
+       flush at the rail; this one does not, which is the whole point.
+
+       Ground: .on-panel, a band SET INTO the page — full-bleed, own rules,
+       never a card. It is the page's third ground event after the two
+       photographs, which is the ceiling. -->
+  <section class="on-panel fbrief" aria-labelledby="fbrief-h">
+    <div class="shell">
+      <div class="frow">
+        <span class="frow__rule" aria-hidden="true" data-wipe="left"></span>
+        <span class="index fnum" data-reveal="220">02</span>
+      </div>
+
+      <div class="fdef fbrief__top" data-reveal>
+        <p class="eyebrow fdef__t">{forum.brief.eyebrow}</p>
+        <p class="lede fbrief__lede" id="fbrief-h">{forum.brief.lede}</p>
+      </div>
+
+      <dl class="fdefs" data-seq="120" data-seq-from="40">
+        {forum.brief.rows.map((r) => (
+          <div class="fdef fdef--row" data-reveal>
+            <dt class="label fdef__t">{r.term}</dt>
+            <dd class="fdef__d">{r.text}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- 4 ── the plate. The same harbour, cut hard: a 16:5.5 band on the
        masts and the breakwater with the sky taken off it, so the page carries
        two photographic weights rather than one drawn twice. It is shorter
        than a viewport on purpose — a pause bounded by the claim above and the
@@ -120,13 +165,13 @@ const claim = forum.line
     <p class="bridge fplate__note">{forum.caption}</p>
   </div>
 
-  <!-- 4 ── the role, and the one ask. The mark sits BESIDE the sentence here
+  <!-- 5 ── the role, and the one ask. The mark sits BESIDE the sentence here
        and above it in beat 2, so the two type beats are not one drawing. -->
   <section class="frole" aria-labelledby="frole-h">
     <div class="shell">
       <div class="frow">
         <span class="frow__rule" aria-hidden="true" data-wipe="left"></span>
-        <span class="fnum" data-reveal="220">02</span>
+        <span class="index fnum" data-reveal="220">03</span>
       </div>
 
       <div class="frole__in" data-seq="150" data-seq-from="60">
@@ -257,19 +302,15 @@ const claim = forum.line
     background: var(--rule);
     margin-bottom: 0.34em;
   }
-  /* Brass tabular numerals at the BRIDGE rung, not the 13px index one. At 13px
-     they sat 0.5px from the wordmark — two sizes reading as one — and 44px from
-     the eyebrow they indexed, adding nothing. At 26.6px on the far edge they
-     are the page's right-hand rail. Numerals only; never a word. */
+  /* The house .index primitive — the site's one brass tabular numeral. This
+     page used to set its own at 26.6px, which was a second index construction
+     invented for one page and the only place the ladder forked. The rail the
+     numerals anchor is positional, not typographic: it is the RIGHT edge of
+     the measure, and the hairline spanning to it is what makes the numeral
+     read as a mark on a measure rather than as a size. */
   .fnum {
-    font-family: var(--sans);
-    font-size: var(--step-bridge);
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: 0.14em;
-    font-variant-numeric: tabular-nums;
-    color: var(--brass);
-    margin-right: -0.14em;
+    margin-right: -0.18em;
+    margin-bottom: 0.1em;
   }
   .fsay__head {
     display: flex;
@@ -316,7 +357,48 @@ const claim = forum.line
     --settle-shift: 4vh;
   }
 
-  /* ── 3. The plate ────────────────────────────────────────────────── */
+  /* ── 3. The ledger ──────────────────────────────────────────────── */
+  /* The page's one change of axis. .on-panel retunes --rule / --fg-meta for
+     the lighter ground; do not paint the background by hand. */
+  .fbrief {
+    padding-block: clamp(2.6rem, 1.8rem + 3.4vw, 5rem) clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  /* ONE GRID, four rows: the eyebrow is the first term and the lede is the
+     first definition, so the ledger's axis is established by the beat's own
+     heading rather than arriving underneath it. */
+  .fdef {
+    display: grid;
+    grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
+    column-gap: clamp(1.25rem, 4vw, 3.25rem);
+    align-items: baseline;
+  }
+  .fdef__t {
+    text-align: right;
+    margin: 0;
+    /* micro caps sit above the x-height of the sentence beside them; drop
+       them onto its first baseline rather than onto its box */
+    transform: translateY(0.12em);
+  }
+  .fbrief__top { padding-top: clamp(1.1rem, 2vw, 1.7rem); }
+  .fbrief__lede { max-width: 30ch; margin: 0; color: var(--fg); }
+
+  .fdefs { margin: clamp(1.9rem, 3.6vw, 3.2rem) 0 0; }
+  .fdef--row {
+    border-top: 1px solid var(--rule);
+    padding-block: clamp(1rem, 2vw, 1.6rem);
+  }
+  .fdef--row:last-child { border-bottom: 1px solid var(--rule); }
+  /* THE READING SIZE. There was none anywhere on this page. */
+  .fdef__d {
+    margin: 0;
+    font-size: var(--step-body);
+    line-height: 1.58;
+    color: var(--fg-mute);
+    max-width: 44ch;
+    text-wrap: pretty;
+  }
+
+  /* ── 4. The plate ────────────────────────────────────────────────── */
   /* A BAND, not a screen. Roughly 16:5.5 at 1440 and always shorter than the
      viewport, so the pause is bounded by the claim above and the ask below
      rather than by two screen edges — which was the same held-space failure
@@ -437,6 +519,15 @@ const claim = forum.line
     /* On a phone the band gets proportionally taller — a 16:5.5 strip at
        390px is 71px of photograph — but it still stops short of the viewport
        so the pause stays bounded by marks on both sides inside one scroll. */
+    /* Below 860 the second axis is a 140px column and stops being a
+       decision, so the ledger stacks: term over sentence, back on the rail,
+       and the rules do the ranking instead. */
+    .fbrief { padding-block: clamp(2.2rem, 8vw, 3.2rem) clamp(2.6rem, 9vw, 3.8rem); }
+    .fdef { grid-template-columns: minmax(0, 1fr); row-gap: 0.7rem; }
+    .fdef__t { text-align: left; transform: none; }
+    .fbrief__lede { max-width: 26ch; }
+    .fdef__d { max-width: 38ch; }
+
     .fplate { height: clamp(340px, 52svh, 460px); }
     .fplate__note { max-width: 14ch; }
 

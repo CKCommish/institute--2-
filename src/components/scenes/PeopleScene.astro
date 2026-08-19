@@ -36,12 +36,19 @@ const cohorts = cohortsOf(board);
 ---
 <section class="people scene" id="people" aria-labelledby="people-h">
   <div class="shell people__in">
+    {/* The head is a SPREAD, not a stack. Every other scene on this page
+        opens eyebrow → bridge → display down one column at the rail, which
+        leaves the display line's tight measure staring at half a page of
+        nothing. Here the claim holds the left and the bridge answers it from
+        the right rail, sitting on the claim's last baseline — so the scene's
+        top edge is a composed line across the frame and the void the measure
+        used to leave is where the calibre is written. */}
     <header class="people__head">
-      <p class="eyebrow" data-reveal>People</p>
-      {/* The bridge carries the calibre in one breath, so the display line
-          underneath can be a count and a claim rather than a list. */}
+      <div class="people__headL">
+        <p class="eyebrow" data-reveal>People</p>
+        <h2 class="display display--head people__h lines" id="people-h">Two founders. Sixteen people asked to govern the work.</h2>
+      </div>
       <p class="bridge people__bridge" data-reveal="90">{homeBridge}</p>
-      <h2 class="display display--head people__h lines" id="people-h">Two founders. Sixteen people asked to govern the work.</h2>
     </header>
 
     <div class="people__founders">
@@ -57,41 +64,73 @@ const cohorts = cohortsOf(board);
       ))}
     </div>
 
-    <div class="people__board">
-      <hr class="rule" data-wipe="left" />
-      <div class="people__board-row">
-        <p class="people__board-label" data-reveal="120">
+  </div>
+
+  {/* THE WALL — the page's second tonal event, and its answer to its own
+      headline. Sixteen names were being set at 19px in a right-hand column,
+      which is a caption; they are the only credential this institute has,
+      and one of them ran the Department of Education. They are now a
+      full-bleed .on-panel band set at --step-sub, one rung under the claim
+      that asks for them, running the full width of the frame.
+
+      It lands at 76% of the scroll. The homepage's only other change of
+      ground was the cream at 16%, after which 1,700px of the back half held
+      one value and no image; the panel that used to sit on Method at 25%
+      is spent here instead. It also closes the 290px of empty navy that
+      stood between "All people" and the footer — the band now runs flush
+      into the CTA, so the page ends on a hard tonal edge rather than a
+      seam. */}
+  <div class="people__wall on-panel">
+    <div class="shell people__wallIn">
+      <div class="people__wall-head">
+        <p class="people__board-label" data-reveal>
           <span class="index tnum">16</span>
           <span class="label">Prospective board</span>
         </p>
-        {/* One run per constituency. Each uncovers as a territory rather
-            than fading in with everything else, and every name is one
-            unbreakable unit so a roster never turns back into prose. */}
-        <ul class="people__cohorts">
-          {cohorts.map((c, ci) => (
-            <li data-wipe="left" data-delay={String(160 + ci * 130)}>
-              <span class="label label--brass people__cohort">{c.label}</span>
-              <span class="people__names">
-                {c.people.map((b, i) => (
-                  <>
-                    {i > 0 ? ' ' : null}
-                    <span class="people__name">{b.name}{i < c.people.length - 1 && <span class="people__sep" aria-hidden="true">·</span>}</span>
-                  </>
-                ))}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <a class="link tap label label--lit people__more" href="/people/" data-reveal="220">All people</a>
       </div>
-      <a class="link tap label label--lit people__more" href="/people/" data-reveal="220">All people</a>
+      <hr class="rule" data-wipe="left" />
+
+      {/* One run per constituency. Each uncovers as a territory rather than
+          fading in with everything else, and every name is one unbreakable
+          unit so a roster never turns back into prose. */}
+      <ul class="people__cohorts">
+        {cohorts.map((c, ci) => (
+          <li data-wipe="left" data-delay={String(160 + ci * 130)}>
+            <span class="label label--brass people__cohort">{c.label}</span>
+            <span class="people__names">
+              {c.people.map((b, i) => (
+                <>
+                  {i > 0 ? ' ' : null}
+                  <span class="people__name">{b.name}{i < c.people.length - 1 && <span class="people__sep" aria-hidden="true">·</span>}</span>
+                </>
+              ))}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>
 
 <style>
+  .people { padding-bottom: 0; }
   .people__in { display: grid; gap: clamp(2.25rem, 5.5vw, 4.5rem); }
-  .people__head { display: grid; }
-  .people__bridge { margin-top: clamp(0.8rem, 1.4vw, 1.15rem); max-width: 38ch; }
+  .people__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    column-gap: clamp(2rem, 6vw, 6rem);
+    align-items: end;
+  }
+  .people__headL { display: grid; }
+  .people__bridge {
+    margin: 0;
+    max-width: 30ch;
+    text-align: right;
+    justify-self: end;
+    /* Sits on the claim's last baseline, not on its box. */
+    padding-bottom: 0.16em;
+  }
   .people__h { margin-top: var(--stack-2); max-width: 18ch; }
 
   /* Founders as two entries in a register — name left, role right. */
@@ -119,36 +158,46 @@ const cohorts = cohortsOf(board);
   }
   .fd__role { line-height: 1.7; text-align: right; }
 
-  .people__board { display: grid; gap: clamp(1.25rem, 2.5vw, 2rem); }
-  .people__board-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
-    column-gap: clamp(1.25rem, 3vw, 3rem);
-    align-items: start;
-    padding-top: clamp(1rem, 2.2vw, 1.75rem);
+  /* ── THE WALL ────────────────────────────────────────────────────
+     Full-bleed band, --ink-800, running flush into the footer. The section
+     keeps its top pad and gives up its bottom one: the band IS the bottom
+     of the scene. */
+  .people__wall {
+    margin-top: clamp(3rem, 6vw, 5.5rem);
+    padding-block: clamp(2.75rem, 5vw, 4.5rem);
+    border-top: 1px solid var(--rule-soft);
+  }
+  .people__wallIn { display: grid; gap: clamp(1.1rem, 2.2vw, 1.75rem); }
+  .people__wall-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
   }
   .people__board-label { display: flex; align-items: baseline; gap: 0.75rem; }
   .people__cohorts {
     list-style: none; margin: 0; padding: 0;
     display: grid;
-    row-gap: clamp(0.9rem, 1.7vw, 1.4rem);
+    row-gap: clamp(1.4rem, 2.8vw, 2.4rem);
+    padding-top: clamp(0.5rem, 1.2vw, 1rem);
   }
-  .people__cohorts li {
-    display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    column-gap: clamp(0.75rem, 1.6vw, 1.5rem);
-    align-items: baseline;
-  }
-  .people__cohort { line-height: 1.9; }
-  /* Names are the substance, so they are set in the serif at reading size
-     and at full ink — the run is a roster, not a grey caption. */
+  /* The cohort label hangs above its run rather than beside it, so the names
+     take the whole measure of the frame instead of two-thirds of it. */
+  .people__cohorts li { display: grid; row-gap: 0.5rem; }
+  .people__cohort { line-height: 1; }
+  /* THE SIZE IS THE POINT. These sixteen names were set at 19px in a
+     right-hand column — a caption for the people the scene's own headline
+     asks the reader to weigh. They are set at --step-sub here, one rung
+     under the claim above them and the same rank as the two founders'
+     names, which is what "asked to govern the work" actually means. */
   .people__names {
     font-family: var(--serif);
     font-weight: 340;
-    font-size: var(--step-lede);
-    line-height: 1.55;
-    letter-spacing: -0.01em;
+    font-size: var(--step-sub);
+    line-height: 1.28;
+    letter-spacing: -0.014em;
     color: var(--fg);
+    text-wrap: pretty;
   }
   /* Each name plus its trailing middot is one unbreakable unit, so nothing
      ever wraps as "Tess deBlanc-" / "Knowles" and no line opens on a
@@ -156,7 +205,7 @@ const cohorts = cohortsOf(board);
   .people__name { display: inline-block; white-space: nowrap; }
   /* The word space between two units supplies the gap on the right, so the
      middot is only padded on the left. */
-  .people__sep { color: var(--brass); padding-left: 0.3em; }
+  .people__sep { color: var(--brass); padding-left: 0.34em; }
   .people__more { justify-self: start; }
   @media (hover: hover) {
     .people__more:hover { color: var(--brass); }
@@ -166,16 +215,24 @@ const cohorts = cohortsOf(board);
   :global(html:not(.js)) .people__board .rule { clip-path: none; }
 
   @media (max-width: 860px) {
+    /* Two corners need width. Below this the head stacks: eyebrow, claim,
+       then the bridge under it, back on the rail. */
+    .people__head { grid-template-columns: minmax(0, 1fr); }
+    .people__bridge {
+      text-align: left;
+      justify-self: start;
+      max-width: 38ch;
+      padding-bottom: 0;
+      margin-top: clamp(0.9rem, 2.4vw, 1.35rem);
+    }
     .fd__row { grid-template-columns: 1fr; row-gap: 0.4rem; }
     .fd--portrait .fd__row { grid-template-columns: auto minmax(0, 1fr); row-gap: 0.4rem; }
     .fd--portrait .fd__role { grid-column: 2; }
     .fd__role { text-align: left; }
-    .people__board-row { grid-template-columns: 1fr; row-gap: 1rem; }
-    .people__cohorts li { grid-template-columns: 1fr; row-gap: 0.28rem; }
-    .people__cohorts { row-gap: clamp(1.1rem, 3.4vw, 1.5rem); }
+    .people__cohorts { row-gap: clamp(1.25rem, 4vw, 1.8rem); }
     /* Once a run takes more than one line the middot starts dangling at
        line ends, so the separator becomes space instead of a mark. */
     .people__sep { display: none; }
-    .people__name { padding-right: 1.15em; }
+    .people__name { padding-right: 0.85em; }
   }
 </style>

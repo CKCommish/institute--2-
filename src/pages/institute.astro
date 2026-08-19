@@ -57,7 +57,7 @@ const spec = [
            for the credit; every other photograph on the site carries one. -->
       <Figure
         src="/media/institute.jpg" alt="" ratio="2 / 1" ratioSm="3 / 2"
-        grade={0.6} zoom={1.18} focal="50% 50%" enter="wipe" class="ichip"
+        grade={0.6} zoom={1.18} focal="50% 50%" enter="wipe" class="ichip" vig={0.4}
         credit="Library of Congress" creditPos="bottom-right"
         sizes="(max-width: 860px) 92vw, 34vw" />
 
@@ -69,8 +69,9 @@ const spec = [
        One shared five-row baseline grid: both arms sit on the same rows,
        both rails run the same length, and the connectors are the last
        thing to arrive — left arm, right arm, rails, connectors, thesis. -->
-  <section class="ibridge" id="bridge">
-    <div class="shell">
+  <section class="on-panel ibridge" id="bridge">
+    <div class="shell ibridge__in">
+      <p class="eyebrow ibridge__k" data-reveal>The bridge</p>
       <div class="brg" data-reveal>
         <span class="brg__rail brg__rail--a" aria-hidden="true"><i></i></span>
         <p class="label label--brass brg__k brg__k--a" style="--d:0ms">Who builds it</p>
@@ -84,9 +85,9 @@ const spec = [
           {runs.map((r, i) => <li class="bridge bridge--lift bridge--fg" style={`--d:${340 + i * 80}ms`}>{r}</li>)}
         </ul>
 
-        <span class="brg__hub">
+        <span class="brg__hub on-plate">
           <span class="brg__dot" aria-hidden="true"></span>
-          <span class="label label--lit brg__hub-t">The Institute</span>
+          <span class="display display--sub brg__hub-t">The Institute</span>
         </span>
       </div>
 
@@ -212,12 +213,34 @@ const spec = [
      One grid: row 1 is both arm labels, rows 2–5 are the names. Both
      rails span 1 / -1, so they are the same length and terminate on the
      grid rather than in mid-air. */
+  /* ── THE SPAN ─────────────────────────────────────────────────────
+     The page's one exception, and the only composition on this site that
+     is not flush-left under a full-width rule. Everything else here — the
+     hero, the ledger, every scene on every other route — opens at the left
+     gutter and runs right. This one is centred, symmetric and bounded, on
+     its own ground, and it is given a whole screen. That is the point: the
+     institute's entire claim is that it sits BETWEEN two parties, and a
+     left-aligned band cannot say between. A centred one can.
+
+     Value is elevation, drawn literally: the band is .on-panel (L* 9) set
+     into the page (L* 3), and the hub is .on-plate (L* 15) resting on the
+     band. Three grounds, one idea. */
   .ibridge {
-    padding-block: clamp(2.5rem, 1rem + 2.6vw, 4rem) clamp(3rem, 1.5rem + 3.2vw, 5.5rem);
+    border-block: 1px solid var(--rule);
+    padding-block: clamp(3rem, 1rem + 4vw, 6rem);
   }
+  .ibridge__in {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: clamp(2.2rem, 4vw, 4rem);
+    min-height: min(86svh, 46rem);
+  }
+  .ibridge__k { justify-self: start; }
+  .brg { width: 100%; }
   .brg {
-    --brg-gap: clamp(2rem, 5vw, 5rem);
-    --hub-w: clamp(9.5rem, 13vw, 12rem);
+    --brg-gap: clamp(2.5rem, 6vw, 6.5rem);
+    --hub-w: clamp(12rem, 19vw, 18rem);
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--hub-w) minmax(0, 1fr);
@@ -225,7 +248,7 @@ const spec = [
        "the whole diagram" if the explicit grid actually has these five rows. */
     grid-template-rows: auto repeat(4, auto);
     column-gap: var(--brg-gap);
-    row-gap: clamp(0.45rem, 1vw, 0.85rem);
+    row-gap: clamp(0.7rem, 1.9vw, 1.5rem);
   }
   /* The whole diagram is staged from one observer so the order is exact.
      Neutralise the generic reveal on the wrapper; the children carry it. */
@@ -277,13 +300,16 @@ const spec = [
 
   /* Hub + the two connectors, which draw inward from each rail to the box.
      Local delays; no motion primitive added. */
+  /* The hub is an OBJECT, not a caption: it takes the plate ground, it has
+     edges you could point at, and it carries its name in the serif at the
+     display rung the two arms answer to. It used to be an 11.7px label in
+     a 187px box — a footnote at the centre of the page's one diagram. */
   .brg__hub {
     grid-column: 2; grid-row: 1 / -1; align-self: center;
     position: relative;
-    display: grid; justify-items: center; gap: 0.7rem;
-    padding: clamp(1rem, 1.9vw, 1.6rem) clamp(0.9rem, 1.8vw, 1.5rem);
+    display: grid; justify-items: center; gap: clamp(0.75rem, 1.4vw, 1.1rem);
+    padding: clamp(1.4rem, 2.6vw, 2.4rem) clamp(1rem, 2vw, 1.7rem);
     border: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
-    background: color-mix(in srgb, var(--brass) 6%, var(--ink-900));
     opacity: 0;
     transition: opacity 460ms var(--ease-out) 640ms;
   }
@@ -298,13 +324,13 @@ const spec = [
   .brg__hub::after { left: 100%; transform: scaleX(0); transform-origin: right; }
   .brg.is-in .brg__hub::before, .brg.is-in .brg__hub::after { transform: none; }
 
-  .brg__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brass); }
-  .brg__hub-t { white-space: nowrap; }
+  .brg__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brass); }
+  .brg__hub-t { white-space: nowrap; line-height: 1; color: var(--fg); }
 
   /* The series-breaker, used once on this page. A held pause above it, bounded
      by the diagram on one side and by the line itself on the other. */
   .brg__thesis {
-    margin: var(--pause) auto 0;
+    margin: clamp(1rem, 2vw, 2.5rem) auto 0;
     max-width: 18ch; text-align: center;
     line-height: 1.04;
     color: var(--fg);
@@ -359,7 +385,12 @@ const spec = [
        than trailing them with a connector running off into empty space.
        `order` reorders the flow; the node becomes a full-width band bounded
        by two rules, which is what a hinge looks like without a diagram. */
-    .ibridge { padding-block: clamp(2rem, 6vw, 3rem) clamp(3.5rem, 12vw, 5rem); }
+    .ibridge { padding-block: clamp(2.75rem, 10vw, 4rem) clamp(3.5rem, 12vw, 5rem); }
+    /* No forced screen height on a phone: the diagram is already the tallest
+       object on the route once it runs vertically. Left-aligned again — the
+       centred composition is a desktop move and a 390px column has no
+       between to draw. */
+    .ibridge__in { min-height: 0; justify-items: stretch; gap: clamp(1.8rem, 7vw, 2.6rem); }
     /* The diagram survives the breakpoint. One brass rail runs the full
        height of the left gutter, both arms hang off it, and the hub is
        notched onto it — two sides meeting at one point, drawn vertically.
@@ -398,10 +429,10 @@ const spec = [
       grid-column: 1; grid-row: auto;
       justify-self: start; align-self: auto;
       margin-block: clamp(1.5rem, 6.5vw, 2.2rem);
-      display: inline-flex; align-items: center; justify-content: flex-start; gap: 0.7rem;
-      padding: clamp(0.7rem, 3vw, 0.95rem) clamp(0.85rem, 3.6vw, 1.15rem);
-      background: color-mix(in srgb, var(--brass) 8%, var(--ink-900));
+      display: inline-flex; align-items: center; justify-content: flex-start; gap: 0.8rem;
+      padding: clamp(0.85rem, 3.4vw, 1.15rem) clamp(1rem, 4vw, 1.4rem);
     }
+    .brg__hub-t { font-size: var(--step-sub); }
     /* The notch: one connector running left, from the hub back to the rail. */
     .brg__hub::after { content: none; }
     .brg__hub::before {

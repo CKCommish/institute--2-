@@ -157,13 +157,17 @@ const focals = {
 
   /* hung off the rule, level with the first row of the contents. The air
      below it is closed by pilot 01's photograph, not by the viewport edge. */
+  /* The quantity used to hang off the top of the rule with the whole rest of
+     the column left open beneath it — and what was beneath it was not a
+     margin, it was 865px of nothing running into the top of a photograph. An
+     unbounded void is not a pause. So the numeral is set on the BOTTOM of
+     the spread instead, level with the last line of the contents: the air is
+     now held BETWEEN two marks, the hairline above and the numeral below,
+     which is the only kind of silence this system allows. */
   .phead__left {
     grid-column: 1;
-    align-self: start;
-    /* hung directly off that same hairline, so the page's one quantity and
-       the page's contents read as one object across the spread rather than a
-       stranded numeral in an empty column */
-    padding-top: clamp(0.8rem, 1.6vw, 1.15rem);
+    align-self: end;
+    padding-bottom: clamp(0.1rem, 0.6vw, 0.4rem);
   }
 
   /* the one measurable frame every pilot shares, pulled out of the card
@@ -213,7 +217,7 @@ const focals = {
   /* ── Narrow ───────────────────────────────────────────────────────── */
   @media (max-width: 1080px) {
     .phead__in { grid-template-columns: minmax(0, 1fr); }
-    .phead__left { align-self: start; padding-top: 0; }
+    .phead__left { align-self: start; padding-bottom: 0; padding-top: clamp(0.8rem, 2vw, 1.15rem); }
     .phead__fig {
       grid-template-columns: auto minmax(0, 1fr);
       align-items: baseline;

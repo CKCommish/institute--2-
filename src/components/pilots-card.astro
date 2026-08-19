@@ -61,6 +61,31 @@ const rungs = {
   close:  'display--sub',
 };
 const rung = rungs[shape] ?? 'display--head';
+
+/* ── Where the ink goes ───────────────────────────────────────────────
+   Until now this card painted its own top and bottom ramps (.band::before /
+   ::after) AND took Figure's default scrim, and the strip painted a third.
+   Two ink systems stacked on one photograph is what flattened the foot of
+   pilot-maternal to L* 3.5 and drew a hard grey seam straight across a
+   mother's face. There is now exactly ONE: Figure's, placed per card, and
+   named here because placement is a composition decision.
+
+     01 anchor  type along the whole bottom edge → a low full-width ramp
+     02 aside   nothing written on it but the corner credit → a corner
+     03 turn    name at the TOP → ink at the top, none at the bottom, so the
+                photograph's lower two thirds are simply seen
+     04 close   nothing written on it at all → no ink but the bar strip.
+
+   Which is also the page's other order: 01 sets its type INTO the picture,
+   02 beside it, 03 at the top of it, 04 underneath it. Four relationships
+   between a sentence and a photograph, in the order the argument runs.  */
+const SCRIM = {
+  anchor: { scrim: 'bottom', reach: 1.00, rise: 0.42, ink: 0.94, vig: 0.55 },
+  aside:  { scrim: 'bottom-left', reach: 0.42, rise: 0.30, ink: 0.9, vig: 0.35 },
+  turn:   { scrim: 'top', vig: 0.30 },
+  close:  { scrim: 'none', vig: 0.35 },
+};
+const sk = SCRIM[shape] ?? SCRIM.close;
 ---
 <article class:list={['pcard', `pcard--${shape}`]} id={p.id} aria-labelledby={hid}>
   {isAside ? (
@@ -74,6 +99,7 @@ const rung = rungs[shape] ?? 'display--head';
           src={p.image} alt="" ratio="4 / 3" ratioSm="5 / 4"
           grade={grade} focal={focal} parallax={parallax} loading={loading}
           credit={p.credit} creditPos="bottom-left"
+          scrim={sk.scrim} reach={sk.reach} rise={sk.rise} ink={sk.ink} vig={sk.vig}
         />
         </div>
       </div>
@@ -113,7 +139,8 @@ const rung = rungs[shape] ?? 'display--head';
       <Figure
         src={p.image} alt="" ratio="auto"
         grade={grade} focal={focal} parallax={parallax} loading={loading}
-        credit={p.credit} creditPos={shape === 'turn' ? 'bottom-left' : 'bottom-right'}
+        credit={p.credit} creditPos={shape === 'turn' ? 'bottom-right' : 'bottom-right'}
+        scrim={sk.scrim} reach={sk.reach} rise={sk.rise} ink={sk.ink} vig={sk.vig}
       />
 
       <p class="shell rail" data-reveal>
@@ -124,25 +151,41 @@ const rung = rungs[shape] ?? 'display--head';
 
       <!-- a TRIGGER, not a fade: neutralised below, so the masked name lands
            on the earlier threshold and the tagline is delayed off that beat -->
-      <div class="shell say" data-reveal>
-        <h2
-          class:list={['display', 'say__t', 'lines', rung]}
-          id={hid}
-        >{p.title}</h2>
-        <p class="say__tag">{p.tagline}</p>
-      </div>
-
-      {shape === 'turn' && (
-        <dl class="shell arg arg--strip" data-wipe="left" data-delay="260">
-          <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-          <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-          <div class="arg__out"><dt class="label label--brass">Goal</dt><dd class="bridge bridge--fg">{p.goal}</dd></div>
-        </dl>
+      {shape !== 'close' && (
+        <div class="shell say" data-reveal>
+          <h2 class:list={['display', 'say__t', 'lines', rung]} id={hid}>{p.title}</h2>
+          <p class="say__tag">{p.tagline}</p>
+        </div>
       )}
+
     </div>
   )}
 
+  {/* 03's argument used to sit ON the frame, mid-picture, over a lit wall at
+      L* 63, with its own ramp cutting a grey seam across the photograph. It
+      comes off. What is left on the picture is the bar rail and the name,
+      inside the top band the system guarantees — and the lower two thirds of
+      the frame, which is the whole photograph, is handed back. */}
+  {shape === 'turn' && (
+    <dl class="shell arg arg--row" data-wipe="left" data-delay="200">
+      <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+      <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+      <div class="arg__out"><dt class="label label--brass">Goal</dt><dd class="bridge bridge--fg">{p.goal}</dd></div>
+    </dl>
+  )}
+
+  <!-- ── THE PAGE TURNED OVER ──────────────────────────────────────────
+       This page's one exception, spent once, on the one sentence it exists
+       to make. Everything on this site is cream on navy; the institute
+       talking. Pilot 01's outcome is not the institute talking — it is the
+       thing that will be true or not true in ninety days, and the thing the
+       page promises to publish either way. So it is PRINTED: full bleed,
+       navy on cream, edge to edge, immediately after the largest photograph
+       on the page. One tonal event, at the top of the argument, and then the
+       page closes back to ground and stays there for pilots 02, 03 and 04.
+       Ground budget (tokens.css): photography + this. Nothing else. -->
   {shape === 'anchor' && (
+    <div class="print on-cream">
     <div class="shell arg arg--descent">
       <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
 
@@ -164,6 +207,14 @@ const rung = rungs[shape] ?? 'display--head';
              ninety days, drawn against the twelve-month window. -->
         <Scale />
       </div>
+    </div>
+    </div>
+  )}
+
+  {shape === 'close' && (
+    <div class="shell say say--ground" data-reveal>
+      <h2 class:list={['display', 'say__t', 'lines', rung]} id={hid}>{p.title}</h2>
+      <p class="say__tag">{p.tagline}</p>
     </div>
   )}
 
@@ -206,36 +257,17 @@ const rung = rungs[shape] ?? 'display--head';
     display: grid;
     grid-template-rows: auto auto 1fr auto;
   }
-  .pcard--anchor { --band: clamp(29rem, 76vh, 43rem); }
+  .pcard--anchor { --band: clamp(31rem, 86vh, 48rem); }
   .pcard--turn   { --band: clamp(21rem, 58vh, 33rem); }
   .pcard--close  { --band: clamp(17rem, 42vh, 25rem); }
 
-  /* Figure ships a bottom ramp for the title; the top rail needs its own,
-     because a bright sky swallows a tracked 11px label. */
-  .band::before {
-    content: ''; position: absolute; inset: 0 0 auto 0; z-index: 0;
-    height: clamp(5.5rem, 14vh, 8.5rem);
-    background: linear-gradient(to bottom,
-      color-mix(in srgb, var(--ink-900) 82%, transparent) 0%,
-      color-mix(in srgb, var(--ink-900) 34%, transparent) 44%,
-      transparent 100%);
-    pointer-events: none;
-  }
-  /* Bottom ramp for the name. Shallower than Figure's scrim="bottom", which
-     goes to solid ink and turned the foot of every band into a black slab. */
-  .band::after {
-    content: ''; position: absolute; inset: auto 0 0 0; z-index: 0;
-    height: 42%;
-    background: linear-gradient(to top,
-      color-mix(in srgb, var(--ink-900) 90%, transparent) 0%,
-      color-mix(in srgb, var(--ink-900) 62%, transparent) 34%,
-      color-mix(in srgb, var(--ink-900) 18%, transparent) 70%,
-      transparent 100%);
-    pointer-events: none;
-  }
+  /* The band paints NO ink of its own. Figure carries the whole treatment
+     now, placed per card by the SCRIM table above — one system, so nothing
+     doubles and no ramp lands anywhere the type is not. */
+
   /* padding lives on the children: the fill Figure is positioned against the
      band's padding box, so padding here would inset the photograph. */
-  .rail, .say, .arg--strip { position: relative; z-index: 1; }
+  .rail, .say { position: relative; z-index: 1; }
 
   /* ── Nameplate ────────────────────────────────────────────────────
      Three registers and nothing else: brass numeral, the partner as this
@@ -252,13 +284,17 @@ const rung = rungs[shape] ?? 'display--head';
   .band > .rail { grid-row: 1; }
   .band > .say { grid-row: 4; }
 
+  /* The tagline used to sit in a second column at the right of the frame —
+     86% across, which on a directional ramp is exactly where the system
+     hands the picture back, and on the track photograph is lit asphalt at
+     L* 55. It comes down under the name, into the ink, and the right half of
+     every frame stays a photograph. */
   .say {
     padding-bottom: clamp(1.75rem, 3.4vw, 3rem);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 18.5rem);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: 0.8rem;
-    align-items: end;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.75rem;
+    align-items: start;
   }
   .say__t { line-height: 0.94; letter-spacing: -0.026em; text-wrap: initial; }
   /* the small serif display rung wants less negative tracking and more leading
@@ -266,16 +302,31 @@ const rung = rungs[shape] ?? 'display--head';
   .pcard--close .say__t { line-height: 1.04; letter-spacing: -0.012em; }
   /* the coda's name is the quietest on the page; the note beside it has to be
      quieter still, or the ranking inverts inside the card */
-  .pcard--close .say__tag { max-width: 26ch; }
+  /* 04's tagline used to sit in the right column, which on this photograph
+     is the welding flash — L* 55 under a 70% register. It comes down under
+     the name instead, into the ramp, and the light stays in the picture. */
+  .pcard--close .say__tag { max-width: 30ch; padding-bottom: 0; }
   .pcard--turn .say__t { line-height: 0.98; letter-spacing: -0.02em; }
   .say__tag {
     margin: 0;
-    padding-bottom: 0.4em;
+    padding-bottom: 0;
     font-size: var(--step-lede);
     line-height: 1.45;
     color: var(--fg-mute);
     text-wrap: pretty;
   }
+
+  /* ── THE PRINT: the page turned over ──────────────────────────────
+     Full bleed, navy on cream, once on this page. It lands directly off the
+     foot of the largest photograph on the site, so the change of value is
+     also a change of medium: a photograph, then a printed page. */
+  .print {
+    /* the deep top rule is the seam between the picture and the page */
+    border-top: 1px solid color-mix(in srgb, var(--ink-900) 22%, transparent);
+    padding-block: clamp(1.6rem, 3vw, 2.6rem) clamp(2.5rem, 5vw, 4.25rem);
+  }
+  /* the block's own top padding is the print band's now */
+  .print .arg--descent { padding-top: 0; padding-bottom: 0; }
 
   /* ── 01 ANCHOR: the argument descends ─────────────────────────────
      Setup small and left under a hairline; then a held pause, bounded above
@@ -333,6 +384,16 @@ const rung = rungs[shape] ?? 'display--head';
      bounded on all four sides by marks */
   .arg--descent .arg__goal :global(.mscale) { margin-top: clamp(1.6rem, 3.2vw, 2.75rem); }
 
+  /* 04's nameplate stands on ground, under an open photograph. */
+  .say--ground {
+    padding-top: clamp(1.5rem, 3vw, 2.4rem);
+    padding-bottom: clamp(0.9rem, 1.8vw, 1.4rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    align-items: end;
+  }
+  .say--ground .say__tag { padding-bottom: 0.35em; }
+
   /* ── 04 CLOSE: the coda — the argument read backwards ─────────────
      Outcome first at full cream, the setup after it as one small dim note.
      Everything still reads left-to-right; the reversal is in the weight. */
@@ -368,46 +429,28 @@ const rung = rungs[shape] ?? 'display--head';
     align-items: start;
   }
   .pcard--turn .say__tag { padding-bottom: 0; max-width: 30ch; padding-left: 0.08em; }
-  /* the ink has to move with the type: deep at the top for the name, and
-     near-solid along the foot so a 16px line can be read off a photograph */
-  .pcard--turn .band::before { height: clamp(10rem, 30vh, 16rem); }
-  .pcard--turn .band::after {
-    height: 36%;
-    background: linear-gradient(to top,
-      color-mix(in srgb, var(--ink-900) 94%, transparent) 0%,
-      color-mix(in srgb, var(--ink-900) 76%, transparent) 46%,
-      color-mix(in srgb, var(--ink-900) 26%, transparent) 80%,
-      transparent 100%);
+  /* 03 sets its name at the TOP, so the top band has to be deeper than the
+     bar strip Figure guarantees by default. These are Figure's own placement
+     variables, retuned by the scene that needs them — the ink is still
+     painted once, in one place. Nothing is added at the foot: below the
+     tagline the photograph is simply the photograph. */
+  .pcard--turn .band :global(.fig) {
+    --sc-top-h: clamp(15rem, 36vh, 22rem);
+    --sc-top-flat: clamp(7rem, 17vh, 10.5rem);
   }
-  /* The strip is the one place a 16px line has to be read off an open
-     photograph, so it carries its own ink rather than the band carrying it —
-     the frame above stays exposed and only the four inches under the type
-     go dark. */
-  .arg--strip {
-    grid-row: 4;
+  /* 03's argument, on ground, under the frame: one wide row of three, the
+     only block on the page that reads across rather than down. */
+  .arg--row {
     margin: 0;
-    position: relative;
-  }
-  .arg--strip::before {
-    content: '';
-    position: absolute;
-    inset: -0.6rem calc(var(--gutter) * -1) calc(var(--gutter) * -1) calc(var(--gutter) * -1);
-    z-index: -1;
-    background: linear-gradient(to top,
-      color-mix(in srgb, var(--ink-900) 92%, transparent) 0%,
-      color-mix(in srgb, var(--ink-900) 84%, transparent) 62%,
-      transparent 100%);
-    pointer-events: none;
-  }
-  .arg--strip > * { position: relative; }
-  .arg--strip {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.25fr);
     column-gap: clamp(1.75rem, 4vw, 4rem);
-    border-top: 1px solid var(--mark);
-    padding-top: clamp(0.85rem, 1.7vw, 1.2rem);
-    padding-bottom: clamp(1.5rem, 3vw, 2.4rem);
+    border-top: 1px solid var(--rule);
+    padding-top: clamp(0.95rem, 1.9vw, 1.35rem);
+    padding-bottom: clamp(2rem, 4vw, 3.25rem);
+    margin-top: clamp(1.5rem, 3vw, 2.4rem);
   }
+  .arg--row .arg__out { border-top: 0; }
 
   /* ── 02 ASIDE: the plate bleeds, the argument stands beside it ─────── */
   .aside {
@@ -514,10 +557,7 @@ const rung = rungs[shape] ?? 'display--head';
     .say__tag { padding-bottom: 0; max-width: 34ch; }
     .rail { gap: 0.9ch; }
 
-    .arg--strip { grid-template-columns: minmax(0, 1fr); row-gap: clamp(0.7rem, 2.6vw, 1rem); }
-    /* three stacked lines need more ink under them than one row did */
-    .pcard--turn .band::after { height: 58%; }
-    .arg--strip .arg__out { padding-top: clamp(0.5rem, 2vw, 0.8rem); }
+    .arg--row { grid-template-columns: minmax(0, 1fr); row-gap: clamp(0.9rem, 3vw, 1.3rem); }
 
     /* the aside stacks, but keeps its left bleed and its ruled column */
     .aside {

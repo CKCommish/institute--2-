@@ -145,6 +145,28 @@ export const forum = {
   line: 'The people who build sit with the people who decide.',
   role: 'The Institute is a lead sponsor. Pilots find their partners here, and report their results back.',
   caption: 'Before the room fills.',
+  /* The substance beat. A foundation officer or a policy lead has to leave
+     this page knowing what the convening is, who is in it, and why the
+     Institute is there. Three entries, one sentence each — the brief's
+     three-supporting-lines limit, spent on the page's one job. */
+  brief: {
+    eyebrow: 'What it is',
+    lede: 'A closed room, and a reason for the Institute to be standing in it.',
+    rows: [
+      {
+        term: 'Format',
+        text: 'By invitation only, convened at the Kennedy Compound in Hyannis Port.',
+      },
+      {
+        term: 'The room',
+        text: 'Founders and investors who build these technologies, alongside the elected officials who decide how they are used.',
+      },
+      {
+        term: 'Why it matters',
+        text: 'Those two groups settle what a technology becomes, and they are seldom in one room while there is still time to shape it.',
+      },
+    ],
+  },
   cta: 'Inquire about the Forum',
   image: '/media/forum.jpg',
   imageDetail: '/media/forum-detail.jpg',

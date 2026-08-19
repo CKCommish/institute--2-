@@ -1,44 +1,20 @@
 ---
-import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import Base from '../layouts/Base.astro';
-import Figure from '../components/Figure.astro';
 import { founders, board } from '../data/site.js';
 import { cohortsOf, boardBridge, mastheadBridge } from '../components/people-cohorts.js';
 
-/* ── Portrait drop-in slot ────────────────────────────────────────────
-   We hold no rights-cleared portraits of the founders, so the page is
-   built to be complete without them. Drop either file into public/media/
-
-       public/media/founder-mckelvy.jpg
-       public/media/founder-olanoff.jpg     (.jpeg / .png / .webp also work)
-
-   and that founder's record switches from the two-column register
-   (name | credentials) to a three-column one (portrait | name | credentials)
-   with no other change. While a file is absent nothing is rendered in its
-   place — the record is a typographic entry, not a frame waiting for an
-   image, so the empty state is designed air and never a broken box. It also
-   keeps the console clean: no request is made for a file that is not there. */
-const EXTS = ['.jpg', '.jpeg', '.png', '.webp'];
-function resolvePortrait(p) {
-  if (!p) return null;
-  const stem = p.replace(/\.(jpe?g|png|webp)$/i, '');
-  for (const ext of EXTS) {
-    const rel = `${stem}${ext}`;
-    try {
-      if (fs.existsSync(fileURLToPath(new URL(`../../public${rel}`, import.meta.url)))) return rel;
-    } catch { /* unresolvable path — treat as absent */ }
-  }
-  return null;
-}
+/* We hold no rights-cleared portraits of either founder, and the page is
+   built to be complete without them: a record here is a typographic entry,
+   not a frame waiting for an image, so there is no empty box to fill and no
+   request made for a file that is not there. If portraits are cleared later
+   they belong in both bays of the diptych or in neither — the parity of the
+   two records is the point of this scene. */
 
 const people = founders.map((f, i) => ({
   ...f,
   index: String(i + 1).padStart(2, '0'),
-  portraitSrc: resolvePortrait(f.portrait),
   credentials: f.detail.replace(/\.\s*$/, '').split(/\.\s+/),
 }));
-const [lead, second] = people;
 
 /* Both founders carry the identical two affiliations. Printing them twice
    made the least distinguishing text the loudest text in each record, so
@@ -46,13 +22,12 @@ const [lead, second] = people;
    only what separates the two men. */
 const sharedAffiliation = 'Both are Founding Partners of K. Ventures and of The Lion Forum.';
 
-/* The 11.7px rung that hands a reader from an 86px name down to an 18.7px
-   credential line. Without it the record jumps two rungs and reads as two
-   objects at opposite walls. */
+/* The micro rung that hands a reader from a 53px name down to a 19px
+   credential line, and — set identically in both bays — the thing that makes
+   the two records visibly the same kind of object. */
 const beforeLabel = 'Before the institute';
 
-/* The roster is a plate of three columns, not a table of sixteen rows.
-   Grouping, order and the two head clauses live in people-cohorts.js. */
+/* Grouping, order and the two head clauses live in people-cohorts.js. */
 const cohorts = cohortsOf(board);
 
 const boardCount = board.length;
@@ -86,58 +61,44 @@ const founderCount = String(founders.length).padStart(2, '0');
   </section>
 
   <!-- ── Founders ─────────────────────────────────────────────────── -->
-  {/* Two records, deliberately unequal. The first is a plate: its own
-      ground, a brass hairline, a feature-rung name, and its credentials
-      carried down the ladder — label (11.7) → line (18.7) — on a mid-grid
-      column joined to the name by a vertical rule, so name and credentials
-      are one object rather than two walls with a void between them. The
-      second record is the light one: a single band, a head-rung name, its
-      credentials set as one run. The section has a rhythm, not a repeat. */}
-  <section class="fs" id="founders" aria-labelledby="founders-h">
-    <div class="shell fs__head">
-      <h2 class="eyebrow" id="founders-h" data-reveal>Founders</h2>
-      <p class="bridge fs__note" data-reveal="110">{sharedAffiliation}</p>
-    </div>
+  {/* Two co-founders, one title, one treatment. The page previously gave the
+      first name a plate, a feature rung and a settle, and the second a band
+      and a single run — on a page headed "the people accountable for the
+      work", that composition said one of them was more accountable. They now
+      sit as a diptych on one band: same ground, same rung, same credential
+      ladder, same motion, one hairline between them. The only thing that
+      differs is how many lines a name takes, which is a fact about the name.
 
-    <div class="fplate" data-wipe="left">
-      <div class="shell">
-        <article class="fr fr--lead">
-          <div class="fr__row">
-            <div class="fr__lead">
-              <p class="fr__meta">
-                <span class="index tnum">{lead.index}</span>
-                <span class="label">{lead.role}</span>
-              </p>
-              <h3 class="display display--poster fr__name" data-settle="0.62">{lead.name}</h3>
-            </div>
+      The band is also the page's second armature. Everything else here opens
+      flush-left under a full-width rule; this is a two-up spread with a spine
+      down the middle, so the founders read as a pair and not as a list of
+      two. */}
+  <section class="fs on-panel" id="founders" aria-labelledby="founders-h">
+    <div class="shell">
+      <div class="fs__head">
+        <h2 class="eyebrow" id="founders-h" data-reveal>Founders</h2>
+        <p class="bridge fs__note" data-reveal="110">{sharedAffiliation}</p>
+      </div>
+
+      <hr class="rule fs__rule" data-wipe="left" data-delay="60" />
+
+      <div class="dip">
+        {people.map((f) => (
+          <article class="fr" data-reveal="140">
+            <p class="fr__meta">
+              <span class="index tnum">{f.index}</span>
+              <span class="label">{f.role}</span>
+            </p>
+            <h3 class="display display--head fr__name">{f.name}</h3>
             <div class="fr__cred">
               <p class="label label--lit fr__credhead">{beforeLabel}</p>
               <ul class="fr__list">
-                {lead.credentials.map((c) => <li>{c}</li>)}
+                {f.credentials.map((c) => <li>{c}</li>)}
               </ul>
             </div>
-          </div>
-        </article>
+          </article>
+        ))}
       </div>
-    </div>
-
-    <div class="shell">
-      <article class="fr fr--min">
-        <hr class="rule" data-wipe="left" data-delay="80" />
-        <div class="fr__row fr__row--min" data-wipe="left" data-delay="160">
-          <div class="fr__lead">
-            <p class="fr__meta">
-              <span class="index tnum">{second.index}</span>
-              <span class="label">{second.role}</span>
-            </p>
-            <h3 class="display display--head fr__name">{second.name}</h3>
-          </div>
-          <div class="fr__cred">
-            <p class="label label--lit fr__credhead">{beforeLabel}</p>
-            <p class="fr__run">{second.credentials.join(' · ')}</p>
-          </div>
-        </div>
-      </article>
     </div>
   </section>
 
@@ -170,27 +131,38 @@ const founderCount = String(founders.length).padStart(2, '0');
         </div>
       </header>
 
-      <div class="plate" data-settle="0.72">
-        <span class="plate__edge" data-wipe="center" aria-hidden="true"></span>
-        <div class="plate__cols">
-          {cohorts.map((c, ci) => (
-            <section class:list={['col', `col--${ci}`]} data-wipe="top" data-delay={String(140 + ci * 130)} aria-labelledby={c.id}>
-              <h3 class="col__head" id={c.id}>
-                <span class="index tnum">{c.count}</span>
-                <span class="label">{c.label}</span>
-              </h3>
-              <p class="col__def">{c.def}</p>
-              <ul class="col__list">
-                {c.people.map((p) => (
-                  <li class="ent">
-                    <span class="ent__n">{p.name}</span>
-                    <span class="ent__t">{p.line}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
+      {/* THE ROSTER. Sixteen names in three tidy bays at one pitch is a
+          directory: every entry the same width, the same weight, the same
+          distance apart, so a former cabinet secretary and an investor
+          occupy identical rectangles and the room reads flat.
+
+          So the roster stops being a grid. Each constituency is a band, and
+          inside it the names are set as a field that wraps: every entry is
+          only as wide as the office it holds, ticked off by a hairline, so
+          the rows break at irregular places and the wall has a rag. The
+          emphasis is not editorial and nobody has been ranked — it falls out
+          of the data. "First Chief Technology Officer of the United States"
+          takes more ink than "Investor" because it is more words. The calibre
+          of the room is the area it covers, and you can see that before you
+          have read a single row. */}
+      <div class="wall">
+        {cohorts.map((c, ci) => (
+          <section class="co" data-wipe="top" data-delay={String(140 + ci * 130)} aria-labelledby={c.id}>
+            <h3 class="co__head" id={c.id}>
+              <span class="index tnum">{c.count}</span>
+              <span class="label">{c.label}</span>
+              <span class="co__def">{c.def}</span>
+            </h3>
+            <ul class="co__field">
+              {c.people.map((p) => (
+                <li class="ent">
+                  <span class="ent__n">{p.name}</span>
+                  <span class="ent__t">{p.line}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
 
       <p class="label bd__foot" data-reveal="140">Membership is prospective · Titles for identification</p>
@@ -252,51 +224,45 @@ const founderCount = String(founders.length).padStart(2, '0');
   .pm__rule { margin-top: clamp(2.5rem, 5vw, 4.25rem); }
 
   /* ── Founders ───────────────────────────────────────────────────── */
-  /* Opens tight — its head sits on the masthead's rule, so the first screen
-     ends on the register rather than on air. */
+  /* A band set into the page, full-bleed, opening on the masthead's rule so
+     the first screen closes on the register rather than on air. */
   .fs {
-    padding-block: clamp(1.35rem, 2.6vw, 2.6rem) clamp(0.5rem, 1.2vw, 1.25rem);
+    padding-block: clamp(2.25rem, 4vw, 4rem) clamp(2.5rem, 5vw, 4.75rem);
     scroll-margin-top: calc(var(--nav-h) + 1rem);
   }
   .fs__head {
     display: grid;
-    justify-items: start;
-    row-gap: clamp(0.85rem, 1.6vw, 1.3rem);
-    margin-bottom: clamp(1.5rem, 3vw, 2.6rem);
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: clamp(2rem, 5vw, 5.5rem);
+    align-items: baseline;
   }
-  /* The one affiliation both founders share, stated once, at the bridge
-     rung — it is the scene's connective tissue, not a footnote in the far
-     corner, so it sits on the same left rail as everything under it. */
+  /* The one affiliation both founders share, stated once at the bridge rung
+     so neither record carries the least distinguishing text twice. */
   .fs__note { max-width: 34ch; }
+  .fs__rule { margin-top: clamp(1.1rem, 2.2vw, 1.9rem); }
 
-  /* The plate. The page's one figure/ground event: a band of lighter ink
-     bled to the viewport edge with a brass hairline on its top, so the
-     founders band is a place and not a stretch of empty measure. */
-  .fplate {
-    background: var(--ink-700);
-    border-top: 1px solid var(--brass);
-    margin-bottom: clamp(1.5rem, 3vw, 2.75rem);
-  }
-
-  .fr__row {
+  /* The diptych. Two equal bays, one spine. */
+  .dip {
+    margin-top: clamp(2rem, 4vw, 3.5rem);
     display: grid;
-    grid-template-columns: minmax(0, 6.4fr) minmax(0, 5.6fr);
-    column-gap: clamp(2rem, 4.5vw, 5rem);
-    row-gap: clamp(1.25rem, 2.4vw, 2rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(2rem, 5vw, 5.5rem);
+    /* Three shared rows — rank, name, credentials. The two records sit on
+       the same three lines whatever the names do, which is the parity
+       made visible rather than asserted. */
+    grid-template-rows: auto auto auto;
     align-items: start;
-    padding-block: clamp(2.25rem, 5vw, 4.5rem);
   }
-  /* The connective tissue the record was missing: a hairline down the
-     mid-grid axis, so the name and its credentials are two halves of one
-     object instead of two masses at opposite walls. */
-  .fr--lead .fr__cred {
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    border-left: 1px solid color-mix(in srgb, var(--cream) 26%, transparent);
-    padding-left: clamp(1.5rem, 3vw, 2.75rem);
-    margin-left: calc(-1 * clamp(1rem, 2.2vw, 2.5rem));
+  .dip > .fr {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    align-content: start;
+  }
+  .dip > .fr + .fr {
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(2rem, 5vw, 5.5rem);
+    margin-left: calc(-1 * clamp(1rem, 2.5vw, 2.75rem));
   }
 
   .fr__meta {
@@ -305,22 +271,16 @@ const founderCount = String(founders.length).padStart(2, '0');
     gap: 0.9rem;
     margin-bottom: clamp(0.85rem, 1.6vw, 1.35rem);
   }
-  .fr--lead .fr__name {
-    line-height: 0.98;
-    letter-spacing: -0.026em;
-    max-width: 12ch;
-    --settle-scale: 0.93;
-    --settle-shift: 5vh;
-    --settle-origin: 0% 100%;
+  .fr__name {
+    max-width: 13ch;
+    text-wrap: balance;
   }
-  .fr--min .fr__name { max-width: 16ch; }
-
+  .fr__cred { padding-top: clamp(1.6rem, 3.2vw, 2.6rem); }
   .fr__credhead {
-    padding-bottom: clamp(0.85rem, 1.7vw, 1.25rem);
-    margin-bottom: clamp(0.9rem, 1.8vw, 1.35rem);
+    padding-bottom: clamp(0.8rem, 1.5vw, 1.15rem);
+    margin-bottom: clamp(0.85rem, 1.7vw, 1.3rem);
     border-bottom: 1px solid var(--rule);
   }
-  .fr--lead .fr__credhead { border-bottom-color: color-mix(in srgb, var(--cream) 26%, transparent); }
   .fr__list {
     list-style: none; margin: 0; padding: 0;
     display: grid;
@@ -329,19 +289,6 @@ const founderCount = String(founders.length).padStart(2, '0');
     line-height: 1.4;
     color: var(--fg-mute);
   }
-  .fr--lead .fr__list { color: var(--fg); }
-  .fr__run {
-    font-size: var(--step-lede);
-    line-height: 1.45;
-    color: var(--fg-mute);
-    max-width: 34ch;
-    text-wrap: pretty;
-  }
-
-  /* The second record is the light one: half the depth, no ground, a name
-     one rung down and its credentials as a single run. */
-  .fr__row--min { padding-block: clamp(1.5rem, 3vw, 2.6rem) clamp(1.75rem, 3.4vw, 3rem); }
-  .fr--min .fr__cred { padding-top: 0.35rem; }
 
   /* ── Prospective board ──────────────────────────────────────────── */
   .bd {
@@ -360,7 +307,10 @@ const founderCount = String(founders.length).padStart(2, '0');
   .bd__rule { margin-top: clamp(1rem, 1.8vw, 1.5rem); }
   .bd__bridge {
     margin-top: clamp(1.4rem, 2.6vw, 2.2rem);
-    max-width: 44ch;
+    /* The clause runs the measure. Held at 44ch it set in three short lines
+       with an 800px void beside them; the void was the scene's weakest
+       object and the clause is its payload, so the clause gets the width. */
+    max-width: 74ch;
   }
   /* The claim is a two-mass row: the sentence takes the whole measure and
      wraps onto a short second line; the tally sits on that line's foot at
@@ -394,112 +344,81 @@ const founderCount = String(founders.length).padStart(2, '0');
   .bd__h :global(.line) { padding-bottom: 0.09em; margin-bottom: -0.09em; }
   .bd__h :global(.line > span) { transition-delay: calc(var(--line-delay, 0ms) + 120ms); }
 
-  /* ── The plate ──────────────────────────────────────────────────── */
-  /* A held rest between the claim and the roster. It is bounded on both
-     sides — the display line above, the plate's own rule below — so it
-     reads as an interval and not as a page that ran out. */
-  .plate {
-    margin-top: var(--pause);
-    display: grid;
-    /* The page's one weight vector, on the object the page is about. The
-       default amplitude is under the perceptual threshold, so the plate
-       arrives visibly low and heavy and settles onto its reading line. */
-    --settle-scale: 0.965;
-    --settle-shift: 7vh;
-    --settle-origin: 50% 0%;
+  /* ── The wall ───────────────────────────────────────────────────── */
+  /* Three bands, each a constituency. The entries inside are not cells: they
+     are only as wide as the office they carry, so the field wraps unevenly
+     and the roster has a rag instead of a ruled table. */
+  .wall {
+    margin-top: clamp(2.5rem, 5vw, 5rem);
+    border-top: 1px solid var(--mark);
   }
-  .plate__edge { display: block; height: 1px; background: var(--mark); }
-  .plate__cols {
-    display: grid;
-    /* Column width tracks the size of the constituency, so the plate has a
-       measure instead of three identical bays. */
-    grid-template-columns: 6fr 5fr 5fr;
-    column-gap: clamp(1.75rem, 3.6vw, 4.25rem);
-    /* Bays close at their own depth. Six names and five names are not the
-       same object and the plate says so, instead of ruling a straight line
-       under two cells of nothing. */
-    align-items: stretch;
+  .co {
+    padding-block: clamp(1.9rem, 3.6vw, 3.1rem);
+    border-bottom: 1px solid var(--rule);
   }
-  /* The block padding sits on the columns, not on the row, so the rules
-     between them run edge to edge and the plate closes. */
-  /* Each bay closes on its own foot rather than on one straight rule far
-     below the shortest column — the step is the plate telling you the
-     constituencies are not the same size. */
-  .col {
-    align-self: stretch;
-    padding-block: clamp(2.25rem, 4.4vw, 4rem) clamp(2.25rem, 4.4vw, 4rem);
-    border-bottom: 1px solid var(--mark);
-  }
-  /* Column rules, the way a broadsheet sets them: they run the full depth
-     of the plate, so the three constituencies are bays rather than three
-     lists that happen to sit near each other. */
-  .col + .col {
-    border-left: 1px solid var(--mark);
-    padding-left: clamp(1.75rem, 3.6vw, 4.25rem);
-    margin-left: calc(-1 * clamp(0.5rem, 1vw, 1.1rem));
-  }
+  .co:last-child { border-bottom-color: var(--mark); }
   /* If the script never runs, nothing may stay under its mask. */
-  :global(html:not(.js)) .col,
-  :global(html:not(.js)) .fr__row,
-  :global(html:not(.js)) .fplate,
-  :global(html:not(.js)) .fr .rule,
-  :global(html:not(.js)) .plate__edge { clip-path: none; }
+  :global(html:not(.js)) .co,
+  :global(html:not(.js)) .fr,
+  :global(html:not(.js)) .fs__rule,
+  :global(html:not(.js)) .wall { clip-path: none; }
 
-  .col__head {
+  .co__head {
     display: flex;
     align-items: baseline;
+    flex-wrap: wrap;
     gap: 0.85rem;
     font-weight: 400;
-    margin-bottom: clamp(0.5rem, 0.9vw, 0.75rem);
+    margin-bottom: clamp(1.25rem, 2.4vw, 2rem);
   }
-  .col__def {
+  .co__def {
     font-size: var(--step-body);
     line-height: 1.4;
     color: var(--fg-mute);
-    max-width: 24ch;
-    text-wrap: pretty;
-    padding-bottom: clamp(1.1rem, 2.1vw, 1.75rem);
+    margin-left: clamp(0.5rem, 2vw, 2rem);
   }
 
-  /* The rule runs the full column, not the width of the sentence above it,
-     so the three heads sit on one shelf across the plate. */
-  .col__list {
+  /* Not cells. The entries are set as ONE RUN of text that wraps like a
+     paragraph, so the field fills its measure by construction and there is
+     no cell to leave empty. A name is serif at the sub rung, the office it
+     holds is sans at the body rung immediately after it, and a brass point
+     separates one from the next. That is a credit block, or the lettering on
+     a board room wall, and it is the one object on this page that does not
+     answer to a column: where an entry breaks is decided by how long an
+     office is, not by a grid. */
+  .co__field {
     list-style: none; margin: 0; padding: 0;
-    display: grid;
-    row-gap: clamp(1.15rem, 2.2vw, 2rem);
-    padding-top: clamp(1.25rem, 2.3vw, 1.9rem);
-    border-top: 1px solid var(--rule);
+    display: block;
+    line-height: 1.55;
   }
-  .ent { display: grid; row-gap: 0.3rem; }
-  /* The first name in each bay leads it, one rung up. Sixteen names at one
-     weight made a cabinet secretary and an investor the same object. */
-  .ent:first-child .ent__n {
-    font-size: var(--step-head);
-    line-height: 1.0;
-    letter-spacing: -0.02em;
+  /* Each entry wraps as one piece, so a line never breaks a man away from
+     the office he held. The pieces are wildly different widths and the run
+     fills greedily, so the right rag is decided by the lengths of the titles
+     in the room — which is the only ordering principle this scene has. */
+  .ent { display: inline-block; }
+  .ent::after {
+    content: '·';
+    color: var(--brass);
+    padding-inline: 0.72em 0.78em;
+    font-size: var(--step-lede);
   }
-  .ent:first-child { row-gap: 0.42rem; padding-bottom: 0.35rem; }
+  .ent:last-child::after { content: none; }
   .ent__n {
     font-family: var(--serif);
     font-weight: 340;
     font-size: var(--step-sub);
-    line-height: 1.06;
     letter-spacing: -0.016em;
     color: var(--fg);
-    text-wrap: balance;
+    white-space: nowrap;
   }
-  /* Sixteen role lines needed to be quieter than the names, but the way they
-     got there was a fourth micro register: 11.7px at 500 with 0.02em and no
-     uppercase, i.e. the .label rung wearing sentence case and carrying a
-     whole clause — the one thing base.css says a label never does. The rank
-     is carried by INK and by the serif/sans split instead, at the body rung
-     the rest of the site reads supporting copy in. */
+  /* The office is the payload of this scene. Because the field is a run, a
+     long office simply takes more of the wall than a short one — the calibre
+     of the room is the area it covers, and nobody had to be ranked to say so. */
   .ent__t {
     font-size: var(--step-body);
-    font-weight: 370;
-    line-height: 1.35;
-    color: var(--fg-meta);
-    text-wrap: pretty;
+    font-weight: 400;
+    color: var(--fg-mute);
+    padding-left: 0.55em;
   }
 
   .bd__foot {
@@ -512,36 +431,23 @@ const founderCount = String(founders.length).padStart(2, '0');
 
   /* ── Narrow ─────────────────────────────────────────────────────── */
   @media (max-width: 1180px) {
-    /* Three columns stop holding a name and its title at 33px. The plate
-       becomes three stacked bands, each running its own names two-up, so
-       it is still a block to glance at rather than a queue to read. */
-    .plate__cols {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: 0;
-    }
-    .col { align-self: auto; padding-block: clamp(1.6rem, 3.4vw, 2.5rem); }
-    .col + .col { border-left: 0; padding-left: 0; margin-left: 0; border-top: 1px solid var(--rule); }
-    .col__head { margin-bottom: 0.45rem; }
-    .col__def { max-width: 40ch; }
-    .col__list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: clamp(1.5rem, 4vw, 3.5rem);
-    }
+    .co__field { max-width: none; }
+    .bd__bridge { max-width: 52ch; }
   }
   @media (max-width: 980px) {
-    /* Both records stack. The lead record keeps its plate and its hairline
-       moves from the side of the credentials to their head, so the rung
-       ladder survives the fold. */
-    .fr__row { grid-template-columns: minmax(0, 1fr); }
-    .fr--lead .fr__cred {
+    /* The diptych folds into two stacked bays. The spine becomes the rule
+       between them, so the pair survives the fold as a pair. */
+    .dip { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+    .dip > .fr + .fr {
       border-left: 0;
       padding-left: 0;
       margin-left: 0;
-      border-top: 1px solid color-mix(in srgb, var(--cream) 20%, transparent);
-      padding-top: clamp(1.25rem, 3vw, 1.75rem);
+      border-top: 1px solid var(--rule);
+      padding-top: clamp(2rem, 4.5vw, 3rem);
+      margin-top: clamp(2rem, 4.5vw, 3rem);
     }
-    .fr--lead .fr__name { max-width: none; }
-    .fr__run { max-width: none; }
+    .fr__name { max-width: 18ch; }
+    .fs__head { grid-template-columns: minmax(0, 1fr); row-gap: 0.9rem; }
   }
   @media (max-width: 860px) {
     /* Masthead stacks: the contents index sits under the display line and
@@ -560,24 +466,22 @@ const founderCount = String(founders.length).padStart(2, '0');
   @media (max-width: 700px) {
     .bd__head { grid-template-columns: minmax(0, 1fr); }
     .fs__note { max-width: 30ch; }
-    /* Below ~700 the display range compresses and the feature rung stops
-       reading as a break, so the lead record carries its weight with ground
-       and space instead: a deeper plate, a name that owns the measure. */
-    .fplate .fr__row { padding-block: clamp(1.9rem, 7vw, 2.6rem) clamp(2.1rem, 8vw, 3rem); }
+    .co__def { margin-left: 0; flex-basis: 100%; max-width: 40ch; }
   }
   @media (max-width: 620px) {
-    /* One name per line, and the pitch tightens so sixteen entries stay a
-       block a thumb can pass rather than a scroll of its own. */
-    .col__list {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: 1.05rem;
-      padding-top: 1.1rem;
-    }
-    .ent { row-gap: 0.18rem; }
+    /* The field stops wrapping and runs one entry per row, ticked off the
+       same hairline — still a wall, read down instead of across. */
+    /* Below 620 a run at two registers is soup. The field becomes a stack,
+       one entry per row, ticked off a single hairline — still a wall, read
+       down instead of across. */
+    .co__field { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 1.1rem; max-width: none; line-height: 1.3; }
+    .ent { display: grid; row-gap: 0.2rem; padding-left: 1rem; border-left: 1px solid var(--rule); }
+    .ent::after { content: none; }
+    .ent__n { white-space: normal; }
+    .ent__t { padding-left: 0; }
     .bd__foot { justify-self: start; text-align: left; }
     /* The masthead line was breaking into four ragged lines at 390. Given
-       its own tighter measure and a wrap it can balance, it sets in three
-       even ones. */
+       its own tighter measure and a wrap it can balance, it sets in three. */
     .pm__h { max-width: 14ch; line-height: 0.98; }
     .pm__idx-l { text-align: left; }
     .pm__idx-i { grid-template-columns: auto minmax(0, 1fr); column-gap: 1rem; }
