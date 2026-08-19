@@ -1,5 +1,6 @@
 ---
 import { nav, cta, site } from '../data/site.js';
+import Mark from './chrome-mark.astro';
 const { pathname } = Astro.url;
 const isActive = (href) => pathname === href || (href !== '/' && pathname.startsWith(href));
 const ctaActive = isActive(cta.href);
@@ -7,23 +8,20 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
 ---
 <header class="nav" data-nav>
   <div class="nav__in">
-    <a class="mark" href="/" aria-label={`${site.name} — home`}>
-      <span class="mark__a">Lion Forum</span>
-      <span class="mark__b">Institute</span>
-    </a>
+    <Mark tone="lit" class="nav__mark" />
 
     <nav class="nav__links" aria-label="Primary">
       {nav.map((n) => (
-        <a href={n.href} class:list={['nav__link', { 'is-active': isActive(n.href) }]}>{n.label}</a>
+        <a href={n.href} class:list={['label', 'nav__link', { 'is-active': isActive(n.href) }]}>{n.label}</a>
       ))}
     </nav>
 
-    <a href={cta.href} class:list={['pill', { 'is-active': ctaActive }]}>
+    <a href={cta.href} class:list={['label', 'pill', { 'is-active': ctaActive }]}>
       <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
       <span>{cta.label}</span>
     </a>
 
-    <button class="pill pill--burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
+    <button class="label pill pill--burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
       <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
       <span class="pill__t" data-burger-label>Menu</span>
     </button>
@@ -39,16 +37,16 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   <div class="menu__in">
     <nav class="menu__links" aria-label="Primary">
       {nav.map((n, i) => (
-        <a href={n.href} style={`--i:${i}`}><span class="index">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
+        <a class="display display--poster" href={n.href} style={`--i:${i}`}><span class="index">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
       ))}
     </nav>
-    <a class="menu__cta" href={cta.href} style={`--i:${nav.length}`}>
+    <a class="label menu__cta" href={cta.href} style={`--i:${nav.length}`}>
       <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
       {cta.label}
     </a>
     <div class="menu__foot" style={`--i:${nav.length + 1}`}>
       <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
-      <span>Hyannis Port · Washington, D.C.</span>
+      <span class="label">Hyannis Port · Washington, D.C.</span>
     </div>
   </div>
 </div>
@@ -66,14 +64,21 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     transition: color 420ms var(--ease-out);
     pointer-events: none;
   }
+  /* The scrim has one job: nothing on the page may be read through the bar.
+     It therefore holds at FULL opacity for the whole height of the bar and a
+     little past it, and only then falls away — the fade is the tail, not the
+     body. The old ramp was already down to 82% at the bar's own baseline,
+     which is why live copy showed through on every page. */
   .nav::before {
     content: ''; position: absolute; inset: 0 0 auto 0;
-    height: calc(100% + 3.4rem);
+    height: calc(100% + 4.75rem);
     background: linear-gradient(
       to bottom,
       var(--nav-scrim) 0%,
-      color-mix(in srgb, var(--nav-scrim) 82%, transparent) 52%,
-      color-mix(in srgb, var(--nav-scrim) 0%, transparent) 100%
+      var(--nav-scrim) 58%,
+      color-mix(in srgb, var(--nav-scrim) 76%, transparent) 72%,
+      color-mix(in srgb, var(--nav-scrim) 32%, transparent) 87%,
+      transparent 100%
     );
     opacity: 0; transition: opacity 460ms var(--ease-out);
     pointer-events: none;
@@ -100,29 +105,15 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   }
   .nav__in > * { pointer-events: auto; }
 
-  /* ── Wordmark: two words, one weight change. No rule, no box. ── */
-  .mark {
-    display: flex; align-items: baseline;
-    gap: 0.5ch;
-    margin-right: auto;
-    font-family: var(--sans);
-    font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.85rem);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    line-height: 1;
-    white-space: nowrap;
-    padding-block: 0.5rem; margin-block: -0.5rem;
-  }
-  .mark__a { font-weight: 600; }
-  .mark__b { font-weight: 400; color: color-mix(in srgb, currentColor 52%, transparent); transition: color 420ms var(--ease-out); }
-  .mark:hover .mark__b { color: currentColor; }
+  /* Wordmark: chrome-mark.astro. The bar only says where it sits. */
+  :global(.nav__mark) { margin-right: auto; }
 
-  /* ── Links: nearly invisible until asked for ── */
+  /* ── Links: the .label register, dimmed against whatever is behind the bar.
+     54% of currentColor is --fg-meta's ratio, written in currentColor because
+     the bar inverts over cream and the tokens do not follow it. ── */
   .nav__links { display: flex; align-items: center; gap: clamp(1rem, 2vw, 2.1rem); }
   .nav__link {
-    font-size: var(--step-label); font-weight: 500;
-    letter-spacing: 0.145em; text-transform: uppercase;
-    color: color-mix(in srgb, currentColor 52%, transparent);
+    color: color-mix(in srgb, currentColor 54%, transparent);
     transition: color 340ms var(--ease-out);
     position: relative; padding-block: 0.5rem;
     white-space: nowrap;
@@ -146,9 +137,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     min-height: 26px;
     border: 1px solid color-mix(in srgb, var(--brass) 20%, transparent);
     border-radius: 999px;
-    font-size: var(--step-label); font-weight: 500;
-    letter-spacing: 0.115em; text-transform: uppercase;
-    line-height: 1; white-space: nowrap;
+    white-space: nowrap;
     color: color-mix(in srgb, currentColor 72%, transparent);
     transition: background-color 420ms var(--ease-out), border-color 420ms var(--ease-out), color 420ms var(--ease-out);
   }
@@ -185,15 +174,13 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .menu__in { padding: calc(var(--nav-h) + 2rem) var(--gutter) var(--gutter); width: 100%; }
   .menu__links { display: grid; gap: 0.14em; }
   .menu__links a {
-    font-family: var(--serif); font-weight: 320;
-    font-size: clamp(2.1rem, 10vw, 3.4rem); line-height: 1.1;
-    letter-spacing: -0.022em;
+    line-height: 1.1;
     display: flex; align-items: baseline; gap: 1rem;
     opacity: 0; transform: translateY(14px);
     transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
     transition-delay: calc(var(--i) * 55ms + 80ms);
   }
-  .menu__links .index { font-size: 0.62rem; }
+  .menu__links .index { font-size: var(--step-micro); }
   .menu[data-open] .menu__links a { opacity: 1; transform: none; }
   .menu__cta,
   .menu__foot {
@@ -204,17 +191,17 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .menu[data-open] .menu__cta, .menu[data-open] .menu__foot { opacity: 1; transform: none; }
   .menu__cta {
     margin-top: 2.4rem; display: inline-flex; align-items: center; gap: 0.8ch;
-    font-size: var(--step-label); letter-spacing: 0.145em; text-transform: uppercase; font-weight: 500;
+    color: var(--fg);
     padding-bottom: 0.6rem; border-bottom: 1px solid var(--brass);
   }
   .menu__cta .star { width: 8px; height: 8px; color: var(--brass); flex: none; }
   .menu__foot {
-    margin-top: 3.2rem; display: grid; gap: 0.5rem; justify-items: start;
-    font-size: var(--step-xs); color: var(--fg-mute);
+    margin-top: 3.2rem; display: grid; gap: 0.75rem; justify-items: start;
+    font-size: var(--step-body); color: var(--fg-mute);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .nav, .nav::before, .nav__prog, .mark__b, .nav__link::after, .pill, .pill .star,
+    .nav, .nav::before, .nav__prog, .nav__link::after, .pill, .pill .star,
     .menu, .menu__links a, .menu__cta, .menu__foot { transition-duration: 1ms !important; }
   }
 </style>

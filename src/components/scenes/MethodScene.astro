@@ -5,39 +5,47 @@ import { method } from '../../data/site.js';
      a section thesis held on the left, the mechanism as three ranked rows on
      the right.
 
-     It used to be three anonymous columns whose titles were set at 51px — as
-     loud as the section head that introduces the pilots, so a sub-item
-     outranked its own section. The section head is now the only display type
-     here; the steps drop to the page's mid tier (~26px), which puts four
-     ranked sizes in one scene: 50 / 26 / 15 / 10.5. -->
+     Every size in it is now a rung: 53 head / 34 step title / 27 stat /
+     16 body / 11.7 label. Nothing here is a number this component invented.
+
+     Its motion is mixed on purpose. The words arrive (reveal / lines); the
+     three-row register is TERRITORY and is uncovered left to right in one
+     wipe, so this scene does not land the same way as the four that follow
+     it. -->
 <section class="method" id="method" aria-labelledby="method-h">
   <div class="shell method__in">
     <div class="method__head">
-      <p class="label method__eyebrow" data-reveal>The method</p>
+      <p class="eyebrow method__eyebrow" data-reveal>The method</p>
       <p class="label tnum method__meta" data-reveal="70">01 — 03</p>
     </div>
 
-    <span class="method__rule" aria-hidden="true" data-reveal="60"></span>
+    <span class="method__rule" aria-hidden="true" data-wipe="left" data-delay="60"></span>
 
     <div class="method__grid">
       <div class="method__thesis">
-        <h2 class="display method__h lines" id="method-h">How we work.</h2>
+        <h2 class="display display--head method__h lines" id="method-h">How we work.</h2>
 
         <p class="method__stat" data-reveal="320">
           <span class="method__stat-n tnum">3&ndash;12</span>
-          <span class="method__stat-k">Months<br />per pilot</span>
+          <span class="label method__stat-k">Months<br />per pilot</span>
         </p>
       </div>
 
-      <ol class="method__steps">
-        {method.map((m, i) => (
-          <li class="mstep" data-reveal={String(140 + i * 120)}>
-            <span class="index mstep__i">{m.index}</span>
-            <h3 class="mstep__t">{m.title}</h3>
-            <p class="mstep__p">{m.text}</p>
-          </li>
-        ))}
-      </ol>
+      <!-- TERRITORY, not arrival. Three rows on a hairline register are a
+           table, not three sentences, so the block is uncovered left to
+           right in one move instead of fading up row by row on the same
+           vector as everything else on the page. -->
+      <div class="method__stepsWrap" data-wipe="left" data-delay="120">
+        <ol class="method__steps">
+          {method.map((m) => (
+            <li class="mstep">
+              <span class="index mstep__i">{m.index}</span>
+              <h3 class="mstep__t">{m.title}</h3>
+              <p class="mstep__p">{m.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   </div>
 </section>
@@ -64,22 +72,15 @@ import { method } from '../../data/site.js';
      is on screen. Everything here lands inside one. */
   .method__eyebrow[data-reveal],
   .method__meta[data-reveal],
-  .method__stat[data-reveal],
-  .mstep[data-reveal] { transition-duration: 520ms, 640ms; }
+  .method__stat[data-reveal] { transition-duration: 520ms, 640ms; }
 
-  .method__meta { color: var(--fg-faint); text-align: right; }
+  .method__meta { text-align: right; }
 
-  /* Local motion primitive: hairline that draws left→right on reveal. */
+  /* The rule is territory too — the house wipe, not a local scaleX. */
   .method__rule {
-    display: block; height: 1px; width: 100%;
-    background: var(--rule);
-    transform-origin: left;
+    display: block; height: 1px; width: 100%; background: var(--rule);
+    transition-duration: 980ms;
   }
-  .method__rule[data-reveal] {
-    opacity: 1; transform: scaleX(0);
-    transition: transform 860ms var(--ease-out) var(--reveal-delay, 0ms);
-  }
-  .method__rule.is-in { transform: scaleX(1); }
 
   /* ── The split ────────────────────────────────────────────────────
      Thesis left, sequence right. Not three equal columns. */
@@ -98,39 +99,38 @@ import { method } from '../../data/site.js';
   }
   /* The scene's ONLY display register, and deliberately quieter than the
      section head that opens the pilots ledger below it. */
-  .method__h {
-    font-size: clamp(1.9rem, 0.85rem + 2.9vw, 3.05rem);
-    line-height: 0.98;
-    letter-spacing: -0.022em;
-    max-width: 9ch;
-  }
+  .method__h { max-width: 9ch; }
 
-  /* The one operating fact, hung in the corner of the column. */
+  /* The one operating fact, hung in the corner of the column under a
+     hairline. The rule is what makes the air above it a field with a foot
+     instead of a hole between two blocks. */
   .method__stat {
     display: flex;
     align-items: baseline;
     gap: 0.85rem;
   }
+  @media (min-width: 901px) {
+    .method__stat {
+      border-top: 1px solid var(--rule-soft);
+      padding-top: clamp(0.9rem, 1.8vw, 1.35rem);
+      width: 100%;
+    }
+  }
   .method__stat-n {
-    font-size: clamp(1.35rem, 0.95rem + 1.05vw, 1.85rem);
+    font-size: var(--step-bridge);
     font-weight: 400;
     line-height: 1;
     letter-spacing: -0.012em;
     color: var(--brass);
     white-space: nowrap;
   }
-  .method__stat-k {
-    font-size: 0.655rem;
-    font-weight: 500;
-    letter-spacing: 0.17em;
-    text-transform: uppercase;
-    line-height: 1.5;
-    color: var(--fg-faint);
-  }
+  /* .label, not a fourth micro scale invented in this component. */
+  .method__stat-k { line-height: 1.5; }
 
   /* ── The three stops ──────────────────────────────────────────────
      Rows on a hairline register, staggered 01 → 02 → 03. Each row holds one
      numeral, one title and one line, at three clearly different sizes. */
+  .method__stepsWrap { min-width: 0; transition-duration: 1100ms; }
   .method__steps { list-style: none; margin: 0; padding: 0; }
   .mstep {
     display: grid;
@@ -150,15 +150,15 @@ import { method } from '../../data/site.js';
   .mstep__t {
     grid-row: 1;
     font-family: var(--serif);
-    font-size: clamp(1.24rem, 0.9rem + 0.92vw, 1.62rem);
+    font-size: var(--step-sub);
     font-weight: 320;
     line-height: 1.1;
     letter-spacing: -0.014em;
   }
   .mstep__p {
     grid-column: 2;
-    margin-top: 0.4rem;
-    font-size: clamp(0.88rem, 0.85rem + 0.14vw, 0.95rem);
+    margin-top: 0.5rem;
+    font-size: var(--step-body);
     line-height: 1.5;
     color: var(--fg-mute);
     max-width: 30ch;

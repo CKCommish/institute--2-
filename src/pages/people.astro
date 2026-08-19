@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
 import { founders, board } from '../data/site.js';
-import { cohortsOf } from '../components/people-cohorts.js';
+import { cohortsOf, boardBridge, mastheadBridge } from '../components/people-cohorts.js';
 
 /* ── Portrait drop-in slot ────────────────────────────────────────────
    We hold no rights-cleared portraits of the founders, so the page is
@@ -43,11 +43,10 @@ const people = founders.map((f, i) => ({
    made the least distinguishing text the loudest text in each record, so
    they are stated once, above the register, and each record then carries
    only what separates the two men. */
-const sharedAffiliation = 'Both are Founding Partners of K.\u00A0Ventures and of The Lion\u00A0Forum.';
+const sharedAffiliation = 'Both are Founding Partners of K. Ventures and of The Lion Forum.';
 
-/* Cohorts live in src/components/people-cohorts.js so this page and the
-   homepage scene group the roster identically. Each cohort arrives split
-   into a lead entry and the rest. */
+/* The roster is a plate of three columns, not a table of sixteen rows.
+   Grouping, order and the two head clauses live in people-cohorts.js. */
 const cohorts = cohortsOf(board);
 
 const boardCount = board.length;
@@ -56,41 +55,42 @@ const founderCount = String(founders.length).padStart(2, '0');
 <Base title="People" description="The founders and prospective board of the Lion Forum Institute.">
 
   <!-- ── Masthead ─────────────────────────────────────────────────── -->
+  {/* eyebrow → bridge → display. The bridge is the rung that lets an
+      11px label introduce an 86px line; without it the label is orphaned
+      and the display type reads as merely large. */}
   <section class="pm">
     <div class="shell pm__in">
-      <p class="label" data-reveal>People</p>
-      {/* The display holds the left measure; the contents index holds the
-          right and sits on the display's baseline, so the top screen has an
-          object in both halves instead of one line and a void. */}
+      <p class="eyebrow" data-reveal>People</p>
+      <p class="bridge pm__bridge" data-reveal="110">{mastheadBridge}</p>
       <div class="pm__main">
-        <h1 class="display display--hero pm__h lines">The people accountable for the work.</h1>
+        <h1 class="display display--poster pm__h lines">The people accountable for the work.</h1>
         <nav class="pm__idx" aria-label="On this page">
-          <a class="pm__idx-i" href="#founders" data-reveal="240">
+          <a class="pm__idx-i" href="#founders" data-reveal="320">
             <span class="pm__idx-n tnum">{founderCount}</span>
-            <span class="pm__idx-l">Founders</span>
+            <span class="label pm__idx-l">Founders</span>
           </a>
-          <a class="pm__idx-i" href="#board" data-reveal="320">
+          <a class="pm__idx-i" href="#board" data-reveal="400">
             <span class="pm__idx-n tnum">{boardCount}</span>
-            <span class="pm__idx-l">Prospective board</span>
+            <span class="label pm__idx-l">Prospective board</span>
           </a>
         </nav>
       </div>
-      <hr class="rule pm__rule" data-reveal="400" />
+      <hr class="rule pm__rule" data-wipe="left" data-delay="120" />
     </div>
   </section>
 
   <!-- ── Founders ─────────────────────────────────────────────────── -->
   <section class="fs" id="founders" aria-labelledby="founders-h">
     <div class="shell">
-      <header class="rg__head fs__head">
-        <h2 class="label rg__eyebrow" id="founders-h" data-reveal>Founders</h2>
+      <header class="fs__head">
+        <h2 class="eyebrow" id="founders-h" data-reveal>Founders</h2>
         <p class="fs__note" data-reveal="140">{sharedAffiliation}</p>
       </header>
 
       {people.map((p) => (
-        <article class:list={['fr', { 'fr--portrait': p.portraitSrc }]} data-reveal="60">
-          <hr class="rule" />
-          <div class="fr__row">
+        <article class:list={['fr', { 'fr--portrait': p.portraitSrc }]}>
+          <hr class="rule" data-wipe="left" />
+          <div class="fr__row" data-reveal="120">
             {p.portraitSrc && (
               <div class="fr__portrait">
                 <Figure src={p.portraitSrc} alt={p.name} ratio="4 / 5" grade={0.34} />
@@ -115,67 +115,77 @@ const founderCount = String(founders.length).padStart(2, '0');
   </section>
 
   <!-- ── Prospective board ────────────────────────────────────────── -->
+  {/* The roster's problem was never the names, it was the form: sixteen
+      rows at one pitch make a reader process a directory before they can
+      feel a room. So the calibre is stated once, in the bridge, and the
+      names are set as a plate — three constituencies side by side, bounded
+      top and bottom by a rule, six rows deep instead of sixteen. Each
+      column wipes down as a territory, so the section arrives in three
+      moves rather than in sixteen identical blinks. */}
   <section class="scene on-cream bd" id="board" aria-labelledby="board-h">
     <div class="shell">
-      <header class="rg__head bd__head">
-        <p class="label rg__eyebrow" data-reveal>Prospective board</p>
-        <p class="stat stat--end rg__tally" data-reveal="220">
-          <span class="stat__n tnum">{boardCount}</span>
-          <span class="stat__l">Names put forward</span>
+      <header class="bd__head">
+        <p class="eyebrow" data-reveal>Prospective board</p>
+        {/* The scene opens on a ruled line rather than on a label, so the
+            air to the right of the bridge is a bounded field and not the
+            page running out. */}
+        <hr class="rule bd__rule" data-wipe="left" data-delay="60" />
+        <p class="bridge bd__bridge" data-reveal="110">{boardBridge}</p>
+        <h2 class="display display--feature bd__h lines" id="board-h" data-settle="0.62">Advising the pilots. Opening the doors they need.</h2>
+        {/* The head's right half gets the total, so the top of the scene has
+            an object in both columns and the plate's 06/05/06 add up to
+            something already stated. */}
+        <p class="bd__tally" data-reveal="260">
+          <span class="index tnum">{boardCount}</span>
+          <span class="label">Names put forward</span>
         </p>
-        <h2 class="display display--l bd__h lines" id="board-h">Advising the pilots. Opening the doors they need.</h2>
       </header>
 
-      {/* Two tiers inside every cohort: one lead entry at display scale, then
-          the rest as a ruled register. Sixteen peers at one size is a
-          directory; a lead plus a register is a masthead. */}
-      {cohorts.map((c, ci) => (
-        <section class:list={['cg', `cg--${ci}`]} aria-labelledby={c.id}>
-          <span class="cg__rule" data-reveal={String(ci * 70)} aria-hidden="true"></span>
-          <div class="cg__body">
-            <h3 class="cg__rail" id={c.id} data-reveal={String(ci * 70 + 55)}>
-              <span class="cg__n tnum">{String(c.people.length).padStart(2, '0')}</span>
-              <span class="cg__l">{c.label}</span>
-              <span class="cg__def">{c.def}</span>
-            </h3>
-            <div class="cg__col">
-              <article class="pl" data-reveal={String(ci * 70 + 120)}>
-                <h4 class="display pl__n">{c.lead.name}</h4>
-                <p class="pl__t">{c.lead.line}</p>
-              </article>
-              <ul class="cg__list">
-                {c.rest.map((p, i) => (
-                  <li class="pn" data-reveal={String(ci * 70 + 230 + i * 62)}>
-                    <span class="pn__n">{p.name}</span>
-                    <span class="pn__t">{p.line}</span>
+      <div class="plate">
+        <span class="plate__edge" data-wipe="center" aria-hidden="true"></span>
+        <div class="plate__cols">
+          {cohorts.map((c, ci) => (
+            <section class:list={['col', `col--${ci}`]} data-wipe="top" data-delay={String(140 + ci * 130)} aria-labelledby={c.id}>
+              <h3 class="col__head" id={c.id}>
+                <span class="index tnum">{c.count}</span>
+                <span class="label label--brass">{c.label}</span>
+              </h3>
+              <p class="col__def">{c.def}</p>
+              <ul class="col__list">
+                {c.people.map((p) => (
+                  <li class="ent">
+                    <span class="ent__n">{p.name}</span>
+                    <span class="ent__t">{p.line}</span>
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
-        </section>
-      ))}
+            </section>
+          ))}
+        </div>
+        <span class="plate__edge" data-wipe="center" data-delay="520" aria-hidden="true"></span>
+      </div>
 
-      <span class="cg__rule" data-reveal aria-hidden="true"></span>
-      <p class="bd__foot" data-reveal="70">Membership is prospective · Titles for identification</p>
+      <p class="label bd__foot" data-reveal="140">Membership is prospective · Titles for identification</p>
     </div>
   </section>
 </Base>
 
 <style>
   /* ── Masthead ───────────────────────────────────────────────────── */
-  /* Sized so the statement and the contents land inside the first screen. */
-  .pm {
-    padding-block: calc(var(--nav-h) + var(--head-pad)) 0;
+  .pm { padding-block: calc(var(--nav-h) + var(--head-pad)) 0; }
+  .pm__in { display: grid; }
+  .pm__bridge {
+    margin-top: clamp(0.9rem, 1.6vw, 1.35rem);
+    max-width: 30ch;
   }
-  .pm__in { display: grid; gap: clamp(2rem, 5vw, 4rem); }
   .pm__main {
+    margin-top: clamp(2rem, 4.2vw, 3.75rem);
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: clamp(2rem, 5vw, 5.5rem);
     align-items: end;
   }
-  .pm__h { max-width: 13ch; }
+  .pm__h { max-width: 14ch; }
   /* motion.js builds .line at runtime, so it never carries the scope hash. */
   .pm__h :global(.line) { padding-bottom: 0.07em; margin-bottom: -0.07em; }
 
@@ -198,57 +208,22 @@ const founderCount = String(founders.length).padStart(2, '0');
   .pm__idx-n {
     font-family: var(--serif);
     font-weight: 300;
-    font-size: clamp(1.35rem, 1.05rem + 1vw, 1.9rem);
+    font-size: var(--step-sub);
     line-height: 0.9;
     letter-spacing: -0.025em;
     color: var(--brass);
   }
   .pm__idx-l {
-    font-size: var(--step-label);
-    font-weight: 500;
-    letter-spacing: 0.155em;
-    text-transform: uppercase;
     line-height: 1.2;
-    color: var(--fg-mute);
     text-align: right;
     transition: color 380ms var(--ease-out);
   }
   @media (hover: hover) {
     .pm__idx-i:hover .pm__idx-l { color: var(--fg); }
   }
+  .pm__rule { margin-top: clamp(2.5rem, 5vw, 4.25rem); }
 
-  /* ── The two registers share one head lockup ────────────────────── */
-  /* Founders and Prospective board open the same way — eyebrow at the left
-     of the measure, a right-hand anchor — so the page reads as a pair of
-     registers rather than two unrelated sections. */
-  .rg__head {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    column-gap: clamp(1.5rem, 3vw, 3.5rem);
-  }
-  .rg__eyebrow { grid-column: 1; grid-row: 1; }
-  .rg__tally { grid-column: 2; grid-row: 1 / span 2; }
-
-  .stat { display: grid; gap: 0.5rem; }
-  .stat--end { text-align: right; justify-items: end; }
-  .stat__n {
-    font-family: var(--serif);
-    font-weight: 300;
-    font-size: clamp(1.5rem, 1.08rem + 1.45vw, 2.4rem);
-    line-height: 0.9;
-    letter-spacing: -0.025em;
-  }
-  .stat__l {
-    font-size: var(--step-label);
-    font-weight: 500;
-    letter-spacing: 0.155em;
-    text-transform: uppercase;
-    color: var(--fg-mute);
-    line-height: 1;
-  }
-
-  /* ── Founders: the register at full scale ───────────────────────── */
+  /* ── Founders ───────────────────────────────────────────────────── */
   /* Opens tight — its head sits on the masthead's rule, so the first screen
      ends on the register rather than on air. The cream flip below is the
      page's one big change of gear, and it gets all the room instead. */
@@ -256,16 +231,20 @@ const founderCount = String(founders.length).padStart(2, '0');
     padding-block: clamp(1.35rem, 2.6vw, 2.6rem) clamp(0.5rem, 1.2vw, 1.25rem);
     scroll-margin-top: calc(var(--nav-h) + 1rem);
   }
-  .fs__head { margin-bottom: clamp(1.75rem, 3.4vw, 3rem); }
+  .fs__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    column-gap: clamp(1.5rem, 3vw, 3.5rem);
+    margin-bottom: clamp(1.75rem, 3.4vw, 3rem);
+  }
   /* The one affiliation both founders share, stated once. It opens the
      right-hand column that the credential lines below continue. */
   .fs__note {
-    grid-column: 2;
-    grid-row: 1;
     justify-self: end;
     text-align: right;
     max-width: 26ch;
-    font-size: var(--step-xs);
+    font-size: var(--step-body);
     line-height: 1.5;
     color: var(--fg-mute);
     text-wrap: pretty;
@@ -296,11 +275,11 @@ const founderCount = String(founders.length).padStart(2, '0');
     margin-bottom: clamp(0.85rem, 1.6vw, 1.35rem);
   }
   .fr__name {
-    /* Second-tier display size — local to this piece; the page's one
-       hero-scale moment is the masthead. */
-    font-size: clamp(2rem, 1.05rem + 3.1vw, 3.9rem);
-    line-height: 1;
-    letter-spacing: -0.024em;
+    /* One rung under the masthead poster line, one rung over the board's
+       feature line is the other direction — the page runs 86 / 67 / 53. */
+    font-size: var(--step-head);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
     max-width: 16ch;
   }
 
@@ -314,179 +293,156 @@ const founderCount = String(founders.length).padStart(2, '0');
     gap: 0.3rem;
     justify-self: end;
     text-align: right;
-    font-size: var(--step-s);
+    font-size: var(--step-lede);
     line-height: 1.45;
     color: var(--fg-mute);
     padding-bottom: 0.12em;
   }
 
   /* ── Prospective board ──────────────────────────────────────────── */
-  /* Opens wide — this is the page's second beat and the only cream ground.
-     Closes tighter than it opens: the last rule and its note are the ending,
-     so there is no dead cream between them and the footer. */
   .bd {
     padding-block: clamp(5rem, 2.5rem + 8vw, 10rem) clamp(3rem, 5vw, 5.5rem);
     scroll-margin-top: var(--nav-h);
   }
-  .bd__head { margin-bottom: clamp(2.25rem, 4.5vw, 4rem); }
+  .bd__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: clamp(2rem, 5vw, 5.5rem);
+  }
+  .bd__head > .eyebrow { grid-column: 1; }
+  /* All three run the full measure: the tally only ever occupies row one,
+     so the bridge is never squeezed into a column beside it. */
+  .bd__rule,
+  .bd__bridge,
+  .bd__h { grid-column: 1 / -1; }
+  .bd__rule { margin-top: clamp(1rem, 1.8vw, 1.5rem); }
+  .bd__bridge {
+    margin-top: clamp(1.4rem, 2.6vw, 2.2rem);
+    max-width: 44ch;
+  }
   .bd__h {
-    grid-column: 1;
-    grid-row: 2;
-    margin-top: var(--stack-2);
-    max-width: 20ch;
+    margin-top: clamp(1.6rem, 3.2vw, 2.75rem);
+    /* Sized so the sentence breaks on its own sense — "Advising the
+       pilots. / Opening the doors / they need." — at every width, since
+       ch scales with the clamp. text-wrap is left alone so the measure,
+       not the balancer, decides. */
+    max-width: 15ch;
+    text-wrap: wrap;
+    --settle-shift: 2.2vh;
+    --settle-origin: 0% 100%;
     /* The one display line in this scene gets the slowest, latest ramp on
        the page — motion sorts the hierarchy instead of dimming it evenly. */
     --dur-3: 1400ms;
   }
+  /* The total, hung on the right edge of the eyebrow's own line, so the
+     scene opens on one ruled sentence across the page rather than on a
+     label alone. Same index + label pair the founders' records use. */
+  .bd__head { align-items: baseline; }
+  .bd__tally {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+  }
   .bd__h :global(.line) { padding-bottom: 0.09em; margin-bottom: -0.09em; }
   .bd__h :global(.line > span) { transition-delay: calc(var(--line-delay, 0ms) + 120ms); }
 
-  /* Structural rules. They wipe in from the left rather than fading, so
-     the frame of the section arrives before its contents. */
-  .cg__rule {
-    display: block;
-    width: 100%;
-    height: 1px;
-    background: var(--rule);
-    opacity: 1;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 820ms var(--ease-io) var(--reveal-delay, 0ms);
-    will-change: transform;
-  }
-  .cg__rule.is-in { transform: scaleX(1); }
-
-  .cg__body {
+  /* ── The plate ──────────────────────────────────────────────────── */
+  /* A held rest between the claim and the roster. It is bounded on both
+     sides — the display line above, the plate's own rule below — so it
+     reads as an interval and not as a page that ran out. */
+  .plate { margin-top: var(--pause); display: grid; }
+  .plate__edge { display: block; height: 1px; background: var(--rule); }
+  .plate__cols {
     display: grid;
-    grid-template-columns: minmax(0, 2.7fr) minmax(0, 9.3fr);
-    column-gap: clamp(1.5rem, 3vw, 3.5rem);
+    /* Column width tracks the size of the constituency, so the plate has a
+       measure instead of three identical bays. */
+    grid-template-columns: 6fr 5fr 5fr;
+    column-gap: clamp(1.75rem, 3.6vw, 4.25rem);
   }
+  /* The block padding sits on the columns, not on the row, so the rules
+     between them run edge to edge and the plate closes. */
+  .col { padding-block: clamp(2.25rem, 4.4vw, 4rem); }
+  /* Column rules, the way a broadsheet sets them: they run the full depth
+     of the plate, so the three constituencies are bays rather than three
+     lists that happen to sit near each other. */
+  .col + .col {
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(1.75rem, 3.6vw, 4.25rem);
+    margin-left: calc(-1 * clamp(0.5rem, 1vw, 1.1rem));
+  }
+  /* If the script never runs, nothing may stay under its mask. */
+  :global(html:not(.js)) .col,
+  :global(html:not(.js)) .plate__edge { clip-path: none; }
 
-  /* The three cohorts decelerate: Policy is the widest-set and the tallest,
-     Practice the tightest, so the section has a rhythm and an ending rather
-     than three equal slabs. --pn-lead scales the register's row rhythm with
-     the block padding, 1.5× down to 1×. */
-  .cg--0 .cg__body { padding-block: clamp(1.9rem, 3.7vw, 3.3rem) clamp(3rem, 6.1vw, 5.4rem); --pn-lead: 0.86rem; }
-  .cg--1 .cg__body { padding-block: clamp(1.6rem, 3.1vw, 2.7rem) clamp(2.25rem, 4.5vw, 4rem);  --pn-lead: 0.7rem; }
-  .cg--2 .cg__body { padding-block: clamp(1.3rem, 2.5vw, 2.2rem) clamp(1.6rem, 3.2vw, 2.8rem); --pn-lead: 0.57rem; }
-
-  /* Per-cohort rail: count, constituency, and one line saying what the
-     cohort is for — an authored margin, not leftover gutter. Sticky, so it
-     holds beside its own names for the length of the block. */
-  .cg__rail {
-    position: sticky;
-    top: calc(var(--nav-h) + clamp(1.25rem, 3vw, 2.5rem));
-    align-self: start;
-    display: grid;
-    gap: clamp(0.6rem, 1vw, 0.85rem);
-    font-weight: 400;
-  }
-  .cg__n {
-    font-family: var(--serif);
-    font-weight: 300;
-    font-size: clamp(1.5rem, 1.08rem + 1.45vw, 2.4rem);
-    line-height: 0.9;
-    letter-spacing: -0.025em;
-  }
-  .cg__l {
-    font-family: var(--sans);
-    font-size: var(--step-label);
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    line-height: 1;
-    color: var(--brass);
-  }
-  .cg__def {
-    font-family: var(--sans);
-    font-size: var(--step-xs);
-    font-weight: 370;
-    letter-spacing: 0;
-    text-transform: none;
-    line-height: 1.45;
-    color: var(--fg-mute);
-    max-width: 22ch;
-    text-wrap: pretty;
-  }
-
-  /* ── Tier one: the cohort's lead entry ──────────────────────────── */
-  .pl {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    column-gap: clamp(1.5rem, 3vw, 3rem);
+  .col__head {
+    display: flex;
     align-items: baseline;
-    padding-bottom: clamp(0.9rem, 1.7vw, 1.5rem);
-    border-bottom: 1px solid var(--rule);
-    --reveal-y: 12px;
+    gap: 0.85rem;
+    font-weight: 400;
+    margin-bottom: clamp(0.5rem, 0.9vw, 0.75rem);
   }
-  .pl__n {
-    /* Sits a clear step under the section's display line — the leads are
-       landmarks inside the index, not three more headlines. */
-    font-size: clamp(1.85rem, 1.05rem + 2.1vw, 2.75rem);
-    line-height: 1;
-    letter-spacing: -0.021em;
-  }
-  .pl__t {
-    font-size: var(--step-s);
+  .col__def {
+    font-size: var(--step-body);
     line-height: 1.4;
     color: var(--fg-mute);
-    text-align: right;
-    white-space: nowrap;
+    max-width: 24ch;
+    text-wrap: pretty;
+    padding-bottom: clamp(1.1rem, 2.1vw, 1.75rem);
   }
 
-  /* ── Tier two: the register ─────────────────────────────────────── */
-  .cg__list { list-style: none; margin: 0; padding: 0; display: grid; }
-  .pn {
+  /* The rule runs the full column, not the width of the sentence above it,
+     so the three heads sit on one shelf across the plate. */
+  .col__list {
+    list-style: none; margin: 0; padding: 0;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
-    column-gap: clamp(1.25rem, 3vw, 3rem);
-    align-items: baseline;
-    padding-block: var(--pn-lead, 0.7rem);
-    border-bottom: 1px solid var(--rule-soft);
-    /* Small items move a shorter distance than the display line. */
-    --reveal-y: 8px;
+    row-gap: clamp(1.15rem, 2.2vw, 2rem);
+    padding-top: clamp(1.25rem, 2.3vw, 1.9rem);
+    border-top: 1px solid var(--rule);
   }
-  .pn:last-child { border-bottom: 0; }
-  .pn__n {
+  .ent { display: grid; row-gap: 0.3rem; }
+  .ent__n {
     font-family: var(--serif);
     font-weight: 340;
-    font-size: clamp(1.15rem, 0.98rem + 0.5vw, 1.38rem);
-    line-height: 1.15;
-    letter-spacing: -0.012em;
+    font-size: var(--step-sub);
+    line-height: 1.06;
+    letter-spacing: -0.016em;
+    color: var(--fg);
+    text-wrap: balance;
   }
-  /* Second gear inside the row: the name lands, then the title settles
-     beside it. Motion ranks the pair instead of gating both at once. */
-  .pn__t {
-    font-size: var(--step-xs);
-    line-height: 1.4;
+  .ent__t {
+    font-size: var(--step-body);
+    line-height: 1.35;
     color: var(--fg-mute);
-    text-align: right;
     text-wrap: pretty;
-    opacity: 0;
-    transform: translate3d(0, 4px, 0);
-    transition:
-      opacity var(--dur-2) var(--ease-out) calc(var(--reveal-delay, 0ms) + 90ms),
-      transform var(--dur-3) var(--ease-out) calc(var(--reveal-delay, 0ms) + 90ms),
-      color 420ms var(--ease-out);
-  }
-  .pn.is-in .pn__t { opacity: 1; transform: none; }
-  :global(html:not(.js)) .pn__t { opacity: 1; transform: none; }
-  @media (hover: hover) {
-    .pn:hover .pn__t { color: var(--fg); }
   }
 
   .bd__foot {
+    justify-self: end;
+    text-align: right;
     padding-top: clamp(1.1rem, 2vw, 1.6rem);
-    font-size: var(--step-label);
-    letter-spacing: 0.135em;
-    text-transform: uppercase;
     line-height: 1.5;
-    color: var(--fg-faint);
+    text-wrap: balance;
   }
 
   /* ── Narrow ─────────────────────────────────────────────────────── */
-  @media (max-width: 1080px) {
-    .pl__t { white-space: normal; }
+  @media (max-width: 1180px) {
+    /* Three columns stop holding a name and its title at 33px. The plate
+       becomes three stacked bands, each running its own names two-up, so
+       it is still a block to glance at rather than a queue to read. */
+    .plate__cols {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 0;
+    }
+    .col { padding-block: clamp(1.6rem, 3.4vw, 2.5rem); }
+    .col + .col { border-left: 0; padding-left: 0; margin-left: 0; border-top: 1px solid var(--rule); }
+    .col__head { margin-bottom: 0.45rem; }
+    .col__def { max-width: 40ch; }
+    .col__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 4vw, 3.5rem);
+    }
   }
   @media (max-width: 980px) {
     .fr__row,
@@ -499,35 +455,6 @@ const founderCount = String(founders.length).padStart(2, '0');
     .fr__portrait { max-width: 240px; }
     .fr__name { max-width: none; }
     .fr__cred { justify-self: start; text-align: left; align-self: start; }
-
-    /* The rail becomes a sticky banner — count, constituency and definition
-       held under the nav while its own names scroll past. On a phone the
-       sixteen names run two viewports; this is the fixed reference point
-       that tells you which third of the board you are in. */
-    .cg__body { grid-template-columns: 1fr; }
-    .cg__rail {
-      position: sticky;
-      top: calc(var(--nav-h) - 1px);
-      z-index: 3;
-      background: var(--bg);
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      column-gap: 0.9rem;
-      row-gap: 0.15rem;
-      align-items: baseline;
-      padding-block: 0.7rem 0.62rem;
-      border-bottom: 1px solid var(--rule);
-      margin-bottom: clamp(1rem, 3vw, 1.5rem);
-    }
-    .cg__n { grid-row: 1 / span 2; font-size: clamp(1.35rem, 1.1rem + 0.9vw, 1.9rem); }
-    .cg__def { max-width: none; }
-  }
-  @media (max-width: 880px) {
-    /* Name over title once the two columns stop fitting side by side. */
-    .pl, .pn { grid-template-columns: 1fr; }
-    .pl { row-gap: 0.3rem; padding-bottom: clamp(0.8rem, 3vw, 1.1rem); }
-    .pl__t, .pn__t { text-align: left; max-width: none; }
-    .pn { row-gap: 0.22rem; }
   }
   @media (max-width: 860px) {
     /* Masthead stacks: the contents index sits under the display line and
@@ -536,50 +463,26 @@ const founderCount = String(founders.length).padStart(2, '0');
     .pm__idx { min-width: 0; padding-bottom: 0; }
   }
   @media (max-width: 700px) {
-    /* The head stacks: the tally lifts onto the eyebrow's baseline and the
-       display line takes the whole measure instead of a 175px column. */
-    .rg__head {
-      align-items: baseline;
-      column-gap: 1.1rem;
-      row-gap: 0.95rem;
-    }
-    .rg__tally { grid-row: 1; align-self: baseline; }
-    .fs__note {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      justify-self: start;
-      text-align: left;
-      max-width: 34ch;
-    }
-    /* With the whole measure to itself the one display line on this screen
-       can be set larger than the shared step and still break on its own
-       clauses: "Advising the pilots. / Opening the doors / they need."
-       The size meets --step-l again at 700px, so nothing jumps. */
-    .bd__h {
-      grid-column: 1 / -1;
-      margin-top: 0;
-      max-width: none;
-      font-size: clamp(2.2125rem, 2.66rem - 1.15vw, 2.35rem);
-      text-wrap: pretty;
-    }
-
-    /* Cohort spacing keeps decelerating on the phone. */
-    .cg--0 .cg__body { padding-block: 0 2.9rem; --pn-lead: 0.78rem; }
-    .cg--1 .cg__body { padding-block: 0 2.1rem; --pn-lead: 0.64rem; }
-    .cg--2 .cg__body { padding-block: 0 1.4rem; --pn-lead: 0.52rem; }
-    .cg--0 .cg__rail { margin-top: 2.4rem; }
-    .cg--1 .cg__rail { margin-top: 1.75rem; }
-    .cg--2 .cg__rail { margin-top: 1.2rem; }
-    .pl__n { font-size: clamp(2rem, 1.5rem + 2vw, 2.45rem); }
+    .fs__head { grid-template-columns: minmax(0, 1fr); row-gap: 0.95rem; }
+    .fs__note { justify-self: start; text-align: left; max-width: 34ch; }
+    /* The tally lifts onto the eyebrow's line and the head takes the whole
+       measure — the display line is never squeezed into a column. */
+    .bd__head { column-gap: 1.1rem; }
+    .bd__tally { gap: 0.6rem; }
   }
-  @media (max-width: 480px) {
-    /* Closing note holds one line at 390px rather than orphaning a word. */
-    .bd__foot { font-size: 0.64rem; letter-spacing: 0.07em; }
+  @media (max-width: 620px) {
+    /* One name per line, and the pitch tightens so sixteen entries stay a
+       block a thumb can pass rather than a scroll of its own. */
+    .col__list {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 1.05rem;
+      padding-top: 1.1rem;
+    }
+    .ent { row-gap: 0.18rem; }
+    .bd__foot { justify-self: start; text-align: left; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .cg__rule { transform: none; transition-duration: 1ms; }
     .bd__h :global(.line > span) { transition-delay: 0ms; }
-    .pn__t { opacity: 1; transform: none; transition-duration: 1ms; }
   }
 </style>

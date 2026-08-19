@@ -47,26 +47,91 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-optical-sizing: auto;
   text-wrap: balance;
 }
-.display--hero { font-size: var(--step-hero); line-height: 0.93; letter-spacing: -0.028em; }
-.display--xl   { font-size: var(--step-xl); }
-.display--l    { font-size: var(--step-l); line-height: 1.02; letter-spacing: -0.016em; }
-.display--m    { font-size: var(--step-m); line-height: 1.14; letter-spacing: -0.011em; }
+/* Job names first; the t-shirt names are aliases so existing markup works. */
+.display--banner,
+.display--hero { font-size: var(--step-banner); line-height: 0.93; letter-spacing: -0.028em; }
+.display--poster,
+.display--xl   { font-size: var(--step-poster); }
+.display--feature { font-size: var(--step-feature); line-height: 1.0; letter-spacing: -0.018em; }
+.display--head,
+.display--l    { font-size: var(--step-head); line-height: 1.02; letter-spacing: -0.016em; }
+.display--sub,
+.display--m    { font-size: var(--step-sub); line-height: 1.14; letter-spacing: -0.011em; }
 
 .display em, .em {
   font-style: italic;
   font-weight: 300;
 }
 
-.label {
+/* ── The bridge ──────────────────────────────────────────────────────
+   The rung between a micro register and a display line. A sans clause,
+   set mute, no tracking — the voice that hands the reader up from an
+   11px label to a 90px word. Every scene that opens with an eyebrow and
+   a display line should carry one of these between them.
+
+       <p class="eyebrow">The institute</p>
+       <p class="bridge">A pilot needs money, a technology, and a room.</p>
+       <h2 class="display display--poster">We sit between …</h2>
+
+   Do not set it in the serif and do not track it out: at this size the
+   serif belongs to .display--sub and tracking belongs to the micro
+   registers. The bridge is the one sans voice in the middle of the page. */
+.bridge {
   font-family: var(--sans);
-  font-size: var(--step-label);
-  font-weight: 500;
-  letter-spacing: 0.155em;
+  font-size: var(--step-bridge);
+  font-weight: 330;
+  line-height: 1.3;
+  letter-spacing: -0.006em;
+  color: var(--fg-mute);
+  max-width: 42ch;
+  text-wrap: balance;
+}
+.bridge--fg { color: var(--fg); }
+
+/* ── The three micro registers ───────────────────────────────────────
+   Below 16px this site owns exactly THREE marks. Each has one job, one
+   size, one tracking, one weight, one colour. If a new small label does
+   not fit one of these three, it is not a new register — it is one of
+   these three used wrongly, or it belongs at --step-body.
+
+   1. .eyebrow  the brightest. ONE PER SCENE. It names the scene and is
+                the top of the ladder eyebrow → .bridge → .display.
+                11.7px / 620 / 0.15em / --fg.
+   2. .label    the dim one, and the only one you may use many times per
+                page: photo credits, counts, field names, footer rows,
+                table column heads. It labels a thing that is already
+                visible. 11.7px / 500 / 0.12em / --fg-meta.
+                `.meta` is the same rule under a clearer name.
+   3. .index    the brass tabular numeral: 01 / 04, row numbers, years.
+                Never carries a word. 13.1px / 600 / 0.18em / --brass.
+
+   Do not invent a fourth by changing tracking or by mixing a size in.
+   `.label--brass` promotes a label to accent colour and is the only
+   sanctioned variant.
+   -------------------------------------------------------------------- */
+.eyebrow {
+  font-family: var(--sans);
+  font-size: var(--step-micro);
+  font-weight: 620;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   line-height: 1;
-  color: var(--fg-mute);
+  color: var(--fg);
 }
-.label--brass { color: var(--brass); }
+.eyebrow--brass { color: var(--brass); }
+
+.label,
+.meta {
+  font-family: var(--sans);
+  font-size: var(--step-micro);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--fg-meta);
+}
+.label--brass,
+.meta--brass { color: var(--brass); }
 
 /* A micro-label link is 11px tall; a finger is not. .tap gives any inline
    label-sized link a 26px hit box without moving a pixel of the layout. */
@@ -111,8 +176,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .rule { height: 1px; background: var(--rule); border: 0; width: 100%; }
 
-/* Small numeric index used across scenes, e.g. 01 / 04. One treatment
-   everywhere: a tracked brass cap that indexes a thing without outranking it. */
+/* Micro register 3. A tracked brass numeral that indexes a thing without
+   outranking it. Numerals only — the moment it carries a word it is a
+   .label, not an .index. */
 .index {
   font-family: var(--sans);
   font-size: clamp(0.72rem, 0.68rem + 0.16vw, 0.82rem);
@@ -146,7 +212,34 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .skip-link:focus { transform: translateY(0); }
 
-/* ── Reveal system (driven by scripts/motion.js) ─────────────────── */
+/* ── Motion system (driven by scripts/motion.js) ──────────────────
+   Three vectors, not one. A scene picks the vector that matches what it
+   is doing; picking one at random is worse than picking none.
+
+     1. [data-reveal] + .lines   ARRIVAL.  Type and small blocks lift in
+        from below behind a mask. Use for words. This is the default and
+        it should stay the majority of the page.
+
+     2. [data-wipe]              TERRITORY. A hard-edged mask opens along
+        one axis from a named anchor and nothing moves or fades. Use for
+        things that are places rather than sentences: full-bleed figures,
+        rules, tables, a roster, a map. It reads as ground being
+        uncovered, which a fade-up cannot do.
+
+     3. [data-settle]            WEIGHT. Scroll-linked, continuous and
+        reversible: the element is slightly large and low while it is
+        arriving and resolves as it reaches reading position. Tied to
+        scroll, not to entry, so it responds to the reader instead of
+        firing at them. Use ONCE or twice per page, on the thing the
+        page is actually about.
+
+   Mixing 1 and 2 in one scene is fine and is how a scene gets
+   characterised: the figure wipes, the caption lifts. Mixing all three
+   in one scene is noise.
+
+   Delay: `data-delay="180"` on any of the three. `data-reveal="180"`
+   still works. `data-seq` on a parent auto-staggers its children.
+   -------------------------------------------------------------------- */
 [data-reveal] {
   opacity: 0;
   transform: translate3d(0, var(--reveal-y, 14px), 0);
@@ -169,10 +262,64 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .is-in .lines .line > span,
 .lines.is-in .line > span { transform: none; }
 
+/* ── 2. Wipe — a mask that opens along one axis ───────────────────
+   The attribute names the ANCHOR the reveal grows out of, so the motion
+   points away from something on the page rather than in a house
+   direction:
+
+     data-wipe="left"      grows rightward off the left edge   (default)
+     data-wipe="right"     grows leftward off the right edge
+     data-wipe="top"       grows downward off the top edge
+     data-wipe="bottom"    grows upward off the bottom edge
+     data-wipe="center"    opens outward on the horizontal axis
+     data-wipe="center-y"  opens outward on the vertical axis
+
+   No opacity, no translate: the element is either covered or it is not.
+   Pair `data-wipe="center"` with a rule or a full-bleed figure and it
+   resolves outward from the middle of the composition.                */
+[data-wipe] {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--dur-4) var(--ease-wipe) var(--reveal-delay, 0ms);
+  will-change: clip-path;
+}
+[data-wipe="right"]    { clip-path: inset(0 0 0 100%); }
+[data-wipe="top"]      { clip-path: inset(0 0 100% 0); }
+[data-wipe="bottom"]   { clip-path: inset(100% 0 0 0); }
+[data-wipe="center"]   { clip-path: inset(0 50% 0 50%); }
+[data-wipe="center-y"] { clip-path: inset(50% 0 50% 0); }
+[data-wipe].is-in      { clip-path: inset(0 0 0 0); }
+
+/* A wipe over type reads better if the words hold still while the mask
+   travels — put the wipe on a wrapper, never on the .lines element. */
+
+/* ── 3. Settle — scroll-linked weight ─────────────────────────────
+   --settle runs 0 (arriving) → 1 (settled) as the element climbs the
+   viewport; motion.js writes it every frame. It is continuous and
+   reversible, so scrolling back up un-settles it. Tune where it lands
+   with data-settle="0.45" (fraction of viewport height at which the
+   element is fully resolved; default 0.55). Override the amounts per
+   element with --settle-scale / --settle-shift.                       */
+[data-settle] {
+  --settle: 1;
+  --settle-scale: 0.955;
+  --settle-shift: 3.2vh;
+  transform:
+    translate3d(0, calc((1 - var(--settle)) * var(--settle-shift)), 0)
+    scale(calc(var(--settle-scale) + (1 - var(--settle-scale)) * var(--settle)));
+  transform-origin: var(--settle-origin, 50% 100%);
+  will-change: transform;
+}
+
+/* ── Reduced motion — every vector inert ──────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal], .lines .line > span { transition-duration: 1ms !important; }
+  [data-reveal], .lines .line > span, [data-wipe] {
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
   [data-reveal] { opacity: 1; transform: none; }
   .lines .line > span { transform: none; }
+  [data-wipe], [data-wipe].is-in { clip-path: none !important; }
+  [data-settle] { --settle: 1 !important; transform: none !important; will-change: auto; }
 }
 
 /* ── Link affordance ─────────────────────────────────────────────── */

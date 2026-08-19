@@ -1,74 +1,76 @@
 ---
 import Base from '../layouts/Base.astro';
-import Figure from '../components/Figure.astro';
+import PilotCard from '../components/pilots-card.astro';
 import { pilots } from '../data/site.js';
 
-/* Round 3 shipped ONE card four times: identical band height, identical
-   anatomy, identical reveal. Four equal beats is a run, not a composition.
-   Round 4 ranks them.
+/* Round 4 ranked the four cards by height. The gap the critic named was
+   underneath them: one identical PROBLEM / APPROACH / GOAL slab, four times,
+   at one measure. So the SHAPE of the argument is now part of the ranking,
+   and it lives in pilots-card.astro:
 
-     01  LEAD  — a near-full-screen band, the largest display type on the
-                 page after the masthead, a long slow stagger. It opens.
-     02  RUN   — half-height band, tight stagger. The series begins.
-     03  TURN  — half-height band, but the anatomy deviates once: the name
-                 sits at the TOP-left with its line hung beneath it, so the
-                 reader registers a change of pace instead of a fourth
-                 performance of the same frame.
-     04  RUN   — back in the series, and it closes.
+     01  anchor  near-screen band, then the argument descends onto the page's
+                 one --step-feature line. The thesis.
+     02  aside   no band — the plate bleeds off the left edge and the whole
+                 argument stands beside it in a ruled column. Compressed.
+     03  turn    the name climbs to the top of the frame and the three fields
+                 are set on the photograph itself. No ground beneath it.
+     04  close   the series returns, mirrored: outcome first, setup hung at
+                 the right. It closes by reading backwards.
 
-   The photograph and the rank carry the variation. Everything else — the
-   nameplate grammar, the spec strip, the palette — is held constant so the
-   four still read as one commission. */
+   Four shapes, four heights, four measures — and one nameplate grammar,
+   one palette and one line per field holding them together. */
 const shape = {
-  'healthy-athletes': 'lead',
-  'clean-data-centers': 'run',
+  'healthy-athletes': 'anchor',
+  'clean-data-centers': 'aside',
   'infant-mortality': 'turn',
-  'career-pathways': 'run',
+  'career-pathways': 'close',
 };
 
 /* Per-frame grade only — the navy multiply that pulls each photograph into
-   the palette. The maternal frame is a warm interior and needs more of it. */
+   the palette. The maternal frame is a warm interior and needs more of it;
+   02 is a plate now rather than a bed for type, so it carries less. */
 const grades = {
   'healthy-athletes': 0.64,
-  'clean-data-centers': 0.58,
+  'clean-data-centers': 0.5,
   'infant-mortality': 0.74,
   'career-pathways': 0.62,
 };
-/* 03 is composed from the top now, so its crop drops to keep the faces in
-   the open half of the frame rather than behind the display type. */
+/* 03 is composed from the top, so its crop drops to keep the faces in the
+   open half of the frame rather than behind the display type. */
 const focals = {
   'healthy-athletes': '50% 34%',
-  'clean-data-centers': '50% 58%',
-  'infant-mortality': '46% 56%',
+  'clean-data-centers': '50% 52%',
+  'infant-mortality': '46% 58%',
   'career-pathways': '50% 46%',
 };
 ---
 <Base title="Pilots" description="Four pilots in 2026: health, energy, maternal health, and education.">
   <section class="phead">
     <div class="shell phead__in">
-      <p class="label phead__eyebrow" data-reveal>Four pilots · 2026</p>
-      <h1 class="display display--hero phead__h lines">Proof, one problem at a time.</h1>
+      <p class="eyebrow phead__eyebrow" data-reveal>Four pilots · 2026</p>
+      <!-- the rung between an 11px label and a 126px line: without it the
+           display type reads as merely large -->
+      <p class="bridge phead__bridge" data-reveal="90">
+        One measurable outcome each. The result is published either way.
+      </p>
+      <h1 class="display display--banner phead__h lines">Proof, one problem at a time.</h1>
 
-      <span class="phead__rule" aria-hidden="true"></span>
+      <span class="phead__rule" aria-hidden="true" data-wipe="left" data-delay="240"></span>
 
-      <!-- Left column is anchored top AND bottom: the lede hangs off the rule
-           at the same height as the first index row, and the horizon figure
-           sits on the last one. The gap between them is the composition, not
-           a place the copy ran out. -->
+      <!-- Left column is anchored to the BOTTOM of the contents. The air above
+           the figure is a pause held between the rule and the numeral, not a
+           place the copy ran out. -->
       <div class="phead__left">
-        <p class="phead__lede" data-reveal="440">
-          One measurable outcome each. The result is published either way.
-        </p>
         <p class="phead__fig" data-reveal="620">
           <span class="display phead__fig-n">3–12</span>
           <span class="label phead__fig-l">Months, start to published result</span>
         </p>
       </div>
 
-      <nav class="phead__index" aria-label="The four pilots">
+      <nav class="phead__index" aria-label="The four pilots" data-seq="80" data-seq-from="420">
         <ol>
-          {pilots.map((p, i) => (
-            <li data-reveal={String(500 + i * 80)}>
+          {pilots.map((p) => (
+            <li data-reveal>
               <a class="pc" href={`#${p.id}`}>
                 <span class="index pc__i">{p.index}</span>
                 <span class="display pc__t">{p.title}</span>
@@ -83,49 +85,24 @@ const focals = {
   </section>
 
   {pilots.map((p, i) => (
-    <article class:list={['pcard', `pcard--${shape[p.id] ?? 'run'}`]} id={p.id} aria-labelledby={`${p.id}-h`}>
-      <div class="pcard__band">
-        <Figure
-          src={p.image}
-          alt=""
-          ratio="auto"
-          grade={grades[p.id] ?? 0.6}
-          focal={focals[p.id] || '50% 50%'}
-          parallax={i === 0 ? 7 : 5}
-          loading={i === 0 ? 'eager' : 'lazy'}
-        />
-
-        <p class="shell pcard__rail" data-reveal>
-          <span class="index pcard__i">{p.index}</span>
-          <span class="pcard__partner">{p.partner}</span>
-          <span class="pcard__field">{p.field}</span>
-        </p>
-
-        <!-- data-reveal here is a TRIGGER, not a fade: the block is
-             neutralised below and only carries .is-in, so the masked title
-             lands first and the tagline is delayed off the same beat. -->
-        <div class="shell pcard__say" data-reveal>
-          <h2 class="display pcard__t lines" id={`${p.id}-h`}>{p.title}</h2>
-          <p class="pcard__tag">{p.tagline}</p>
-        </div>
-      </div>
-
-      <dl class="shell pcard__spec" data-reveal>
-        <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-        <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-        <div><dt class="label">Goal</dt><dd>{p.goal}</dd></div>
-      </dl>
-    </article>
+    <PilotCard
+      pilot={p}
+      shape={shape[p.id] ?? 'close'}
+      grade={grades[p.id] ?? 0.6}
+      focal={focals[p.id] || '50% 50%'}
+      parallax={i === 0 ? 7 : 5}
+      loading={i === 0 ? 'eager' : 'lazy'}
+    />
   ))}
 </Base>
 
 <style>
   /* ── Nav guard, local to this page ─────────────────────────────────
-     Nav.astro is not this piece's file. But /pilots/ scrolls 80–110px cream
-     display type straight under the bar, four times, and the shared edgeless
-     fade cannot mask type at that size. So this page carries a stronger band
-     of its own: solid for the full height of the bar, then a 2.4rem fade.
-     The :has() guard keeps this rule inert on every page but this one. */
+     Nav.astro is not this piece's file. But /pilots/ scrolls 55–90px cream
+     display type straight under the bar, and the shared edgeless fade cannot
+     mask type at that size. So this page carries a stronger band of its own:
+     solid for the full height of the bar, then a 2.4rem fade. The :has()
+     guard keeps this rule inert on every page but this one. */
   :global(header.nav.is-scrolled:has(~ main .pcard))::before {
     background: linear-gradient(
       to bottom,
@@ -144,8 +121,8 @@ const focals = {
   }
 
   /* ── Masthead ──────────────────────────────────────────────────────
-     Statement full width; below the rule, the lede + the horizon figure on
-     the left and the contents on the right, both hung off the rule. */
+     eyebrow → bridge → banner, then the rule, then the horizon figure on the
+     left and the contents on the right, both hung off it. */
   .phead { padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(2rem, 4.5vw, 3.5rem); }
   .phead__in {
     display: grid;
@@ -155,9 +132,15 @@ const focals = {
     align-items: start;
   }
   .phead__eyebrow { grid-column: 1 / -1; }
+  .phead__bridge { grid-column: 1 / -1; max-width: 30ch; }
   /* 8em holds "Proof, one problem" on line one and refuses "at". Set in em so
      the break survives the fluid hero scale. */
-  .phead__h { grid-column: 1 / -1; max-width: 8em; text-wrap: initial; }
+  .phead__h {
+    grid-column: 1 / -1;
+    max-width: 8em;
+    text-wrap: initial;
+    margin-top: clamp(0.4rem, 1.2vw, 1rem);
+  }
 
   .phead__rule {
     grid-column: 1 / -1;
@@ -165,38 +148,25 @@ const focals = {
     margin-top: clamp(1.25rem, 3vw, 2.25rem);
   }
 
-  /* stretched to the contents' height, then anchored at both ends */
+  /* hung off the rule, level with the first row of the contents. The air
+     below it is closed by pilot 01's photograph, not by the viewport edge. */
   .phead__left {
     grid-column: 1;
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: clamp(2rem, 5vw, 4rem);
-    padding-top: clamp(0.7rem, 1.4vw, 1rem);
-  }
-  .phead__lede {
-    margin: 0;
-    font-size: clamp(1.02rem, 0.94rem + 0.36vw, 1.24rem);
-    line-height: 1.5;
-    color: var(--fg-mute);
-    max-width: 26ch;
-    text-wrap: pretty;
+    align-self: start;
+    padding-top: clamp(0.9rem, 1.8vw, 1.35rem);
   }
 
   /* the one measurable frame every pilot shares, pulled out of the card
      rails (where it repeated four times) and set once, at size */
   .phead__fig { margin: 0; display: grid; gap: clamp(0.5rem, 1vw, 0.8rem); }
   .phead__fig-n {
-    font-size: clamp(2.3rem, 1.15rem + 2.9vw, 4.1rem);
+    font-size: var(--step-head);
     line-height: 0.9;
     letter-spacing: -0.02em;
-    color: var(--cream);
+    color: var(--fg);
     font-variant-numeric: lining-nums;
   }
-  /* `ch` ignores the 0.18em tracking these labels carry, so a measure set in
-     ch breaks two words early. Left free on wide; capped only when narrow. */
-  .phead__fig-l { color: var(--fg-faint); line-height: 1.5; }
+  .phead__fig-l { line-height: 1.5; }
 
   .phead__index { grid-column: 2; }
   .phead__index ol { list-style: none; margin: 0; padding: 0; }
@@ -212,11 +182,11 @@ const focals = {
   }
   .phead__index li:first-child .pc { border-top: 1px solid var(--rule-soft); }
   .pc__t {
-    font-size: var(--step-m);
+    font-size: var(--step-sub);
     line-height: 1.05;
     letter-spacing: -0.014em;
     white-space: nowrap;
-    color: color-mix(in srgb, var(--cream) 82%, transparent);
+    color: var(--fg-mute);
     transition: color 320ms var(--ease-out), transform 520ms var(--ease-out);
   }
   .pc__lead {
@@ -225,304 +195,35 @@ const focals = {
     border-bottom: 1px solid var(--rule-soft);
     transition: border-color 380ms var(--ease-out);
   }
-  .pc__f { color: var(--fg-faint); transition: color 320ms var(--ease-out); }
+  .pc__f { transition: color 320ms var(--ease-out); }
   @media (hover: hover) {
-    .pc:hover .pc__t { color: var(--cream); transform: translateX(0.2rem); }
+    .pc:hover .pc__t { color: var(--fg); transform: translateX(0.2rem); }
     .pc:hover .pc__lead { border-color: color-mix(in srgb, var(--brass) 62%, transparent); }
     .pc:hover .pc__f { color: var(--brass); }
   }
   .pc:focus-visible { outline-offset: 6px; }
 
-  /* ══ THE CARDS ═════════════════════════════════════════════════════
-     Band → spec strip, four times, but not at four equal weights. The
-     rank sets the band height, the display size and the whole stagger. */
-  .pcard {
-    scroll-margin-top: calc(var(--nav-h) + 0.5rem);
-    /* defaults = the series (02, 04). The lead overrides all of them. */
-    --band: clamp(19rem, 48vh, 28rem);
-    --t-size: clamp(1.9rem, 1rem + 3.7vw, 4.4rem);
-    --line-dur: 860ms;
-    --tag-delay: 190ms;
-    --sp-a: 60ms;
-    --sp-b: 100ms;
-    --sp-c: 140ms;
-  }
-  /* 01: it opens the page. Nearly a screen of photograph, the biggest name
-     on the page after the masthead, and a stagger with room in it. */
-  .pcard--lead {
-    --band: clamp(28rem, 78vh, 44rem);
-    --t-size: clamp(2.5rem, 1rem + 6.1vw, 6.6rem);
-    --line-dur: 1400ms;
-    --tag-delay: 620ms;
-    --sp-a: 300ms;
-    --sp-b: 430ms;
-    --sp-c: 560ms;
-  }
-  /* 03: same weight as the series, different anatomy — see .pcard--turn below */
-  .pcard--turn { --band: clamp(20rem, 51vh, 30rem); }
-  /* 04 closes: the series compresses on the way out, and the last strip runs
-     straight into the footer's ask rather than trailing off. */
-  .pcard:last-of-type { --band: clamp(18rem, 43vh, 25rem); }
-
-  .pcard__band {
-    position: relative;
-    isolation: isolate;
-    min-height: var(--band);
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-  }
-
-  /* Figure ships a bottom ink ramp for the title; the top rail needs its own,
-     because a bright sky swallows a 0.7rem tracked label. */
-  .pcard__band::before {
-    content: ''; position: absolute; inset: 0 0 auto 0; z-index: 0;
-    height: clamp(7rem, 20vh, 11.5rem);
-    background: linear-gradient(to bottom,
-      color-mix(in srgb, var(--ink-900) 72%, transparent) 0%,
-      color-mix(in srgb, var(--ink-900) 40%, transparent) 46%,
-      transparent 100%);
-    pointer-events: none;
-  }
-
-  /* Bottom ramp for the name. Shallower than Figure's `scrim="bottom"`, which
-     goes to solid ink and turned the foot of every band into a black slab. */
-  .pcard__band::after {
-    content: ''; position: absolute; inset: auto 0 0 0; z-index: 0;
-    height: 58%;
-    background: linear-gradient(to top,
-      color-mix(in srgb, var(--ink-900) 84%, transparent) 0%,
-      color-mix(in srgb, var(--ink-900) 58%, transparent) 30%,
-      color-mix(in srgb, var(--ink-900) 20%, transparent) 62%,
-      transparent 100%);
-    pointer-events: none;
-  }
-
-  /* padding lives on the children: the fill Figure is positioned against the
-     band's padding box, so padding here would inset the photograph. */
-  .pcard__rail, .pcard__say { position: relative; z-index: 1; }
-
-  /* number + partner at the left inset, sector flush right, one baseline.
-     The horizon used to sit here and read identically on all four; it is set
-     once in the masthead now. */
-  .pcard__rail {
-    grid-row: 1;
-    margin: 0;
-    padding-top: clamp(1.35rem, 2.6vw, 2.25rem);
-    display: flex;
-    align-items: baseline;
-    gap: 1.15ch;
-    font-family: var(--sans);
-    font-size: var(--step-label);
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    line-height: 1;
-  }
-  .pcard__i { letter-spacing: 0.18em; }
-  .pcard__partner { color: var(--cream); }
-  .pcard__field {
-    margin-left: auto;
-    text-align: right;
-    color: color-mix(in srgb, var(--cream) 70%, transparent);
-    white-space: nowrap;
-  }
-
-  /* the name and its one line, set into the foot of the photograph */
-  .pcard__say {
-    grid-row: 3;
-    padding-bottom: clamp(1.75rem, 3.4vw, 3rem);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 18.5rem);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    row-gap: 0.8rem;
-    align-items: end;
-  }
-  .pcard__t {
-    font-size: var(--t-size);
-    line-height: 0.94;
-    letter-spacing: -0.026em;
-    text-wrap: initial;
-  }
-  .pcard__tag {
-    margin: 0;
-    padding-bottom: 0.4em;
-    font-size: var(--step-s);
-    line-height: 1.45;
-    color: color-mix(in srgb, var(--cream) 78%, transparent);
-    text-wrap: pretty;
-  }
-
-  /* ── 03: the deviation ─────────────────────────────────────────────
-     The name climbs to the top-left of the band and its line hangs under
-     it, so the photograph opens downward instead of being closed off by a
-     title along its foot. Once in four, on purpose. */
-  .pcard--turn .pcard__say {
-    grid-row: 2;
-    align-self: start;
-    grid-template-columns: minmax(0, 1fr);
-    padding-top: clamp(1.1rem, 2.2vw, 1.9rem);
-    padding-bottom: 0;
-    row-gap: clamp(0.7rem, 1.3vw, 1.05rem);
-    align-items: start;
-  }
-  .pcard--turn .pcard__tag {
-    padding-bottom: 0;
-    max-width: 30ch;
-    padding-left: 0.08em;
-  }
-  /* the ink has to move with the type */
-  .pcard--turn .pcard__band::before { height: clamp(15rem, 52vh, 30rem); }
-  .pcard--turn .pcard__band::after { height: 30%; }
-
-  /* ── Motion: the title leads ───────────────────────────────────────
-     R3 had .pcard__tag at 160ms and the spec at 80ms while the masked h2 was
-     still resolving on its own (later) observer — the most important element
-     landed last. Now .pcard__say is a bare trigger: it fires on the earlier
-     [data-reveal] threshold, the masked lines start on that beat, and the
-     tagline + spec are delayed off it. Local, because the shared reveal has
-     no notion of ordering inside a block. */
-  .pcard__say[data-reveal] {
-    opacity: 1;
-    transform: none;
-    transition: none;
-    will-change: auto;
-  }
-  .pcard__t :global(.line > span) { transition-duration: var(--line-dur); }
-
-  .pcard__tag {
-    opacity: 0;
-    transform: translate3d(0, 12px, 0);
-    transition:
-      opacity 680ms var(--ease-out) var(--tag-delay),
-      transform 900ms var(--ease-out) var(--tag-delay);
-  }
-  .pcard__say.is-in .pcard__tag { opacity: 1; transform: none; }
-
-  /* ── The spec strip ────────────────────────────────────────────────
-     R3 set three equal columns divided by equal rules, which is a table.
-     This is a rule with two things hung off it: the setup stacked at the
-     left edge, the outcome alone at the right, and the picture's own width
-     of air between them. No vertical divider — the void does the dividing.
-     GOAL is the page's whole premise, so it gets the size, the cream, and
-     a single brass segment painted over the hairline across its own width. */
-  .pcard__spec {
-    margin: 0;
-    display: grid;
-    grid-template-columns: minmax(0, 27rem) minmax(1.5rem, 1fr) minmax(0, 25rem);
-    border-top: 1px solid var(--rule);
-    padding-bottom: clamp(2.25rem, 4.4vw, 3.75rem);
-  }
-  .pcard__spec[data-reveal] {
-    opacity: 1; transform: none; transition: none; will-change: auto;
-  }
-  .pcard__spec > div {
-    position: relative;
-    display: grid; gap: 0.55rem; align-content: start;
-    padding-block: clamp(0.85rem, 1.7vw, 1.25rem);
-    opacity: 0;
-    transform: translate3d(0, 12px, 0);
-    transition:
-      opacity 680ms var(--ease-out) var(--d, 0ms),
-      transform 900ms var(--ease-out) var(--d, 0ms);
-  }
-  .pcard__spec.is-in > div { opacity: 1; transform: none; }
-
-  .pcard__spec > div:nth-child(1) { grid-column: 1; grid-row: 1; --d: var(--sp-a); }
-  .pcard__spec > div:nth-child(2) {
-    grid-column: 1; grid-row: 2; --d: var(--sp-b);
-    border-top: 1px solid var(--rule-soft);
-    padding-bottom: 0;
-  }
-  .pcard__spec > div:nth-child(3) {
-    grid-column: 3; grid-row: 1 / span 2;
-    --d: var(--sp-c);
-    padding-bottom: 0;
-  }
-  /* the brass segment, painted onto the strip's own hairline */
-  .pcard__spec > div:nth-child(3)::before {
-    content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 1px;
-    background: color-mix(in srgb, var(--brass) 80%, transparent);
-  }
-
-  .pcard__spec dt { color: var(--brass); }
-  .pcard__spec dd {
-    margin: 0;
-    color: var(--fg-mute);
-    font-size: var(--step-xs);
-    line-height: 1.45;
-    text-wrap: pretty;
-  }
-  /* the outcome, at the size the outcome deserves */
-  .pcard__spec > div:nth-child(3) dd {
-    color: var(--cream);
-    font-size: clamp(1.05rem, 0.9rem + 0.62vw, 1.42rem);
-    line-height: 1.28;
-    letter-spacing: -0.008em;
-  }
-
-  /* the last strip runs straight into the footer's ask */
-  .pcard:last-of-type .pcard__spec { padding-bottom: clamp(1.25rem, 2.4vw, 2rem); }
-
   /* ── Narrow ───────────────────────────────────────────────────────── */
   @media (max-width: 1080px) {
     .phead__in { grid-template-columns: minmax(0, 1fr); }
-    .phead__left {
-      align-self: start;
-      flex-direction: row;
-      align-items: baseline;
-      justify-content: flex-start;
-      gap: clamp(1.5rem, 5vw, 3.5rem);
-      flex-wrap: wrap;
-    }
-    .phead__lede { max-width: 34ch; flex: 1 1 20rem; }
+    .phead__left { align-self: start; padding-top: 0; }
     .phead__fig {
       grid-template-columns: auto minmax(0, 1fr);
       align-items: baseline;
       gap: 0 0.9rem;
-      flex: 0 1 auto;
     }
-    .phead__fig-n { font-size: clamp(2rem, 1.2rem + 2.4vw, 2.9rem); }
     .phead__fig-l { max-width: 24ch; }
     .phead__index { grid-column: 1; max-width: 34rem; margin-top: clamp(1.25rem, 4vw, 2.25rem); }
   }
 
   @media (max-width: 760px) {
-    .pcard { --band: clamp(17rem, 44vh, 24rem); --t-size: clamp(2.05rem, 1.2rem + 4.2vw, 3rem); }
-    .pcard--lead { --band: clamp(24rem, 66vh, 34rem); --t-size: clamp(2.5rem, 1.3rem + 6vw, 3.8rem); }
-    .pcard--turn { --band: clamp(18rem, 48vh, 26rem); }
-    .pcard:last-of-type { --band: clamp(15rem, 39vh, 21rem); }
-
-    .pcard__say { grid-template-columns: minmax(0, 1fr); align-items: start; row-gap: 0.6rem; }
-    .pcard__tag { padding-bottom: 0; max-width: 34ch; }
-    .pcard__rail { gap: 0.9ch; letter-spacing: 0.14em; }
-
-    .pcard__spec { grid-template-columns: minmax(0, 1fr); }
-    .pcard__spec > div:nth-child(1),
-    .pcard__spec > div:nth-child(2),
-    .pcard__spec > div:nth-child(3) {
-      grid-column: 1; grid-row: auto;
-      padding-bottom: clamp(0.85rem, 3vw, 1.1rem);
-    }
-    .pcard__spec > div:nth-child(3) {
-      margin-top: clamp(0.6rem, 2.4vw, 1rem);
-      padding-bottom: 0;
-    }
-
     .pc { grid-template-columns: 2rem minmax(0, auto) minmax(1rem, 1fr) auto; gap: 0.7rem; }
     .pc__t { font-size: clamp(1.2rem, 1rem + 2.4vw, 1.6rem); }
   }
 
   @media (max-width: 560px) {
-    .phead__left { flex-direction: column; align-items: flex-start; gap: clamp(1.6rem, 5vw, 2.25rem); }
-    /* the ≤1080 row layout gives the lede a 20rem flex-basis; in a column
-       container that basis is a HEIGHT, and it opened a 300px hole. */
-    .phead__lede { flex: 0 0 auto; }
     .phead__fig { grid-template-columns: minmax(0, 1fr); gap: 0.55rem; }
     .phead__fig-l { max-width: none; }
-  }
-
-  @media (max-width: 430px) {
-    .pcard__rail { font-size: 0.62rem; letter-spacing: 0.12em; }
   }
 
   @media (max-width: 420px) {
@@ -533,6 +234,5 @@ const focals = {
 
   @media (prefers-reduced-motion: reduce) {
     .pc__t, .pc__lead, .pc__f { transition-duration: 1ms; }
-    .pcard__tag, .pcard__spec > div { opacity: 1; transform: none; transition: none; }
   }
 </style>

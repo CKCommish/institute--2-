@@ -1,0 +1,47 @@
+---
+/* The wordmark, defined once.
+   It lives in two places — the bar and the close — and it used to be two
+   copies of the same rule that were free to drift apart. It is a logotype,
+   not one of the three micro registers, so it keeps its own size; that size
+   exists here and nowhere else on the site.
+
+   tone="lit"   in the bar: colours mixed from currentColor, because the bar
+                inverts over cream scenes and the tokens do not follow it.
+   tone="quiet" in the close: one step down, like everything else down there. */
+import { site } from '../data/site.js';
+const { tone = 'lit', class: klass } = Astro.props;
+---
+<a class:list={['wm', `wm--${tone}`, klass]} href="/" aria-label={`${site.name} — home`}>
+  <span class="wm__a">Lion Forum</span>
+  <span class="wm__b">Institute</span>
+</a>
+
+<style>
+  .wm {
+    display: inline-flex; align-items: baseline; gap: 0.5ch;
+    font-family: var(--sans);
+    font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.85rem);
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+    padding-block: 0.5rem; margin-block: -0.5rem;
+    transition: color 380ms var(--ease-out);
+  }
+  /* Same weight as .eyebrow — the mark is the site's first eyebrow. */
+  .wm__a { font-weight: 620; }
+  .wm__b { transition: color 380ms var(--ease-out); }
+
+  .wm--lit { color: currentColor; }
+  .wm--lit .wm__b { color: color-mix(in srgb, currentColor 54%, transparent); }
+  .wm--lit:hover .wm__b { color: currentColor; }
+
+  .wm--quiet { color: var(--fg-mute); }
+  .wm--quiet .wm__b { color: var(--fg-meta); }
+  .wm--quiet:hover, .wm--quiet:hover .wm__b { color: var(--fg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wm, .wm__b { transition-duration: 1ms; }
+  }
+</style>

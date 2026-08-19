@@ -19,11 +19,35 @@
   --brass: #C4A469;
   --brass-deep: #7E6431;
 
-  /* Semantic */
+  /* ── Ink levels ───────────────────────────────────────────────────────
+     THREE text levels. Not four, not six. Every piece of type on this site
+     is --fg, --fg-mute or --fg-meta, plus --brass for the index register.
+     A fourth tint is a bug, not a decision.
+
+       --fg        100%   display type, headlines, the eyebrow, key data
+       --fg-mute    70%   supporting sentences: lede, body, standfirst
+       --fg-meta    54%   the meta micro register only — credits, counts,
+                          field names, footer. Never a whole sentence.
+       --mark       30%   NOT TEXT. Hairline glyphs, decorative numerals
+                          sitting on photography, disabled affordances.
+                          Fails 4.5:1 by design; if it carries a word, the
+                          word is wrong.
+
+     Both grounds are tuned to the same two contrast steps, so a scene that
+     flips to cream keeps its hierarchy:
+       navy   16.7 : 8.4 : 5.3       cream   16.7 : 9.2 : 5.3
+     -------------------------------------------------------------------- */
   --bg: var(--ink-900);
   --fg: var(--cream);
-  --fg-mute: color-mix(in srgb, var(--cream) 58%, transparent);
-  --fg-faint: color-mix(in srgb, var(--cream) 50%, transparent);
+  --fg-mute: color-mix(in srgb, var(--cream) 70%, transparent);
+  --fg-meta: color-mix(in srgb, var(--cream) 54%, transparent);
+  --mark:    color-mix(in srgb, var(--cream) 30%, transparent);
+
+  /* Deprecated name, kept so existing components keep compiling. It now
+     resolves to --fg-meta, which is text-legal. Do not add new uses:
+     reach for --fg-meta (text) or --mark (not text). */
+  --fg-faint: var(--fg-meta);
+
   --rule: color-mix(in srgb, var(--cream) 14%, transparent);
   --rule-soft: color-mix(in srgb, var(--cream) 8%, transparent);
 
@@ -31,14 +55,64 @@
   --serif: 'Newsreader', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
   --sans: 'Libre Franklin', 'Helvetica Neue', Arial, system-ui, sans-serif;
 
-  /* Fluid type scale — 390px → 1600px */
-  --step-hero: clamp(2.9rem, 1.05rem + 7.6vw, 8.4rem);
-  --step-xl:   clamp(2.3rem, 1.15rem + 4.7vw, 5.6rem);
-  --step-l:    clamp(1.75rem, 1.16rem + 2.4vw, 3.4rem);
-  --step-m:    clamp(1.3rem, 1.05rem + 1.05vw, 2.1rem);
-  --step-s:    clamp(1.02rem, 0.97rem + 0.22vw, 1.19rem);
-  --step-xs:   clamp(0.9rem, 0.87rem + 0.13vw, 1rem);
-  --step-label: clamp(0.66rem, 0.63rem + 0.11vw, 0.73rem);
+  /* ── Type scale — a complete ladder, 390px → 1600px ───────────────────
+     Rungs are named for the JOB, not for a t-shirt size, because the way
+     this scale failed was that a page author reached for --step-label and
+     then for --step-hero and there was nothing in between worth choosing.
+
+     No adjacent gap is wider than 1.6x at 1440.
+
+       token           390px   1440px   job
+       --step-micro     10.6     11.7    the three micro registers (below)
+       --step-body      14.4     16.0    body copy, UI, table cells
+       --step-lede      16.4     19.0    lede / standfirst / one pulled line
+     ★ --step-bridge    18.7     26.6    THE BRIDGE — see note
+       --step-sub       21.6     33.8    subhead, small serif display
+       --step-head      28.0     53.1    section headline
+       --step-feature   31.7     67.4    the series-breaker — see note
+       --step-poster    36.8     86.1    the poster line of an inner page
+       --step-banner    46.4    126.2    the hero. Once per site.
+
+     ★ THE BRIDGE. This is the rung the scale was missing and the reason
+       every scene read as "11px label, then a very large word". A micro
+       label cannot introduce a display line on its own — the eye has
+       nothing to climb. Put a --step-bridge clause between them:
+
+           eyebrow (--step-micro)  →  clause (--step-bridge)  →  display
+
+       The hero already does this and it is the one place no critic
+       faulted. It is a SANS rung, set at --fg-mute, no tracking, so it
+       never competes with --step-sub, which is a SERIF display rung one
+       size up. Use `.bridge` in base.css; do not hand-roll a clamp.
+
+     ★ THE SERIES-BREAKER. --step-feature exists to be used ONCE on a page,
+       to lift one card / one row / one pull-quote out of a repeating set.
+       Four identical blocks at --step-head is a metronome; three at
+       --step-head and one at --step-feature is a rhythm. If two things on
+       a page are at --step-feature, neither is featured. Below ~700px the
+       whole display range compresses and this rung stops reading as a
+       break; on mobile carry the break with space and weight instead.
+     -------------------------------------------------------------------- */
+  --step-micro:   clamp(0.66rem, 0.63rem + 0.11vw, 0.73rem);
+  --step-body:    clamp(0.90rem, 0.87rem + 0.13vw, 1.00rem);
+  --step-lede:    clamp(1.02rem, 0.97rem + 0.22vw, 1.19rem);
+  --step-bridge:  clamp(1.16rem, 0.96rem + 0.86vw, 1.66rem);
+  --step-sub:     clamp(1.35rem, 1.05rem + 1.18vw, 2.25rem);
+  --step-head:    clamp(1.75rem, 1.16rem + 2.40vw, 3.40rem);
+  --step-feature: clamp(1.90rem, 1.15rem + 3.40vw, 4.60rem);
+  --step-poster:  clamp(2.30rem, 1.15rem + 4.70vw, 5.60rem);
+  --step-banner:  clamp(2.90rem, 1.05rem + 7.60vw, 8.40rem);
+
+  /* Old names, unchanged in value except --step-m, which moved up ~2px to
+     open room for the bridge below it. Nothing needs to be rewritten;
+     new work should use the job names. */
+  --step-label: var(--step-micro);
+  --step-xs:    var(--step-body);
+  --step-s:     var(--step-lede);
+  --step-m:     var(--step-sub);
+  --step-l:     var(--step-head);
+  --step-xl:    var(--step-poster);
+  --step-hero:  var(--step-banner);
 
   /* Spacing rhythm */
   --gutter: clamp(1.25rem, 0.6rem + 2.9vw, 4.5rem);
@@ -47,6 +121,12 @@
   --stack-2: clamp(1rem, 0.8rem + 0.8vw, 1.6rem);
   --stack-3: clamp(1.75rem, 1.3rem + 1.8vw, 3rem);
   --stack-4: clamp(3rem, 2rem + 4vw, 6rem);
+
+  /* A held pause. Empty space only reads as confidence when it is bounded
+     on BOTH sides by something on the page — a rule, a mark, the next
+     line. An empty half-scene that runs out into the viewport edge reads
+     as absence. Use --pause between two marks, never after the last one. */
+  --pause: clamp(3.5rem, 2rem + 6vw, 8.5rem);
 
   /* Air between the fixed bar and the first line of an inner page. One value,
      so every page starts on the same shelf. */
@@ -59,19 +139,23 @@
   /* Motion */
   --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-io: cubic-bezier(0.65, 0.02, 0.24, 1);
+  --ease-wipe: cubic-bezier(0.16, 0.84, 0.28, 1);
   --dur-1: 420ms;
   --dur-2: 760ms;
   --dur-3: 1150ms;
+  --dur-4: 1500ms;
 
   --nav-h: clamp(58px, 4.4vw, 76px);
 }
 
-/* Inverted (cream) scenes */
+/* Inverted (cream) scenes. Same three ink levels, same two contrast steps. */
 .on-cream {
   --bg: var(--cream);
   --fg: var(--ink-900);
-  --fg-mute: color-mix(in srgb, var(--ink-900) 62%, transparent);
-  --fg-faint: color-mix(in srgb, var(--ink-900) 58%, transparent);
+  --fg-mute: color-mix(in srgb, var(--ink-900) 78%, transparent);
+  --fg-meta: color-mix(in srgb, var(--ink-900) 62%, transparent);
+  --mark:    color-mix(in srgb, var(--ink-900) 34%, transparent);
+  --fg-faint: var(--fg-meta);
   --rule: color-mix(in srgb, var(--ink-900) 16%, transparent);
   --rule-soft: color-mix(in srgb, var(--ink-900) 9%, transparent);
   --brass: var(--brass-deep);

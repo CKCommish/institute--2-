@@ -5,7 +5,7 @@ import Figure from '../Figure.astro';
 <section class="pilots scene" id="pilots" aria-labelledby="pilots-h">
   <div class="shell">
     <header class="pilots__head">
-      <p class="label pilots__eyebrow" data-reveal>Four pilots · 2026</p>
+      <p class="eyebrow pilots__eyebrow" data-reveal>Four pilots · 2026</p>
       <p class="label pilots__count" data-reveal="60">01 — 04</p>
       <h2 class="display display--l pilots__h lines" id="pilots-h">
         Each one starts with a problem a family can name.
@@ -56,7 +56,7 @@ import Figure from '../Figure.astro';
     row-gap: var(--stack-2);
     margin-bottom: clamp(2.25rem, 5vw, 4rem);
   }
-  .pilots__count { color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+  .pilots__count { font-variant-numeric: tabular-nums; }
   .pilots__h { grid-column: 1 / -1; max-width: 20ch; }
 
   /* ── The register ───────────────────────────────────────────────────
@@ -100,13 +100,11 @@ import Figure from '../Figure.astro';
     align-self: stretch;
   }
 
-  /* same micro-label grammar as the /pilots/ nameplate: 0.18em tracking,
-     number + partner left, sector · horizon flush right, one baseline. */
+  /* the same nameplate grammar as /pilots/: brass numeral and dim labels,
+     number + partner left, sector flush right, all on one baseline. */
   .pilot__i { grid-column: 1; grid-row: 1; }
-  .pilot__partner, .pilot__field { letter-spacing: 0.18em; }
   .pilot__partner {
     grid-column: 2; grid-row: 1;
-    color: var(--fg-faint);
     transition: color 380ms var(--ease-out);
   }
   .pilot__title {
@@ -119,14 +117,13 @@ import Figure from '../Figure.astro';
   .pilot__tag {
     grid-column: 4; grid-row: 2;
     color: var(--fg-mute);
-    font-size: var(--step-xs);
+    font-size: var(--step-body);
     line-height: 1.5;
     text-wrap: pretty;
   }
   .pilot__field {
     grid-column: 4 / -1; grid-row: 1;
     justify-self: end;
-    color: var(--fg-faint);
     white-space: nowrap;
     transition: color 380ms var(--ease-out);
   }
@@ -147,7 +144,7 @@ import Figure from '../Figure.astro';
     }
     .pilot:hover::after { transform: scaleX(1); transform-origin: left; }
     .pilot:hover .pilot__partner { color: var(--brass); }
-    .pilot:hover .pilot__field { color: color-mix(in srgb, var(--cream) 62%, transparent); }
+    .pilot:hover .pilot__field { color: var(--fg-mute); }
     .pilot:hover .pilot__title { transform: translateX(0.35rem); }
     .pilot:hover .pilot__arrow { opacity: 1; transform: none; }
   }
@@ -199,10 +196,9 @@ import Figure from '../Figure.astro';
   .pilots__preview-i,
   .pilots__preview-f {
     position: absolute; z-index: 3;
-    font-size: var(--step-label);
   }
   .pilots__preview-i { top: 0.85rem; left: 0.9rem; }
-  .pilots__preview-f { bottom: 0.85rem; right: 0.9rem; color: color-mix(in srgb, var(--cream) 82%, transparent); }
+  .pilots__preview-f { bottom: 0.85rem; right: 0.9rem; color: var(--fg); }
 
   @media (hover: hover) and (min-width: 1100px) { .pilots__preview { display: block; } }
 
@@ -217,10 +213,6 @@ import Figure from '../Figure.astro';
       padding-block: clamp(1.3rem, 4.2vw, 1.8rem);
     }
     .pilot__v { display: none; }
-    /* same micro-label grammar as the /pilots/ nameplate: 0.18em tracking,
-     number + partner left, sector · horizon flush right, one baseline. */
-  .pilot__i { grid-column: 1; grid-row: 1; }
-  .pilot__partner, .pilot__field { letter-spacing: 0.18em; }
     .pilot__field { grid-column: 2; grid-row: 1; justify-self: end; }
     .pilot__partner { grid-column: 1 / -1; grid-row: 2; margin-top: 0.5rem; }
     .pilot__title { grid-column: 1 / -1; grid-row: 3; }

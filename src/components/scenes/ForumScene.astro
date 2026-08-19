@@ -2,18 +2,34 @@
 import Figure from '../Figure.astro';
 import { forum } from '../../data/site.js';
 ---
+{/*
+  The homepage's one Forum scene.
+
+  It used to set "Kennedy Compound, Hyannis Port" in the .label register —
+  tracked micro-caps, low contrast, over a full-bleed photograph — which is
+  exactly the shape of a photo credit, on a picture that is a harbour on
+  BLOCK ISLAND. refs/PHOTO-FACTS.md exists to stop that reading. The event's
+  location now sits in the display stack as the bridge rung, and the real
+  credit sits in the opposite corner in the register that means "this is what
+  the photograph is".
+
+  Ladder: 11.7 eyebrow → 26.6 bridge → 86 display. No hole.
+*/}
 <section class="forum" aria-labelledby="forum-h">
-  <Figure src={forum.image} alt="" ratio="auto" grade={0.62} parallax={7} scrim="bottom" class="forum__bg" />
+  <Figure src={forum.image} alt="" ratio="auto" grade={0.62} focal="52% 52%"
+          parallax={7} scrim="bottom" credit={forum.credit} creditPos="top-right"
+          class="forum__bg" />
 
   <div class="shell forum__in">
-    <p class="label forum__place" data-reveal>{forum.place}</p>
-    <h2 class="display display--xl forum__h lines" id="forum-h">{forum.name}</h2>
+    <p class="eyebrow forum__brow" data-reveal>{forum.access}</p>
+    <p class="bridge forum__place" data-reveal="90">{forum.place}</p>
+    <h2 class="display display--poster forum__h lines" id="forum-h">{forum.name}</h2>
 
     <div class="forum__ruleWrap" data-reveal="120"><span class="forum__rule"></span></div>
 
     <div class="forum__cells">
       <p class="forum__line" data-reveal="560">{forum.line}</p>
-      <a class="forum__more tap" href="/forum/" data-reveal="660">
+      <a class="label forum__more tap" href="/forum/" data-reveal="660">
         {forum.cta}
         <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
       </a>
@@ -35,14 +51,17 @@ import { forum } from '../../data/site.js';
     padding-block: clamp(3rem, 8vw, 7rem) clamp(1.5rem, 2.6vw, 2.6rem);
   }
 
-  .forum__h { max-width: 12ch; margin-top: clamp(0.9rem, 1.6vw, 1.5rem); }
+  .forum__brow { margin-bottom: clamp(0.7rem, 1.2vw, 1.05rem); }
+  /* THE BRIDGE — the event's location, in the scene's own voice. */
+  .forum__place { max-width: 26ch; margin-bottom: clamp(0.45rem, 0.9vw, 0.8rem); }
+  .forum__h { max-width: 12ch; }
 
   /* Local motion primitive: hairline that draws in on reveal (not in
      base.css). --reveal-y:0 cancels the default lift on the wrapper. */
   .forum__ruleWrap { --reveal-y: 0px; display: block; margin-top: clamp(2.25rem, 5vw, 4rem); }
   .forum__rule {
     display: block; height: 1px; width: 100%;
-    background: color-mix(in srgb, var(--cream) 24%, transparent);
+    background: var(--mark);
     transform: scaleX(0); transform-origin: left;
     transition: transform 850ms var(--ease-io) 60ms;
   }
@@ -56,20 +75,20 @@ import { forum } from '../../data/site.js';
     padding-top: clamp(1rem, 1.6vw, 1.4rem);
   }
   .forum__line {
-    color: color-mix(in srgb, var(--cream) 72%, transparent);
+    color: var(--fg-mute);
     max-width: 34ch;
     text-wrap: pretty;
   }
+  /* The .label register at link brightness — a state, not a fourth scale. */
   .forum__more {
+    position: relative;
     display: inline-flex; align-items: center; gap: 0.9ch;
     white-space: nowrap;
-    font-size: var(--step-label); letter-spacing: 0.145em;
-    text-transform: uppercase; font-weight: 500;
-    padding-top: 0.35em;
+    color: var(--fg);
+    padding-block: 0.5rem;
   }
   .forum__more:hover :global(.arrow) { transform: translateX(4px); }
   /* local hover rule — the shared .link underline assumes inline-block */
-  .forum__more { position: relative; }
   .forum__more::after {
     content: ''; position: absolute; left: 0; right: 0; bottom: -0.5em; height: 1px;
     background: currentColor; transform: scaleX(0); transform-origin: right;
@@ -79,7 +98,8 @@ import { forum } from '../../data/site.js';
 
   @media (max-width: 720px) {
     .forum__h { max-width: 9ch; }
+    .forum__place { max-width: 20ch; }
     .forum__cells { grid-template-columns: minmax(0, 1fr); row-gap: 1.35rem; }
-    .forum__more { justify-self: start; padding-top: 0; }
+    .forum__more { justify-self: start; }
   }
 </style>

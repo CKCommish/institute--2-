@@ -29,7 +29,7 @@ import { pilots } from '../../data/site.js';
        brief's sentence in full, and the h1 carries the whole of it. -->
   <div class="hero__mid shell">
     <h1 class="hero__h" id="hero-h">
-      <span class="hero__kicker">The Lion Forum Institute exists to ensure</span>
+      <span class="bridge hero__kicker">The Lion Forum Institute exists to ensure</span>
       <span class="display hero__poster">the technologies of tomorrow strengthen American families today.</span>
     </h1>
   </div>
@@ -37,7 +37,7 @@ import { pilots } from '../../data/site.js';
   <!-- Register 3. -->
   <div class="hero__index shell">
     <div class="hero__index-head">
-      <span class="label hero__index-label">Four pilots · 2026</span>
+      <span class="eyebrow hero__index-label">Four pilots · 2026</span>
       <a class="hero__scroll tap" href="#why">
         <span class="label">Scroll</span>
         <span class="hero__scroll-line" aria-hidden="true"></span>
@@ -49,9 +49,9 @@ import { pilots } from '../../data/site.js';
     <ul class="hero__cells">
       {pilots.map((p) => (
         <li class="hcell">
-          <span class="hcell__i tnum">{p.index}</span>
+          <span class="index hcell__i">{p.index}</span>
           <span class="hcell__name">{p.partner}</span>
-          <span class="hcell__sub">{p.title}</span>
+          <span class="label hcell__sub">{p.title}</span>
         </li>
       ))}
     </ul>
@@ -95,10 +95,7 @@ import { pilots } from '../../data/site.js';
     display: flex;
     justify-content: flex-end;
   }
-  .hero__place {
-    display: flex; align-items: baseline; gap: 0.7rem;
-    color: color-mix(in srgb, var(--cream) 58%, transparent);
-  }
+  .hero__place { display: flex; align-items: baseline; gap: 0.7rem; }
 
   .hero__dot {
     width: 5px; height: 5px; border-radius: 50%; background: var(--brass);
@@ -123,20 +120,11 @@ import { pilots } from '../../data/site.js';
   }
   .hero__h { margin: 0; font-weight: inherit; }
 
-  /* THE MID TIER. The page had nothing between 16px and 40px; this is the
-     step, used here as the sentence's opening clause. Local — no token for
-     it exists and this piece may not add one. */
+  /* THE BRIDGE. The rung between the 11.7px rail and the 94px claim; it is
+     now the shared .bridge from base.css, so the site has one bridge voice
+     and not two. Only the block behaviour and the load stage are local. */
   .hero__kicker {
     display: block;
-    font-family: var(--sans);
-    font-size: clamp(1.02rem, 0.7rem + 0.9vw, 1.56rem);
-    font-weight: 330;
-    line-height: 1.3;
-    letter-spacing: -0.006em;
-    text-transform: none;
-    color: color-mix(in srgb, var(--cream) 66%, transparent);
-    max-width: 42ch;
-    text-wrap: balance;
     margin-bottom: clamp(0.7rem, 1.5vh, 1.15rem);
     opacity: 0;
     animation: heroIn 720ms var(--ease-out) 220ms forwards;
@@ -179,7 +167,7 @@ import { pilots } from '../../data/site.js';
     gap: 1.5rem;
     margin-bottom: clamp(0.7rem, 1.6vh, 1.1rem);
   }
-  .hero__index-label { color: var(--cream); white-space: nowrap; }
+  .hero__index-label { white-space: nowrap; }
 
   .hero__rule {
     display: block; height: 1px; width: 100%;
@@ -203,35 +191,20 @@ import { pilots } from '../../data/site.js';
     column-gap: 0.7rem;
     align-items: baseline;
   }
-  .hcell__i {
-    font-family: var(--sans);
-    font-size: 0.66rem;
-    font-weight: 500;
-    letter-spacing: 0.13em;
-    color: var(--brass);
-    grid-row: 1;
-  }
-  /* The proof. ~15px, near-full cream, no tracking — deliberately NOT the
-     same voice as the whisper under it. */
+  /* Three house registers per cell, not three invented ones:
+     .index (brass numeral) · --fg name at --step-body · .label whisper. */
+  .hcell__i { grid-row: 1; }
   .hcell__name {
     grid-row: 1;
-    font-size: clamp(0.92rem, 0.85rem + 0.22vw, 1.02rem);
+    font-size: var(--step-body);
     font-weight: 400;
     line-height: 1.22;
     letter-spacing: -0.004em;
-    color: color-mix(in srgb, var(--cream) 90%, transparent);
     text-wrap: balance;
   }
-  /* The whisper. ~10.5px, 40% — a caption, and it reads like one. */
   .hcell__sub {
     grid-column: 2;
-    font-size: 0.655rem;
-    font-weight: 500;
-    letter-spacing: 0.17em;
-    text-transform: uppercase;
-    line-height: 1;
     margin-top: 0.5rem;
-    color: var(--fg-faint);
   }
 
   .hero__scroll { display: flex; align-items: center; gap: 0.75rem; }
@@ -280,25 +253,57 @@ import { pilots } from '../../data/site.js';
     .hero__rule { transform: none; animation: none; }
   }
 
-  /* Four names cannot hold one line each below this; the ledger folds to a
-     2 × 2 block and stays a ledger. */
+  /* Four names cannot hold one line each in four columns below this. The
+     2 × 2 block that used to stand in was worse than either: "Secretary
+     Miguel Cardona" wrapped and "Butler University" did not, so a phantom
+     second line had to be reserved in every cell and the one-line names
+     floated 20px clear of their own captions. The ledger becomes what it
+     always was — a manifest. One row per pilot, numeral and partner left,
+     project hard right, a hairline between. Every row one line, constant
+     pitch, both edges of the frame used. */
   @media (max-width: 900px) {
     .hero__cells {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: clamp(0.9rem, 2.4vh, 1.4rem);
-      align-items: start;
+      grid-template-columns: minmax(0, 1fr);
+      column-gap: 0;
+      row-gap: 0;
+      padding-top: 0;
     }
-    /* Two of the four names run to two lines here; reserving both keeps the
-       whispers on one baseline so the block stays a ledger. */
-    .hcell__name { min-height: 2.44em; }
+    .hcell {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      column-gap: clamp(0.6rem, 2.4vw, 0.9rem);
+      align-items: baseline;
+      padding-block: clamp(0.55rem, 1.5vh, 0.85rem);
+    }
+    .hcell + .hcell { border-top: 1px solid var(--rule); }
+    .hcell__name {
+      grid-column: 2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hcell__sub {
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
+      margin-top: 0;
+      white-space: nowrap;
+    }
   }
 
   @media (max-width: 620px) {
     .hero__poster { letter-spacing: -0.026em; }
     .hero__scroll-line { width: 22px; }
-    /* At two cells across, 0.17em tracking pushes the longest project titles
-       onto a second line and the ledger stops reading as rows. */
-    .hcell__sub { font-size: 0.62rem; letter-spacing: 0.12em; }
-    .hero__cells { column-gap: 0.9rem; }
+  }
+
+  /* Measured: the longest partner name and the longest project title stop
+     sharing a line below 375px. Rather than truncate a partner, the project
+     drops to its own line — in every row, so the block is still four
+     identical rows and not four ragged ones. */
+  @media (max-width: 374px) {
+    .hcell__sub {
+      grid-column: 2 / -1;
+      grid-row: 2;
+      margin-top: 0.42rem;
+    }
   }
 </style>

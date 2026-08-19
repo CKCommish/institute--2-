@@ -33,9 +33,22 @@ const {
   loading = 'lazy',
   grain = 1,
   zoom = 1,             // >1 crops into the frame: a detail, not a second wide
+  /* A crop chosen on a 1440 frame is the wrong crop on a 390 one: the same
+     zoom that reads as a considered detail on a desktop plate is a 3x upscale
+     of a hundred source pixels on a phone. zoomSm / focalSm let one figure
+     carry two crops, the way ratioSm already lets it carry two shapes. */
+  zoomSm,
+  focalSm,
   scrim = 'none',      // 'bottom' → extra ink ramp so cream type can sit on it
   fill,                // absolutely fill the parent; defaults on for ratio="auto"
   enter = 'fade',      // 'fade' (default) | 'wipe'
+  /* PHOTO-FACTS.md: every full-bleed scene carries a small, accurate location
+     credit in a corner. It is the house treatment, so it lives here rather
+     than being redrawn per page — and because it lives here it is always the
+     same voice (.label, --fg-meta, brass dot) and can never be mistaken for
+     the scene's own display type. */
+  credit,
+  creditPos = 'top-right', // top-right | top-left | bottom-right | bottom-left
   sizes = '100vw',
   class: klass = '',
 } = Astro.props;
@@ -99,10 +112,15 @@ const over = Math.max(4, Number(parallax) + 3);
 const style = [
   `--ratio:${ratio}`,
   ...(ratioSm ? [`--ratio-sm:${ratioSm}`] : []),
+  ...(zoomSm ? [`--zoom-sm:${zoomSm}`] : []),
+  ...(focalSm ? [`--focal-sm:${focalSm}`] : []),
   `--grade:${grade}`,
-  `--focal:${focal}`,
+  /* written as *-base, not as --focal / --zoom directly: an inline custom
+     property beats every stylesheet rule, so the narrow-viewport override
+     below could never win if these were set under their final names. */
+  `--focal-base:${focal}`,
   `--grain:${grain}`,
-  `--zoom:${zoom}`,
+  `--zoom-base:${zoom}`,
   `--lx:${lx}%`,
   `--ly:${ly}%`,
   `--ang:${ang}deg`,
@@ -142,7 +160,14 @@ const style = [
   <div class="fig__scrim" aria-hidden="true"></div>
   <div class="fig__vig" aria-hidden="true"></div>
   <div class="fig__grain" aria-hidden="true"></div>
-  <slot />
+
+  {credit && (
+    <p class="label fig__credit" data-pos={creditPos}>
+      <span class="fig__dot" aria-hidden="true"></span>{credit}
+    </p>
+  )}
+
+  <div class="fig__over"><slot /></div>
 </figure>
 
 <style>
@@ -152,12 +177,18 @@ const style = [
     aspect-ratio: var(--ratio);
     isolation: isolate;
     background-color: var(--ink-900);
+    --zoom: var(--zoom-base, 1);
+    --focal: var(--focal-base, 50% 50%);
   }
 
   /* A landscape crop that works on a wide screen is a letterbox strip on a
      phone; ratioSm lets a scene ask for a taller frame there. */
   @media (max-width: 720px) {
-    .fig { aspect-ratio: var(--ratio-sm, var(--ratio)); }
+    .fig {
+      aspect-ratio: var(--ratio-sm, var(--ratio));
+      --zoom: var(--zoom-sm, var(--zoom-base, 1));
+      --focal: var(--focal-sm, var(--focal-base, 50% 50%));
+    }
   }
 
   /* Full-bleed: sit behind the scene's own content. -1 keeps it inside the
@@ -336,6 +367,48 @@ const style = [
   .fig--wipe.is-in .fig__plate { transform: none; }
   .fig--wipe[data-state='ready'] .fig__media img { transform: scale(calc(1.07 * var(--zoom, 1))); }
   .fig--wipe.is-in[data-state='ready'] .fig__media img { transform: scale(var(--zoom, 1)); }
+
+  /* 6 ── the location credit ───────────────────────────────────────
+     One voice for every photograph on the site: the dim micro register,
+     a brass dot, a corner. It names the PHOTOGRAPH. Anything naming the
+     scene belongs in the scene's own display stack, not here. */
+  .fig__credit {
+    --ci: clamp(0.9rem, 1.8vw, 1.5rem);
+    position: absolute;
+    z-index: 8;
+    margin: 0;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    pointer-events: none;
+    text-shadow: 0 1px 14px rgba(3, 9, 16, 0.75);
+  }
+  .fig__credit[data-pos^='top']    { top: var(--ci); }
+  .fig__credit[data-pos^='bottom'] { bottom: var(--ci); }
+  .fig__credit[data-pos$='right']  { right: var(--ci); }
+  .fig__credit[data-pos$='left']   { left: var(--ci); }
+  /* A full-bleed figure is a page edge, so the credit sits on the page's
+     own gutter and clears the fixed bar. */
+  .fig--fill .fig__credit[data-pos$='right'] { right: var(--gutter); }
+  .fig--fill .fig__credit[data-pos$='left']  { left: var(--gutter); }
+  .fig--fill .fig__credit[data-pos^='top']   { top: calc(var(--nav-h) + clamp(0.9rem, 3vh, 2rem)); }
+  .fig--fill .fig__credit[data-pos^='bottom']{ bottom: clamp(1.1rem, 2.4vw, 2.2rem); }
+
+  .fig__dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--brass);
+    transform: translateY(-0.1em);
+    flex: none;
+  }
+
+  /* Slot content is a positioned layer, so anything a scene hands the figure
+     sits ABOVE the grade rather than beneath it. */
+  .fig__over { position: relative; z-index: 9; }
+
+  @media (max-width: 620px) {
+    /* On a phone the credit is the first thing to crowd a display line. */
+    .fig__credit { font-size: 0.62rem; letter-spacing: 0.1em; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .fig__media img { transition-duration: 1ms; transform: scale(calc(1.02 * var(--zoom, 1))); }

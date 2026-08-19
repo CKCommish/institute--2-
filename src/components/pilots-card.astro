@@ -1,0 +1,436 @@
+---
+/* One pilot, in one of four SHAPES.
+
+   Round 4 ranked the four cards by height and gave 03 a different anatomy,
+   and the critic named what was still wrong: under every band sat the same
+   209px PROBLEM / APPROACH / GOAL slab, four times, at the same measure. The
+   moment each pilot should have become specific was the moment they all
+   became one object.
+
+   So the argument itself is now composed per pilot. The GRAMMAR is fixed —
+   index · partner · sector, a serif name, one line of tagline, and the three
+   fields at one line each — but the SHAPE that grammar is set in is not:
+
+     01  ANCHOR   a near-screen band, then the argument DESCENDS: the setup
+                  small and left, a held pause bounded by its rule and by the
+                  brass label under it, and the outcome alone at the page's
+                  one --step-feature. This pilot is the thesis.
+     02  ASIDE    no band at all. The photograph bleeds off the left edge at
+                  five-quarters and the whole argument stands beside it in a
+                  ruled column — the compressed one, and the one that breaks
+                  the run of full-bleed frames.
+     03  TURN     the name climbs to the top of the frame and the three
+                  fields are set ON the photograph along its foot. No ground
+                  beneath it at all: the fastest block on the page.
+     04  CLOSE    the series returns and mirrors: the outcome first and left,
+                  the setup hung small at the right. It closes by reading
+                  backwards.
+
+   Held constant so the four still read as one commission: the palette, the
+   nameplate grammar, the three micro registers, and one line per field. */
+import Figure from './Figure.astro';
+
+const {
+  pilot: p,
+  shape = 'close',
+  grade = 0.6,
+  focal = '50% 50%',
+  parallax = 5,
+  loading = 'lazy',
+} = Astro.props;
+
+const hid = `${p.id}-h`;
+const isAside = shape === 'aside';
+---
+<article class:list={['pcard', `pcard--${shape}`]} id={p.id} aria-labelledby={hid}>
+  {isAside ? (
+    <div class="aside">
+      <!-- TERRITORY: the plate is a place, so it is uncovered, not faded. -->
+      <div class="aside__fig" data-wipe="left">
+        <Figure
+          src={p.image} alt="" ratio="4 / 3" ratioSm="5 / 4"
+          grade={grade} focal={focal} parallax={parallax} loading={loading}
+        />
+      </div>
+
+      <div class="aside__side" data-seq="120" data-seq-from="180">
+        <p class="rail" data-reveal>
+          <span class="index">{p.index}</span>
+          <span class="eyebrow rail__partner">{p.partner}</span>
+          <span class="label rail__field">{p.field}</span>
+        </p>
+
+        <div class="say" data-reveal>
+          <h2 class="display display--head say__t lines" id={hid}>{p.title}</h2>
+          <p class="say__tag">{p.tagline}</p>
+        </div>
+
+        <dl class="arg arg--side" data-reveal>
+          <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+          <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+          <div class="arg__out">
+            <dt class="label label--brass">Goal</dt>
+            <dd class="bridge bridge--fg">{p.goal}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  ) : (
+    <div class="band">
+      <Figure
+        src={p.image} alt="" ratio="auto"
+        grade={grade} focal={focal} parallax={parallax} loading={loading}
+      />
+
+      <p class="shell rail" data-reveal>
+        <span class="index">{p.index}</span>
+        <span class="eyebrow rail__partner">{p.partner}</span>
+        <span class="label rail__field">{p.field}</span>
+      </p>
+
+      <!-- a TRIGGER, not a fade: neutralised below, so the masked name lands
+           on the earlier threshold and the tagline is delayed off that beat -->
+      <div class="shell say" data-reveal>
+        <h2
+          class:list={['display', 'say__t', 'lines', shape === 'anchor' ? 'display--poster' : 'display--head']}
+          id={hid}
+        >{p.title}</h2>
+        <p class="say__tag">{p.tagline}</p>
+      </div>
+
+      {shape === 'turn' && (
+        <dl class="shell arg arg--strip" data-wipe="left" data-delay="260">
+          <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+          <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+          <div class="arg__out"><dt class="label label--brass">Goal</dt><dd>{p.goal}</dd></div>
+        </dl>
+      )}
+    </div>
+  )}
+
+  {shape === 'anchor' && (
+    <div class="shell arg arg--descent">
+      <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
+      <dl class="arg__setup" data-seq="150" data-seq-from="80">
+        <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+        <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+      </dl>
+      <div class="arg__goal">
+        <p class="label label--brass arg__gl" data-reveal>Goal</p>
+        <!-- WEIGHT: the one scroll-linked element on the page, on the one
+             sentence the page exists to make. -->
+        <p class="display display--feature lines arg__g" data-settle="0.62">{p.goal}</p>
+      </div>
+    </div>
+  )}
+
+  {shape === 'close' && (
+    <div class="shell arg arg--mirror">
+      <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
+      <div class="arg__goal">
+        <p class="label label--brass arg__gl" data-reveal>Goal</p>
+        <p class="bridge bridge--fg arg__g" data-reveal="110">{p.goal}</p>
+      </div>
+      <dl class="arg__setup" data-seq="120" data-seq-from="200">
+        <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+        <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+      </dl>
+    </div>
+  )}
+</article>
+
+<style>
+  .pcard { scroll-margin-top: calc(var(--nav-h) + 0.5rem); position: relative; }
+
+  /* ── The band ─────────────────────────────────────────────────────
+     Four rows so the nameplate can sit at either end of the frame. */
+  .band {
+    position: relative;
+    isolation: isolate;
+    min-height: var(--band, clamp(19rem, 48vh, 28rem));
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+  }
+  .pcard--anchor { --band: clamp(29rem, 76vh, 43rem); }
+  .pcard--turn   { --band: clamp(21rem, 58vh, 33rem); }
+  .pcard--close  { --band: clamp(17rem, 42vh, 25rem); }
+
+  /* Figure ships a bottom ramp for the title; the top rail needs its own,
+     because a bright sky swallows a tracked 11px label. */
+  .band::before {
+    content: ''; position: absolute; inset: 0 0 auto 0; z-index: 0;
+    height: clamp(7rem, 20vh, 11.5rem);
+    background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--ink-900) 72%, transparent) 0%,
+      color-mix(in srgb, var(--ink-900) 40%, transparent) 46%,
+      transparent 100%);
+    pointer-events: none;
+  }
+  /* Bottom ramp for the name. Shallower than Figure's scrim="bottom", which
+     goes to solid ink and turned the foot of every band into a black slab. */
+  .band::after {
+    content: ''; position: absolute; inset: auto 0 0 0; z-index: 0;
+    height: 58%;
+    background: linear-gradient(to top,
+      color-mix(in srgb, var(--ink-900) 84%, transparent) 0%,
+      color-mix(in srgb, var(--ink-900) 58%, transparent) 30%,
+      color-mix(in srgb, var(--ink-900) 20%, transparent) 62%,
+      transparent 100%);
+    pointer-events: none;
+  }
+  /* padding lives on the children: the fill Figure is positioned against the
+     band's padding box, so padding here would inset the photograph. */
+  .rail, .say, .arg--strip { position: relative; z-index: 1; }
+
+  /* ── Nameplate ────────────────────────────────────────────────────
+     Three registers and nothing else: brass numeral, the partner as this
+     card's one eyebrow, the sector as a dim label. */
+  .rail {
+    margin: 0;
+    padding-top: clamp(1.35rem, 2.6vw, 2.25rem);
+    display: flex;
+    align-items: baseline;
+    gap: 1.15ch;
+  }
+  .rail__field { margin-left: auto; text-align: right; white-space: nowrap; }
+
+  .band > .rail { grid-row: 1; }
+  .band > .say { grid-row: 4; }
+
+  .say {
+    padding-bottom: clamp(1.75rem, 3.4vw, 3rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 18.5rem);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: 0.8rem;
+    align-items: end;
+  }
+  .say__t { line-height: 0.94; letter-spacing: -0.026em; text-wrap: initial; }
+  .say__tag {
+    margin: 0;
+    padding-bottom: 0.4em;
+    font-size: var(--step-lede);
+    line-height: 1.45;
+    color: var(--fg-mute);
+    text-wrap: pretty;
+  }
+
+  /* ── 01 ANCHOR: the argument descends ─────────────────────────────
+     Setup small and left under a hairline; then a held pause, bounded above
+     by that rule and below by the brass label; then the outcome alone at the
+     page's one --step-feature. */
+  .arg--descent {
+    display: grid;
+    grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
+    column-gap: clamp(2rem, 6vw, 6rem);
+    padding-top: clamp(1.4rem, 2.6vw, 2.1rem);
+    padding-bottom: clamp(3rem, 5.5vw, 5rem);
+  }
+  .arg__rule {
+    grid-column: 1 / -1;
+    height: 1px; background: var(--rule);
+    margin-bottom: clamp(1rem, 2vw, 1.6rem);
+  }
+  /* the two notes hang off opposite ends of the hairline, so the pause below
+     them is bounded across the full width instead of trailing off to the right */
+  .arg--descent .arg__setup {
+    grid-column: 1 / -1; margin: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 27rem) minmax(1.5rem, 1fr) minmax(0, 24rem);
+    align-items: start;
+  }
+  .arg--descent .arg__setup > div:nth-child(2) {
+    grid-column: 3; text-align: right;
+  }
+  .arg--descent .arg__setup > div:nth-child(2) dd { margin-left: auto; }
+  .arg--descent .arg__goal {
+    grid-column: 1 / -1;
+    /* the pause: bounded by the setup above and the brass label below */
+    margin-top: var(--pause);
+    display: grid;
+    gap: clamp(0.9rem, 1.8vw, 1.4rem);
+  }
+  .arg--descent .arg__g {
+    max-width: 16ch;
+    color: var(--fg);
+    --settle-origin: 0% 100%;
+    --settle-shift: 2.4vh;
+  }
+
+  /* ── 04 CLOSE: the same argument, read backwards ──────────────────── */
+  .arg--mirror {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(1.5rem, 0.35fr) minmax(0, 20rem);
+    padding-top: clamp(1.4rem, 2.6vw, 2.1rem);
+    padding-bottom: clamp(1.25rem, 2.4vw, 2rem);
+    align-items: start;
+  }
+  .arg--mirror .arg__goal {
+    grid-column: 1; display: grid; gap: clamp(0.7rem, 1.4vw, 1.05rem);
+  }
+  .arg--mirror .arg__g { max-width: 22ch; }
+  .arg--mirror .arg__setup {
+    grid-column: 3; margin: 0;
+    display: grid; gap: clamp(0.9rem, 1.8vw, 1.35rem);
+    align-content: start;
+    text-align: right;
+  }
+  .arg--mirror .arg__setup dd { margin-left: auto; }
+
+  /* ── 03 TURN: the fields sit on the photograph ────────────────────── */
+  .pcard--turn .band > .say {
+    grid-row: 2;
+    align-self: start;
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: clamp(1.1rem, 2.2vw, 1.9rem);
+    padding-bottom: 0;
+    row-gap: clamp(0.7rem, 1.3vw, 1.05rem);
+    align-items: start;
+  }
+  .pcard--turn .say__tag { padding-bottom: 0; max-width: 30ch; padding-left: 0.08em; }
+  /* the ink has to move with the type: deep at the top for the name, and
+     near-solid along the foot so a 16px line can be read off a photograph */
+  .pcard--turn .band::before { height: clamp(14rem, 46vh, 26rem); }
+  .pcard--turn .band::after {
+    height: 44%;
+    background: linear-gradient(to top,
+      color-mix(in srgb, var(--ink-900) 93%, transparent) 0%,
+      color-mix(in srgb, var(--ink-900) 78%, transparent) 42%,
+      color-mix(in srgb, var(--ink-900) 34%, transparent) 74%,
+      transparent 100%);
+  }
+  .arg--strip {
+    grid-row: 4;
+    margin: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.25fr);
+    column-gap: clamp(1.75rem, 4vw, 4rem);
+    border-top: 1px solid var(--mark);
+    padding-top: clamp(0.85rem, 1.7vw, 1.2rem);
+    padding-bottom: clamp(1.5rem, 3vw, 2.4rem);
+  }
+  .arg--strip .arg__out dd { color: var(--fg); font-size: var(--step-lede); line-height: 1.35; }
+
+  /* ── 02 ASIDE: the plate bleeds, the argument stands beside it ─────── */
+  .aside {
+    display: grid;
+    grid-template-columns: minmax(0, 53%) minmax(0, 1fr);
+    column-gap: clamp(1.75rem, 4.5vw, 4.5rem);
+    align-items: stretch;
+    padding-right: var(--gutter);
+    padding-block: clamp(2rem, 4vw, 3.75rem);
+  }
+  .aside__fig { grid-column: 1; }
+  /* anchored at BOTH ends of the plate: the nameplate on its top edge, the
+     outcome on its bottom one. The air between them is held, not left over. */
+  .aside__side {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(1.5rem, 3vw, 2.4rem);
+    max-width: 34rem;
+  }
+  .aside__side .rail { padding-top: 0; }
+  .aside__side > * { grid-column: 1; }
+  .aside__side .say { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 0.7rem; padding-bottom: 0; }
+  .aside__side .say__tag { padding-bottom: 0; max-width: 32ch; }
+  .aside__side .say__t { line-height: 1.0; letter-spacing: -0.02em; }
+
+  .arg--side { margin: 0; display: grid; }
+  .arg--side > div {
+    padding-block: clamp(0.75rem, 1.5vw, 1.05rem);
+    border-top: 1px solid var(--rule-soft);
+  }
+  .arg--side > div:first-child { border-top: 1px solid var(--rule); }
+  .arg--side .arg__out { border-top: 1px solid color-mix(in srgb, var(--brass) 70%, transparent); }
+
+  /* ── Field grammar, shared ───────────────────────────────────────── */
+  .arg div { display: grid; gap: 0.55rem; align-content: start; }
+  .arg dt { color: var(--brass); }
+  .arg dd {
+    margin: 0;
+    color: var(--fg-mute);
+    font-size: var(--step-body);
+    line-height: 1.45;
+    max-width: 34ch;
+    text-wrap: pretty;
+  }
+  .arg .arg__out dd { max-width: 26ch; }
+  .arg__gl { color: var(--brass); }
+
+  /* ── Motion ───────────────────────────────────────────────────────
+     The masked name has to lead. .say is a bare trigger so it fires on the
+     earlier [data-reveal] threshold; the tagline hangs off that same beat. */
+  .say[data-reveal] { opacity: 1; transform: none; transition: none; will-change: auto; }
+  .say__tag {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+    transition:
+      opacity 680ms var(--ease-out) var(--tag-delay, 190ms),
+      transform 900ms var(--ease-out) var(--tag-delay, 190ms);
+  }
+  .say.is-in .say__tag { opacity: 1; transform: none; }
+  .pcard--anchor { --tag-delay: 620ms; }
+  .pcard--anchor .say__t :global(.line > span) { transition-duration: 1400ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .say__tag { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ── Narrow ───────────────────────────────────────────────────────── */
+  @media (max-width: 1080px) {
+    .arg--descent { grid-template-columns: minmax(0, 1fr); }
+    .arg--descent .arg__setup {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: clamp(1.25rem, 3vw, 2.5rem);
+    }
+    .arg--descent .arg__setup > div:nth-child(2) { grid-column: 2; text-align: left; }
+    .arg--descent .arg__setup > div:nth-child(2) dd { margin-left: 0; }
+    .arg--mirror { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 4vw, 2.25rem); }
+    .arg--mirror .arg__goal, .arg--mirror .arg__setup { grid-column: 1; text-align: left; }
+    .arg--mirror .arg__setup {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(1rem, 3vw, 2rem);
+    }
+    .arg--mirror .arg__setup dd { margin-left: 0; }
+    .aside { grid-template-columns: minmax(0, 48%) minmax(0, 1fr); }
+    .aside__side { gap: clamp(1.1rem, 2.6vw, 1.8rem); justify-content: flex-start; }
+  }
+
+  @media (max-width: 860px) {
+    /* Below ~700px the display range compresses and size alone stops reading
+       as rank, so the break is carried by space and by band height instead. */
+    .pcard--anchor { --band: clamp(25rem, 68vh, 34rem); }
+    .pcard--turn   { --band: clamp(20rem, 54vh, 27rem); }
+    .pcard--close  { --band: clamp(15rem, 40vh, 21rem); }
+
+    .say { grid-template-columns: minmax(0, 1fr); align-items: start; row-gap: 0.6rem; }
+    .say__tag { padding-bottom: 0; max-width: 34ch; }
+    .rail { gap: 0.9ch; }
+
+    .arg--strip { grid-template-columns: minmax(0, 1fr); row-gap: clamp(0.7rem, 2.6vw, 1rem); }
+    /* three stacked lines need more ink under them than one row did */
+    .pcard--turn .band::after { height: 58%; }
+    .arg--strip .arg__out { padding-top: clamp(0.5rem, 2vw, 0.8rem); }
+
+    /* the aside stacks, but keeps its left bleed and its ruled column */
+    .aside {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: clamp(1.5rem, 5vw, 2.25rem);
+      padding-left: 0;
+      padding-block: clamp(1.5rem, 5vw, 2.5rem) clamp(2rem, 6vw, 3rem);
+    }
+    .aside__fig { grid-column: 1; margin-right: var(--gutter); }
+    .aside__side { grid-column: 1; padding-left: var(--gutter); max-width: none; }
+  }
+
+  @media (max-width: 560px) {
+    .arg--mirror .arg__setup { grid-template-columns: minmax(0, 1fr); }
+    /* the explicit grid-column above would otherwise keep an implicit
+       second track alive after the tracks collapse to one */
+    .arg--descent .arg__setup { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1rem, 3vw, 1.5rem); }
+    .arg--descent .arg__setup > div:nth-child(2) { grid-column: 1; }
+    .arg dd, .arg .arg__out dd { max-width: 38ch; }
+  }
+</style>

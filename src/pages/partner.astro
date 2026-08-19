@@ -10,35 +10,46 @@ const roles = [
 ---
 <Base title="Partner" description="Partner on a 2026 pilot with the Lion Forum Institute.">
   <!-- ── The ask, once ────────────────────────────────────────────────
-       This page opens on the address and never shows it again. One rule
-       carries the whole ask: the email sits on it, the open pilots hang
-       from it. Display → email → index, in that order, with nothing
-       floating free in the middle of the row. -->
+       ONE focal point. The page used to print the ask twice: a display line
+       and, a row below it, the address at near-display size — two objects of
+       near-equal optical weight and no single action. The line is now the
+       one big thing; the address is the action under it, a rung down, on the
+       rule. Eyebrow → bridge → poster, so the climb has a step in it. -->
   <section class="phead">
     <div class="shell phead__in">
-      <p class="label" data-reveal>Work with us</p>
+      <p class="eyebrow" data-reveal>Work with us</p>
+      <p class="bridge phead__bridge" data-reveal="120">
+        Four pilots are open for 2026. Each one still needs money, a technology,
+        or somewhere real to run.
+      </p>
 
-      <h1 class="display phead__h lines">Partner on a pilot.</h1>
+      <div class="phead__lead">
+        <h1 class="display display--poster phead__h lines">Partner on a pilot.</h1>
 
-      <div class="ask">
-        <a class="ask__mail" href={`mailto:${site.email}`} data-reveal="360">
-          <span class="ask__mail-t">{site.email}</span>
-          <span class="ask__mail-arrow" aria-hidden="true">
-            <span class="ask__mail-line"></span>
-            <svg viewBox="0 0 11 12"><path d="M4 1.5 9.5 6 4 10.5" stroke="currentColor" stroke-width="1" fill="none"/></svg>
-          </span>
-        </a>
+        <div class="ask">
+          <span class="ask__rule" data-wipe="left" data-delay="420" aria-hidden="true"></span>
 
-        <span class="label ask__l" data-reveal="440">Open pilots · 2026</span>
+          <a class="ask__mail" href={`mailto:${site.email}`} data-reveal="520">
+            <span class="ask__mail-t">{site.email}</span>
+            <svg class="arrow ask__arrow" viewBox="0 0 22 10" aria-hidden="true">
+              <path d="M16 1l5 4-5 4M21 5H0"/>
+            </svg>
+          </a>
 
-        <span class="ask__rule" data-reveal="400" aria-hidden="true"></span>
+          <p class="ask__sub" data-reveal="580">Name the pilot and the role. A person answers.</p>
+        </div>
+      </div>
 
-        <p class="ask__sub" data-reveal="500">Name the pilot and the role. A person answers.</p>
-
-        <ul class="ask__index">
-          {pilots.map((p, i) => (
-            <li data-reveal={String(500 + i * 60)}>
-              <span class="index">{p.index}</span><span class="ask__index-n">{p.title}</span>
+      <!-- The right plate carries the four doors by name, so the ask is not
+           an abstraction. Territory: it uncovers, it does not lift. -->
+      <div class="phead__side">
+        <p class="label pindex__k">Open pilots · 2026</p>
+        <ul class="pindex" data-wipe="left" data-delay="300">
+          {pilots.map((p) => (
+            <li>
+              <span class="index">{p.index}</span>
+              <span class="pindex__n">{p.title}</span>
+              <span class="label pindex__f">{p.partner}</span>
             </li>
           ))}
         </ul>
@@ -50,13 +61,16 @@ const roles = [
        doors arrive. Numeral is the index, the verb is the content. -->
   <section class="on-cream proles">
     <div class="shell proles__in">
-      <p class="label" data-reveal>Three ways in</p>
-      <ol class="proles__list">
+      <div class="proles__head">
+        <p class="eyebrow" data-reveal>Three ways in</p>
+        <h2 class="display display--head proles__h" data-settle="0.62">Every pilot needs all three.</h2>
+      </div>
+      <ol class="proles__list" data-seq="110" data-seq-from="60">
         {roles.map((r, i) => (
-          <li data-reveal={String(80 + i * 90)}>
+          <li data-reveal>
             <span class="proles__rule" aria-hidden="true"></span>
             <span class="index proles__n">{String(i + 1).padStart(2, '0')}</span>
-            <h2 class="proles__t">{r.t}</h2>
+            <h3 class="display display--sub proles__t">{r.t}</h3>
             <p>{r.p}</p>
           </li>
         ))}

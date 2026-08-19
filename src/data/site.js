@@ -127,13 +127,25 @@ export const forum = {
   name: 'The Lion Forum',
   place: 'Kennedy Compound, Hyannis Port',
   access: 'By invitation',
+  /* The bridge rung under the eyebrow: who is in the room, plainly, so the
+     display line above can be a claim rather than a list. */
+  who: 'Founders, investors, elected officials.',
   line: 'The people who build sit with the people who decide.',
   role: 'The Institute is a lead sponsor. Pilots find their partners here, and report their results back.',
   caption: 'Before the room fills.',
   cta: 'Inquire about the Forum',
   image: '/media/forum.jpg',
   imageDetail: '/media/forum-detail.jpg',
+  /* What the PHOTOGRAPH is — a harbour at dusk on Block Island, RI. It is not
+     Hyannis Port and must never be set where it reads as one with `place`.
+     See refs/PHOTO-FACTS.md. */
+  credit: 'Block Island, Rhode Island',
 };
+
+/* The scene reads eyebrow → lead → claim. The lead is the bridge rung: it
+   tells you the weight of the line that follows, so the held space between
+   them is an interval and not a hole. The claim stays ONE sentence. */
+export const whyNowLead = 'Everything that follows starts with one fact.';
 
 export const whyNow =
   'AI is moving faster than public institutions can absorb it.';

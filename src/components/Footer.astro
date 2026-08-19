@@ -1,5 +1,6 @@
 ---
-import { cta, site, nav } from '../data/site.js';
+import { cta, site, nav, forum } from '../data/site.js';
+import Mark from './chrome-mark.astro';
 const year = new Date().getFullYear();
 const { pathname } = Astro.url;
 
@@ -13,25 +14,35 @@ const isHere = (href) => pathname === href || (href !== '/' && pathname.startsWi
    line of display type on a hairline. No eyebrow, no address, no gloss. */
 const coda = isHere(cta.href) ? { line: 'Come to the Forum.', href: '/forum/' } : null;
 
+/* ONE ask, ONE action. The close used to print the ask twice — the display
+   line on the left and a 26px underlined address on the right, on the same
+   row, at near-equal optical weight. There is now a single lit object: the
+   line, with its own verb under it. The address lives on /partner/, which is
+   where the line goes. Above the line, the bridge rung, so the close climbs
+   11px → 27px → 86px instead of jumping. */
 const scene = {
   kicker: 'Work with us',
+  bridge: 'Funding, the technology, or the ground to run it on.',
   line: cta.label + '.',
   href: cta.href,
   action: 'Start the conversation',
-  sub: 'Funding, the technology, or the ground to run it on.',
 };
 
+/* The one quieter door the brief allows, set two ranks below the ask so it
+   can never read as a second focal point. */
+const second = { k: forum.access, t: 'Inquire about the Lion Forum', href: '/forum/' };
+
 /* The base row is a close, not a second header: two destinations, chosen so
-   they never repeat the page you are on or the door the scene above opens. */
-const skip = coda ? coda.href : cta.href;
-const footNav = nav.filter((n) => !isHere(n.href) && n.href !== skip).slice(0, 2);
+   they never repeat the page you are on or either door above them. */
+const skip = coda ? [coda.href] : [cta.href, second.href];
+const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).slice(0, 2);
 ---
 <footer class:list={['foot', { 'foot--coda': !!coda }]}>
   {!coda && <span class="foot__glow" aria-hidden="true"></span>}
 
   {coda ? (
     <div class="shell coda">
-      <span class="coda__rule" aria-hidden="true"></span>
+      <span class="coda__rule" data-wipe="left" aria-hidden="true"></span>
       <a class="coda__a" href={coda.href}>
         <span class="display coda__line">{coda.line}</span>
         <svg class="arrow coda__arrow" viewBox="0 0 22 10" aria-hidden="true">
@@ -41,23 +52,23 @@ const footNav = nav.filter((n) => !isHere(n.href) && n.href !== skip).slice(0, 2
     </div>
   ) : (
     <div class="shell foot__scene">
-      <p class="label foot__kicker" data-reveal>{scene.kicker}</p>
+      <p class="eyebrow foot__kicker" data-reveal>{scene.kicker}</p>
+      <p class="bridge foot__bridge" data-reveal="110">{scene.bridge}</p>
 
       <a class="foot__cta" href={scene.href}>
-        <span class="display display--xl foot__line lines">{scene.line}</span>
+        <span class="display display--poster foot__line lines">{scene.line}</span>
         <span class="foot__go">
-          <span class="foot__arrow" aria-hidden="true">
-            <span class="foot__arrow-line"></span>
-            <svg class="foot__arrow-head" viewBox="0 0 11 12"><path d="M4 1.5 9.5 6 4 10.5" stroke="currentColor" stroke-width="1" fill="none"/></svg>
-          </span>
+          <svg class="arrow foot__arrow" viewBox="0 0 22 10" aria-hidden="true">
+            <path d="M16 1l5 4-5 4M21 5H0"/>
+          </svg>
           <span class="label foot__go-t">{scene.action}</span>
         </span>
       </a>
 
-      <div class="foot__aside">
-        <a class="foot__mail" href={`mailto:${site.email}`} data-reveal="240">{site.email}</a>
-        <p class="foot__sub" data-reveal="320">{scene.sub}</p>
-      </div>
+      <a class="foot__second" href={second.href} data-reveal="380">
+        <span class="label foot__second-k">{second.k}</span>
+        <span class="foot__second-t">{second.t}</span>
+      </a>
     </div>
   )}
 
@@ -66,17 +77,14 @@ const footNav = nav.filter((n) => !isHere(n.href) && n.href !== skip).slice(0, 2
     <span class="foot__rule" aria-hidden="true"></span>
 
     <div class="foot__row">
-      <a class="mark foot__id tap" href="/" aria-label={`${site.name} — home`}>
-        <span class="mark__a">Lion Forum</span>
-        <span class="mark__b">Institute</span>
-      </a>
+      <Mark tone="quiet" class="foot__id tap" />
       <nav class="foot__nav" aria-label="Footer">
         {footNav.map((n) => (
-          <a href={n.href} class="foot__nav-a">{n.label}</a>
+          <a href={n.href} class="label foot__nav-a">{n.label}</a>
         ))}
       </nav>
-      <span class="foot__fine">Hyannis Port · Washington, D.C.</span>
-      <span class="foot__fine tnum">© {year} {site.name}</span>
+      <span class="label foot__fine">Hyannis Port · Washington, D.C.</span>
+      <span class="label foot__fine tnum">© {year} {site.name}</span>
     </div>
   </div>
 </footer>
@@ -98,46 +106,49 @@ const footNav = nav.filter((n) => !isHere(n.href) && n.href !== skip).slice(0, 2
     mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
   }
 
-  /* ── Mode A: the conversion scene ───────────────────────────────── */
+  /* ── Mode A: the conversion scene ─────────────────────────────────
+     One column carries the whole ask — eyebrow, bridge, line, verb — and
+     the second column holds only the quiet door, pinned to the bottom of
+     the scene so it reads as a footnote to the ask, not a rival to it. */
   .foot__scene {
     display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
     column-gap: clamp(1.5rem, 4vw, 4rem);
-    row-gap: clamp(1.5rem, 2.4vw, 2.2rem);
+    row-gap: clamp(1.1rem, 1.8vw, 1.6rem);
     align-items: end;
   }
-  .foot__kicker { grid-column: 1 / -1; }
-
-  .foot__cta { display: grid; gap: clamp(1rem, 1.8vw, 1.7rem); align-content: start; justify-items: start; }
+  .foot__kicker { grid-column: 1; grid-row: 1; }
+  .foot__bridge { grid-column: 1; grid-row: 2; max-width: 34ch; }
+  .foot__cta {
+    grid-column: 1; grid-row: 3;
+    margin-top: clamp(0.6rem, 1.4vw, 1.4rem);
+    display: grid; gap: clamp(1.1rem, 2vw, 1.9rem);
+    align-content: start; justify-items: start;
+  }
   .foot__line { max-width: 11ch; }
   /* .lines masks each line; give descenders room inside the mask. */
   .foot__line :global(.line) { padding-bottom: 0.1em; margin-bottom: -0.1em; }
 
-  .foot__go { display: inline-flex; align-items: center; gap: clamp(0.7rem, 1.4vw, 1.1rem); }
-  .foot__arrow {
-    display: flex; align-items: center;
-    width: clamp(46px, 6vw, 84px); height: 12px; color: var(--brass);
-    flex: none;
-    transition: width 620ms var(--ease-out);
-  }
-  .foot__arrow-line { flex: 1 1 auto; height: 1px; background: currentColor; }
-  .foot__arrow-head { width: 11px; height: 12px; margin-left: -1px; flex: none; }
+  /* The house arrow, at the house size. No second arrow construction. */
+  .foot__go { display: inline-flex; align-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem); }
+  .foot__arrow { width: clamp(26px, 2.6vw, 34px); color: var(--brass); }
   .foot__go-t { color: var(--fg); transition: color 380ms var(--ease-out); }
-  .foot__cta:hover .foot__arrow { width: clamp(62px, 8vw, 112px); }
+  .foot__cta:hover .foot__arrow { transform: translateX(9px); }
   .foot__cta:hover .foot__go-t { color: var(--brass); }
 
-  .foot__aside { display: grid; gap: clamp(0.75rem, 1.4vw, 1.1rem); justify-items: end; text-align: right; padding-bottom: 0.35rem; }
-  .foot__mail {
-    font-size: clamp(1.05rem, 0.82rem + 0.85vw, 1.62rem);
-    letter-spacing: -0.012em; line-height: 1.15;
-    color: var(--cream);
-    padding-bottom: 0.34rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--brass) 55%, transparent);
-    transition: color 380ms var(--ease-out), border-color 380ms var(--ease-out);
-    overflow-wrap: anywhere;
+  /* Two ranks below the ask: a micro label and one 19px line. */
+  .foot__second {
+    grid-column: 2; grid-row: 3; align-self: end; justify-self: end;
+    display: grid; gap: 0.6rem; justify-items: end; text-align: right;
+    padding-bottom: 0.3rem;
   }
-  .foot__mail:hover { color: var(--brass); border-bottom-color: var(--brass); }
-  .foot__sub { color: var(--fg-mute); font-size: var(--step-xs); max-width: 26ch; }
+  .foot__second-t {
+    font-size: var(--step-lede); line-height: 1.25; color: var(--fg-mute);
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--rule);
+    transition: color 380ms var(--ease-out), border-color 380ms var(--ease-out);
+  }
+  .foot__second:hover .foot__second-t { color: var(--fg); border-bottom-color: var(--brass); }
 
   /* ── Mode B: the coda ───────────────────────────────────────────────
      A page whose hero already holds the address ends on a note, not on a
@@ -153,7 +164,7 @@ const footNav = nav.filter((n) => !isHere(n.href) && n.href !== skip).slice(0, 2
     justify-self: start;
   }
   .coda__line {
-    font-size: clamp(1.85rem, 1.2rem + 2.1vw, 3.3rem);
+    font-size: var(--step-head);
     line-height: 1.02; letter-spacing: -0.018em;
     transition: color 380ms var(--ease-out);
   }
@@ -170,33 +181,10 @@ const footNav = nav.filter((n) => !isHere(n.href) && n.href !== skip).slice(0, 2
   }
   .foot__row > :nth-child(3) { margin-left: auto; }
 
-  /* Same lockup as the header — the brand is one object. */
-  .mark {
-    display: inline-flex; align-items: baseline; gap: 0.5ch;
-    font-family: var(--sans);
-    font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.85rem);
-    letter-spacing: 0.15em; text-transform: uppercase;
-    line-height: 1; white-space: nowrap; color: var(--fg-mute);
-    padding-block: 0.5rem; margin-block: -0.5rem;
-    transition: color 380ms var(--ease-out);
-  }
-  .mark__a { font-weight: 600; }
-  .mark__b { font-weight: 400; color: var(--fg-faint); transition: color 380ms var(--ease-out); }
-  .mark:hover { color: var(--fg); }
-  .mark:hover .mark__b { color: var(--fg); }
-
-  /* One step below the header: smaller, tighter, quieter. This is a close. */
+  /* Wordmark: chrome-mark.astro, same object as the bar.
+     Everything else on this row is the house .label register — the footer
+     used to invent its own micro scale down here at its own tracking. */
   .foot__nav { display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(1rem, 2.2vw, 1.8rem); }
-  /* The house micro-label, not a fourth scale invented down here. */
-  .foot__nav-a,
-  .foot__fine {
-    font-family: var(--sans);
-    font-size: var(--step-label);
-    font-weight: 500;
-    letter-spacing: 0.155em; text-transform: uppercase;
-    line-height: 1;
-    color: var(--fg-faint);
-  }
   .foot__nav-a {
     padding-block: 0.55rem; margin-block: -0.55rem;
     transition: color 340ms var(--ease-out);
@@ -205,9 +193,13 @@ const footNav = nav.filter((n) => !isHere(n.href) && n.href !== skip).slice(0, 2
 
   @media (max-width: 860px) {
     .foot { gap: clamp(2.4rem, 9vw, 4rem); }
-    .foot__scene { grid-template-columns: 1fr; align-items: start; row-gap: clamp(1.6rem, 6vw, 2.4rem); }
+    .foot__scene { grid-template-columns: 1fr; align-items: start; row-gap: clamp(1rem, 3.5vw, 1.6rem); }
     .foot__line { max-width: 10ch; }
-    .foot__aside { padding-bottom: 0; justify-items: start; text-align: left; }
+    .foot__second {
+      grid-column: 1; grid-row: 4;
+      justify-self: start; justify-items: start; text-align: left;
+      margin-top: clamp(2rem, 8vw, 2.8rem); padding-bottom: 0;
+    }
     .foot__row { gap: 0.6rem 1.4rem; }
     .foot__row > :nth-child(3) { margin-left: 0; }
     .foot__fine { flex: 1 0 100%; }
@@ -215,6 +207,6 @@ const footNav = nav.filter((n) => !isHere(n.href) && n.href !== skip).slice(0, 2
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .foot__arrow, .foot__go-t, .mark, .mark__b, .coda__line, .coda__arrow { transition-duration: 1ms; }
+    .foot__arrow, .foot__go-t, .foot__second-t, .coda__line, .coda__arrow { transition-duration: 1ms; }
   }
 </style>

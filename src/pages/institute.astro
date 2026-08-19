@@ -18,31 +18,31 @@ const spec = [
 ---
 <Base title="Institute" description="How the Lion Forum Institute works: short pilots, real partners, published results.">
   <!-- ── Hero plate ──────────────────────────────────────────────────
-       Five ranked objects, every one pinned to an edge of the plate:
-       kicker, statement, standfirst, caption card, and the rule that
-       closes the plate. The standfirst is the middle rank the page
-       used to be missing entirely. -->
+       The plate climbs one rung at a time — eyebrow, bridge clause, then
+       the statement — instead of jumping 12px to 107px with nothing in
+       between. Right plate: the spec, then the media chip. -->
   <section class="ihead">
     <div class="shell ihead__in">
-      <p class="label ihead__k" data-reveal>The Institute</p>
+      <p class="eyebrow ihead__k" data-reveal>The Institute</p>
+      <p class="bridge ihead__bridge" data-reveal="120">
+        A pilot needs money, a technology, and a real place to run.
+      </p>
 
       <div class="ihead__lead">
-        <h1 class="display ihead__h lines">We sit between the builders and the institutions.</h1>
-        <p class="ihead__stand" data-reveal="440">
-          A pilot needs money, a technology, and a real place to run.
-          We bring the three together, then measure.
-        </p>
+        <h1 class="display display--poster ihead__h lines">We sit between the builders and the institutions.</h1>
         <a class="ihead__cue" href="#bridge" data-reveal="620">
-          <span class="ihead__cue-r" aria-hidden="true"></span>
           <span class="label">The bridge</span>
+          <span class="ihead__cue-r" aria-hidden="true"></span>
         </a>
       </div>
 
       <div class="ihead__side">
 
-      <dl class="spec">
-        {spec.map((s, i) => (
-          <div class="spec__row" data-reveal={String(300 + i * 60)}>
+      <!-- Territory, not a sentence: the spec is a place on the plate, so it
+           uncovers along its own axis instead of lifting in row by row. -->
+      <dl class="spec" data-wipe="left" data-delay="260">
+        {spec.map((s) => (
+          <div class="spec__row">
             <dt class="label spec__k">{s.k}</dt>
             <dd class="spec__v">{s.href ? <a class="link tap" href={s.href}>{s.v}</a> : s.v}</dd>
           </div>
@@ -85,7 +85,10 @@ const spec = [
         </span>
       </div>
 
-      <p class="brg__thesis" data-reveal="180">Neither side can run the pilot alone.</p>
+      <!-- The page's claim, and the one thing on it set at the series-breaking
+           rung. Scroll-linked weight: it arrives slightly large and low and
+           resolves as it reaches reading position. -->
+      <p class="display display--feature brg__thesis" data-settle="0.62">Neither side can run the pilot alone.</p>
     </div>
   </section>
 
@@ -96,16 +99,16 @@ const spec = [
   <section class="on-cream imeth">
     <div class="shell imeth__in">
       <div class="imeth__head">
-        <p class="label imeth__k" data-reveal>The method</p>
-        <h2 class="display display--l lines">Every pilot runs the same way.</h2>
+        <p class="eyebrow imeth__k" data-reveal>The method</p>
+        <h2 class="display display--head lines">Every pilot runs the same way.</h2>
       </div>
 
-      <ol class="ledger">
-        {method.map((m, i) => (
-          <li data-reveal={String(60 + i * 90)}>
+      <ol class="ledger" data-seq="110" data-seq-from="60">
+        {method.map((m) => (
+          <li data-reveal>
             <span class="index ledger__n">{m.index}</span>
             <div class="ledger__b">
-              <h3 class="ledger__t display display--m">{m.title}</h3>
+              <h3 class="ledger__t display display--sub">{m.title}</h3>
               <p class="ledger__p">{m.text}</p>
             </div>
           </li>
@@ -117,9 +120,9 @@ const spec = [
 
 <style>
   /* ── Hero ─────────────────────────────────────────────────────────
-     Two columns. The statement and its standfirst hold the left plate;
-     the caption card holds the right one, so no half of the first
-     screen is carrying a single sentence on its own. */
+     Two columns under a two-row header. The header (eyebrow + bridge)
+     spans both plates, so the statement's cap-line and the spec's first
+     rule still open on the same horizon. */
   .ihead {
     padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(1.25rem, 1.4vw, 1.5rem);
   }
@@ -130,7 +133,14 @@ const spec = [
     row-gap: clamp(1.6rem, 2.8vw, 2.6rem);
     align-items: stretch;
   }
-  .ihead__k { grid-column: 1 / -1; margin-bottom: clamp(0.2rem, 0.6vw, 0.6rem); }
+  .ihead__k { grid-column: 1 / -1; }
+  /* The rung that was missing. It spans the plate but is measured short, so
+     the right column stays clear of it. */
+  .ihead__bridge {
+    grid-column: 1 / -1;
+    max-width: 34ch;
+    margin-bottom: clamp(0.9rem, 2vw, 1.9rem);
+  }
 
   /* Both columns stretch to the taller of the two, so the scroll cue and the
      media chip land on the same plate edge instead of leaving one half short. */
@@ -144,10 +154,10 @@ const spec = [
     display: flex; flex-direction: column;
     gap: clamp(1.6rem, 3vw, 2.8rem);
   }
-  /* One hero size for the whole site — matches /partner/. Local, because the
-     token scale has no step between --step-xl and --step-hero. */
+  /* --step-poster: the poster line of an inner page. The homepage hero is the
+     one banner on the site and this now sits a rung under it, where it
+     belongs — it used to be set larger than the hero it reports to. */
   .ihead__h {
-    font-size: clamp(3.1rem, 1rem + 6.3vw, 7rem);
     line-height: 0.94; letter-spacing: -0.028em;
     max-width: 14ch;
   }
@@ -156,19 +166,7 @@ const spec = [
      supporting row arrives faster, tighter and closer behind it. Local
      overrides of the base durations — the engine is untouched. */
   .ihead__h :global(.line > span) { transition-duration: 1450ms; }
-  .ihead__stand, .ihead__cue { --reveal-y: 8px; transition-duration: 460ms, 560ms; }
-  .spec__row { --reveal-y: 6px; transition-duration: 400ms, 500ms; }
-
-  /* The missing middle rank: ~19px on a fixed short measure, left-flush with
-     the statement, sitting between the 11px kicker and the 100px display. */
-  .ihead__stand {
-    font-size: clamp(1.02rem, 0.9rem + 0.5vw, 1.2rem);
-    line-height: 1.5;
-    font-weight: 360;
-    max-width: 38ch;
-    color: color-mix(in srgb, var(--cream) 74%, transparent);
-    text-wrap: pretty;
-  }
+  .ihead__bridge, .ihead__cue { --reveal-y: 8px; transition-duration: 460ms, 560ms; }
 
   /* ── Caption card ──
      Hairline rows across the full right column, label left, value right.
@@ -182,39 +180,44 @@ const spec = [
     border-top: 1px solid var(--rule);
   }
   .spec__row:last-child { border-bottom: 1px solid var(--rule); }
-  .spec__k { color: var(--fg-faint); white-space: nowrap; }
+  .spec__k { white-space: nowrap; }
   .spec__v {
     margin: 0; text-align: right;
-    font-size: clamp(0.95rem, 0.88rem + 0.3vw, 1.12rem);
+    font-size: var(--step-lede);
     line-height: 1.25; letter-spacing: -0.006em;
     color: var(--fg);
   }
   .spec__v :global(a:hover) { color: var(--brass); }
 
   /* Media chip + scroll cue close the plate: one object pinned to each
-     bottom corner, sharing a baseline. */
+     bottom corner, sharing a baseline. The cue is the same object as the two
+     hero screens — word, then a 34px hairline with one brass sweep in it. */
   .ichip { margin-top: auto; }
   .ihead__cue {
     margin-top: auto; align-self: flex-start;
-    display: inline-flex; align-items: center; gap: 0.9rem;
-    color: var(--fg-faint);
+    display: inline-flex; align-items: center; gap: 0.75rem;
     padding-block: 0.45rem; margin-bottom: -0.45rem;
     transition: color 380ms var(--ease-out);
   }
   .ihead__cue-r {
-    display: block; width: clamp(28px, 3.4vw, 46px); height: 1px;
-    background: currentColor;
-    transition: width 480ms var(--ease-out);
+    display: block; width: 34px; height: 1px;
+    background: var(--mark);
+    position: relative; overflow: hidden;
+  }
+  .ihead__cue-r::after {
+    content: ''; position: absolute; inset: 0; background: var(--brass);
+    transform: translateX(-100%);
+    animation: cueSweep 2.8s var(--ease-io) infinite;
   }
   .ihead__cue:hover { color: var(--brass); }
-  .ihead__cue:hover .ihead__cue-r { width: clamp(40px, 5vw, 64px); }
+  @keyframes cueSweep { 0% { transform: translateX(-100%); } 55%, 100% { transform: translateX(100%); } }
 
   /* ── The bridge ───────────────────────────────────────────────────
      One grid: row 1 is both arm labels, rows 2–5 are the names. Both
      rails span 1 / -1, so they are the same length and terminate on the
      grid rather than in mid-air. */
   .ibridge {
-    padding-block: clamp(2.5rem, 1rem + 2.6vw, 4rem) clamp(4.5rem, 2rem + 5vw, 9rem);
+    padding-block: clamp(2.5rem, 1rem + 2.6vw, 4rem) clamp(3rem, 1.5rem + 3.2vw, 5.5rem);
   }
   .brg {
     --brg-gap: clamp(2rem, 5vw, 5rem);
@@ -248,7 +251,7 @@ const spec = [
 
   .brg__list li {
     list-style: none;
-    font-size: var(--step-m); line-height: 1.16; color: var(--fg);
+    font-size: var(--step-sub); line-height: 1.16; color: var(--fg);
   }
   .brg__list--a li { grid-column: 1; text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
   .brg__list--b li { grid-column: 3; padding-left: clamp(1rem, 2vw, 1.8rem); }
@@ -295,16 +298,16 @@ const spec = [
   .brg.is-in .brg__hub::before, .brg.is-in .brg__hub::after { transform: none; }
 
   .brg__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brass); }
-  .brg__hub-t { color: var(--fg); letter-spacing: 0.16em; white-space: nowrap; }
+  .brg__hub-t { color: var(--fg); white-space: nowrap; }
 
-  /* The section's thesis, so it outranks the names it explains. */
+  /* The series-breaker, used once on this page. A held pause above it, bounded
+     by the diagram on one side and by the line itself on the other. */
   .brg__thesis {
-    margin: clamp(2.5rem, 4.5vw, 3.6rem) auto 0;
-    max-width: 26ch; text-align: center;
-    font-family: var(--serif); font-weight: 320;
-    font-size: clamp(1.25rem, 1.05rem + 0.7vw, 1.7rem);
-    line-height: 1.2; letter-spacing: -0.014em;
+    margin: var(--pause) auto 0;
+    max-width: 18ch; text-align: center;
+    line-height: 1.04;
     color: var(--fg);
+    --settle-shift: 2.4vh;
   }
 
   /* ── The method, as a ledger ──────────────────────────────────── */
@@ -313,8 +316,7 @@ const spec = [
   }
   .imeth__in { display: grid; gap: clamp(1.75rem, 3.2vw, 2.8rem); }
   .imeth__head { display: grid; gap: clamp(0.9rem, 1.8vw, 1.5rem); }
-  .imeth__k { color: var(--fg-faint); }
-  .imeth .display--l { max-width: 16ch; }
+  .imeth .display--head { max-width: 16ch; }
   .imeth__head h2 :global(.line > span) { transition-duration: 1450ms; }
 
   /* Two columns only. The gloss belongs under the title it glosses — a third
@@ -335,11 +337,7 @@ const spec = [
   .ledger__n { padding-top: 0.55em; }
   .ledger__b { display: grid; gap: clamp(0.3rem, 0.7vw, 0.55rem); }
   .ledger__t { font-weight: 320; }
-  .ledger__p {
-    color: var(--fg-mute);
-    font-size: clamp(0.88rem, 0.82rem + 0.24vw, 1rem);
-    max-width: 34ch;
-  }
+  .ledger__p { color: var(--fg-mute); font-size: var(--step-body); max-width: 34ch; }
 
   @media (max-width: 860px) {
     /* head offset comes from --head-pad; nothing local to override */
@@ -348,7 +346,7 @@ const spec = [
     .ihead__lead { gap: clamp(1.2rem, 5vw, 1.8rem); }
     .ihead__side { gap: clamp(1.4rem, 6vw, 2rem); }
     .ihead__h { max-width: 100%; }
-    .ihead__stand { max-width: 34ch; }
+    .ihead__bridge { max-width: 30ch; margin-bottom: clamp(0.3rem, 2vw, 0.8rem); }
     .spec { padding-top: 0; }
     .ichip { margin-top: 0; }
     .ihead__cue { display: none; }
@@ -388,10 +386,13 @@ const spec = [
       background: color-mix(in srgb, var(--brass) 6%, transparent);
     }
     .brg__hub::before, .brg__hub::after { content: none; }
-    .brg__thesis { margin-inline: 0; text-align: left; max-width: 22ch; }
+    /* Below ~700px the feature rung stops reading as a break, so the break is
+       carried by space and alignment instead. */
+    .brg__thesis { margin-inline: 0; text-align: left; max-width: 14ch; }
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .ihead__cue-r::after { animation: none; transform: none; opacity: 0.5; }
     .brg__k, .brg__list li, .brg__hub { opacity: 1 !important; transform: none !important; transition-duration: 1ms !important; }
     .brg__rail i, .brg__hub::before, .brg__hub::after { transform: none !important; transition-duration: 1ms !important; }
   }
