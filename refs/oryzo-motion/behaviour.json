@@ -1,0 +1,92 @@
+{
+  "canvases": [
+    {
+      "w": 1440,
+      "h": 900,
+      "ctx": "webgl2",
+      "fixed": "fixed"
+    },
+    {
+      "w": 570,
+      "h": 734,
+      "ctx": "2d",
+      "fixed": "absolute"
+    },
+    {
+      "w": 1440,
+      "h": 900,
+      "ctx": "2d",
+      "fixed": "absolute"
+    },
+    {
+      "w": 495,
+      "h": 495,
+      "ctx": "2d",
+      "fixed": "absolute"
+    },
+    {
+      "w": 322,
+      "h": 322,
+      "ctx": "2d",
+      "fixed": "absolute"
+    },
+    {
+      "w": 1440,
+      "h": 900,
+      "ctx": "2d",
+      "fixed": "static"
+    }
+  ],
+  "smoothScroll": {
+    "asked": 900,
+    "immediate": 900,
+    "settled": 900,
+    "hijacked": false
+  },
+  "rafActive": false,
+  "movers": [
+    {
+      "sel": "div",
+      "from": "none|1|none|0",
+      "to": "none|1|none|-260"
+    },
+    {
+      "sel": "div",
+      "from": "none|1|none|0",
+      "to": "none|1|none|-260"
+    },
+    {
+      "sel": "div",
+      "from": "none|1|none|0",
+      "to": "none|1|none|-260"
+    },
+    {
+      "sel": "div.page",
+      "from": "none|1|none|0",
+      "to": "none|1|none|-260"
+    },
+    {
+      "sel": "div.section",
+      "from": "none|1|none|0",
+      "to": "none|1|none|-260"
+    },
+    {
+      "sel": "div.section",
+      "from": "none|1|none|900",
+      "to": "none|1|none|640"
+    },
+    {
+      "sel": "div.section",
+      "from": "none|1|none|8100",
+      "to": "none|1|none|7840"
+    },
+    {
+      "sel": "div.section",
+      "from": "none|1|none|20025",
+      "to": "none|1|none|19765"
+    }
+  ],
+  "libs": [
+    "html.class=is-desktop is-ready"
+  ]
+}

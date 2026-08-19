@@ -1,0 +1,14 @@
+{
+  "canvases": [],
+  "smoothScroll": {
+    "asked": 900,
+    "immediate": 0,
+    "settled": 900,
+    "hijacked": true
+  },
+  "rafActive": false,
+  "movers": [],
+  "libs": [
+    "html.class=js"
+  ]
+}
