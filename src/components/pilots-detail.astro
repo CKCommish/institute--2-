@@ -1,0 +1,268 @@
+---
+/* THE DETAIL — the layer the brief asked for and no round ever built.
+
+   refs/BRIEF.md, site map: "Pilots — the four 2026 pilots only. Cards
+   first. Detail on click or a short dedicated block." The one-line-per-
+   field cap governs the CARD. This is the short dedicated block.
+
+   It is written for one reader: a programme officer who has to decide
+   whether to fund one of these. She needs, in this order —
+
+     WHAT IT IS      one sentence of what the thing actually does
+     WHO IT IS FOR   the population, named
+     WHERE           the kind of place it would run, in the conditional
+     MEASURED BY     the one outcome, which is also the card's GOAL
+     WHAT IT NEEDS   money, a technology, somewhere to run it
+
+   …and above all, THE STAGE. These pilots are proposed. Nothing is signed.
+   That is not a 12px label on a rail here; it is half the block. The right
+   column is a plate — an object you can point at — headed "What it still
+   needs", and it is as long as the left one. A reader who takes nothing
+   else from this page takes the shape: this much is designed, this much is
+   open. That shape is the ask.
+
+   THE PHOTOGRAPH IS A PLATE, NOT A SCREEN. One column wide — about 530px
+   at 1440, a third of the width and a third of the height the old card
+   spent — sitting in the header row above the "what it still needs" plate,
+   so the right of every block is picture-then-object and the left is words
+   the whole way down. Nothing is set on any frame except its corner credit.
+
+   WHY NOT A FULL-BLEED BAND, which was the first fix tried: a full-bleed
+   strip is still 1440px of image, and cover-cropping a 3:2 portrait into
+   5:1 at that width turns a woman holding her infant into a two-hundred-
+   pixel face under the words INFANT MORTALITY. Shortening a full-bleed
+   frame reduces how much of the screen a person occupies and INCREASES how
+   large they are rendered. Only narrowing the frame does both. The
+   photographs are now used at a scale where a person in one of them is a
+   person in a room. See refs/PHOTO-FACTS.md. */
+import Figure from './Figure.astro';
+
+const { pilot: p, loading = 'lazy', focal = '50% 50%', focalSm, grade = 0.5 } = Astro.props;
+const d = p.detail;
+const hid = `${p.id}-h`;
+
+const proposal = [
+  { t: 'Proposed by', v: p.partner },
+  { t: 'What it does', v: d.what },
+  { t: 'Who it is for', v: d.who },
+  { t: 'Where it would run', v: d.where },
+];
+
+const needs = [
+  { t: 'Funding', v: d.needs.fund },
+  { t: 'Technology', v: d.needs.build },
+  { t: 'Somewhere to run it', v: d.needs.run },
+];
+---
+<section class="pd" id={p.id} aria-labelledby={hid}>
+  <div class="shell pd__in">
+    <p class="pd__rail" data-reveal>
+      <span class="index pd__i">{p.index}</span>
+      <span class="eyebrow pd__partner">{p.partner}</span>
+      <span class="label pd__q">Proposed</span>
+      <span class="label pd__field">{p.field}</span>
+    </p>
+
+    <!-- THE HEADER ROW. Name and line at the top of the left column, the
+         one measurable outcome hung at its foot, the photograph beside
+         them. The held space between the line and the outcome is bounded
+         at both ends — the tagline above, the outcome below, the rule
+         under both — which is the only kind of pause this system allows. -->
+    <div class="pd__head">
+      <div class="pd__say">
+        <div class="pd__say-top">
+          <h2 class="display display--head pd__t lines" id={hid}>{p.title}</h2>
+          <p class="pd__tag" data-reveal="120">{p.tagline}</p>
+        </div>
+
+        <!-- THE OUTCOME, OUT OF THE TABLE. It was row five of a dossier,
+             set at 16px between "where it would run" and nothing. It is
+             the single fact a funder is being asked to believe, and the
+             one the Institute promises to publish either way. -->
+        <div class="pd__goal" data-reveal="180">
+          <p class="label label--brass">Measured by</p>
+          <p class="bridge bridge--fg pd__goal-t">{p.goal}</p>
+        </div>
+      </div>
+
+      <div class="pd__plate" data-reveal="60">
+        <Figure
+          src={p.image}
+          alt={p.alt ?? ''}
+          ratio="3 / 2"
+          ratioSm="4 / 3"
+          grade={grade}
+          focal={focal}
+          focalSm={focalSm ?? focal}
+          parallax={3}
+          loading={loading}
+          credit={p.credit}
+          creditPos="bottom-right"
+          {/* The only ink any of these frames needs is under its own credit,
+              and the credit is in the bottom RIGHT corner — so the ramp is
+              flipped and kept short. `auto` left that corner at L* 47 on two
+              of the four, which is twice the ceiling the micro register can
+              sit on (tokens.css, "legibility budget"). */}
+          scrim="bottom"
+          align="right"
+          reach={0.55}
+          rise={0.38}
+          ink={1}
+          vig={0.35}
+        />
+      </div>
+    </div>
+
+    <div class="pd__cols">
+      <!-- ── what is designed ─────────────────────────────────────── -->
+      <div class="pd__col">
+        <p class="label label--brass pd__gl" data-reveal>The proposal</p>
+        <dl class="pd__dl" data-seq="90" data-seq-from="40">
+          {proposal.map((r) => (
+            <div data-reveal><dt class="label">{r.t}</dt><dd>{r.v}</dd></div>
+          ))}
+        </dl>
+      </div>
+
+      <!-- ── and what is not ──────────────────────────────────────
+           A plate: an object set down on the page with its own edges,
+           because that is what this is — the three things a partner is
+           actually being asked for. -->
+      <div class="pd__open on-plate" data-reveal="80">
+        <p class="label label--brass pd__gl">What it still needs</p>
+        <dl class="pd__dl pd__dl--open">
+          {needs.map((r) => (
+            <div><dt class="label">{r.t}</dt><dd>{r.v}</dd></div>
+          ))}
+        </dl>
+        <a class="pd__ask" href="/partner/">
+          <span>Partner on this pilot</span>
+          <svg class="arrow pd__arrow" viewBox="0 0 22 10" aria-hidden="true">
+            <path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pd {
+    position: relative;
+    overflow-x: clip;
+    /* the anchor from the card layer must never land a title under the bar */
+    scroll-margin-top: calc(var(--nav-h) + 2.5rem);
+  }
+  .pd + .pd { margin-top: clamp(3rem, 6vw, 6.5rem); }
+
+  .pd__in { padding-top: clamp(1.6rem, 3vw, 2.6rem); }
+
+  .pd__rail {
+    margin: 0;
+    display: flex; align-items: baseline; gap: 1.15ch; flex-wrap: wrap;
+  }
+  .pd__q { color: var(--fg-meta); opacity: 0.72; white-space: nowrap; }
+  .pd__q::before { content: '\00b7'; margin-right: 0.85ch; }
+  .pd__field { margin-left: auto; white-space: nowrap; }
+
+  /* one pair of columns, used twice: name / picture, then dossier / ask.
+     The picture sits exactly above the plate, the words down one rail. */
+  .pd__head, .pd__cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr);
+    column-gap: clamp(2rem, 4vw, 4rem);
+    row-gap: clamp(1.5rem, 3vw, 2.4rem);
+  }
+  .pd__head { margin-top: clamp(0.85rem, 1.6vw, 1.3rem); align-items: stretch; }
+  .pd__say {
+    display: flex; flex-direction: column; justify-content: space-between;
+    gap: clamp(1.5rem, 3vw, 2.4rem);
+  }
+  .pd__say-top { display: grid; gap: clamp(0.7rem, 1.4vw, 1.1rem); }
+  .pd__goal { display: grid; gap: clamp(0.5rem, 1vw, 0.8rem); }
+  .pd__goal-t { margin: 0; max-width: 26ch; }
+  .pd__plate { position: relative; }
+  .pd__t { margin: 0; line-height: 1.0; letter-spacing: -0.02em; text-wrap: initial; }
+  .pd__tag {
+    margin: 0;
+    color: var(--fg-mute);
+    font-size: var(--step-lede);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .pd__cols {
+    margin-top: clamp(1.6rem, 3vw, 2.6rem);
+    padding-top: clamp(1.3rem, 2.4vw, 2rem);
+    border-top: 1px solid var(--rule);
+    align-items: start;
+  }
+  .pd__gl { margin: 0 0 clamp(0.9rem, 1.8vw, 1.35rem); }
+
+  /* a dossier: term left, value right, on one baseline */
+  .pd__dl { margin: 0; display: grid; row-gap: clamp(0.75rem, 1.5vw, 1.15rem); }
+  .pd__dl > div {
+    display: grid;
+    grid-template-columns: minmax(0, 10.5rem) minmax(0, 1fr);
+    column-gap: clamp(1rem, 2vw, 1.75rem);
+    align-items: baseline;
+  }
+  .pd__dl dt { color: var(--fg-meta); }
+  .pd__dl dd {
+    margin: 0;
+    color: var(--fg-mute);
+    font-size: var(--step-body);
+    line-height: 1.5;
+    max-width: 46ch;
+    text-wrap: pretty;
+  }
+  /* the one number the pilot will be judged on */
+  .pd__lit { color: var(--fg) !important; }
+
+  /* ── the ask, as an object ──────────────────────────────────────── */
+  .pd__open {
+    padding: clamp(1.35rem, 2.6vw, 2rem) clamp(1.35rem, 2.6vw, 2rem) clamp(1.2rem, 2.2vw, 1.7rem);
+    border: 1px solid var(--rule-soft);
+  }
+  .pd__dl--open > div {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.3rem;
+  }
+  .pd__dl--open dd { max-width: 40ch; }
+
+  .pd__ask {
+    margin-top: clamp(1.2rem, 2.2vw, 1.7rem);
+    padding-top: clamp(0.9rem, 1.8vw, 1.3rem);
+    border-top: 1px solid var(--rule-soft);
+    display: flex; align-items: center; gap: 0.9ch;
+    color: var(--fg);
+    font-size: var(--step-body);
+    text-decoration: none;
+  }
+  .pd__arrow {
+    width: 22px; color: var(--brass);
+    transition: transform 520ms var(--ease-out);
+  }
+  @media (hover: hover) {
+    .pd__ask:hover .pd__arrow { transform: translateX(0.35rem); }
+  }
+  .pd__ask:focus-visible { outline-offset: 6px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pd__arrow { transition-duration: 1ms; }
+  }
+
+  /* ── Narrow ─────────────────────────────────────────────────────── */
+  @media (max-width: 1000px) {
+    .pd__head, .pd__cols { grid-template-columns: minmax(0, 1fr); }
+    .pd__tag { max-width: 40ch; }
+    .pd__plate, .pd__open { max-width: 34rem; }
+  }
+
+  @media (max-width: 620px) {
+    .pd__dl > div { grid-template-columns: minmax(0, 1fr); row-gap: 0.3rem; }
+    /* the sector keeps its auto margin so it stays flush right whether it
+       shares the rail's line or wraps onto its own */
+    .pd__plate, .pd__open { max-width: none; }
+  }
+</style>

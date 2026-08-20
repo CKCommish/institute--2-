@@ -157,6 +157,19 @@ against. **This photograph is Rhode Island, not Cape Cod** — see `CONTENT-NOTE
 
 ---
 
+## 9. `pilot-health-track.jpg` / `.webp` / `@1200.*`
+
+| field | value |
+|---|---|
+| **Slot** | Pilot — Special Olympics: Healthy Athletes App. **This is the file `/pilots/` ships**; `pilot-health.jpg` is now the master it is cut from and is not referenced by any page. |
+| **Title / creator / rights** | Identical to entry 2 above — *Unified Special Olympics Track & Field Event (8983859)*, U.S. Army photo by Pfc. Seu Chan, 2025-04-16. Public Domain, 17 U.S.C. § 105 (`PD-USGov-Military-Army`). |
+| **Source page** | https://commons.wikimedia.org/wiki/File:Unified_Special_Olympics_Track_%26_Field_Event_(8983859).jpg |
+| **Original size used** | 2400 × 1600 (`pilot-health.jpg`, itself a centre crop of the 5577 × 3711 original) |
+| **Processing** | Extracted `left 0, top 800, 2400 × 800` — the 3:1 band at the foot of the frame. **No further grade:** the master already carries the house contrast +4.5%, and applying it twice is not neutral. `@1200` is a lanczos downscale to 1200 × 400 with a mild sharpen. mozjpeg q82 / webp q78. |
+| **Why it exists** | The full frame is an identifiable seven-year-old with her school's name legible on her shirt, and `/pilots/` was running it at 1440 × 780 under a Special Olympics headline. The band keeps the event — a stride, a lane, a track — and drops the individual. See `refs/PHOTO-FACTS.md`. |
+
+---
+
 ## Optional courtesy credit line
 
 If the design ever wants one line of credit in a footer or a `/credits` page:

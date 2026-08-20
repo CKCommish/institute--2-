@@ -1,427 +1,191 @@
 ---
-/* ONE PILOT. ONE ANATOMY.
+/* THE CARD — the top layer of /pilots/, and only the top layer.
 
-   Round 4 gave each pilot its own shape and the critic named the cost: four
-   institutions that made the same kind of commitment rendered as four
-   unrelated objects, so a reader had to re-learn where PROBLEM / APPROACH /
-   GOAL live four times. The target was never four shapes. It is one shape,
-   ranked.
+   The brief asks for "Cards first. Detail on click or a short dedicated
+   block," and it caps a pilot card at problem / approach / goal, one line
+   each. Every earlier round read that cap as a cap on the PAGE, and built
+   four two-viewport objects that between them told a funder twenty-five
+   words. The cap is here, on the card, where it belongs; the detail it was
+   always the summary OF is in pilots-detail.astro, below.
 
-   THE ANATOMY, identical on all four:
+   So this is a card and behaves like one: it is a cell in a four-up
+   comparison grid, not a scene. Four of them fit on one screen, which is
+   the only way a reader can hold "which of these four" in their head at
+   once — the thing the old page made impossible by spending two viewports
+   per pilot. No photograph, no display rung above --step-sub, no motion
+   beyond the hairline: the picture and the argument are downstairs.
 
-     1  a full-bleed frame
-     2  the nameplate on its top edge      index · partner · sector
-     3  the name and its one line at its foot
-     4  the argument on ground beneath it, always in this order and always on
-        the same rails: PROBLEM and APPROACH as two adjacent columns under
-        one hairline, then GOAL alone below them, brass-labelled, hung on the
-        left rail.
+   The anatomy, identical on all four:
 
-   THREE DEGREES OF VARIATION, and nothing else:
+     rail    numeral · sector
+     who     the partner, and the qualifier that says nobody has signed
+     name    the title, one serif rung
+     tag     one line
+     fields  PROBLEM · APPROACH · GOAL, one line each, in that order
+     door    the anchor to this pilot's detail block
 
-     RANK    band height and the rung the name is set at, descending
-             86vh · 66vh · 54vh · 42vh   and   head · feature · head · sub
-     GROUND  the series opens on cream and closes on a plate; the two middle
-             cards stand on page ground. Two ground events, at the two ends.
-     THE ONE AMPLIFICATION  pilot 01's GOAL — the field every card ends on —
-             is the sentence this page exists to make, so on the anchor alone
-             that field is set at poster size THROUGH a twelve-month axis.
-             It is the same field, in the same place in the same anatomy,
-             said loudly once.
-
-   Held constant: the palette, the nameplate grammar, one line per field, the
-   scrim placement, and the order the three fields are read in. */
-import Figure from './Figure.astro';
-import Scale from './pilots-scale.astro';
-
-const {
-  pilot: p,
-  /* Master-image override. site.js still points this pilot at
-     `pilot-maternal-crop.jpg`, a wave-4 workaround made because the 2400×1600
-     master carried a second identifiable woman at its right edge. The master
-     has since been re-cropped from the USDA original and ends before her, so
-     the workaround is obsolete; site.js belongs to another piece, so the
-     correct source is named here instead. */
-  src = null,
-  /* Credit override, same reason as `src`: site.js belongs to another piece.
-     A credit says WHAT THE PHOTOGRAPH IS. Three of the four already did;
-     pilot 03's said "U.S. Department of Agriculture" — a rights-holder, not
-     a fact about the frame — which left an identifiable mother and infant
-     full-bleed under "Infant Mortality" with an agency name as their only
-     caption. CONTENT-NOTES.md has the fact: a USDA nutrition-education
-     photograph made in a family child care home. */
-  credit = null,
-  /* Likewise `alt`. Every pilot frame ships alt="" because the rail, the
-     name and the credit sit on it as real text. That is defensible for a
-     transmission tower. It is not defensible for the one frame whose
-     subject is a private individual's face at full scale: it declares her
-     decorative and leaves the mortality headline as her description. */
-  alt = '',
-  rank = 2,
-  grade = 0.5,
-  focal = '50% 50%',
-  parallax = 5,
-  loading = 'lazy',
-} = Astro.props;
-
-const hid = `${p.id}-h`;
-
-/* The descent, stated once. --step-feature is spent on 02 — the page's one
-   series-breaker — and nowhere else; --step-poster belongs to the masthead
-   and to the anchor's amplified GOAL. */
-const rungs = { 1: 'display--head', 2: 'display--feature', 3: 'display--head', 4: 'display--sub' };
-const rung = rungs[rank] ?? 'display--head';
-
-/* Every frame is now written on in the same two places — the rail at the top
-   edge, the name at the foot — so every frame takes the same ink, placed
-   once, by Figure. One system, one placement. The ramp's HEIGHT is the one
-   thing that has to track the ranking: a name set on the foot of a 42vh
-   frame sits proportionally higher in it than the same name on an 86vh
-   frame, so the ramp opens as the frame shortens. Measured against
-   photo-meter, not chosen. */
-const RISE = { 1: 0.46, 2: 0.60, 3: 0.68, 4: 0.78 };
-const SCRIM = { scrim: 'bottom', reach: 1.0, rise: RISE[rank] ?? 0.6, ink: 0.98, vig: 0.5 };
+   The only variable is the numeral. Four institutions making the same kind
+   of commitment should look like four of the same thing. */
+const { pilot: p } = Astro.props;
 ---
-<article class:list={['pcard', `pcard--r${rank}`]} id={p.id} aria-labelledby={hid}>
-  <div class="band">
-    <!-- WHAT THE PHOTOGRAPH IS. Three of these four photographs are of
-         somewhere and something other than the pilot they illustrate, and a
-         name set across a full-bleed frame reads as that frame's caption
-         whether or not it was meant as one. The credit is the house remedy;
-         refs/PHOTO-FACTS.md names the misreading it prevents. -->
-    <Figure
-      src={src ?? p.image} alt={alt} ratio="auto"
-      grade={grade} focal={focal} parallax={parallax} loading={loading}
-      credit={credit ?? p.credit} creditPos="bottom-right"
-      scrim={SCRIM.scrim} reach={SCRIM.reach} rise={SCRIM.rise} ink={SCRIM.ink} vig={SCRIM.vig}
-    />
+<article class="card">
+  <p class="card__rail">
+    <span class="index card__i">{p.index}</span>
+    <span class="label card__field">{p.field}</span>
+  </p>
 
-    <p class="shell rail" data-reveal>
-      <span class="index">{p.index}</span>
-      <!-- WHOSE PILOT THIS IS, AND HOW FAR ALONG. One slot held four values
-           in one register — two institutions and two named living officials —
-           and its grammar said "this is the partner on this pilot." Nothing
-           qualified it. Nobody has signed. /people/ already carries the house
-           remedy under its named board figures ("Membership is prospective");
-           this is the same qualifier, in the register the rail already uses,
-           on all four so the grammar stays one grammar. -->
-      <span class="rail__who">
-        <span class="eyebrow rail__partner">{p.partner}</span>
-        <span class="label rail__q">Proposed</span>
-      </span>
-      <span class="label rail__field">{p.field}</span>
-    </p>
+  <!-- WHOSE PILOT THIS IS, AND HOW FAR ALONG. Two of the four values in
+       this slot are living, identifiable public officials. A bare name in a
+       partner slot asserts a partnership; nobody has signed one. The
+       qualifier rides the name everywhere it appears on this site. -->
+  <p class="card__who">
+    <span class="eyebrow card__partner">{p.partner}</span>
+    <span class="label card__q">Proposed</span>
+  </p>
 
-    <!-- a TRIGGER, not a fade: neutralised below, so the masked name lands on
-         the earlier [data-reveal] threshold and the line hangs off that beat -->
-    <div class="shell say" data-reveal>
-      <h2 class:list={['display', rung, 'say__t', 'lines']} id={hid}>{p.title}</h2>
-      <p class="say__tag">{p.tagline}</p>
-    </div>
-  </div>
+  <h3 class="display display--sub card__t">
+    <a class="card__a" href={`#${p.id}`}>{p.title}</a>
+  </h3>
+  <p class="card__tag">{p.tagline}</p>
 
-  {rank === 1 ? (
-    <div class="print on-cream">
-      <!-- ── THE PAGE TURNED OVER ──────────────────────────────────────
-           This page's one exception, spent once, on the one sentence it
-           exists to make. Everything on this site is cream on navy; the
-           institute talking. Pilot 01's outcome is not the institute talking
-           — it is the thing that will be true or not true in ninety days,
-           and the thing the page promises to publish either way. So it is
-           PRINTED. The anatomy does not change: problem, approach, then
-           goal. Only the goal's size and the ground under it do. -->
-      <div class="shell arg">
-        <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
-        <dl class="arg__setup" data-seq="150" data-seq-from="80">
-          <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-          <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-        </dl>
-      </div>
+  <dl class="card__f">
+    <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+    <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+    <div><dt class="label label--brass">Goal</dt><dd class="card__goal">{p.goal}</dd></div>
+  </dl>
 
-      <!-- THE SENTENCE, SET THROUGH THE AXIS.
-           The outcome is a claim about a quantity, so the page stops stating
-           the quantity in words and draws it: a twelve-month axis run at the
-           page's own measure, margin to margin, and the sentence set across
-           it. The head starts on the page's left rail like every other line
-           on this site; the tail starts at the closing edge of the ninety-day
-           span, which is the x of the numeral 3. You do not read that ninety
-           days is a quarter of the window. You see it.
-           Round 7: the axis used to be composed against the VIEWPORT — its 0
-           at x=11, its tail hanging at x=357 on no rail — and it was the one
-           object on the site with no grid under it. The idea is unchanged.
-           It is on the armature now. -->
-      <div class="shell measure">
-        <p class="label label--brass measure__gl" data-reveal>Goal</p>
-        <p class="display display--poster measure__g" data-reveal="90">{p.goalHead ?? p.goal}</p>
-        <Scale />
-        {p.goalTail && (
-          <p class="display display--poster measure__g measure__g--hang" data-settle="0.62">{p.goalTail}</p>
-        )}
-      </div>
-    </div>
-  ) : (
-    <div class="shell argwrap">
-      <div class:list={['arg', 'arg--std', rank === 4 && 'arg--plate', rank === 4 && 'on-plate']}>
-        <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
-        <dl class="arg__setup" data-seq="150" data-seq-from="80">
-          <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-          <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-        </dl>
-        <div class="arg__goal" data-reveal="120">
-          <p class="label label--brass">Goal</p>
-          <p class="bridge bridge--fg arg__g">{p.goal}</p>
-        </div>
-      </div>
-    </div>
-  )}
+  <p class="card__door" aria-hidden="true">
+    <span>Detail</span>
+    <svg class="arrow card__arrow" viewBox="0 0 22 10">
+      <path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/>
+    </svg>
+  </p>
 </article>
 
 <style>
-  /* overflow-x: clip, not hidden — it clips the frame's full-bleed ink ramp
-     without making the card a scroll container. */
-  .pcard { scroll-margin-top: calc(var(--nav-h) + 0.5rem); position: relative; overflow-x: clip; }
-
-  /* ── The frame ────────────────────────────────────────────────────
-     Four rows: rail on the top edge, the name on the foot. Identical on all
-     four cards; only --band changes. */
-  .band {
+  /* A cell, not a plate. The grid's own hairlines draw the four; giving
+     each one edges of its own would make the comparison read as four
+     objects again, which is the thing this layer exists to undo. */
+  .card {
     position: relative;
-    isolation: isolate;
-    /* The foot of the frame belongs to the photograph's credit, which is
-       painted by the absolutely-positioned figure. This padding lifts the
-       name clear of it — without it the credit reads as a third line of the
-       tagline, the caption misreading PHOTO-FACTS exists to prevent. */
-    padding-bottom: clamp(1.7rem, 3.4vw, 3rem);
-    min-height: var(--band, clamp(19rem, 48vh, 28rem));
+    /* the six rows are the PAGE's rows, inherited through the cell: every
+       card's PROBLEM sits on the same line as every other card's. The block
+       padding is therefore carried as margins on the first and last rows —
+       padding on a subgrid item would shift its rows out of the shared
+       track and undo the alignment it is here to get. */
+    grid-row: 1 / -1;
     display: grid;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+    padding-right: clamp(1rem, 2.4vw, 2.6rem);
   }
-  /* THE RANKING, and it is the only thing that separates one card from the
-     next: 86 → 66 → 54 → 42 vh, one step apart the whole way down. */
-  .pcard--r1 { --band: clamp(31rem, 86vh, 48rem); }
-  .pcard--r2 { --band: clamp(24rem, 66vh, 36rem); }
-  .pcard--r3 { --band: clamp(21rem, 54vh, 30rem); }
-  .pcard--r4 { --band: clamp(17rem, 42vh, 25rem); }
 
-  /* padding lives on the children: the fill Figure is positioned against the
-     band's padding box, so padding here would inset the photograph. */
-  .rail, .say { position: relative; z-index: 1; }
+  /* the brass hairline that wipes along the cell's own top rule — the same
+     gesture the homepage register uses, so the two card layers rhyme */
+  .card::before {
+    content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 1px;
+    background: var(--brass);
+    transform: scaleX(0); transform-origin: right;
+    transition: transform 620ms var(--ease-out);
+    pointer-events: none;
+  }
 
-  /* ── Nameplate ────────────────────────────────────────────────────
-     Three registers and nothing else: brass numeral, the partner as this
-     card's one eyebrow, the sector as a dim label. */
-  .rail {
-    margin: 0;
-    padding-top: clamp(1.35rem, 2.6vw, 2.25rem);
-    display: flex;
-    align-items: baseline;
-    gap: 1.15ch;
-    grid-row: 1;
+  .card__rail {
+    margin: clamp(1.4rem, 2.4vw, 2rem) 0 0;
+    display: flex; align-items: baseline; gap: 1ch;
   }
-  .rail__field { margin-left: auto; text-align: right; white-space: nowrap; }
-  /* the qualifier is a footnote on the name, not a second name: it keeps the
-     rail's own dim label register and hangs off the eyebrow's baseline */
-  .rail__who { display: flex; align-items: baseline; gap: 0.85ch; min-width: 0; }
-  .rail__q {
-    color: var(--fg-meta);
-    white-space: nowrap;
-    opacity: 0.72;
-  }
-  .rail__q::before { content: '\00b7'; margin-right: 0.85ch; }
+  .card__field { margin-left: auto; white-space: nowrap; }
 
-  .say {
-    grid-row: 4;
-    padding-bottom: clamp(1.75rem, 3.4vw, 3rem);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 0.75rem;
-    align-items: start;
+  .card__who {
+    margin: clamp(0.9rem, 1.8vw, 1.35rem) 0 0;
+    display: flex; align-items: baseline; gap: 0 0.85ch; flex-wrap: wrap;
+    min-width: 0;
   }
-  .say__t { line-height: 0.94; letter-spacing: -0.026em; text-wrap: initial; }
-  /* the small serif display rung wants less negative tracking and more
-     leading than the poster rung does */
-  .pcard--r4 .say__t { line-height: 1.04; letter-spacing: -0.012em; }
-  .pcard--r2 .say__t { line-height: 1.0; letter-spacing: -0.02em; }
-  .say__tag {
-    margin: 0;
-    padding-bottom: 0;
-    max-width: 34ch;
-    font-size: var(--step-lede);
-    line-height: 1.45;
+  .card__partner { transition: color 380ms var(--ease-out); }
+  .card__q { color: var(--fg-meta); white-space: nowrap; opacity: 0.72; }
+  .card__q::before { content: '\00b7'; margin-right: 0.85ch; }
+
+  .card__t {
+    margin: 0.5rem 0 0;
+    line-height: 1.06;
+    letter-spacing: -0.014em;
+  }
+  /* the whole cell is the target; the name carries the accessible name.
+     The padding is a tap target, not space: a 22px line box is under the
+     24px floor the audit holds mobile links to, and the negative margin
+     gives the row back so the type does not move. */
+  .card__a {
+    color: inherit; text-decoration: none;
+    display: inline-block;
+    padding-block: 0.32rem; margin-block: -0.32rem;
+  }
+  .card__a::after { content: ''; position: absolute; inset: 0; }
+  .card__a:focus-visible { outline: none; }
+  .card:has(.card__a:focus-visible) { outline: 2px solid var(--brass); outline-offset: 8px; }
+
+  .card__tag {
+    margin: 0.6rem 0 0;
+    max-width: 32ch;
     color: var(--fg-mute);
+    font-size: var(--step-body);
+    line-height: 1.5;
     text-wrap: pretty;
   }
 
-  /* ── THE ARGUMENT ─────────────────────────────────────────────────
-     One block, four times, same rails: a hairline, two clauses side by side
-     under it, the outcome alone beneath them. */
-  /* THE REST BETWEEN CARDS.
-     Wave 4 unified the four pilots into one anatomy and bought real reading
-     clarity. The cost the critic named was pacing: 02, 03 and 04 came off the
-     ladder at an even count, because the only thing descending was the frame,
-     while the silence after each argument was the same silence every time. A
-     ranking that descends should also quicken. So the rest between the foot of
-     one argument and the top edge of the next frame steps down with the rank —
-     a long breath after 02, a shorter one after 03. No card gains a shape, a
-     colour or a rung; the anatomy is untouched. Only the count changes.
-     04 is excluded: its joint is with the footer, which sets its own. */
-  .argwrap {
-    padding-block: clamp(1.5rem, 3vw, 2.4rem)
-                   calc(clamp(2.25rem, 4.5vw, 3.75rem) * var(--rest, 1));
-  }
-  .pcard--r2 { --rest: 1.5; }
-  .pcard--r3 { --rest: 0.78; }
-  .arg {
+  /* PROBLEM · APPROACH · GOAL, stacked, one line each, on their own rule.
+     Stacked and not columned: at a quarter of the page's width a two-up
+     setup wraps every field to three lines and the "one line each" the
+     brief asks for stops being visible as a discipline. */
+  .card__f {
+    margin: clamp(1.15rem, 2.2vw, 1.7rem) 0 0;
+    padding-top: clamp(1rem, 1.8vw, 1.4rem);
+    border-top: 1px solid var(--rule-soft);
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: clamp(1.4rem, 2.8vw, 2.3rem);
+    row-gap: clamp(0.7rem, 1.3vw, 1rem);
   }
-  .arg__rule {
-    height: 1px; background: var(--rule);
-    margin-bottom: calc(clamp(1.4rem, 2.8vw, 2.3rem) * -1 + clamp(1rem, 2vw, 1.6rem));
-  }
-  /* two halves of one sentence: adjacent, sharing a gutter rule, held to the
-     left two thirds so what follows them lands as the conclusion it is */
-  .arg__setup {
-    margin: 0;
-    display: grid;
-    grid-template-columns: minmax(0, 24rem) minmax(0, 24rem);
-    column-gap: clamp(1.75rem, 3.4vw, 3.25rem);
-    align-items: start;
-  }
-  .arg__setup > div + div {
-    border-left: 1px solid var(--rule-soft);
-    padding-left: clamp(1.75rem, 3.4vw, 3.25rem);
-    margin-left: calc(clamp(1.75rem, 3.4vw, 3.25rem) * -1);
-  }
-  /* the outcome, on the left rail, under both clauses */
-  .arg__goal { display: grid; gap: clamp(0.6rem, 1.2vw, 0.95rem); }
-  .arg__goal .label { color: var(--brass); }
-  .arg__g { margin: 0; max-width: 26ch; }
-
-  /* ── Field grammar, shared ───────────────────────────────────────── */
-  .arg__setup > div { display: grid; gap: 0.55rem; align-content: start; }
-  .arg dt { color: var(--brass); }
-  .arg dd {
+  .card__f > div { display: grid; gap: 0.3rem; }
+  .card__f dd {
     margin: 0;
     color: var(--fg-mute);
     font-size: var(--step-body);
     line-height: 1.45;
-    max-width: 34ch;
+    max-width: 36ch;
     text-wrap: pretty;
   }
+  /* the outcome is the one line a funder is being asked to believe */
+  .card__goal { color: var(--fg); }
 
-  /* ── The close, on a plate ────────────────────────────────────────
-     The series opens on cream and closes on an object set down on the page,
-     with its own edges. Two ground events, at the two ends of the run; the
-     anatomy inside them is the same anatomy. */
-  .arg--plate {
-    /* an object, not a wide box with a hole in it: the plate is cut to the
-       measure of the argument it carries, so its right edge closes on the
-       text rather than on the page margin */
-    width: min(100%, 58rem);
-    background: var(--bg);
-    border: 1px solid var(--rule-soft);
-    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3.4vw, 3rem) clamp(1.75rem, 3.4vw, 2.75rem);
+  .card__door {
+    margin: clamp(1.2rem, 2.2vw, 1.7rem) 0 clamp(1.3rem, 2.2vw, 1.8rem);
+    align-self: end;
+    display: flex; align-items: center; gap: 0.75ch;
+    font-size: var(--step-micro);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-meta);
+    transition: color 380ms var(--ease-out);
   }
-
-  /* ── THE PRINT ────────────────────────────────────────────────────
-     Full bleed, navy on cream, once on this page. It lands directly off the
-     foot of the largest photograph on the site, so the change of value is
-     also a change of medium: a photograph, then a printed page. */
-  .print {
-    border-top: 1px solid color-mix(in srgb, var(--ink-900) 22%, transparent);
-    padding-block: clamp(1.6rem, 3vw, 2.6rem) clamp(2.6rem, 5vw, 4.5rem);
+  .card__arrow {
+    width: 20px; color: var(--brass);
+    opacity: 0; transform: translateX(-8px);
+    transition: opacity 380ms var(--ease-out), transform 520ms var(--ease-out);
   }
 
-  /* ── THE MEASURE ──────────────────────────────────────────────────
-     The axis is the widest rule on the site — and it now begins and ends on
-     the page's own margins, so its 0 sits on the same x as every other line
-     on every page and its 12 closes on the right one. The tail of the
-     sentence starts at 25% of that measure: the closing edge of the
-     ninety-day span, the x of the numeral 3, and a real column on the grid. */
-  .measure {
-    position: relative;
-    margin-top: clamp(1.9rem, 4vw, 3.4rem);
+  @media (hover: hover) {
+    .card:hover::before { transform: scaleX(1); transform-origin: left; }
+    .card:hover .card__partner { color: var(--brass); }
+    .card:hover .card__door { color: var(--fg); }
+    .card:hover .card__arrow { opacity: 1; transform: none; }
   }
-  .measure__gl { margin: 0 0 clamp(0.5rem, 1vw, 0.8rem); }
-  .measure__g {
-    margin: 0;
-    max-width: none;
-    color: var(--fg);
-    line-height: 0.98;
-    letter-spacing: -0.024em;
-    text-wrap: initial;
-    --settle-origin: 0% 100%;
-    --settle-shift: 2.4vh;
-  }
-  /* the axis is the space between the two halves of the sentence */
-  .measure :global(.mscale) { margin-block: clamp(0.7rem, 1.6vw, 1.25rem) 0; }
-  /* …and the tail hangs off the closing edge of the ninety-day span */
-  .measure__g--hang { margin-left: 25%; margin-top: clamp(0.15rem, 0.5vw, 0.4rem); }
-
-  /* ── Motion ───────────────────────────────────────────────────────
-     The masked name has to lead. .say is a bare trigger so it fires on the
-     earlier [data-reveal] threshold; the tagline hangs off that same beat. */
-  .say[data-reveal] { opacity: 1; transform: none; transition: none; will-change: auto; }
-  .say__tag {
-    opacity: 0;
-    transform: translate3d(0, 12px, 0);
-    transition:
-      opacity 680ms var(--ease-out) var(--tag-delay, 190ms),
-      transform 900ms var(--ease-out) var(--tag-delay, 190ms);
-  }
-  .say.is-in .say__tag { opacity: 1; transform: none; }
-  .pcard--r1 { --tag-delay: 620ms; }
-  .pcard--r1 .say__t :global(.line > span) { transition-duration: 1400ms; }
+  .card:focus-within::before { transform: scaleX(1); transform-origin: left; }
+  .card:focus-within .card__arrow { opacity: 1; transform: none; }
 
   @media (prefers-reduced-motion: reduce) {
-    .say__tag { opacity: 1; transform: none; transition: none; }
+    .card::before, .card__arrow, .card__door, .card__partner { transition-duration: 1ms; }
   }
 
-  /* ── Narrow ───────────────────────────────────────────────────────── */
-  @media (max-width: 1080px) {
-    .arg__setup { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  }
-
-  @media (max-width: 860px) {
-    /* The credit wraps to two lines at this measure and the say block sits
-       far closer to the frame's foot, so the shelf has to be deeper here. */
-    .band { padding-bottom: clamp(2.7rem, 8vw, 3.4rem); }
-
-    /* Below ~700px the display range compresses and size alone stops reading
-       as rank, so the descent is carried by frame height as well. */
-    .pcard--r1 { --band: clamp(25rem, 68vh, 34rem); }
-    .pcard--r2 { --band: clamp(22rem, 58vh, 30rem); }
-    .pcard--r3 { --band: clamp(19rem, 50vh, 26rem); }
-    .pcard--r4 { --band: clamp(15rem, 40vh, 21rem); }
-
-    .rail { gap: 0.9ch; flex-wrap: wrap; }
-    /* at this measure the name plus its qualifier plus the sector no longer
-       share one line on 04; the qualifier drops under the name it qualifies
-       rather than pushing the sector off the rail */
-    .rail__who { flex: 1 1 auto; flex-wrap: wrap; gap: 0 0.85ch; }
-    /* the axis stays margin to margin and the tail stays on the ninety-day
-       edge; only the type comes down a rung so the head sets inside it */
-    .measure__g { font-size: clamp(1.4rem, 0.7rem + 3.5vw, 2.4rem); }
-    .measure__g--hang { margin-top: clamp(0.4rem, 1.6vw, 0.8rem); }
-    /* the axis caption is a footnote on the axis, not a line of the sentence.
-       At this width it falls back to the flow and landed BETWEEN the two
-       halves of the goal — so it is hung out of flow at the foot of the whole
-       block instead, and the sentence closes uninterrupted. */
-    .measure { padding-bottom: 1.9rem; }
-    .measure :global(.mscale) { position: static; }
-    .measure :global(.mscale__cap) {
-      /* the shell's own left margin — an absolutely positioned child is laid
-         against the padding box, so 0 would be the page edge */
-      position: absolute; left: var(--gutter); right: auto; bottom: 0;
-      margin: 0; text-align: left;
-    }
-  }
-
-  @media (max-width: 560px) {
-    .arg__setup { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.1rem, 3vw, 1.5rem); }
-    .arg__setup > div + div { border-left: 0; padding-left: 0; margin-left: 0; }
-    .arg dd { max-width: 38ch; }
+  @media (max-width: 620px) {
+    .card { padding-right: 0; }
+    .card__tag, .card__f dd { max-width: 44ch; }
   }
 </style>

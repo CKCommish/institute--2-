@@ -1,59 +1,74 @@
 ---
 import Base from '../layouts/Base.astro';
 import PilotCard from '../components/pilots-card.astro';
-import { pilots } from '../data/site.js';
+import PilotDetail from '../components/pilots-detail.astro';
+import { pilots, pilotTerms } from '../data/site.js';
 
-/* Round 7. The four pilots were four unrelated objects — a full-bleed frame
-   over a cream chart, an inset plate bleeding off the left edge, a frame with
-   the fields burned onto it, a boxed argument read backwards — and a reader
-   had to learn where PROBLEM / APPROACH / GOAL live four times. They are one
-   anatomy now (see pilots-card.astro), ranked 1–4: frame height and the rung
-   the name is set at descend one step per pilot, the series opens on cream
-   and closes on a plate, and pilot 01's GOAL — the same field, in the same
-   place — is the one amplification, set through the twelve-month axis. */
-const rank = {
-  'healthy-athletes': 1,
-  'clean-data-centers': 2,
-  'infant-mortality': 3,
-  'career-pathways': 4,
-};
+/* ROUND 8 — THE PAGE A FUNDER CAN ACT ON.
 
-const grades = {
-  'healthy-athletes': 0.30,
-  'clean-data-centers': 0.50,
-  'infant-mortality': 0.40,
-  'career-pathways': 0.58,
-};
-/* Every frame is now written on at the top edge and along the foot, so every
-   crop keeps its subject in the open middle band. */
-/* The infant-mortality master was re-cropped (wave 5) to end before the second
-   adult in the USDA frame; site.js still names the older workaround file. */
-const images = {
-  'infant-mortality': '/media/pilot-maternal.jpg',
-};
+   Rounds 1–7 were judged on craft and won on craft. Nobody was ever asked
+   the only question this page has to answer: a programme officer lands
+   here — does she leave knowing enough to decide whether to fund one of
+   these? She did not. Two viewport-heights per pilot bought about
+   twenty-five words: a title, a tagline, one line of problem, one line of
+   approach, one goal. Not who builds it, not who runs it, not where, not
+   what stage it is at, not what is being asked of her.
 
-/* A credit says what the PHOTOGRAPH is. site.js gives 03 a rights-holder
-   ("U.S. Department of Agriculture") instead of a fact about the frame; the
-   fact is in CONTENT-NOTES.md. site.js belongs to another piece, so the
-   correction is named here, like the master swap above. The alt goes with it:
-   this is the one frame carrying a private individual's face at full scale,
-   and it must not be marked decorative under a mortality headline. */
-const credits = {
-  'infant-mortality': 'Family child care home · USDA',
-};
-const alts = {
-  'infant-mortality':
-    'A mother holds her infant against her shoulder in the doorway of a family child care home.',
-};
+   What changed, and why:
 
+   1. TWO LAYERS, which is what the brief asked for all along ("Cards
+      first. Detail on click or a short dedicated block."). The compressed
+      card discipline — problem / approach / goal, one line each — is kept
+      exactly, ON THE CARD, four-up so the four can be compared in one
+      glance. The detail block underneath is the thing the cap was always a
+      summary of, and it was never built.
+
+   2. THE TERMS, ONCE. Duration, status and the ask are true of all four,
+      so they are stated once under the masthead rule instead of four times
+      down the page. That is also where the page's most important sentence
+      now lives, at reading size: none of these is signed.
+
+   3. THE TWELVE-MONTH AXIS IS CUT. It was the best-drawn object on the
+      site and it encoded exactly one fact — ninety days is a quarter of
+      twelve months — which the sentence beside it stated in words. It
+      spent ~200px of the page's best space repeating itself, and it split
+      the goal sentence in half so the eye had to jump a chart to finish
+      reading. There is no per-pilot schedule data to make it carry
+      anything else: all four horizons are the same 3–12 months. An
+      information graphic that restates its own caption is decoration. The
+      space is now the "what it still needs" plate on pilot 01, which
+      carries three facts a funder can act on.
+
+   4. THE PHOTOGRAPHS ARE BANDS. Full bleed, 16/5.5, about 260px at 1440 —
+      a quarter of what a card used to spend. Pilot 01's frame is re-cut
+      (see refs/PHOTO-FACTS.md): a real, identifiable seven-year-old used
+      to fill 1440 × 780 under a Special Olympics headline she has no
+      relationship to.
+
+   5. THE NAV. See the guard at the top of the stylesheet. */
+
+/* Per-frame crops. Three of the four masters are 3:2 and the plate is 3:2,
+   so they are shown whole and the focal is the centre. Pilot 01's master is
+   the 3:1 band cut from the foot of the Army frame (see PHOTO-FACTS), so it
+   is the one that needs a horizontal anchor: 38% keeps the stride in the
+   plate and leaves the open track under the credit. */
 const focals = {
-  'healthy-athletes': '50% 34%',
-  'clean-data-centers': '50% 52%',
-  'infant-mortality': '50% 40%',
-  'career-pathways': '50% 46%',
+  'healthy-athletes': '38% 50%',
+  'clean-data-centers': '50% 50%',
+  'infant-mortality': '50% 50%',
+  'career-pathways': '50% 50%',
+};
+const focalsSm = {
+  'healthy-athletes': '34% 50%',
+};
+const grades = {
+  'healthy-athletes': 0.34,
+  'clean-data-centers': 0.5,
+  'infant-mortality': 0.42,
+  'career-pathways': 0.56,
 };
 ---
-<Base title="Pilots" description="Four pilots in 2026: health, energy, maternal health, and education.">
+<Base title="Pilots" description="Four pilots proposed for 2026: what each one is, who it is for, and what it still needs.">
   <section class="phead">
     <div class="shell phead__in">
       <p class="eyebrow phead__eyebrow" data-reveal>Four pilots · 2026</p>
@@ -66,42 +81,70 @@ const focals = {
 
       <span class="phead__rule" aria-hidden="true" data-wipe="left" data-delay="240"></span>
 
-      <!-- Left column is anchored to the BOTTOM of the contents. The air above
-           the figure is a pause held between the rule and the numeral, not a
-           place the copy ran out. -->
-      <div class="phead__left">
-        <p class="phead__fig" data-reveal="620">
-          <span class="display phead__fig-n">3–12</span>
-          <span class="label phead__fig-l">Months, start to published result</span>
-        </p>
+      <!-- THE TERMS, ONCE, AND ABOVE THE FOLD.
+           Every one of these is true of all four pilots, so the old page's
+           choice — repeat the duration on four rails and say the status in
+           an 11px word — cost four times the ink and told a reader less.
+           Three keys at one serif rung, hung off the masthead rule. The
+           middle one is the sentence a funder must not be able to miss. -->
+      <dl class="terms" data-seq="110" data-seq-from="380">
+        {pilotTerms.map((t) => (
+          <div class="terms__i" data-reveal>
+            <dt class="label terms__t">{t.term}</dt>
+            <dd class="terms__d">
+              <span class="display display--sub terms__k">{t.key}</span>
+              <span class="terms__x">{t.text}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── LAYER ONE: THE CARDS ─────────────────────────────────────────
+       A band set into the page, four cells on one grid. This is the layer
+       the brief's one-line-per-field cap governs, and it is the only place
+       on the site where all four arguments can be read against each other
+       without scrolling. -->
+  <section class="pgrid on-panel" aria-labelledby="pgrid-h">
+    <div class="shell pgrid__in">
+      <div class="pgrid__head">
+        <p class="eyebrow" data-reveal>01 — 04</p>
+        <h2 class="display display--sub pgrid__h" id="pgrid-h" data-reveal="70">
+          The problem, the approach, and the one outcome each will be judged on.
+        </h2>
       </div>
 
-      <nav class="phead__index" aria-label="The four pilots" data-seq="80" data-seq-from="420">
-        <ol>
-          {pilots.map((p) => (
-            <li data-reveal>
-              <a class="pc" href={`#${p.id}`}>
-                <span class="index pc__i">{p.index}</span>
-                <span class="display pc__t">{p.title}</span>
-                <span class="pc__lead" aria-hidden="true"></span>
-              </a>
-            </li>
-          ))}
-        </ol>
-      </nav>
+      <div class="pgrid__grid" data-seq="90" data-seq-from="60">
+        {pilots.map((p) => (
+          <div class="pgrid__cell" data-reveal>
+            <PilotCard pilot={p} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── THE TURN ─────────────────────────────────────────────────────
+       The page's one change of ground, spent on the hinge between the two
+       layers: above it, four summaries; below it, four dossiers. Full
+       bleed, one sentence, and the sentence is the contents of everything
+       that follows. -->
+  <section class="pturn on-cream">
+    <div class="shell pturn__in">
+      <p class="eyebrow" data-reveal>In detail</p>
+      <p class="display display--sub pturn__b" data-settle="0.62">
+        What each one is, who it is for, and what it still needs.
+      </p>
     </div>
   </section>
 
   {pilots.map((p, i) => (
-    <PilotCard
+    <PilotDetail
       pilot={p}
-      rank={rank[p.id] ?? 3}
-      src={images[p.id]}
-      credit={credits[p.id]}
-      alt={alts[p.id] ?? ''}
-      grade={grades[p.id] ?? 0.6}
       focal={focals[p.id] || '50% 50%'}
-      parallax={i === 0 ? 7 : 5}
+      focalSm={focalsSm[p.id]}
+      grade={grades[p.id] ?? 0.5}
       loading={i === 0 ? 'eager' : 'lazy'}
     />
   ))}
@@ -109,156 +152,147 @@ const focals = {
 
 <style>
   /* ── Nav guard, local to this page ─────────────────────────────────
-     Nav.astro is not this piece's file. But /pilots/ scrolls 55–90px cream
-     display type straight under the bar, and the shared edgeless fade cannot
-     mask type at that size. So this page carries a stronger band of its own:
-     solid for the full height of the bar, then a 2.4rem fade. The :has()
-     guard keeps this rule inert on every page but this one. */
-  :global(header.nav.is-scrolled:has(~ main .pcard))::before {
-    background: linear-gradient(
-      to bottom,
-      var(--nav-scrim) 0%,
-      var(--nav-scrim) var(--nav-h),
-      color-mix(in srgb, var(--nav-scrim) 34%, transparent) calc(var(--nav-h) + 1.4rem),
-      color-mix(in srgb, var(--nav-scrim) 0%, transparent) calc(var(--nav-h) + 2.4rem)
-    );
-  }
-
-  /* Same guard, other end: the footer opens with 10.5rem of ground, which is
-     right after a scene that ends on a line of display type — and wrong after
-     a one-line GOAL, where it read as running out of content. Page-scoped. */
-  :global(main:has(.pcard) + footer.foot) {
-    padding-top: clamp(2.75rem, 1.2rem + 3.6vw, 5rem);
+     Nav.astro is not this piece's file. The shared scrim holds solid for
+     64% of its span and then feathers over the remaining 36% — which is
+     right for body copy passing under the bar and wrong for a serif
+     display line, because a half-faded 53px title reads as a ghost rather
+     than as something occluded. This page therefore shortens the tail and
+     holds it solid nearly all the way, so anything crossing the bar is
+     covered, not dimmed, and the transition zone is a ~20px sliver instead
+     of a 45px fade. The :has() guard keeps the rule inert everywhere else. */
+  :global(header.nav:has(~ main .pd))  { --nav-tail: 1.6rem; }
+  :global(header.nav.is-scrolled:has(~ main .pd))::before {
+    -webkit-mask-image: linear-gradient(
+      to bottom, #000 0%, #000 88%, rgba(0,0,0,0.45) 95%, transparent 100%);
+    mask-image: linear-gradient(
+      to bottom, #000 0%, #000 88%, rgba(0,0,0,0.45) 95%, transparent 100%);
   }
 
   /* ── Masthead ──────────────────────────────────────────────────────
-     eyebrow → bridge → banner, then the rule, then the horizon figure on the
-     left and the contents on the right, both hung off it. */
+     eyebrow → bridge → banner, then the rule, then the terms every one of
+     the four is offered on. */
   .phead { padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(2rem, 4.5vw, 3.5rem); }
   .phead__in {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
-    column-gap: clamp(2rem, 5vw, 5rem);
+    grid-template-columns: minmax(0, 1fr);
     row-gap: var(--stack-2);
-    align-items: start;
   }
-  .phead__eyebrow { grid-column: 1 / -1; }
-  .phead__bridge { grid-column: 1 / -1; max-width: 30ch; }
+  .phead__bridge { max-width: 30ch; }
   /* 8em holds "Proof, one problem" on line one and refuses "at". Set in em so
      the break survives the fluid hero scale. */
   .phead__h {
-    grid-column: 1 / -1;
     max-width: 8em;
     text-wrap: initial;
     margin-top: clamp(0.4rem, 1.2vw, 1rem);
   }
 
   .phead__rule {
-    grid-column: 1 / -1;
     height: 1px; background: var(--rule);
-    margin-top: clamp(1.25rem, 3vw, 2.25rem);
-    /* both columns hang off THIS line — pull the next grid row up against it
-       so the numeral and the contents share one horizon */
-    margin-bottom: calc(var(--stack-2) * -1);
+    margin-top: clamp(1.5rem, 3.4vw, 2.75rem);
+    margin-bottom: calc(var(--stack-2) * -1 + clamp(0.9rem, 2vw, 1.6rem));
   }
 
-  /* hung off the rule, level with the first row of the contents. The air
-     below it is closed by pilot 01's photograph, not by the viewport edge. */
-  /* The quantity used to hang off the top of the rule with the whole rest of
-     the column left open beneath it — and what was beneath it was not a
-     margin, it was 865px of nothing running into the top of a photograph. An
-     unbounded void is not a pause. So the numeral is set on the BOTTOM of
-     the spread instead, level with the last line of the contents: the air is
-     now held BETWEEN two marks, the hairline above and the numeral below,
-     which is the only kind of silence this system allows. */
-  .phead__left {
-    grid-column: 1;
-    align-self: end;
-    padding-bottom: clamp(0.1rem, 0.6vw, 0.4rem);
-  }
-
-  /* the one measurable frame every pilot shares, pulled out of the card
-     rails (where it repeated four times) and set once, at size */
-  .phead__fig { margin: 0; display: grid; gap: clamp(0.5rem, 1vw, 0.8rem); }
-  /* --step-poster put the duration figure at exactly the headline's rung, so
-     the masthead opened with two 86px objects and neither led. A stat is
-     evidence for the sentence above it, not a second sentence: --step-head,
-     one rung down, which is also where the contents list beside it sits. */
-  .phead__fig-n {
-    font-size: var(--step-head);
-    line-height: 0.9;
-    letter-spacing: -0.02em;
-    color: var(--fg);
-    font-variant-numeric: lining-nums;
-  }
-  .phead__fig-l { line-height: 1.5; }
-
-  /* Both columns are hung off the SAME line at the bottom of the spread: the
-     numeral's caption and the index's last hairline end exactly level. They
-     used to end 19px apart, which reads as two columns that happen to stop
-     near each other rather than one object. */
-  .phead__index { grid-column: 2; align-self: end; padding-top: 0; }
-  .phead__index ol { list-style: none; margin: 0; padding: 0; }
-
-  /* number · title · hairline leader · field */
-  .pc {
+  /* ── The terms ─────────────────────────────────────────────────── */
+  .terms {
+    margin: 0;
     display: grid;
-    grid-template-columns: 2.4rem minmax(0, auto) minmax(1.25rem, 1fr);
-    align-items: baseline;
-    gap: 0.9rem;
-    padding-block: clamp(0.7rem, 1.4vw, 1rem);
-    border-bottom: 1px solid var(--rule-soft);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 3.4vw, 3.5rem);
+    row-gap: clamp(1.5rem, 3vw, 2.25rem);
+    align-items: start;
   }
-  .pc__t {
-    font-size: var(--step-sub);
+  .terms__i { display: grid; gap: clamp(0.6rem, 1.2vw, 0.9rem); }
+  .terms__t { color: var(--fg-meta); }
+  .terms__d { margin: 0; display: grid; gap: clamp(0.35rem, 0.8vw, 0.6rem); }
+  .terms__k {
+    color: var(--fg);
     line-height: 1.05;
     letter-spacing: -0.014em;
-    white-space: nowrap;
+    font-variant-numeric: lining-nums;
+  }
+  .terms__x {
     color: var(--fg-mute);
-    transition: color 320ms var(--ease-out), transform 520ms var(--ease-out);
+    font-size: var(--step-body);
+    line-height: 1.5;
+    max-width: 32ch;
+    text-wrap: pretty;
   }
-  .pc__lead {
-    height: 0;
-    align-self: baseline;
-    border-bottom: 1px solid var(--rule-soft);
-    transition: border-color 380ms var(--ease-out);
+
+  /* ── The card band ─────────────────────────────────────────────── */
+  .pgrid {
+    padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(2.5rem, 5vw, 4.5rem);
   }
-  @media (hover: hover) {
-    .pc:hover .pc__t { color: var(--fg); transform: translateX(0.2rem); }
-    .pc:hover .pc__lead { border-color: color-mix(in srgb, var(--brass) 62%, transparent); }
+  .pgrid__head { margin-bottom: clamp(1.75rem, 3.4vw, 3rem); display: grid; gap: var(--stack-1); }
+  .pgrid__h { margin: 0; max-width: 30ch; line-height: 1.15; }
+
+  /* ONE GRID, NOT FOUR STACKS. The cards carry six named rows — rail, who,
+     name, tag, fields, door — and every one of them is shared across all
+     four cells by `subgrid`. Without it a partner name that wraps to two
+     lines (04 does) pushes that card's PROBLEM 14px below its neighbours'
+     and its GOAL 35px below, and the one thing this layer exists for —
+     reading four arguments against each other — is gone. */
+  .pgrid__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(6, auto);
+    column-gap: clamp(1.25rem, 2.6vw, 2.5rem);
+    row-gap: 0;
   }
-  .pc:focus-visible { outline-offset: 6px; }
+  /* the hairlines are the grid, not the cells: one rule across the top of
+     the row, one between each pair of columns */
+  .pgrid__cell {
+    border-top: 1px solid var(--rule);
+    position: relative;
+    grid-row: span 6;
+    display: grid;
+    grid-template-rows: subgrid;
+  }
+  .pgrid__cell + .pgrid__cell::after {
+    content: ''; position: absolute; top: 0; bottom: 0;
+    left: calc(clamp(1.25rem, 2.6vw, 2.5rem) / -2);
+    width: 1px; background: var(--rule-soft);
+  }
+
+  /* ── The turn into the detail layer ────────────────────────────── */
+  .pturn { padding-block: clamp(2.5rem, 5vw, 4.25rem); }
+  .pturn__in { display: grid; gap: clamp(0.7rem, 1.4vw, 1.1rem); }
+  .pturn__b { max-width: 34ch; margin: 0; line-height: 1.12; }
+
+  /* the first dossier lands off a cream edge: it needs its own shelf */
+  .pturn + :global(.pd) { padding-top: clamp(2.25rem, 4.5vw, 4rem); }
+
+  /* the footer opens with 10.5rem of ground, which is right after a scene
+     that ends on display type and wrong after a plate. Page-scoped. */
+  :global(main:has(.pd) + footer.foot) {
+    padding-top: clamp(3.25rem, 1.6rem + 4vw, 6rem);
+  }
 
   /* ── Narrow ───────────────────────────────────────────────────────── */
-  @media (max-width: 1080px) {
-    .phead__in { grid-template-columns: minmax(0, 1fr); }
-    .phead__left { align-self: start; padding-bottom: 0; padding-top: clamp(0.8rem, 2vw, 1.15rem); }
-    .phead__fig {
-      grid-template-columns: auto minmax(0, 1fr);
-      align-items: baseline;
-      gap: 0 0.9rem;
+  @media (max-width: 1180px) {
+    .pgrid__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 0; }
+    /* on a two-up grid the vertical rule belongs between the columns only,
+       and every cell needs its own top rule */
+    .pgrid__cell + .pgrid__cell::after { display: none; }
+    .pgrid__cell:nth-child(even)::after {
+      content: ''; position: absolute; top: 0; bottom: 0;
+      left: calc(clamp(1.25rem, 2.6vw, 2.5rem) / -2);
+      width: 1px; background: var(--rule-soft);
     }
-    .phead__fig-l { max-width: 24ch; }
-    .phead__index { grid-column: 1; align-self: start; max-width: 34rem; margin-top: clamp(1.25rem, 4vw, 2.25rem); }
-    .phead__rule { margin-bottom: 0; }
   }
 
-  @media (max-width: 760px) {
-    .pc { grid-template-columns: 2rem minmax(0, auto) minmax(1rem, 1fr); gap: 0.7rem; }
-    .pc__t { font-size: clamp(1.2rem, 1rem + 2.4vw, 1.6rem); }
+  @media (max-width: 860px) {
+    .terms { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.25rem, 3vw, 1.75rem); }
+    .terms__i {
+      grid-template-columns: minmax(0, 8rem) minmax(0, 1fr);
+      column-gap: clamp(1rem, 2.4vw, 1.75rem);
+      align-items: baseline;
+    }
+    .terms__x { max-width: 40ch; }
   }
 
-  @media (max-width: 560px) {
-    .phead__fig { grid-template-columns: minmax(0, 1fr); gap: 0.55rem; }
-    .phead__fig-l { max-width: none; }
-  }
-
-  @media (max-width: 420px) {
-    .pc { grid-template-columns: 2rem minmax(0, 1fr); }
-    .pc__lead { display: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .pc__t, .pc__lead { transition-duration: 1ms; }
+  @media (max-width: 620px) {
+    .pgrid__grid { grid-template-columns: minmax(0, 1fr); }
+    .pgrid__cell:nth-child(even)::after { display: none; }
+    .terms__i { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
   }
 </style>

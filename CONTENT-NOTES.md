@@ -65,6 +65,20 @@ event PR. Do not caption it as a Healthy Athletes screening. If the Institute ob
 Special Olympics International's own imagery, or a Healthy Athletes screening photo, swap
 this file — the slot and dimensions are stable.
 
+### `pilot-health-track.jpg` — the same event, cut to the track
+**Added in the /pilots/ rebuild (wave 8), and it is now the file that page ships.**
+The band is `left 0, top 800, 2400 × 800` of `pilot-health.jpg`: shorts, legs, shoes,
+lane lines, the red of the track. No face, no shirt graphic, no school name.
+
+The frame it replaces was the whole photograph, full-bleed at 1440 × 780, directly under
+the headline *Healthy Athletes* — a real, identifiable child of about seven fronting a
+Special Olympics programme she has no relationship to, on a page written for funders. The
+picture was always illustrating *the event*, not *her*; this crop is the picture doing
+only that. **No second contrast pass** was applied: the master already carries the house
++4.5% and doubling it is not neutral.
+
+`pilot-health.jpg` stays on disk as the master this is cut from. Nothing references it.
+
 ### `pilot-energy.jpg` — a high-voltage transmission tower, Muskingum County, Ohio
 Carol Highsmith, October 2016. A single enormous twin-mast steel lattice tower shot low and
 close, guy wires radiating out to all four corners, conductors running off left and right,
@@ -232,3 +246,95 @@ The two APIs that produced this set, both usable without a key:
 Openverse was tried and is weak here: its relevance ranking is poor for documentary
 subjects and it caps Flickr results at 1024 px, which is below the 2400 px this system
 needs.
+
+---
+
+# Content notes — /pilots/ copy
+
+## What the page asserts, and where every assertion comes from
+
+`refs/BRIEF.md` gives each pilot exactly one sentence. Those sentences carry facts the
+page used to throw away, and the `detail` block in `src/data/site.js` is those facts and
+nothing else:
+
+| slot | source |
+|---|---|
+| `detail.what` | the brief's own one-line description of the pilot (adherence / reminders / navigation; clean power, jobs, affordability, community benefit; AI on maternal health data + intervention; personalised guidance school to work) |
+| `detail.who` | the population named in the same sentence (Medicaid mothers; low-income students; …) |
+| `detail.where` | the *kind* of setting the pilot is defined around, in the conditional. Only 03 has a real place in the brief — Indianapolis. |
+| `Measured by` | the pilot's existing `goal` string, unchanged |
+| `Proposed by` | the pilot's existing `partner` string, with the site-wide "Proposed" qualifier |
+| `detail.needs.*` | `/partner/`: "Every pilot still needs money, a technology, or somewhere real to run it." The three roles are that page's own Fund it / Build it / Run it. |
+
+## To be confirmed — slots deliberately left empty
+
+None of the following is in the brief or the prospectus extract, so none of it is on the
+page. **Do not fill any of these in without the client.**
+
+1. **Who builds each pilot.** No technology partner is named for any of the four. The page
+   says so, in the `Technology` slot of "What it still needs", rather than implying a
+   builder exists.
+2. **Who runs each pilot.** No implementation partner — no health system, district, state
+   agency or community organisation — is named for any of the four. The `Somewhere to run
+   it` slot names the *kind* of institution each pilot needs, drawn from the brief's own
+   list ("health systems, universities, community orgs, and government"). No specific
+   institution is claimed.
+3. **Where 01, 02 and 04 would run.** Only Indianapolis (03) is a real place in the source.
+   01 says "wherever Healthy Athletes screenings already happen", 02 "one state", 04
+   "public school districts" — the settings the pilots are defined around, not locations.
+4. **Which of the three asks is already met for any given pilot.** `/partner/` says "Most
+   need two of the three", which implies at least one is sometimes covered; the source
+   never says which, for which pilot. The page therefore lists all three for all four and
+   claims nothing about what is already in hand.
+5. **Budget, start date, cohort size, and the identity of the measuring party.** Absent
+   everywhere. No number appears on this page that is not in the source: `3–12 months`
+   (brief), and `ninety days` (the pilot's own pre-existing goal string).
+6. **Board and partner status.** Unchanged from the rest of the site: named partners are
+   sought, none is signed. The page states this at reading size under the masthead rule,
+   and repeats the qualifier beside every partner name.
+
+## What was cut, and why
+
+**The twelve-month axis** (`src/components/pilots-scale.astro`, deleted). It was a
+beautifully drawn object and it encoded exactly one fact — that ninety days is a quarter
+of twelve months — which the sentence set through it already stated in words. It cost
+about 200px of the page's best space to repeat its own caption, and it split the goal
+sentence in half so the eye had to jump a chart to finish reading it. There is no
+per-pilot schedule data that would let it carry anything else: all four horizons are the
+same `3–12 months`. The window is now stated once, as a term, in the masthead.
+
+## Facts the site needs and does not have
+
+Three independent fact-checkers audited every claim on `/pilots/` against
+`refs/BRIEF.md`. Five specifics had been authored rather than sourced and have
+been removed: a ninety-day follow-up window, a national infant-mortality
+ranking for Indianapolis, a lead time of "weeks", a state siting agreement as
+the legal instrument, and a claim about counsellor provision.
+
+Nothing has replaced them, because only you can supply the real figures. A
+funder cannot currently size, score, or schedule any of these pilots. To make
+the page decidable, each pilot needs:
+
+- **A cost.** A range is enough. "Underwrite one pilot, end to end" is the
+  entire financial content of the site and it appears identically four times.
+  A programme officer cannot route a request she cannot size.
+- **A baseline and a target.** Every goal is currently a direction, not a
+  number: follow-up care completed by X% within Y, against Z% today. Without a
+  baseline no goal can be judged ambitious or trivial.
+- **A scale.** How many athletes, mothers, students, districts; one state or a
+  model for fifty.
+- **A start date** and a decision-by date for a funder.
+- **Who measures it**, against which data, and where it publishes. For the
+  Indianapolis pilot specifically: data access, IRB, privacy, and who validates
+  the model — the first questions any health programme officer asks.
+- **Whether any of the three asks is already met** for any pilot.
+
+Also unresolved, and only you can settle them:
+
+- **Governor Inslee appears both as a pilot partner and on the prospective
+  board.** That tension is in the source material.
+- **Prospective board titles** are best-effort and need confirming per person.
+- **No portraits.** `founder-mckelvy.jpg` and `founder-olanoff.jpg` are
+  deliberately absent; drop them into `public/media/` and the People page uses
+  them. A Lion Forum stage photograph would replace the Block Island frame the
+  Forum page currently uses as an evocative stand-in.

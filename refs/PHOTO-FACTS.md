@@ -17,9 +17,26 @@ problem, and this is exactly the kind of site where someone will check.
 | `institute.jpg` | An empty meeting room: long table, navy walls, American flag | that it is the Institute's own room |
 | `pilot-health.jpg` | A young athlete at a Special Olympics **Unified track event** (U.S. Army, Camp Humphreys) | that this is a Healthy Athletes screening, or that it is domestic |
 | `pilot-health-portrait.jpg` | The same photograph, cropped to 4:5 | (as above) |
+| `pilot-health-track.jpg` | The same photograph, cropped to the 3:1 band at the foot of the frame: a stride, a lane, a track. **This is the file /pilots/ ships.** | (as above) |
 | `pilot-energy.jpg` | A high-voltage transmission tower under heavy overcast, **Muskingum County, Ohio** | that this is the Pacific Northwest, Washington, or BPA |
 | `pilot-maternal.jpg` | A mother holding her infant at home in the doorway of a **family child care home**, alone in frame | that it is Indianapolis, that it is clinical, or that she is a pilot participant |
 | `pilot-education.jpg` | Two students welding in an Oregon public high-school shop class | — |
+
+`pilot-health-track.jpg` is also a **crop, and the crop is the point.**
+The Army original is a girl of about seven at a Unified track meet in South
+Korea: face fully visible, her school's name legible across her shirt. Until
+wave 8 /pilots/ ran it full-bleed at 1440 × 780 under the words *Healthy
+Athletes* — a real, identifiable child fronting a Special Olympics programme
+she has no relationship to, on a page addressed to funders. The credit under
+it was honest and did not undo the impression.
+
+The shipped band is `left 0, top 800, 2400 × 800` of the 2400 × 1600 master:
+shorts, legs, shoes, lane lines, the red of the track. No face, no shirt, no
+school. The frame is now **about the activity rather than the individual**,
+which is what it was always illustrating. The master stays on disk as the
+source of the crop and is no longer referenced by any page. If this file is
+ever re-cut, cut it from `pilot-health.jpg` and keep the top edge below
+y = 800 of 1600 — above that line the shirt graphic starts.
 
 `pilot-maternal.jpg` is a **crop**, and the crop is the point. The USDA original
 is a two-person photograph: the mother, and a child care provider she is handing
@@ -38,6 +55,22 @@ only line attached to an identifiable private individual was an agency name.
 For the same reason this is the one pilot frame that ships real `alt` text
 rather than `alt=""`: the others are places and events described by the copy
 set on them, this one is a person.
+
+## The second rule, added in wave 8: SCALE IS PART OF THE CLAIM
+
+A photograph of a private individual does not become safer by being made
+shorter. /pilots/ tried a full-bleed 16/5.5 band as the fix for the
+screen-filling frames, and it made the worst of them worse: cover-cropping a
+3:2 photograph of a mother and infant into a 5:1 strip **1440px wide** renders
+her face larger than the full-bleed frame did, because the only thing that
+changed was how much of her the frame kept. What reduces the claim a
+photograph makes about a person is **narrowing the frame**, which reduces both
+at once.
+
+So on /pilots/ every pilot photograph is now a plate about one column wide
+(~560px at 1440), set beside the copy rather than under it, and no page-level
+type is set on any of them. A person in one of these frames is a person in a
+room. That is the size these pictures are honest at.
 
 ## The rule this creates
 

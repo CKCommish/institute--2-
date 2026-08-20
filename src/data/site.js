@@ -15,7 +15,47 @@ export const nav = [
 
 export const cta = { label: 'Partner on a pilot', href: '/partner/' };
 
-/* ── The four 2026 pilots ─────────────────────────────────────────── */
+/* ── The four 2026 pilots ───────────────────────────────────────────
+
+   TWO LAYERS, and the split is the brief's ("Cards first. Detail on click
+   or a short dedicated block."):
+
+     THE CARD    index · partner · field · title · tagline, then
+                 problem / approach / goal, ONE LINE EACH. That limit is
+                 the brief's and it governs the card. It never governed
+                 the page.
+
+     THE DETAIL  `detail`, below. What a programme officer has to leave
+                 with: what the pilot actually does, who it is for, the
+                 kind of place it would run in, and — set apart, because
+                 it is half the truth about a proposed pilot — what it
+                 still needs.
+
+   EVERY STRING IN `detail` IS A RESTATEMENT OF refs/BRIEF.md, nothing
+   more. The brief gives each pilot one sentence; those sentences carry
+   facts the old page threw away (adherence / reminders / navigation;
+   clean power, jobs, affordability, community benefit; Medicaid mothers
+   in Indianapolis; low-income students, school to work). They are here.
+   What the brief does NOT give — a named state, a named district, a
+   named health system, a budget, a start date, a technology partner —
+   is ABSENT, and its absence is the `needs` block. See CONTENT-NOTES.md
+   for the list of slots deliberately left empty.
+
+   `needs.run` is the only slot that names a KIND of institution the
+   brief does not name for that pilot individually; the brief's own list
+   of implementation partners ("health systems, universities, community
+   orgs, and government") is the source, and the mood is conditional
+   throughout. Nothing here says a pilot is running, funded or sited. */
+/* FACTUAL DISCIPLINE — read before editing any string below.
+   Every claim here must be traceable to refs/BRIEF.md. These pilots are
+   PROPOSED: no partner is signed, no budget is set, no target is agreed.
+   Three independent fact-checkers found that this file's most quotable
+   specifics had been authored rather than sourced — a ninety-day window, a
+   national infant-mortality ranking, a lead time of "weeks", a siting
+   agreement as the legal instrument. All are now removed. Do not reintroduce
+   a number, an interval, a ranking or a named instrument unless the brief
+   supplies it; a missing fact is recoverable, a fabricated one attributed to a
+   real partner is not. Facts still needed from the client: CONTENT-NOTES.md. */
 export const pilots = [
   {
     id: 'healthy-athletes',
@@ -26,17 +66,28 @@ export const pilots = [
     field: 'Health',
     problem: 'Screenings find the problem. Care rarely follows.',
     approach: 'An app that carries the result home.',
-    goal: 'Follow-up care completed within ninety days.',
-    /* The same sentence, split where the twelve-month axis splits it:
-       the head is set above the axis, the tail starts at the closing
-       edge of the ninety-day span. See components/pilots-scale.astro. */
-    goalHead: 'Follow-up care completed within',
-    goalTail: 'ninety days.',
+    goal: 'Follow-up care completed, not just recommended.',
     horizon: '3–12 months',
-    image: '/media/pilot-health.jpg',
+    /* The 3:1 band cut from the foot of the Army frame. The full frame is
+       a seven-year-old girl at a Unified track meet in South Korea, face
+       and school name legible, and at 1440 wide it filled the screen under
+       a Special Olympics headline — a real, identifiable child fronting a
+       programme she has no relationship to. The band keeps the event and
+       drops the individual: a stride, a lane, a track. See PHOTO-FACTS. */
+    image: '/media/pilot-health-track.jpg',
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Unified track event · U.S. Army',
+    detail: {
+      what: 'Reminders, adherence and navigation, carried from the screening to the appointment after it.',
+      who: 'Athletes who get a free screening at a Special Olympics event.',
+      where: 'Wherever Healthy Athletes screenings already happen.',
+      needs: {
+        fund: 'Underwrite one pilot, end to end.',
+        build: 'A team to build the app.',
+        run: 'A Special Olympics programme, and the care it refers into.',
+      },
+    },
   },
   {
     id: 'clean-data-centers',
@@ -47,12 +98,22 @@ export const pilots = [
     field: 'Energy',
     problem: 'Data centers arrive before states set terms.',
     approach: 'A playbook for the negotiating table.',
-    goal: 'Those terms inside one state siting agreement.',
+    goal: 'Those terms adopted by one state.',
     horizon: '3–12 months',
     image: '/media/pilot-energy.jpg',
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Muskingum County, Ohio',
+    detail: {
+      what: 'Four terms a state can put on the table: clean power, jobs, affordability, community benefit.',
+      who: 'State governments, and the communities a data center lands in.',
+      where: 'One state, at the point a data center is sited.',
+      needs: {
+        fund: 'Underwrite one pilot, end to end.',
+        build: 'A partner to build the playbook and the numbers under it.',
+        run: 'A state preparing to negotiate.',
+      },
+    },
   },
   {
     id: 'infant-mortality',
@@ -61,20 +122,32 @@ export const pilots = [
     title: 'Infant Mortality',
     tagline: 'Risk found early, in the weeks that decide outcomes.',
     field: 'Health',
-    problem: 'Among the nation’s highest infant mortality rates.',
+    problem: 'Infant mortality in Indianapolis, concentrated among mothers on Medicaid.',
     approach: 'Maternal health data read for early risk.',
-    goal: 'Weeks of warning, in a model other cities can run.',
+    goal: 'Risk identified early enough to act on.',
     horizon: '3–12 months',
-    /* The 2400×1600 source carries a second identifiable woman at its right
-       edge; the 2.99:1 frame on /pilots/ always shows the full source width,
-       so she was cropped mid-face beside the words "Infant Mortality" — a
-       real person in a public-domain USDA photograph with no relationship to
-       this pilot. This is the same photograph trimmed to 2060×1600, which
-       ends before her. The homepage keeps the untrimmed original. */
-    image: '/media/pilot-maternal-crop.jpg',
-    /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
-       a pilot's name set over a full-bleed frame reads as a caption for it. */
-    credit: 'U.S. Department of Agriculture',
+    /* The re-cut master, which ends before the second adult in the USDA
+       original. `pilot-maternal-crop.jpg` was the wave-4 workaround and is
+       obsolete; /pilots/ carried the correction as a component override
+       until now. See refs/PHOTO-FACTS.md. */
+    image: '/media/pilot-maternal.jpg',
+    /* What the PHOTOGRAPH is, not who owns it. This one frame's subject is a
+       private individual at full scale, so the credit names the room she is
+       standing in rather than the federal agency that holds the rights. */
+    credit: 'Family child care home · USDA',
+    /* The one pilot frame that ships real alt text: the other three are
+       places and events the copy already describes, this one is a person. */
+    alt: 'A mother holds her infant against her shoulder in the doorway of a family child care home.',
+    detail: {
+      what: 'A model reading maternal health data for early risk, and an intervention that acts on what it finds.',
+      who: 'Mothers on Medicaid in Indianapolis.',
+      where: 'Indianapolis.',
+      needs: {
+        fund: 'Underwrite one pilot, end to end.',
+        build: 'A partner to build the model.',
+        run: 'A health system or health department in Indianapolis, alongside Butler.',
+      },
+    },
   },
   {
     id: 'career-pathways',
@@ -83,7 +156,7 @@ export const pilots = [
     title: 'Career Pathways',
     tagline: 'Guidance that follows a student from school to work.',
     field: 'Education',
-    problem: 'The least counseling, the largest choices.',
+    problem: 'The largest choices, with the least guidance.',
     approach: 'Guidance built with districts, school to work.',
     goal: 'More students land in a defined pathway.',
     horizon: '3–12 months',
@@ -91,6 +164,40 @@ export const pilots = [
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Adrian, Oregon',
+    detail: {
+      what: 'Personalised guidance for the students who get the least of it, from school through to work.',
+      who: 'Low-income students in public schools.',
+      where: 'Public school districts.',
+      needs: {
+        fund: 'Underwrite one pilot, end to end.',
+        build: 'A partner to build the guidance.',
+        run: 'A district willing to run it with its own students.',
+      },
+    },
+  },
+];
+
+/* The terms every one of the four is offered on, stated once at the top of
+   /pilots/ instead of four times down it. Every value is refs/BRIEF.md or
+   copy already shipped elsewhere on this site:
+     · 3–12 months, measurable outcome, publish the lesson  → BRIEF
+     · "None is signed."                                    → /partner/
+     · "money, a technology, or somewhere real to run it"   → /partner/ */
+export const pilotTerms = [
+  {
+    key: '3–12',
+    term: 'Months',
+    text: 'From the first week to a published result.',
+  },
+  {
+    key: 'Proposed',
+    term: 'Status',
+    text: 'Named partners are sought for 2026. None is signed.',
+  },
+  {
+    key: 'Either way',
+    term: 'Published',
+    text: 'One measurable outcome each, reported whatever it says.',
   },
 ];
 
