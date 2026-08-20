@@ -18,8 +18,26 @@ problem, and this is exactly the kind of site where someone will check.
 | `pilot-health.jpg` | A young athlete at a Special Olympics **Unified track event** (U.S. Army, Camp Humphreys) | that this is a Healthy Athletes screening, or that it is domestic |
 | `pilot-health-portrait.jpg` | The same photograph, cropped to 4:5 | (as above) |
 | `pilot-energy.jpg` | A high-voltage transmission tower under heavy overcast, **Muskingum County, Ohio** | that this is the Pacific Northwest, Washington, or BPA |
-| `pilot-maternal.jpg` | A mother holding her infant at home, alone in frame | that it is Indianapolis, or clinical |
+| `pilot-maternal.jpg` | A mother holding her infant at home in the doorway of a **family child care home**, alone in frame | that it is Indianapolis, that it is clinical, or that she is a pilot participant |
 | `pilot-education.jpg` | Two students welding in an Oregon public high-school shop class | — |
+
+`pilot-maternal.jpg` is a **crop**, and the crop is the point. The USDA original
+is a two-person photograph: the mother, and a child care provider she is handing
+a bottle of breastmilk to. The provider is a real, identifiable woman with no
+relationship to this institute or this pilot, and the earlier crop left her at the
+right edge, cut mid-face, beside the words *Infant Mortality*. The shipped file
+ends before her at every variant and in every shape the site renders it in. If
+this image is ever re-cut, cut it from the original and keep the right edge inside
+x = 3860 of 7360.
+
+Its credit follows the rule below like the other three, and it names the frame,
+not the rights-holder: **`Family child care home · USDA`**. It used to read
+"U.S. Department of Agriculture", which told a reader who owns the picture and
+nothing about what it shows — so under a 55px *Infant Mortality* headline the
+only line attached to an identifiable private individual was an agency name.
+For the same reason this is the one pilot frame that ships real `alt` text
+rather than `alt=""`: the others are places and events described by the copy
+set on them, this one is a person.
 
 ## The rule this creates
 

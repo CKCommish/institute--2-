@@ -36,6 +36,27 @@ import Scale from './pilots-scale.astro';
 
 const {
   pilot: p,
+  /* Master-image override. site.js still points this pilot at
+     `pilot-maternal-crop.jpg`, a wave-4 workaround made because the 2400×1600
+     master carried a second identifiable woman at its right edge. The master
+     has since been re-cropped from the USDA original and ends before her, so
+     the workaround is obsolete; site.js belongs to another piece, so the
+     correct source is named here instead. */
+  src = null,
+  /* Credit override, same reason as `src`: site.js belongs to another piece.
+     A credit says WHAT THE PHOTOGRAPH IS. Three of the four already did;
+     pilot 03's said "U.S. Department of Agriculture" — a rights-holder, not
+     a fact about the frame — which left an identifiable mother and infant
+     full-bleed under "Infant Mortality" with an agency name as their only
+     caption. CONTENT-NOTES.md has the fact: a USDA nutrition-education
+     photograph made in a family child care home. */
+  credit = null,
+  /* Likewise `alt`. Every pilot frame ships alt="" because the rail, the
+     name and the credit sit on it as real text. That is defensible for a
+     transmission tower. It is not defensible for the one frame whose
+     subject is a private individual's face at full scale: it declares her
+     decorative and leaves the mortality headline as her description. */
+  alt = '',
   rank = 2,
   grade = 0.5,
   focal = '50% 50%',
@@ -69,15 +90,25 @@ const SCRIM = { scrim: 'bottom', reach: 1.0, rise: RISE[rank] ?? 0.6, ink: 0.98,
          whether or not it was meant as one. The credit is the house remedy;
          refs/PHOTO-FACTS.md names the misreading it prevents. -->
     <Figure
-      src={p.image} alt="" ratio="auto"
+      src={src ?? p.image} alt={alt} ratio="auto"
       grade={grade} focal={focal} parallax={parallax} loading={loading}
-      credit={p.credit} creditPos="bottom-right"
+      credit={credit ?? p.credit} creditPos="bottom-right"
       scrim={SCRIM.scrim} reach={SCRIM.reach} rise={SCRIM.rise} ink={SCRIM.ink} vig={SCRIM.vig}
     />
 
     <p class="shell rail" data-reveal>
       <span class="index">{p.index}</span>
-      <span class="eyebrow rail__partner">{p.partner}</span>
+      <!-- WHOSE PILOT THIS IS, AND HOW FAR ALONG. One slot held four values
+           in one register — two institutions and two named living officials —
+           and its grammar said "this is the partner on this pilot." Nothing
+           qualified it. Nobody has signed. /people/ already carries the house
+           remedy under its named board figures ("Membership is prospective");
+           this is the same qualifier, in the register the rail already uses,
+           on all four so the grammar stays one grammar. -->
+      <span class="rail__who">
+        <span class="eyebrow rail__partner">{p.partner}</span>
+        <span class="label rail__q">Proposed</span>
+      </span>
       <span class="label rail__field">{p.field}</span>
     </p>
 
@@ -188,6 +219,15 @@ const SCRIM = { scrim: 'bottom', reach: 1.0, rise: RISE[rank] ?? 0.6, ink: 0.98,
     grid-row: 1;
   }
   .rail__field { margin-left: auto; text-align: right; white-space: nowrap; }
+  /* the qualifier is a footnote on the name, not a second name: it keeps the
+     rail's own dim label register and hangs off the eyebrow's baseline */
+  .rail__who { display: flex; align-items: baseline; gap: 0.85ch; min-width: 0; }
+  .rail__q {
+    color: var(--fg-meta);
+    white-space: nowrap;
+    opacity: 0.72;
+  }
+  .rail__q::before { content: '\00b7'; margin-right: 0.85ch; }
 
   .say {
     grid-row: 4;
@@ -215,7 +255,22 @@ const SCRIM = { scrim: 'bottom', reach: 1.0, rise: RISE[rank] ?? 0.6, ink: 0.98,
   /* ── THE ARGUMENT ─────────────────────────────────────────────────
      One block, four times, same rails: a hairline, two clauses side by side
      under it, the outcome alone beneath them. */
-  .argwrap { padding-block: clamp(1.5rem, 3vw, 2.4rem) clamp(2.25rem, 4.5vw, 3.75rem); }
+  /* THE REST BETWEEN CARDS.
+     Wave 4 unified the four pilots into one anatomy and bought real reading
+     clarity. The cost the critic named was pacing: 02, 03 and 04 came off the
+     ladder at an even count, because the only thing descending was the frame,
+     while the silence after each argument was the same silence every time. A
+     ranking that descends should also quicken. So the rest between the foot of
+     one argument and the top edge of the next frame steps down with the rank —
+     a long breath after 02, a shorter one after 03. No card gains a shape, a
+     colour or a rung; the anatomy is untouched. Only the count changes.
+     04 is excluded: its joint is with the footer, which sets its own. */
+  .argwrap {
+    padding-block: clamp(1.5rem, 3vw, 2.4rem)
+                   calc(clamp(2.25rem, 4.5vw, 3.75rem) * var(--rest, 1));
+  }
+  .pcard--r2 { --rest: 1.5; }
+  .pcard--r3 { --rest: 0.78; }
   .arg {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -341,7 +396,11 @@ const SCRIM = { scrim: 'bottom', reach: 1.0, rise: RISE[rank] ?? 0.6, ink: 0.98,
     .pcard--r3 { --band: clamp(19rem, 50vh, 26rem); }
     .pcard--r4 { --band: clamp(15rem, 40vh, 21rem); }
 
-    .rail { gap: 0.9ch; }
+    .rail { gap: 0.9ch; flex-wrap: wrap; }
+    /* at this measure the name plus its qualifier plus the sector no longer
+       share one line on 04; the qualifier drops under the name it qualifies
+       rather than pushing the sector off the rail */
+    .rail__who { flex: 1 1 auto; flex-wrap: wrap; gap: 0 0.85ch; }
     /* the axis stays margin to margin and the tail stays on the ninety-day
        edge; only the type comes down a rung so the head sets inside it */
     .measure__g { font-size: clamp(1.4rem, 0.7rem + 3.5vw, 2.4rem); }

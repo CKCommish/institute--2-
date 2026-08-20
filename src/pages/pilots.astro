@@ -26,10 +26,30 @@ const grades = {
 };
 /* Every frame is now written on at the top edge and along the foot, so every
    crop keeps its subject in the open middle band. */
+/* The infant-mortality master was re-cropped (wave 5) to end before the second
+   adult in the USDA frame; site.js still names the older workaround file. */
+const images = {
+  'infant-mortality': '/media/pilot-maternal.jpg',
+};
+
+/* A credit says what the PHOTOGRAPH is. site.js gives 03 a rights-holder
+   ("U.S. Department of Agriculture") instead of a fact about the frame; the
+   fact is in CONTENT-NOTES.md. site.js belongs to another piece, so the
+   correction is named here, like the master swap above. The alt goes with it:
+   this is the one frame carrying a private individual's face at full scale,
+   and it must not be marked decorative under a mortality headline. */
+const credits = {
+  'infant-mortality': 'Family child care home · USDA',
+};
+const alts = {
+  'infant-mortality':
+    'A mother holds her infant against her shoulder in the doorway of a family child care home.',
+};
+
 const focals = {
   'healthy-athletes': '50% 34%',
   'clean-data-centers': '50% 52%',
-  'infant-mortality': '50% 14%',
+  'infant-mortality': '50% 40%',
   'career-pathways': '50% 46%',
 };
 ---
@@ -76,6 +96,9 @@ const focals = {
     <PilotCard
       pilot={p}
       rank={rank[p.id] ?? 3}
+      src={images[p.id]}
+      credit={credits[p.id]}
+      alt={alts[p.id] ?? ''}
       grade={grades[p.id] ?? 0.6}
       focal={focals[p.id] || '50% 50%'}
       parallax={i === 0 ? 7 : 5}

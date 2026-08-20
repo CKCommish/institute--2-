@@ -81,7 +81,10 @@ rights — bright midday sky with cumulus, which read cheerful against the rest 
 | **Source page** | https://commons.wikimedia.org/wiki/File:Infant_Nutrition_(Team_Nutrition)_(20210805-FNS-UNC-0006).jpg |
 | **Direct file URL** | https://upload.wikimedia.org/wikipedia/commons/1/15/Infant_Nutrition_%28Team_Nutrition%29_%2820210805-FNS-UNC-0006%29.jpg |
 | **Original size** | 7360 × 4912 |
-| **Processing** | **Re-cropped (second pass)** to 3:2 from the left 60% of the frame (x 0–60%, y 0–59.9%), which drops the second adult entirely and leaves the mother and infant alone; resized to 2400 × 1600; contrast +4.5%; mild downscale sharpen. mozjpeg q82 / webp q78. The first pass used x 5–77% and kept the child care provider in frame. |
+| **Processing** | **Re-cropped (third pass, wave 5)** to 3:2 from the top-left of the frame — x 0–52.4% (0–3860 px), y 0–52.4% (0–2573 px) — resized to 2400 × 1600; contrast +4.5%; mild downscale sharpen. mozjpeg q82 / webp q78. No colour grade is baked in; the site applies its own. |
+| **What the shipped crop shows** | **The mother and her infant, alone in frame.** The child care provider — a second real, identifiable woman — is outside the right edge at every variant and every rendered shape. Her leftmost pixel in the original is x ≈ 3950; the crop closes at 3860. |
+| **Site credit** | `Family child care home · USDA` — what the frame shows, not the rights-holder. Ships with real `alt` text; it is the one pilot frame whose subject is a private individual. |
+| **Crop history** | Pass 1 used x 5–77% and kept the provider in frame. Pass 2 recorded an intent to drop her that was never applied to the shipped files; the workaround `pilot-maternal-crop.*` (2060 × 1600, a right-trim of the pass-1 output) was made instead and is now obsolete. Pass 3 is this entry, cut from the original. |
 
 ## 5. `pilot-education.jpg` / `.webp` / `@1200.*`
 

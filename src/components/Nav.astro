@@ -61,30 +61,47 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     height: var(--nav-h);
     color: var(--nav-fg, var(--cream));
     --nav-scrim: var(--ink-900);
+    --nav-tail: 3.5rem;
     transition: color 420ms var(--ease-out);
     pointer-events: none;
   }
   /* The scrim has one job: nothing on the page may be read through the bar.
      It therefore holds at FULL opacity for the whole height of the bar and a
      little past it, and only then falls away — the fade is the tail, not the
-     body. The old ramp was already down to 82% at the bar's own baseline,
-     which is why live copy showed through on every page. */
+     body.
+
+     The scrim also has to sit on the RIGHT ground. A single --nav-scrim colour
+     is only correct while one ground runs the whole reach; the moment a cream
+     section's edge passes under the bar, one flat colour is wrong on one side
+     of that edge — a dark scrim printing over the top of a cream panel (which
+     is what /partner/ did at the .proles edge, and every other route did at
+     its own). So the scrim is now TWO grounds with a hard cut at the section
+     edge itself, written by sync() below: --nav-a above the cut, --nav-b under
+     it, --nav-cut where the page's own edge falls. The fade moved to a mask so
+     it applies to whichever ground it lands on. When no edge is in reach the
+     cut sits past the end and the scrim is one colour, as before. */
   .nav::before {
     content: ''; position: absolute; inset: 0 0 auto 0;
     /* The tail is the fade, and every pixel of it is reach over content the
        bar is not covering. 5.5rem gave the scrim 89px of tail past a 62px
        bar; 3.5rem keeps the bar itself fully opaque (the ramp holds solid to
        64% of the span = 73px) and halves what the tail can paint over. */
-    height: calc(100% + 3.5rem);
+    height: calc(100% + var(--nav-tail));
     background: linear-gradient(
       to bottom,
-      var(--nav-scrim) 0%,
-      var(--nav-scrim) 64%,
-      color-mix(in srgb, var(--nav-scrim) 84%, transparent) 76%,
-      color-mix(in srgb, var(--nav-scrim) 44%, transparent) 87%,
-      color-mix(in srgb, var(--nav-scrim) 14%, transparent) 94%,
-      transparent 100%
+      var(--nav-a, var(--nav-scrim)) 0,
+      var(--nav-a, var(--nav-scrim)) var(--nav-cut, 100%),
+      var(--nav-b, var(--nav-scrim)) var(--nav-cut, 100%),
+      var(--nav-b, var(--nav-scrim)) 100%
     );
+    -webkit-mask-image: linear-gradient(
+      to bottom, #000 0%, #000 64%,
+      rgba(0,0,0,0.84) 76%, rgba(0,0,0,0.44) 87%, rgba(0,0,0,0.14) 94%,
+      transparent 100%);
+    mask-image: linear-gradient(
+      to bottom, #000 0%, #000 64%,
+      rgba(0,0,0,0.84) 76%, rgba(0,0,0,0.44) 87%, rgba(0,0,0,0.14) 94%,
+      transparent 100%);
     opacity: 0; transition: opacity 460ms var(--ease-out);
     pointer-events: none;
   }
@@ -253,20 +270,50 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
       nav.classList.toggle('is-scrolled', window.scrollY > 24);
       const run = document.documentElement.scrollHeight - window.innerHeight;
       nav.style.setProperty('--nav-p', run > 0 ? Math.min(1, window.scrollY / run).toFixed(4) : '0');
-      /* Inversion is an OVERLAP test against the bar's whole band, not a
-         probe line. A single sample at 0.55 of the bar height meant a cream
-         section whose top edge stopped one pixel below it kept the full black
-         scrim — and the scrim reaches 3.5rem past the bar, so the section's
-         own label was painted out. Any cream rect that intersects the band
-         the bar occupies inverts the bar. */
+      /* The bar has two independent questions to answer, and they used to be
+         one: what colour the SCRIM is (a ground, and it can change part-way
+         down the bar's reach) and what colour the TYPE is (one answer, decided
+         by whichever ground holds most of the bar). */
       const band = nav.offsetHeight;
-      const inverted =
-        !menu?.hasAttribute('data-open') &&
-        light.some((el) => {
-          const r = el.getBoundingClientRect();
-          return r.top < band && r.bottom > 0;
-        });
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const tail = 3.5 * rem;
+      const reach = band + tail;
+      const open = menu?.hasAttribute('data-open');
+
+      const rects = open ? [] : light.map((el) => el.getBoundingClientRect());
+      const creamAt = (y) => rects.some((r) => r.top <= y && r.bottom > y);
+
+      /* The BAND keeps one ground, because the type sits across it: whichever
+         ground holds most of the bar wins, and the type inverts with it. A
+         one-pixel overlap used to flip the whole bar to ink over a navy
+         header, so this is a majority test, not an intersection test. */
+      let creamInBand = 0;
+      for (const r of rects) {
+        const a = Math.max(0, r.top), b = Math.min(band, r.bottom);
+        if (b > a) creamInBand += b - a;
+      }
+      const inverted = !open && creamInBand > band * 0.5;
       nav.classList.toggle('is-inverted', inverted);
+
+      /* The TAIL is a different question. It reaches 3.5rem past the bar over
+         content the bar is not covering, and that is where the page's ground
+         usually changes — a cream section's top edge sitting just under the
+         bar took the full dark ramp across it on every route. So the tail is
+         cut at the first ground edge below the bar and carries the ground it
+         actually lands on. No edge in reach: one colour, as before. */
+      let cut = reach;
+      for (const r of rects) {
+        if (r.top > band && r.top < cut) cut = r.top;
+        if (r.bottom > band && r.bottom < cut) cut = r.bottom;
+      }
+      /* The band's own bottom edge is always a candidate cut: the band may be
+         holding a ground its majority chose while the page under the tail has
+         already changed. Where the two agree the cut is invisible. */
+      if (cut >= reach && creamAt(band + 1) !== inverted) cut = band;
+      const CREAM = 'var(--cream)', INK = 'var(--ink-900)';
+      nav.style.setProperty('--nav-a', inverted ? CREAM : INK);
+      nav.style.setProperty('--nav-b', (cut >= reach ? inverted : creamAt(cut + 1)) ? CREAM : INK);
+      nav.style.setProperty('--nav-cut', cut >= reach ? '100%' : cut + 'px');
     };
     const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(sync); } };
     addEventListener('scroll', onScroll, { passive: true });

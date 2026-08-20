@@ -14,10 +14,14 @@ const spec = [
   { k: 'Horizon', v: '3–12 months' },
   { k: 'Scope', v: 'One problem, one owner' },
   { k: 'Partners', v: 'Two sides, one table' },
-  { k: 'Active now', v: 'Four pilots, 2026', href: '/pilots/' },
+  /* Was "Active now — Four pilots, 2026". One click away, /pilots/ labels all
+     four of those pilots "Proposed"; active now and proposed cannot both be
+     true of the same four things. The cell now says what is actually true:
+     the pilots are open for partners, and none of them has been signed. */
+  { k: 'Open for 2026', v: 'Four pilots, proposed', href: '/pilots/' },
 ];
 ---
-<Base title="Institute" description="How the Lion Forum Institute works: short pilots, real partners, published results.">
+<Base title="Institute" description="How the Lion Forum Institute works: short pilots, measured outcomes, published results.">
   <!-- ── The room ────────────────────────────────────────────────────
        The page's one exception, and it is a photograph rather than a
        typographic trick: a long table with chairs down both sides, a flag on

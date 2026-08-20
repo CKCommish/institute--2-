@@ -1,15 +1,22 @@
 ---
 import { pilots } from '../../data/site.js';
-import Figure from '../Figure.astro';
 ---
 <section class="pilots scene" id="pilots" aria-labelledby="pilots-h">
   <div class="shell">
     <header class="pilots__head">
-      <p class="eyebrow pilots__eyebrow" data-reveal>Four pilots · 2026</p>
+      <p class="eyebrow pilots__eyebrow" data-reveal>Four pilots proposed for 2026</p>
       <p class="label pilots__count" data-reveal="60">01 — 04</p>
       <h2 class="display display--l pilots__h lines" id="pilots-h">
         Each one starts with a problem a family can name.
       </h2>
+      <!-- THE HEDGE, BESIDE THE NAMES AND NOT 479px BELOW THEM. Each row
+           names a living public figure or a real institution in the partner
+           slot. Nothing on this page had said those partners are sought
+           rather than signed, and /partner/ stopped making that claim in
+           83d4018 while / never got the correction. One line, in the same
+           micro-label voice as the row labels, inside the same head block
+           the names sit under. -->
+      <p class="label pilots__note" data-reveal="90">Partners named are sought for 2026, not committed.</p>
     </header>
 
     <ol class="pilots__list" data-pilot-list>
@@ -31,17 +38,6 @@ import Figure from '../Figure.astro';
     </ol>
   </div>
 
-  <div class="pilots__preview" aria-hidden="true" data-preview>
-    <div class="pilots__preview-in">
-      {pilots.map((p) => (
-        <div class="pilots__preview-item" data-preview-for={p.id}>
-          <Figure src={p.image} ratio="4 / 5" grade={0.46} />
-          <span class="index pilots__preview-i">{p.index}</span>
-          <span class="label label--lit pilots__preview-f">{p.field}</span>
-        </div>
-      ))}
-    </div>
-  </div>
 </section>
 
 <style>
@@ -58,6 +54,7 @@ import Figure from '../Figure.astro';
   }
   .pilots__count { font-variant-numeric: tabular-nums; }
   .pilots__h { grid-column: 1 / -1; max-width: 20ch; }
+  .pilots__note { grid-column: 1 / -1; color: var(--fg-mute); margin: 0; }
 
   /* ── The register ───────────────────────────────────────────────────
      Horizontal rules carry the rhythm. One quiet vertical hairline carries
@@ -162,49 +159,16 @@ import Figure from '../Figure.astro';
     .pilot::after, .pilot__title, .pilot__arrow { transition-duration: 1ms; }
   }
 
-  /* ── Cursor preview ─────────────────────────────────────────────────
-     The plate does not sit under the cursor: it is parked in the empty
-     lane between the end of the title and the row's hairline, so it never
-     covers a word you are reading. It rides the pointer vertically inside
-     the hovered row's band and drifts a little with its x — alive, but it
-     stays where it belongs. Desktop pointer only. */
-  .pilots__preview {
-    position: fixed; top: 0; left: 0; z-index: 40;
-    width: clamp(186px, 15.6vw, 244px);
-    pointer-events: none;
-    display: none;
-    opacity: 0;
-    transform: translate3d(var(--x, 0), var(--y, 0), 0);
-    transition: opacity 240ms var(--ease-out);
-    will-change: transform;
-  }
-  .pilots__preview.is-on { opacity: 1; }
-
-  .pilots__preview-in {
-    position: relative;
-    aspect-ratio: 4 / 5;
-    transform: translateY(-50%);
-    clip-path: inset(0 0 100% 0);
-    transition: clip-path 700ms var(--ease-out);
-  }
-  .pilots__preview.is-on .pilots__preview-in { clip-path: inset(0 0 0 0); }
-
-  .pilots__preview-item {
-    position: absolute; inset: 0; overflow: hidden;
-    opacity: 0; transform: translateY(5px);
-    transition: opacity 300ms var(--ease-out), transform 560ms var(--ease-out);
-  }
-  .pilots__preview-item.is-on { opacity: 1; transform: none; }
-
-  /* corner-anchored info, so the plate reads even before photography lands */
-  .pilots__preview-i,
-  .pilots__preview-f {
-    position: absolute; z-index: 3;
-  }
-  .pilots__preview-i { top: 0.85rem; left: 0.9rem; }
-  .pilots__preview-f { bottom: 0.85rem; right: 0.9rem; }
-
-  @media (hover: hover) and (min-width: 1100px) { .pilots__preview { display: block; } }
+  /* ── The hover state is ink, not photography ────────────────────
+     A cursor-following photo plate used to live here: position:fixed,
+     244px, aria-hidden, uncredited, display:none on every touch device,
+     cycling four documentary photographs — one of them an identifiable
+     child — so that a cursor would feel alive. It is gone. /pilots/ shows
+     the same photographs at size, credited, carrying an argument.
+     What carries the row now is what is above: the ledger dims to 0.4, the
+     hovered row comes back to full, its rule wipes brass left-to-right, its
+     partner goes brass, its title steps 0.35rem right and the arrow arrives.
+     Keyboard focus gets the identical treatment. Nothing here is an image. */
 
   /* ── Narrow ─────────────────────────────────────────────────────── */
   @media (max-width: 900px) {
@@ -230,75 +194,5 @@ import Figure from '../Figure.astro';
 </style>
 
 <script>
-  const list = document.querySelector('[data-pilot-list]');
-  const prev = document.querySelector('[data-preview]');
-  const MQ = '(hover: hover) and (min-width: 1100px)';
-
-  if (list && prev
-      && window.matchMedia(MQ).matches
-      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const plate = prev.querySelector('.pilots__preview-in');
-    const items = [...prev.querySelectorAll('.pilots__preview-item')];
-    let raf = 0, ty = 0, cx = 0, cy = 0, drift = 0, row = null;
-
-    /* x: parked just left of the row's hairline, in the void the titles
-       leave behind. The pointer only nudges it. */
-    const lane = () => {
-      const w = prev.offsetWidth;
-      const rule = row && row.querySelector('.pilot__v');
-      const edge = rule
-        ? rule.getBoundingClientRect().left - 22
-        : window.innerWidth * 0.5;
-      return Math.max(12, edge - w) + drift;
-    };
-
-    /* y: anchored to the hovered row. When the plate is taller than a row
-       it centres on it and only leans toward the pointer, so moving down the
-       list reads as a series of stops rather than a floating cutout. */
-    const settle = () => {
-      if (!row) return ty;
-      const r = row.getBoundingClientRect();
-      const h = plate.getBoundingClientRect().height || 0;
-      const c = r.top + r.height / 2;
-      if (r.height <= h) return c + Math.max(-18, Math.min(18, (ty - c) * 0.35));
-      return Math.min(Math.max(ty, r.top + h / 2), r.bottom - h / 2);
-    };
-
-    const loop = () => {
-      const gx = lane(), gy = settle();
-      cx += (gx - cx) * 0.18;
-      cy += (gy - cy) * 0.2;
-      prev.style.setProperty('--x', cx.toFixed(1) + 'px');
-      prev.style.setProperty('--y', cy.toFixed(1) + 'px');
-      raf = requestAnimationFrame(loop);
-    };
-
-    const track = (e) => {
-      ty = e.clientY;
-      drift = (e.clientX / window.innerWidth - 0.5) * 34;
-    };
-
-    list.addEventListener('pointermove', track);
-    list.addEventListener('pointerenter', (e) => {
-      track(e);
-      cx = lane(); cy = settle();
-      prev.style.setProperty('--x', cx + 'px');
-      prev.style.setProperty('--y', cy + 'px');
-      prev.classList.add('is-on');
-      if (!raf) raf = requestAnimationFrame(loop);
-    });
-    list.addEventListener('pointerleave', () => {
-      prev.classList.remove('is-on');
-      cancelAnimationFrame(raf); raf = 0;
-      row = null;
-      items.forEach((n) => n.classList.remove('is-on'));
-    });
-
-    list.querySelectorAll('[data-pilot]').forEach((li) => {
-      li.addEventListener('pointerenter', () => {
-        row = li;
-        items.forEach((n) => n.classList.toggle('is-on', n.dataset.previewFor === li.dataset.pilot));
-      });
-    });
-  }
+  /* The row register is CSS-only now — see the note above .pilot__i. */
 </script>
