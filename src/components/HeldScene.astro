@@ -1,0 +1,481 @@
+---
+/* HeldScene — the one scene on this site that stops.
+
+   WHY IT EXISTS. refs/MOTION-FINDINGS.md measured the reference and found
+   that its DOM is inert: every large element holds transform:none, opacity:1
+   and clip-path:none across a scroll, and all of its motion lives in one
+   fixed WebGL canvas the brief forbids us. But the GRAMMAR under that canvas
+   costs nothing and is not WebGL. The subject is held in place for about two
+   and a half viewport heights while the environment changes around it and
+   successive text beats fade through. Hold the visual, move the type.
+
+   Everywhere else this site does the inverse — the type holds its column and
+   the photographs scroll past it — which is why it reads as a well-set
+   document rather than as a sequence of scenes.
+
+   THE THREE THINGS IT DOES AT ONCE. It is not a hold unless it does all
+   three; a picture that merely pins is a stuck page.
+
+     1. THE PICTURE HOLDS.  A `position: sticky` stage one viewport high
+        inside a tall track. Native scroll: nothing is hijacked and nothing
+        is trapped, the wheel does what it does everywhere else on the page,
+        and the scrollbar never lies about where the reader is.
+
+     2. THE PICTURE IS NEVER STATIC.  A slow scroll-linked scale across the
+        whole hold — the 2D equivalent of the reference's camera push. It is
+        continuous and reversible, like `data-settle`; it is not an entrance.
+
+     3. THE GROUND MOVES.  This is what makes the hold an event rather than a
+        pause. The photograph starts at page ground, opens out of it and
+        closes back into it (`arc="lift"`, the default); or falls away to
+        isolate the subject (`arc="fall"`, the reference's literal move); or
+        opens and stays open to hand a lit picture to what follows
+        (`arc="rise"`). Measured at the page edges that is a swing of about
+        thirty L* inside one scene. The homepage before this component held a
+        5.7-point band across 79% of its scroll.
+
+   ONE PER SITE. A site where every section pins is a gimmick, and gimmick is
+   a tone failure on a civic institute's site. If a second scene wants this,
+   one of the two is not the scene the page is about.
+
+   ── invocation ────────────────────────────────────────────────────────
+
+     <HeldScene
+       src={forum.image} alt=""
+       eyebrow="The Lion Forum"
+       credit={forum.credit}
+       focal="52% 48%"
+       beats={[
+         'Founders, investors and officials, in one room.',
+         { line: 'One weekend a year.', note: 'Kennedy Compound, Hyannis Port' },
+       ]}>
+       <a slot="coda" class="label label--lit" href="/forum/">How the Forum works</a>
+     </HeldScene>
+
+   Copy arrives as data, per AGENTS.md — never hard-code it here or in a
+   page. A beat is ONE short line. Three is the ceiling and two is usually
+   right: the hold is long, and a reader who has been given four things to
+   read has been given a page, not a scene. A beat that needs a second
+   sentence is a scene of its own.
+
+   ── degradation ───────────────────────────────────────────────────────
+
+   The pinned layout is opt-in twice over: it needs `html.js` AND
+   `prefers-reduced-motion: no-preference`. The DEFAULT rendering — what a
+   reduced-motion reader and a no-JS reader both get — is a plain stacked
+   figure with the beats set below it on the page ground: no sticky, no
+   overlap, and no type on photography at all, so there is no legibility
+   question left to answer. That is a real composition, not a fallback that
+   merely avoids crashing.
+   ------------------------------------------------------------------- */
+import Figure from './Figure.astro';
+
+const {
+  src,
+  alt = '',
+  /* How many viewport heights the picture is held for after it pins. 2.5 is
+     the reference's own figure. Below ~1.6 the hold reads as a stutter; above
+     ~3 the reader starts checking the scrollbar. */
+  hold = 2.5,
+  holdSm = 1.7,
+  /* THE CAMERA PUSH: scale added across the whole hold. Small on purpose —
+     this is weight, not a zoom. Above ~0.10 it reads as a transition rather
+     than as a room you are standing in. */
+  push = 0.075,
+  arc = 'lift',            // 'lift' | 'fall' | 'rise'
+  /* How far out of the ground the picture comes at the top of the arc.
+     1 = the house grade and nothing on top of it. */
+  open = 1,
+  /* How deep the ground is at the closed end of the arc. 1 = page ground. */
+  floor = 0.93,
+  /* Lower than the house 0.5 because the arc supplies the rest of the ink,
+     and supplies it as an event instead of as a constant. */
+  grade = 0.34,
+  vig = 0.55,
+  focal = '50% 50%',
+  focalSm,
+  zoom = 1,
+  zoomSm,
+  eyebrow,                 // names the scene; held for the whole pin
+  /* THE METER — one short hairline per beat, the live one drawn in brass.
+     Defaults on at 2+ beats. It is deliberately NOT a numeral: a counter set
+     over a photograph is either bright enough to compete with the eyebrow or
+     dim enough to fail the legibility budget, and either way it is a fourth
+     mark in a scene whose whole argument is that there is one picture and one
+     line. A rule is a mark this site already owns (.cue, .forum__rule), it
+     carries no words, and it answers the only question a held scene actually
+     raises: how long is this. */
+  counter,
+  beats = [],              // string | { line, note }
+  credit,
+  /* BOTTOM, not top. Figure's own default puts the location credit under the
+     bar — which is invisible below the fold, because Nav.astro's scrim is
+     opaque from the first pixel of scroll, and unprotected the moment you
+     move it clear of that scrim. On a held scene the picture is open for two
+     viewport heights and the credit has to survive it, so it rides the foot
+     ink instead, in the corner opposite the beats. */
+  creditPos = 'bottom-right',
+  ratio = '16 / 9',        // the shape of the STACKED (reduced-motion) figure
+  ratioSm = '4 / 5',
+  align = 'left',          // which wall the beats are set against
+  class: klass = '',
+} = Astro.props;
+
+const items = beats.map((b) => (typeof b === 'string' ? { line: b } : b));
+const showCount = counter === undefined ? items.length > 1 : !!counter;
+const hasCoda = Astro.slots.has('coda');
+
+const style = [
+  `--hold:${hold}`,
+  `--hold-sm:${holdSm}`,
+  `--push:${push}`,
+  `--open-max:${open}`,
+  `--floor:${floor}`,
+  `--held-ratio:${ratio}`,
+  `--held-ratio-sm:${ratioSm}`,
+  `--held-origin:${focal}`,
+].join(';');
+---
+<section
+  class:list={['held', { 'held--right': align === 'right' }, klass]}
+  style={style}
+  data-hold
+  data-arc={arc}
+  data-coda-tail={hasCoda ? '' : undefined}
+>
+  <div class="held__stage" data-hold-stage>
+    <Figure src={src} alt={alt} ratio="auto"
+            grade={grade} vig={vig} scrim="none"
+            focal={focal} focalSm={focalSm} zoom={zoom} zoomSm={zoomSm}
+            credit={credit} creditPos={creditPos}
+            loading="lazy" sizes="100vw" class="held__fig" />
+
+    {/* THE ARC. One navy sheet whose weight is the inverse of --open, and
+        radial rather than flat so the frame's edges carry more ink than its
+        middle: the environment closes in on the subject instead of the whole
+        picture dimming. This is the tonal event. The photograph under it is
+        never touched — the house grade stays the house grade. */}
+    <div class="held__arc" aria-hidden="true"></div>
+
+    {/* PROTECTION, AND IT TRACKS THE ARC. The beats sit in one band at the
+        foot of the frame and never leave it, so the ink that carries them is
+        placed rather than spread. But the picture under that band gets
+        brighter as the arc opens, so the ink has to open with it: a fixed
+        ramp tuned at the closed end fails at the top of the arc, which is
+        exactly the failure tools/photo-meter.mjs exists to catch. */}
+    <div class="held__ink" aria-hidden="true"></div>
+
+    {/* The bar band, continued. Figure guarantees ink under the fixed nav on
+        every full-bleed frame, but it guarantees exactly the bar's height and
+        releases hard — which is invisible under the house grade of 0.5 and a
+        drawn line across the sky at the 0.34 this component uses. This band
+        carries the release further down, and it opens with the arc, so it is
+        absent at the closed end where nothing needs protecting. It is also
+        what the eyebrow and the counter are set on. */}
+    <div class="held__cap" aria-hidden="true"></div>
+
+    {/* THE FOOT. A short full-width band at the very bottom edge — the house
+        seam, and what carries the corner credit. It is separate from the beat
+        ink because that ink is masked to the type's own column and hands the
+        rest of the frame back to the photograph. */}
+    <div class="held__foot" aria-hidden="true"></div>
+
+    {(eyebrow || showCount) && (
+      <div class="shell held__top">
+        {eyebrow && <p class="eyebrow held__brow">{eyebrow}</p>}
+        {showCount && (
+          <p class="held__meter" aria-hidden="true">
+            {items.map((_, i) => <i class="held__tick" data-beat-tick={i}></i>)}
+          </p>
+        )}
+      </div>
+    )}
+
+    <div class="shell held__beats">
+      {items.map((b, i) => (
+        <div class="held__beat" data-beat={i}>
+          <p class="display display--head held__line">{b.line}</p>
+          {b.note && <p class="label held__note">{b.note}</p>}
+        </div>
+      ))}
+      {hasCoda && <div class="held__coda" data-coda><slot name="coda" /></div>}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ── DEFAULT: the stacked layout ──────────────────────────────────
+     No sticky, no absolute positioning, no type over photography. This is
+     what a reduced-motion reader and a no-JS reader get, and it has to be a
+     composition in its own right rather than a wreck that happens to be
+     readable. */
+  .held {
+    position: relative;
+    --open: 1;                 /* the engine overwrites; 1 keeps it open */
+    --hp: 0;
+  }
+  .held__arc, .held__ink, .held__cap, .held__foot { display: none; }
+  /* The meter counts beats through a hold. With no hold it is a mark that
+     measures nothing, so it is not drawn. */
+  .held__meter { display: none; }
+
+  /* The stacked figure carries no type, so it needs no protection — but it
+     still has to look like it belongs to the same commission as every other
+     photograph on the site. `grade` is set low here because the ARC supplies
+     the rest of the ink, and with no arc the picture would land two stops
+     brighter than the rest of the site. One flat sheet puts it back on the
+     house grade, and one short foot gives the bottom edge the seam every
+     other full-bleed frame has. */
+  .held__arc, .held__foot { display: block; position: absolute; z-index: 1; pointer-events: none; }
+  .held__arc { inset: 0; background: rgb(5 13 22 / 0.14); }
+  .held__foot {
+    left: 0; right: 0; bottom: 0; height: 15%;
+    background: linear-gradient(to top,
+      var(--ink-900) 0%,
+      color-mix(in srgb, var(--ink-900) 52%, transparent) 34%,
+      transparent 100%);
+  }
+  .held__stage { position: relative; isolation: isolate; }
+
+  .held :global(.held__fig) {
+    position: relative;
+    inset: auto;
+    z-index: 0;
+    aspect-ratio: var(--held-ratio);
+  }
+
+  /* Eyebrow over counter, both against the left rail. They are NOT split to
+     the two corners: the figure's own location credit owns the top right on
+     every full-bleed frame on this site, and a counter set opposite an
+     eyebrow lands exactly on top of it. */
+  .held__top {
+    width: 100%;
+    display: grid;
+    justify-items: start;
+    gap: clamp(0.6rem, 1.4vh, 0.95rem);
+    padding-block: clamp(1.5rem, 3vw, 2.4rem) 0;
+  }
+  .held__meter { display: inline-flex; gap: 0.5rem; }
+  .held__tick {
+    display: block;
+    width: clamp(14px, 2.2vw, 26px);
+    height: 1px;
+    background: var(--mark);
+    position: relative;
+  }
+  /* the live beat's tick, drawn over the dim one so nothing reflows */
+  .held__tick::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--brass);
+    transform: scaleX(var(--be, 0));
+    transform-origin: left;
+  }
+  .held__tick:first-child::after { transform: scaleX(var(--be, 1)); }
+
+  .held__beats {
+    width: 100%;
+    display: grid;
+    gap: clamp(1.6rem, 3.4vw, 2.8rem);
+    padding-block: clamp(1.6rem, 3.4vw, 2.6rem) clamp(2.5rem, 6vw, 5rem);
+  }
+  .held__line { max-width: 18ch; }
+  .held__note { margin-top: clamp(0.7rem, 1.5vw, 1.05rem); }
+
+  .held--right .held__line, .held--right .held__note { margin-left: auto; text-align: right; }
+
+  @media (max-width: 720px) {
+    .held :global(.held__fig) { aspect-ratio: var(--held-ratio-sm); }
+    .held__line { max-width: 14ch; }
+  }
+
+  /* ── ENHANCED: the hold ───────────────────────────────────────────
+     Gated on BOTH `html.js` and a reader who has not asked for less motion.
+     Everything here is position and paint. The engine reads one rect per
+     frame and writes custom properties; it never touches layout. */
+  @media (prefers-reduced-motion: no-preference) {
+    /* the track: one viewport for the stage, plus the held length.
+       svh, not dvh — a track whose height changed when a phone's address bar
+       retracted would move the page under the reader's thumb. */
+    :global(html.js) .held { height: calc((1 + var(--hold)) * 100svh); }
+    @media (max-width: 720px) {
+      :global(html.js) .held { height: calc((1 + var(--hold-sm)) * 100svh); }
+    }
+
+    :global(html.js) .held__stage {
+      position: sticky;
+      top: 0;
+      /* dvh HERE, though: the stage is what the reader looks at, and a
+         100svh stage leaves a strip of page ground under a full-bleed
+         picture the moment a phone's address bar goes away. `overflow: clip`
+         does not create a scroll container, so it cannot break the sticky. */
+      height: 100svh;
+      height: 100dvh;
+      isolation: isolate;
+      overflow: clip;
+    }
+
+    :global(html.js) .held :global(.held__fig) {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+    }
+    /* THE PUSH — continuous, scroll-linked, reversible, taken around the same
+       point the crop is composed on, so the frame opens into its own subject
+       rather than into its middle.
+
+       It is on the MEDIA layer, not on the figure. Scaling the whole figure
+       scales its treatment with it: the bar band drifts up off the bar, the
+       vignette grows past the corners it was drawn for, and the location
+       credit walks up behind the fixed nav. Protection that moves is
+       protection that stops covering the thing it was placed over.
+       (`parallax` must stay 0 on a held figure — it writes --py into this
+       same transform, and the two would fight.) */
+    :global(html.js) .held :global(.held__fig .fig__media) {
+      transform: scale(calc(1 + var(--push) * var(--hp)));
+      transform-origin: var(--held-origin);
+      will-change: transform;
+    }
+
+    :global(html.js) .held__arc {
+      --a: calc(var(--floor) * (1 - var(--open) * var(--open-max)));
+      background: radial-gradient(126% 96% at 50% 46%,
+        rgb(5 13 22 / calc(var(--a) * 0.82)) 0%,
+        rgb(5 13 22 / calc(var(--a) * 0.93)) 50%,
+        rgb(5 13 22 / calc(var(--a) * 1.10 + 0.05)) 100%);
+    }
+
+    :global(html.js) .held__cap {
+      display: block;
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: calc(var(--nav-h) + 5.5rem + 16vh);
+      z-index: 2;
+      pointer-events: none;
+      background: linear-gradient(180deg,
+        rgb(3 9 16 / calc(0.46 * var(--open))) 0%,
+        rgb(3 9 16 / calc(0.42 * var(--open))) 58%,
+        rgb(3 9 16 / calc(0.24 * var(--open))) 80%,
+        transparent 100%);
+    }
+
+    :global(html.js) .held__foot {
+      z-index: 2;
+      /* A PLATEAU, not a wedge — the same lesson Figure's own bottom ramp
+         records. The credit sits about 4% up from the frame's edge, so ink
+         that peaks at the edge and is already spent by the time it reaches
+         the words protects the padding and not the type. Measured: the wedge
+         left the credit on L* 23 and 4.2:1 against a 4.5 budget. */
+      background: linear-gradient(0deg,
+        rgb(3 9 16 / calc(0.42 + 0.54 * var(--open))) 0%,
+        rgb(3 9 16 / calc((0.42 + 0.54 * var(--open)) * 0.94)) 26%,
+        rgb(3 9 16 / calc((0.42 + 0.54 * var(--open)) * 0.62)) 52%,
+        rgb(3 9 16 / calc((0.42 + 0.54 * var(--open)) * 0.20)) 76%,
+        transparent 100%);
+    }
+
+    :global(html.js) .held__ink {
+      display: block;
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 58%;
+      z-index: 2;
+      pointer-events: none;
+      --k: calc(0.26 + 0.66 * var(--open));
+      background: linear-gradient(0deg,
+        rgb(3 9 16 / calc(var(--k) * 0.98)) 0%,
+        rgb(3 9 16 / var(--k)) 24%,
+        rgb(3 9 16 / calc(var(--k) * 0.72)) 50%,
+        rgb(3 9 16 / calc(var(--k) * 0.28)) 76%,
+        transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 46%, transparent 84%);
+      mask-image: linear-gradient(to right, #000 0%, #000 46%, transparent 84%);
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    }
+    :global(html.js) .held--right .held__ink {
+      -webkit-mask-image: linear-gradient(to left, #000 0%, #000 46%, transparent 84%);
+      mask-image: linear-gradient(to left, #000 0%, #000 46%, transparent 84%);
+    }
+
+    /* The eyebrow and the counter belong to the whole hold, so they arrive
+       with the picture and leave with it, and never with a beat. They sit in
+       the band the figure's own bar scrim guarantees. */
+    /* THE NAV SCRIM IS 5.5rem TALLER THAN THE NAV. Nav.astro paints a
+       full-opacity band the height of the bar and a little past it, released
+       over its last third, and it is opaque from the moment the page is
+       scrolled at all. Anything set in the top ~150px of a full-bleed figure
+       below the fold is therefore invisible — which is where Figure's own
+       default `creditPos="top-*"` lands, and where this rail was. Both are
+       moved clear of it here, together, so they stay on one line. */
+    :global(html.js) .held__top,
+    :global(html.js) .held :global(.held__fig .fig__credit[data-pos^='top']) {
+      top: calc(var(--nav-h) + 5.5rem + clamp(0.8rem, 2.4vh, 1.6rem));
+    }
+    /* It does NOT fade with the arc. A cream micro-label at 60% alpha over a
+       sky that is still lit measures under 4.5:1 for the whole width of the
+       fade, and there is no ink cheap enough to rescue it; at full weight, on
+       the cap, it clears. The eyebrow names the scene for the whole hold,
+       which is what an eyebrow is for. */
+    :global(html.js) .held__top {
+      position: absolute;
+      left: 0; right: 0;
+      z-index: 4;
+      padding-block: 0;
+    }
+    :global(html.js) .held__meter { display: inline-flex; }
+
+    /* Every beat is anchored to the SAME baseline, in one grid cell, so the
+       type fades through in one place instead of hopping around the frame.
+       A grid stack rather than absolute positioning, so the beats keep the
+       shell's gutter and max-width like every other column on the site. */
+    :global(html.js) .held__beats {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      z-index: 3;
+      display: grid;
+      align-items: end;
+      row-gap: clamp(1.1rem, 2.4vh, 1.9rem);
+      padding-block: 0 clamp(2.4rem, 6vh, 4.4rem);
+    }
+    :global(html.js) .held__beat {
+      grid-area: 1 / 1;
+      align-self: end;
+      /* the beat drifts UP continuously while its envelope carries it
+         through: the text is what travels, and it never travels backwards */
+      transform: translate3d(0, calc((0.42 - var(--bu, 0)) * 3.6vh), 0);
+      will-change: transform;
+    }
+    /* ── LARGE TYPE FADES, SMALL TYPE WIPES ──────────────────────────
+       Measured across the whole hold, not at rest: a 53px display line at
+       half alpha over the beat ink still reads 7.5:1 against a 3:1 budget,
+       while a 12px micro-label at the same half alpha reads 3.2:1 against a
+       4.5:1 one. Small type has no room to spend on a crossfade. So the
+       display line fades — that is the reference's grammar and the thing the
+       reader is meant to feel — and everything in the micro registers is
+       masked instead: drawn or not drawn, never half-inked. It is the site's
+       existing `data-wipe` vector, driven by the same envelope. */
+    :global(html.js) .held__line {
+      opacity: var(--be, 1);
+      will-change: opacity;
+    }
+    :global(html.js) .held__note,
+    :global(html.js) .held__coda {
+      clip-path: inset(0 calc((1 - var(--be, 1)) * 100%) 0 -0.2em);
+    }
+    :global(html.js) .held--right .held__note,
+    :global(html.js) .held--right .held__coda {
+      clip-path: inset(0 -0.2em 0 calc((1 - var(--be, 1)) * 100%));
+    }
+    :global(html.js) .held__coda { grid-row: 2; }
+    :global(html.js) .held__line { max-width: 16ch; }
+    :global(html.js) .held__beats.shell { padding-inline: var(--gutter); }
+  }
+
+  @media (prefers-reduced-motion: no-preference) and (max-width: 720px) {
+    :global(html.js) .held__line { max-width: 13ch; }
+    :global(html.js) .held__ink { height: 66%; }
+    /* the location credit wraps to two lines at 390px and the coda sits on
+       the same rail: the beat stack lifts far enough to clear both */
+    :global(html.js) .held__beats { padding-bottom: clamp(4.4rem, 10vh, 5.4rem); }
+  }
+</style>

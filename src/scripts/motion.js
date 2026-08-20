@@ -1,11 +1,13 @@
 /* Lion Forum Institute — motion.
 
-   Three vectors, and they mean different things:
+   Four vectors, and they mean different things:
 
      1. reveal / lines  ARRIVAL   — words lift in from below behind a mask
      2. wipe            TERRITORY — a hard mask opens along one axis from a
                                     named anchor; nothing moves or fades
      3. settle          WEIGHT    — scroll-linked, continuous, reversible
+     4. hold            DURATION  — the picture stops and the page keeps
+                                    going. One scene per site. See initHold.
 
    Plus two helpers that are not vectors:
      · parallax   slow translate on full-bleed media
@@ -175,10 +177,99 @@ function initLines() {
   }, { passive: true });
 }
 
+/* ── 4. Hold — the one scene that stops ──────────────────────────────
+   Read off the reference in refs/MOTION-FINDINGS.md: its whole cinematic
+   register comes from one move, and the move is not a technique. The subject
+   is held in place for about two and a half viewport heights while the
+   environment darkens around it and successive text beats fade through. Hold
+   the visual, move the type. Our site does the exact inverse everywhere else
+   — the type holds its column and the photographs scroll past it — which is
+   why it reads as a well-set document rather than as a sequence of scenes.
+
+   The DOM is a tall TRACK carrying a `position: sticky` STAGE one viewport
+   high. This function writes four scalars and nothing else; every visual
+   decision is CSS in HeldScene.astro.
+
+     --hp    0 → 1   progress through the pinned range. Drives the push-in.
+     --open  0 → 1   how far the picture is out of the ground. This is the
+                     tonal event: the arc, not the picture, is what changes.
+     --be    per beat, 0 → 1 → 0. The envelope that fades one beat up, holds
+                     it, and retires it before the next arrives.
+     --bu    per beat, the raw local progress, unclamped at the ends, so a
+                     beat can drift continuously while its envelope is flat.
+
+   The three arcs are the three honest things a ground can do while a picture
+   is held (data-arc on the track):
+     lift  (default)  ground → open → ground.  A tonal excursion inside one
+                      scene, which is the thing this site did not have.
+     fall             open → ground.  The reference's literal move: the
+                      environment falls away and isolates the subject.
+     rise             ground → open.  Hands a lit picture to what follows.
+
+   Cost: one rAF-throttled read of one getBoundingClientRect per held track,
+   inside the scroll loop that already runs. No observers, no timers, no
+   layout writes — only custom properties, and only when they change. */
+const ss = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
+
+function setVar(el, name, v) {
+  const s = v.toFixed(4);
+  if (el.__mv === undefined) el.__mv = {};
+  if (el.__mv[name] === s) return;
+  el.__mv[name] = s;
+  el.style.setProperty(name, s);
+}
+
+function runHold(track, vh) {
+  const stage = track.__stage || (track.__stage = track.querySelector('[data-hold-stage]'));
+  if (!stage) return;
+  const r = track.getBoundingClientRect();
+  const range = r.height - stage.offsetHeight;
+  if (range <= 8) return;                       /* not tall enough to pin */
+  /* Off screen: park at the near end and stop. A held scene two pages away
+     must not cost anything per frame. */
+  const near = r.bottom < -80 ? 1 : r.top > vh + 80 ? 0 : null;
+  const p = near !== null ? near : Math.max(0, Math.min(1, -r.top / range));
+  if (near !== null && track.__parked === near) return;
+  track.__parked = near;
+
+  const arc = track.dataset.arc || 'lift';
+  const rise = ss(p / 0.30);
+  const fall = ss((1 - p) / 0.24);
+  const open = arc === 'fall' ? fall : arc === 'rise' ? rise : Math.min(rise, fall);
+
+  setVar(track, '--hp', p);
+  setVar(track, '--open', open);
+
+  const beats = track.__beats || (track.__beats = [...track.querySelectorAll('[data-beat]')]);
+  const ticks = track.__ticks || (track.__ticks = [...track.querySelectorAll('[data-beat-tick]')]);
+  const coda = track.__coda !== undefined
+    ? track.__coda
+    : (track.__coda = track.querySelector('[data-coda]'));
+  const n = beats.length;
+  if (n) {
+    /* The first beat waits for the picture to have arrived, and the last one
+       is gone before the ground closes: a beat caught in the fade is a beat
+       nobody read. A coda reserves the whole tail for itself, so the link at
+       the end of the scene never shares the frame with a display line. */
+    const lead = 0.09;
+    const tail = coda ? 0.24 : 0.10;
+    const span = (1 - lead - tail) / n;
+    for (let i = 0; i < n; i++) {
+      const u = (p - (lead + i * span)) / span;
+      const e = u <= 0 || u >= 1 ? 0 : ss(u / 0.30) * ss((1 - u) / 0.26);
+      setVar(beats[i], '--be', e);
+      setVar(beats[i], '--bu', Math.max(-0.4, Math.min(1.4, u)));
+      if (ticks[i]) setVar(ticks[i], '--be', e);
+    }
+  }
+  if (coda) setVar(coda, '--be', ss((p - (1 - 0.22)) / 0.11));
+}
+
 /* ── 3. Scroll-linked values: parallax and settle ────────────────── */
 function initScroll() {
   const parallax = [...document.querySelectorAll('[data-parallax]')];
   const settle = [...document.querySelectorAll('[data-settle]')];
+  const holds = [...document.querySelectorAll('[data-hold]')];
   const nav = document.querySelector('[data-nav]');
   let ticking = false;
 
@@ -193,6 +284,8 @@ function initScroll() {
     if (reduced) return;
 
     if (pendingWipes.length) runWipes(vh);
+
+    for (const t of holds) runHold(t, vh);
 
     for (const el of parallax) {
       const r = el.getBoundingClientRect();
