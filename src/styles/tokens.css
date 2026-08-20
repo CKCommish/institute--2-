@@ -184,11 +184,11 @@
      (none)      --ink-900   L*  3   THE PAGE.  Where everything starts and
                                      returns. No class. If you cannot say why
                                      a scene left it, it should not have.
-     .on-panel   --ink-800   L*  9   A BAND SET INTO THE PAGE.  Full-bleed,
-                                     edge to edge, its own top and bottom
-                                     rule. Separates two scenes that would
-                                     otherwise run together. Never a card.
-     .on-plate   --ink-700   L* 15   AN OBJECT RESTING ON THE PAGE.  A table,
+     .on-panel   --ink-700   L* 15   A BAND SET INTO THE PAGE.  Full-bleed,
+                                     edge to edge. Separates two scenes that
+                                     would otherwise run together. Never a
+                                     card.
+     .on-plate   --ink-600   L* 21   AN OBJECT RESTING ON THE PAGE.  A table,
                                      a panel, a founders band — something
                                      with visible edges you could point at.
                                      Never full-bleed to all four sides.
@@ -197,50 +197,98 @@
                                      about itself: the fact, the claim, the
                                      line a reader must not scroll past.
 
+   WHY THE TWO DARK RUNGS MOVED UP (wave 4)
+
+   They used to be --ink-800 (L* 9) and --ink-700 (L* 15), and the budget
+   below was being spent — the homepage's board wall really is a full-bleed
+   .on-panel band at 87% of the scroll — and it still measured as one flat
+   page. `node tools/tone-meter.mjs /` walked the homepage's gutters at 20px
+   intervals and found 73% of the whole scroll inside 9 L* of the page
+   ground, with the single dominant band holding 23% of it. A 6-point step
+   between two large dark fields, seen a screen apart and never side by side,
+   is not a change of ground; it is the same ground with a rounding error.
+
+   So each class moved up one rung on a ladder that already existed. Nothing
+   was invented and no hue was added — navy, cream, one brass accent, exactly
+   as before. Page → panel is now 11.5 L*, which is a step a reader registers
+   as a different surface. --ink-800 and --ink-850 remain as tokens for
+   gradients and hairline mixes; they are no longer GROUNDS, and a section
+   that sets `background: var(--ink-800)` by hand is asking for the old
+   invisible band. Use the class.
+
    THE RULE FOR USING THEM
 
-   1. A page may change ground at most THREE times. Four grounds is a
-      palette; four changes is a quilt.
-   2. .on-cream at most ONCE per page, full-bleed, carrying one sentence.
+   1. A FLOOR AS WELL AS A CEILING. At least TWO changes of ground per page
+      and at most FOUR. The old rule was a ceiling only ("at most three"),
+      and a ceiling on its own permits a page that never changes ground at
+      all — which is the page we measured and shipped. A ceiling stops a
+      quilt; only a floor stops a wall.
+   2. ONE of those changes must be a full 20+ L* step. Two panels and a plate
+      is not a rhythm, it is three shades of the same dark. In practice the
+      big step is .on-cream, a full-bleed photograph at the top of its arc,
+      or a HeldScene (below) — there is nothing else on this palette that can
+      move twenty points.
+   3. .on-cream at most ONCE per page, full-bleed, carrying one sentence.
       It is the loudest thing available; a second one is silence.
-   3. .on-panel and .on-plate are not decoration and not "a bit of variety".
+   4. .on-panel and .on-plate are not decoration and not "a bit of variety".
       Reach for one only to answer a question a reader is actually asking:
       "is this the same thing as the last thing?" (panel) or "is this one
       object or four?" (plate).
-   4. A PHOTOGRAPH IS ALSO A GROUND. The graded frames now land at L* 30–50,
-      which is a bigger tonal event than any plate here. Count a full-bleed
-      figure as one of your three changes.
-   5. These classes were not invented from nothing. MethodScene had already
-      hand-rolled `background: var(--ink-800)` for a band and people.astro
-      `var(--ink-700)` for a bounded plate — the same two values, for the
-      same two jobs, reached for independently. That is the system being
-      discovered; this is it being written down. Use the class, not the raw
-      token: the class also retunes the hairlines and the meta register, and
-      a raw background does not.
+   5. A PHOTOGRAPH IS ALSO A GROUND, and so is a held one. A full-bleed
+      graded frame lands at L* 30–50 in the middle of the frame — but check
+      the GUTTERS before counting it as an event: the vignette and the veil
+      pull a frame's edges back toward the page, and on the wave-3 homepage
+      two of the three full-bleed photographs registered under L* 20 at the
+      page edge and were worth almost nothing tonally. src/components/
+      HeldScene.astro exists partly for this: it holds one picture and runs
+      its ground from L* 4 to L* 40 and back inside a single scene, which is
+      the largest tonal event on the site that is not cream.
+   6. Use the class, not the raw token: the class also retunes the hairlines
+      and the meta register, and a raw background does not. Each ground keeps
+      the SAME three ink levels, and every one of them clears 4.5:1 — the top
+      step compresses as the ground lightens (16.7 : 8.4 : 5.3 on the page,
+      13.2 : 7.2 : 5.4 on a panel, 10.8 : 6.1 : 5.2 on a plate), which is what
+      a lighter ground costs and is why the ladder stops at L* 21 and then
+      jumps to cream.
 
-   Each ground keeps the SAME three ink levels and clears the same two
-   contrast steps, so hierarchy survives a change of value.
+   HOW TO CHECK IT
+
+     node tools/tone-meter.mjs /            desktop
+     node tools/tone-meter.mjs / --mobile
+
+   It prints one row per ground the page actually shows a reader, with the
+   share of scroll each holds. A page passes when no single band holds much
+   more than half the scroll and at least three runs are longer than a third
+   of a viewport. Those are not laws of nature; they are the smallest numbers
+   at which these four grounds are doing any work at all.
    --------------------------------------------------------------------- */
 
 /* A band set into the page. */
 .on-panel {
-  --bg: var(--ink-800);
-  /* a lighter ground eats a hairline: 14% cream reads weaker on ink-800
-     than on ink-900, so the rules step up to hold the same edge. */
-  --rule: color-mix(in srgb, var(--cream) 17%, transparent);
-  --rule-soft: color-mix(in srgb, var(--cream) 10%, transparent);
-  background: var(--bg);
-  color: var(--fg);
-}
-
-/* An object resting on the page. */
-.on-plate {
   --bg: var(--ink-700);
+  /* a lighter ground eats a hairline and eats a micro-label with it: 14%
+     cream reads weaker on ink-700 than on ink-900, and the meta register
+     loses half a point of contrast, so both step up to hold the same edge.
+     Measured: cream 13.2 : 1, mute 7.2 : 1, meta 5.4 : 1. */
   --fg-meta: color-mix(in srgb, var(--cream) 58%, transparent);
   --fg-faint: var(--fg-meta);
   --mark: color-mix(in srgb, var(--cream) 34%, transparent);
   --rule: color-mix(in srgb, var(--cream) 20%, transparent);
   --rule-soft: color-mix(in srgb, var(--cream) 12%, transparent);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* An object resting on the page. Measured: cream 10.8 : 1, mute 6.1 : 1,
+   meta 5.2 : 1 — the last ground on this palette where the meta register
+   still clears 4.5, which is why the dark ladder stops here. */
+.on-plate {
+  --bg: var(--ink-600);
+  --fg-meta: color-mix(in srgb, var(--cream) 62%, transparent);
+  --fg-faint: var(--fg-meta);
+  --mark: color-mix(in srgb, var(--cream) 38%, transparent);
+  --rule: color-mix(in srgb, var(--cream) 24%, transparent);
+  --rule-soft: color-mix(in srgb, var(--cream) 14%, transparent);
   background: var(--bg);
   color: var(--fg);
 }

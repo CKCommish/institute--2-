@@ -141,7 +141,6 @@ const style = [
   style={style}
   data-hold
   data-arc={arc}
-  data-coda-tail={hasCoda ? '' : undefined}
 >
   <div class="held__stage" data-hold-stage>
     <Figure src={src} alt={alt} ratio="auto"
@@ -150,35 +149,42 @@ const style = [
             credit={credit} creditPos={creditPos}
             loading="lazy" sizes="100vw" class="held__fig" />
 
-    {/* THE ARC. One navy sheet whose weight is the inverse of --open, and
-        radial rather than flat so the frame's edges carry more ink than its
-        middle: the environment closes in on the subject instead of the whole
-        picture dimming. This is the tonal event. The photograph under it is
-        never touched — the house grade stays the house grade. */}
-    <div class="held__arc" aria-hidden="true"></div>
+    {/* THE GRADE STACK. One box that always covers exactly the photograph
+        and nothing else — inset:0 over the pinned stage, and the stacked
+        figure's own aspect box when there is no pin. Everything that inks
+        the picture lives inside it, so nothing can drift onto the beats when
+        the layout changes underneath it.
 
-    {/* PROTECTION, AND IT TRACKS THE ARC. The beats sit in one band at the
-        foot of the frame and never leave it, so the ink that carries them is
-        placed rather than spread. But the picture under that band gets
-        brighter as the arc opens, so the ink has to open with it: a fixed
-        ramp tuned at the closed end fails at the top of the arc, which is
-        exactly the failure tools/photo-meter.mjs exists to catch. */}
-    <div class="held__ink" aria-hidden="true"></div>
+        ITS OWN BACKGROUND IS THE ARC: one navy sheet whose weight is the
+        inverse of --open, radial rather than flat, so the frame's edges
+        carry more ink than its middle and the environment closes in on the
+        subject instead of the whole picture dimming. This is the tonal
+        event. The photograph under it is never touched — the house grade
+        stays the house grade. */}
+    <div class="held__grade" aria-hidden="true">
+      {/* THE BAR BAND, CONTINUED. Figure guarantees ink under the fixed nav
+          on every full-bleed frame, but it guarantees exactly the bar's
+          height and releases hard — invisible under the house grade of 0.5,
+          and a drawn line across the sky at the 0.34 this component uses.
+          This carries the release further down, and it opens with the arc,
+          so it is absent at the closed end where nothing needs protecting.
+          It is also what the eyebrow is set on. */}
+      <div class="held__cap"></div>
 
-    {/* The bar band, continued. Figure guarantees ink under the fixed nav on
-        every full-bleed frame, but it guarantees exactly the bar's height and
-        releases hard — which is invisible under the house grade of 0.5 and a
-        drawn line across the sky at the 0.34 this component uses. This band
-        carries the release further down, and it opens with the arc, so it is
-        absent at the closed end where nothing needs protecting. It is also
-        what the eyebrow and the counter are set on. */}
-    <div class="held__cap" aria-hidden="true"></div>
+      {/* PROTECTION, AND IT TRACKS THE ARC. The beats sit in one band at the
+          foot of the frame and never leave it, so the ink that carries them
+          is placed rather than spread. But the picture under that band gets
+          brighter as the arc opens, so the ink has to open with it: a fixed
+          ramp tuned at the closed end fails at the top of the arc, which is
+          exactly the failure tools/photo-meter.mjs exists to catch. */}
+      <div class="held__ink"></div>
 
-    {/* THE FOOT. A short full-width band at the very bottom edge — the house
-        seam, and what carries the corner credit. It is separate from the beat
-        ink because that ink is masked to the type's own column and hands the
-        rest of the frame back to the photograph. */}
-    <div class="held__foot" aria-hidden="true"></div>
+      {/* THE FOOT. A short full-width band at the bottom edge — the house
+          seam, and what carries the corner credit. Separate from the beat
+          ink because that ink is masked to the type's own column and hands
+          the rest of the frame back to the photograph. */}
+      <div class="held__foot"></div>
+    </div>
 
     {(eyebrow || showCount) && (
       <div class="shell held__top">
@@ -214,28 +220,37 @@ const style = [
     --open: 1;                 /* the engine overwrites; 1 keeps it open */
     --hp: 0;
   }
-  .held__arc, .held__ink, .held__cap, .held__foot { display: none; }
   /* The meter counts beats through a hold. With no hold it is a mark that
      measures nothing, so it is not drawn. */
   .held__meter { display: none; }
+  .held__cap, .held__ink { display: none; }
 
-  /* The stacked figure carries no type, so it needs no protection — but it
-     still has to look like it belongs to the same commission as every other
-     photograph on the site. `grade` is set low here because the ARC supplies
-     the rest of the ink, and with no arc the picture would land two stops
-     brighter than the rest of the site. One flat sheet puts it back on the
-     house grade, and one short foot gives the bottom edge the seam every
-     other full-bleed frame has. */
-  .held__arc, .held__foot { display: block; position: absolute; z-index: 1; pointer-events: none; }
-  .held__arc { inset: 0; background: rgb(5 13 22 / 0.14); }
+  .held__stage { position: relative; isolation: isolate; }
+
+  /* THE GRADE BOX, stacked: exactly the figure's aspect box, at the top of
+     the stage. The stacked figure carries no type, so it needs no
+     protection — but it still has to belong to the same commission as every
+     other photograph on the site. `grade` is set low on the figure because
+     the arc supplies the rest of the ink, and with no arc the picture would
+     land two stops brighter than the rest of the site: one flat sheet puts
+     it back on the house grade, and the foot gives the bottom edge the same
+     seam every other full-bleed frame has. */
+  .held__grade {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    aspect-ratio: var(--held-ratio);
+    z-index: 1;
+    pointer-events: none;
+    background: rgb(5 13 22 / 0.14);
+  }
   .held__foot {
+    position: absolute;
     left: 0; right: 0; bottom: 0; height: 15%;
     background: linear-gradient(to top,
       var(--ink-900) 0%,
       color-mix(in srgb, var(--ink-900) 52%, transparent) 34%,
       transparent 100%);
   }
-  .held__stage { position: relative; isolation: isolate; }
 
   .held :global(.held__fig) {
     position: relative;
@@ -244,10 +259,10 @@ const style = [
     aspect-ratio: var(--held-ratio);
   }
 
-  /* Eyebrow over counter, both against the left rail. They are NOT split to
-     the two corners: the figure's own location credit owns the top right on
-     every full-bleed frame on this site, and a counter set opposite an
-     eyebrow lands exactly on top of it. */
+  /* Eyebrow over meter, both against the left rail. They are NOT split to
+     the two corners: the figure's own location credit owns a top corner on
+     every full-bleed frame on this site, and a mark set opposite an eyebrow
+     lands exactly on top of it. */
   .held__top {
     width: 100%;
     display: grid;
@@ -255,7 +270,7 @@ const style = [
     gap: clamp(0.6rem, 1.4vh, 0.95rem);
     padding-block: clamp(1.5rem, 3vw, 2.4rem) 0;
   }
-  .held__meter { display: inline-flex; gap: 0.5rem; }
+  .held__meter { gap: 0.5rem; }
   .held__tick {
     display: block;
     width: clamp(14px, 2.2vw, 26px);
@@ -285,7 +300,7 @@ const style = [
   .held--right .held__line, .held--right .held__note { margin-left: auto; text-align: right; }
 
   @media (max-width: 720px) {
-    .held :global(.held__fig) { aspect-ratio: var(--held-ratio-sm); }
+    .held :global(.held__fig), .held__grade { aspect-ratio: var(--held-ratio-sm); }
     .held__line { max-width: 14ch; }
   }
 
@@ -320,6 +335,7 @@ const style = [
       inset: 0;
       aspect-ratio: auto;
     }
+    :global(html.js) .held__grade { inset: 0; aspect-ratio: auto; }
     /* THE PUSH — continuous, scroll-linked, reversible, taken around the same
        point the crop is composed on, so the frame opens into its own subject
        rather than into its middle.
@@ -337,7 +353,7 @@ const style = [
       will-change: transform;
     }
 
-    :global(html.js) .held__arc {
+    :global(html.js) .held__grade {
       --a: calc(var(--floor) * (1 - var(--open) * var(--open-max)));
       background: radial-gradient(126% 96% at 50% 46%,
         rgb(5 13 22 / calc(var(--a) * 0.82)) 0%,
@@ -349,9 +365,8 @@ const style = [
       display: block;
       position: absolute;
       left: 0; right: 0; top: 0;
-      height: calc(var(--nav-h) + 5.5rem + 16vh);
-      z-index: 2;
       pointer-events: none;
+      height: calc(var(--nav-h) + 5.5rem + 16vh);
       background: linear-gradient(180deg,
         rgb(3 9 16 / calc(0.46 * var(--open))) 0%,
         rgb(3 9 16 / calc(0.42 * var(--open))) 58%,
@@ -360,7 +375,7 @@ const style = [
     }
 
     :global(html.js) .held__foot {
-      z-index: 2;
+      height: 15%;
       /* A PLATEAU, not a wedge — the same lesson Figure's own bottom ramp
          records. The credit sits about 4% up from the frame's edge, so ink
          that peaks at the edge and is already spent by the time it reaches
@@ -379,8 +394,6 @@ const style = [
       position: absolute;
       left: 0; right: 0; bottom: 0;
       height: 58%;
-      z-index: 2;
-      pointer-events: none;
       --k: calc(0.26 + 0.66 * var(--open));
       background: linear-gradient(0deg,
         rgb(3 9 16 / calc(var(--k) * 0.98)) 0%,
@@ -473,7 +486,10 @@ const style = [
 
   @media (prefers-reduced-motion: no-preference) and (max-width: 720px) {
     :global(html.js) .held__line { max-width: 13ch; }
-    :global(html.js) .held__ink { height: 66%; }
+    /* A phone sets the note higher up the frame in proportional terms, and
+       at 390px it landed on L* 20.3 against a 20 ceiling. The band is both
+       taller and a shade heavier here. */
+    :global(html.js) .held__ink { height: 66%; --k: calc(0.34 + 0.62 * var(--open)); }
     /* the location credit wraps to two lines at 390px and the coda sits on
        the same rail: the beat stack lifts far enough to clear both */
     :global(html.js) .held__beats { padding-bottom: clamp(4.4rem, 10vh, 5.4rem); }

@@ -71,7 +71,11 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      which is why live copy showed through on every page. */
   .nav::before {
     content: ''; position: absolute; inset: 0 0 auto 0;
-    height: calc(100% + 5.5rem);
+    /* The tail is the fade, and every pixel of it is reach over content the
+       bar is not covering. 5.5rem gave the scrim 89px of tail past a 62px
+       bar; 3.5rem keeps the bar itself fully opaque (the ramp holds solid to
+       64% of the span = 73px) and halves what the tail can paint over. */
+    height: calc(100% + 3.5rem);
     background: linear-gradient(
       to bottom,
       var(--nav-scrim) 0%,
@@ -249,12 +253,18 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
       nav.classList.toggle('is-scrolled', window.scrollY > 24);
       const run = document.documentElement.scrollHeight - window.innerHeight;
       nav.style.setProperty('--nav-p', run > 0 ? Math.min(1, window.scrollY / run).toFixed(4) : '0');
-      const y = nav.offsetHeight * 0.55;
+      /* Inversion is an OVERLAP test against the bar's whole band, not a
+         probe line. A single sample at 0.55 of the bar height meant a cream
+         section whose top edge stopped one pixel below it kept the full black
+         scrim — and the scrim reaches 3.5rem past the bar, so the section's
+         own label was painted out. Any cream rect that intersects the band
+         the bar occupies inverts the bar. */
+      const band = nav.offsetHeight;
       const inverted =
         !menu?.hasAttribute('data-open') &&
         light.some((el) => {
           const r = el.getBoundingClientRect();
-          return r.top <= y && r.bottom >= y;
+          return r.top < band && r.bottom > 0;
         });
       nav.classList.toggle('is-inverted', inverted);
     };

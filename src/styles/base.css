@@ -309,7 +309,7 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
 .skip-link:focus { transform: translateY(0); }
 
 /* ── Motion system (driven by scripts/motion.js) ──────────────────
-   Three vectors, not one. A scene picks the vector that matches what it
+   Four vectors, not one. A scene picks the vector that matches what it
    is doing; picking one at random is worse than picking none.
 
      1. [data-reveal] + .lines   ARRIVAL.  Type and small blocks lift in
@@ -329,9 +329,27 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
         firing at them. Use ONCE or twice per page, on the thing the
         page is actually about.
 
+     4. [data-hold]              DURATION. The picture stops and the page
+        keeps going: a full-bleed figure held for two or three viewport
+        heights while its ground opens and closes around it and short text
+        beats fade through. It is not a class you add — it is one component,
+        src/components/HeldScene.astro, and ONE SCENE PER SITE carries it.
+        A site where every section pins is a gimmick. Read the header of
+        that file before using it; the props and the whole argument are
+        there. It composes with nothing: a held scene does not also reveal,
+        wipe or settle, because the hold IS the motion.
+
    Mixing 1 and 2 in one scene is fine and is how a scene gets
    characterised: the figure wipes, the caption lifts. Mixing all three
    in one scene is noise.
+
+   ONE RULE THAT COST A WAVE TO FIND, and it applies to all four: measure
+   type over photography DURING the motion, not at rest. A 53px display line
+   at half alpha over placed ink still reads 7.5 : 1 against a 3 : 1 budget;
+   a 12px micro-label at the same half alpha reads 3.2 : 1 against a 4.5 : 1
+   one. Small type has no room to spend on a crossfade. So: LARGE TYPE FADES,
+   SMALL TYPE WIPES. If something in the micro registers has to arrive over a
+   picture, give it vector 2 — drawn or not drawn — never a partial alpha.
 
    Delay: `data-delay="180"` on any of the three. `data-reveal="180"`
    still works. `data-seq` on a parent auto-staggers its children.
@@ -416,6 +434,12 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
   .lines .line > span { transform: none; }
   [data-wipe], [data-wipe].is-in { clip-path: none !important; }
   [data-settle] { --settle: 1 !important; transform: none !important; will-change: auto; }
+  /* Vector 4 needs nothing here: every rule that pins, pushes or fades a
+     held scene lives inside `@media (prefers-reduced-motion: no-preference)`
+     in HeldScene.astro, so a reader who has asked for less motion is never
+     served the sticky layout at all — they get a plain stacked figure with
+     the beats set below it on the page ground. The same is true with
+     JavaScript off: the pinned layout is gated on `html.js` as well. */
 }
 
 /* ── Link affordance ─────────────────────────────────────────────── */

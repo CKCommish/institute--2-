@@ -5,9 +5,9 @@
    set as a footnote under a headline, in a 649px cream field. It stated the
    quantity it was built to show and then whispered it.
 
-   It is now the object the panel is composed around. The axis runs the full
-   width of the viewport — the only thing on 5,245px of this page besides
-   pilot 02's plate that touches both edges — at 63px, and the sentence it
+   It is now the object the panel is composed around. The axis runs margin to
+   margin — the widest rule on the site, and it begins on the same x every
+   other line on every page begins on — at 63px, and the sentence it
    measures is set THROUGH it: "Follow-up care completed within" above the
    axis, and "ninety days." below it, starting at 25% — the exact x of the
    fill's closing edge and of the numeral 3. The reader does not have to be
@@ -39,8 +39,11 @@ const marks = [0, 3, 6, 9, 12];
 </figure>
 
 <style>
-  /* full bleed: the axis is the page's measure, so it is drawn at the page's
-     full width. Its parent (.measure) is already 100vw, so 100% is the edge. */
+  /* ON THE ARMATURE. The axis is the page's measure, so it is drawn at the
+     page's measure: its parent is a .shell, so 0% is the left margin and
+     100% is the right one. Round 6 drew it against the viewport instead —
+     0 at x=11, 12 at x=1429 — which made it the one object on the site with
+     no grid under it. Same object, same idea, on the rails now. */
   .mscale { margin: 0; display: block; position: relative; }
 
   .mscale__track {
@@ -82,10 +85,14 @@ const marks = [0, 3, 6, 9, 12];
 
   .mscale__nums { position: relative; height: 1.15em; margin-top: 0.4rem; }
   .mscale__n { position: absolute; top: 0; transform: translateX(-50%); }
-  .mscale__n.is-first { transform: none; padding-left: 0.45rem; }
-  .mscale__n.is-last { transform: translateX(-100%); padding-right: 0.45rem; }
+  /* the 0 sets flush on the left margin and the 12 closes on the right one:
+     the axis labels are the margins, not offsets from them */
+  .mscale__n.is-first { transform: none; }
+  .mscale__n.is-last { transform: translateX(-100%); }
   /* the 3 is not a tick label any more; it is the sentence's left margin */
   .mscale__n.is-edge { color: var(--brass); padding-left: 0.42rem; transform: none; }
+  /* the 3 and the 6 are 25% apart; keep the 3 from sitting on its neighbour's
+     tick label by holding it hard against its own rule */
 
   /* its own row, flush to the page's right margin — clear of the numerals */
   /* hung out of flow into the open right of the axis's own foot, so the
@@ -93,13 +100,18 @@ const marks = [0, 3, 6, 9, 12];
      stays hard against the rule it is measured on */
   .mscale__cap {
     position: absolute; top: 100%; right: 0;
-    margin: 0.5rem 0 0;
-    padding-inline: var(--shell-x, 3rem);
+    /* dropped to the BASELINE of the sentence's second half. It used to sit
+       level with the tick numerals, which read as an annotation on the axis;
+       on the tail's own line the two ends of one sentence — "…completed
+       within" above the rule, "ninety days." below it — sit on one line with
+       the footnote closing it at the right margin. Set in em of the poster
+       rung so it tracks the tail as the display scale flexes. */
+    margin: calc(var(--step-poster) * 0.62) 0 0;
     text-align: right;
   }
 
   @media (max-width: 860px) {
     .mscale__track { height: clamp(2rem, 7vw, 2.8rem); }
-    .mscale__cap { position: static; text-align: left; margin-top: 0.6rem; padding-inline: var(--shell-x, 1.25rem); }
+    .mscale__cap { position: static; text-align: left; margin-top: 0.6rem; }
   }
 </style>

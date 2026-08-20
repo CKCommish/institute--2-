@@ -65,7 +65,13 @@ export const pilots = [
     approach: 'Maternal health data read for early risk.',
     goal: 'Weeks of warning, in a model other cities can run.',
     horizon: '3–12 months',
-    image: '/media/pilot-maternal.jpg',
+    /* The 2400×1600 source carries a second identifiable woman at its right
+       edge; the 2.99:1 frame on /pilots/ always shows the full source width,
+       so she was cropped mid-face beside the words "Infant Mortality" — a
+       real person in a public-domain USDA photograph with no relationship to
+       this pilot. This is the same photograph trimmed to 2060×1600, which
+       ends before her. The homepage keeps the untrimmed original. */
+    image: '/media/pilot-maternal-crop.jpg',
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'U.S. Department of Agriculture',
@@ -201,5 +207,13 @@ export const whyNow =
 export const stake = {
   image: '/media/pilot-maternal.jpg',
   line: 'For the median family.',
+  /* THE ALTERNATE LINE — see components/scroll-Stake-alt.astro.
+     `line` above prints a statistician's abstraction over an identifiable
+     woman in a U.S. Department of Agriculture photograph who has no
+     relationship to this institute. `altLine` states the same standard as
+     the Institute's own test rather than as a label for the person in the
+     frame: the subject of the sentence is what we judge technology by, not
+     who she is. Same length, same three-line break in the same measure. */
+  altLine: 'The test is ordinary life.',
   credit: 'U.S. Department of Agriculture',
 };

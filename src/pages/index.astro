@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/scenes/Hero.astro';
 import WhyNow from '../components/scenes/WhyNow.astro';
 import MethodScene from '../components/scenes/MethodScene.astro';
-import Stake from '../components/scroll-Stake.astro';
+import Stake from '../components/scroll-Stake-alt.astro';
 import PilotsScene from '../components/scenes/PilotsScene.astro';
 import ForumScene from '../components/scenes/ForumScene.astro';
 import PeopleScene from '../components/scenes/PeopleScene.astro';
@@ -12,7 +12,7 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
      ground, or in the same composition:
        Hero      photograph · poster left, named ledger low     100svh
        WhyNow    cream · narrow left column, vertical rule, claim right
-       Method    ink-900 · CENTRED — the only centred scene on the site
+       Method    ink-700 PANEL · CENTRED — the only centred scene on the site
        Stake     photograph · ONE sentence, set RIGHT               108svh
        Pilots    ink-900 · the long ledger, flush left
        Forum     photograph · the room                            94svh
@@ -35,14 +35,68 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
      (abstract) and Pilots (concrete), which were consecutive and opened with
      the identical three-element overture.
 
-     TONAL PACING. Measured on the 6,758px render: cream at 13% of the
-     scroll, the Stake photograph at 30%, the Forum photograph at 60%, the
-     ink-800 board wall at 87%. The back
-     half used to hold one value for 1,700px; it does not now, and no two
-     events are closer than a full screen apart.
+     TONAL PACING, RE-MEASURED. Wave 4 opened with "79% of the page inside a
+     5.7-point L* band". Both `tone-meter` and a full-page screenshot report
+     that, and both are wrong here for the same reason: they photograph the
+     Stake and the wall while their entry masks are still running, so they
+     record the page ground underneath. Swept the way a reader reads it —
+     real scroll positions, 1,800ms settle, gutter columns, 20px rows:
+
+         hero photograph    240– 780   L* 20 → 42
+         cream WhyNow       920–1380   L* 93.9
+         METHOD PANEL      1400–2120   L* 14.2   ← wave-4 round 2
+         Stake photograph  2180–2660   L* 66.3   (tail to 2900 at 26.1)
+         Pilots ledger     2980–4120   L*  4.2
+         Forum photograph  4200–4620   L* 53.8–57.4
+         board wall        5740–6160   L* 15.1
+         navy floor 45% of the scroll, span L* 2.5 → 93.9
+
+     The Method band is the round-2 change. It was page ground, and cream →
+     720px of navy → photograph put the only two big events on this page's
+     front half a screen and a half apart with nothing between them. As a
+     panel it is the step down from cream into the photograph, and the seam
+     into the Stake is now a tonal edge instead of the ~200px of dead navy a
+     critic read as a gap at 390px. The one event-free run left on the page
+     is the Pilots ledger, which this file does not own.
+
+     GROUND CLASSES SPENT: two — .on-cream once (WhyNow) and .on-panel twice
+     (Method, the board wall). Under the ceiling in tokens.css.
 
      The People wall runs flush into the footer, so the page ends on a hard
-     tonal edge rather than on 290px of empty navy. -->
+     tonal edge rather than on 290px of empty navy.
+
+     THE STAKE SHIPS AS VERSION (b). `scroll-Stake-alt.astro` is imported
+     above and `scroll-Stake.astro` is not. The desktop composition — the
+     one a critic named — is byte-identical; what changes is the sentence
+     ("The test is ordinary life." for "For the median family.") and the
+     phone crop. Both were editorial, not aesthetic: the old line printed a
+     statistician's abstraction over an identifiable woman in a U.S.
+     Department of Agriculture photograph, and the old phone crop centred her
+     face, in focus, at full width. (b)'s own phone crop was measured again
+     in round 2 and moved further — 44%/86% at zoom 1.3 — because at 46%/66%
+     her full profile was still across the top third of the frame at the head
+     of the scene. Screenshots of both versions: progress/shots/
+     w4r2-b-shipped/ and w4r2-a-original/.
+
+     NO SCENE ON THIS PAGE IS PINNED, and that is a decision rather than an
+     omission. `HeldScene` may be spent exactly once site-wide. This page has
+     two full-bleed photographs and both are already carrying an exception:
+
+       Hero    holds the four 2026 partners BY NAME inside the first screen.
+               They are the only credential this institute has. Pinning the
+               hero puts that ledger two and a half viewport heights below
+               the fold, behind a hold, on the front door.
+       Stake   is the composition a critic named, and it works because one
+               sentence is ranged right into the patch of wall the crop was
+               chosen to leave, at the height it is empty. HeldScene sets
+               its beats in a band at the FOOT of the frame. Pinning this
+               scene does not enhance that composition; it replaces it.
+
+     The reference's own nominee is the Forum photograph (refs/MOTION-
+     FINDINGS.md: "most likely the Forum, whose photograph is the most
+     evocative asset the Institute has"), it is the one scene on the site
+     whose argument is a room rather than a claim, and it has a dedicated
+     page to hold the length. The hold belongs there. -->
 <Base>
   <Hero />
   <WhyNow />

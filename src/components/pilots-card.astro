@@ -1,307 +1,176 @@
 ---
-/* One pilot, in one of four SHAPES.
+/* ONE PILOT. ONE ANATOMY.
 
-   Round 4 ranked the four cards by height and gave 03 a different anatomy,
-   and the critic named what was still wrong: under every band sat the same
-   209px PROBLEM / APPROACH / GOAL slab, four times, at the same measure. The
-   moment each pilot should have become specific was the moment they all
-   became one object.
+   Round 4 gave each pilot its own shape and the critic named the cost: four
+   institutions that made the same kind of commitment rendered as four
+   unrelated objects, so a reader had to re-learn where PROBLEM / APPROACH /
+   GOAL live four times. The target was never four shapes. It is one shape,
+   ranked.
 
-   So the argument itself is now composed per pilot. The GRAMMAR is fixed —
-   index · partner · sector, a serif name, one line of tagline, and the three
-   fields at one line each — but the SHAPE that grammar is set in is not:
+   THE ANATOMY, identical on all four:
 
-     01  ANCHOR   a near-screen band, held at the lightest grade on the page
-                  so the photograph is actually SEEN, then the argument
-                  DESCENDS: the setup small and left, a held pause bounded by
-                  its rule and by the brass label under it, and the outcome
-                  alone under it. This pilot is the thesis.
-     02  ASIDE    no band at all. The photograph bleeds off the left edge at
-                  five-quarters and the whole argument stands beside it in a
-                  ruled column — the compressed one, and the one that breaks
-                  the run of full-bleed frames.
-     03  TURN     the name climbs to the top of the frame and the three
-                  fields are set ON the photograph along its foot. No ground
-                  beneath it at all: the fastest block on the page.
-     04  CLOSE    the series closes reversed — outcome first, the setup that
-                  produced it after it as a small dim note. The reversal is
-                  carried by WEIGHT, not by right-alignment, so it reads as
-                  deliberate rather than scrambled.
+     1  a full-bleed frame
+     2  the nameplate on its top edge      index · partner · sector
+     3  the name and its one line at its foot
+     4  the argument on ground beneath it, always in this order and always on
+        the same rails: PROBLEM and APPROACH as two adjacent columns under
+        one hairline, then GOAL alone below them, brass-labelled, hung on the
+        left rail.
 
-   Held constant so the four still read as one commission: the palette, the
-   nameplate grammar, the three micro registers, and one line per field. */
+   THREE DEGREES OF VARIATION, and nothing else:
+
+     RANK    band height and the rung the name is set at, descending
+             86vh · 66vh · 54vh · 42vh   and   head · feature · head · sub
+     GROUND  the series opens on cream and closes on a plate; the two middle
+             cards stand on page ground. Two ground events, at the two ends.
+     THE ONE AMPLIFICATION  pilot 01's GOAL — the field every card ends on —
+             is the sentence this page exists to make, so on the anchor alone
+             that field is set at poster size THROUGH a twelve-month axis.
+             It is the same field, in the same place in the same anatomy,
+             said loudly once.
+
+   Held constant: the palette, the nameplate grammar, one line per field, the
+   scrim placement, and the order the three fields are read in. */
 import Figure from './Figure.astro';
 import Scale from './pilots-scale.astro';
 
 const {
   pilot: p,
-  shape = 'close',
-  grade = 0.6,
+  rank = 2,
+  grade = 0.5,
   focal = '50% 50%',
   parallax = 5,
   loading = 'lazy',
 } = Astro.props;
 
 const hid = `${p.id}-h`;
-const isAside = shape === 'aside';
 
-/* The ranking is DESCENDED, not declared once. Four shapes, four band
-   heights and now four rungs of the ladder, one step apart the whole way
-   down. Round 6 moved the anchor's own NAME down to --step-head and gave
-   --step-poster to its GOAL instead: the loudest mark in card 01 is now the
-   outcome, not the label on the pilot that produced it. Loudest-per-card
-   descends 86 → 67 → 53 → 34 at 1440. Card 02 carries --step-feature, the
-   page's one series-breaker — it is also the card that breaks the run of
-   full-bleed frames and the one plate held at full exposure. Card 04 closes
-   at --step-sub, the small serif display rung: a coda, set quietly. */
-/* The descent above is the intent; this map has to actually produce it.
-   `turn` was on --step-poster, so card 03's name came in a rung ABOVE card
-   02's — which is the card nominated as the page's one series-breaker. The
-   run measured 86 → 67 → 86 → 34: the breaker was not the loudest thing in
-   the series it was breaking, and /pilots/ carried three --step-poster lines
-   (masthead, card 01's goal, card 03's name) instead of the two it means to.
-   --step-head restores the ladder the comment describes. */
-const rungs = {
-  anchor: 'display--head',
-  aside:  'display--feature',
-  turn:   'display--head',
-  close:  'display--sub',
-};
-const rung = rungs[shape] ?? 'display--head';
+/* The descent, stated once. --step-feature is spent on 02 — the page's one
+   series-breaker — and nowhere else; --step-poster belongs to the masthead
+   and to the anchor's amplified GOAL. */
+const rungs = { 1: 'display--head', 2: 'display--feature', 3: 'display--head', 4: 'display--sub' };
+const rung = rungs[rank] ?? 'display--head';
 
-/* ── Where the ink goes ───────────────────────────────────────────────
-   Until now this card painted its own top and bottom ramps (.band::before /
-   ::after) AND took Figure's default scrim, and the strip painted a third.
-   Two ink systems stacked on one photograph is what flattened the foot of
-   pilot-maternal to L* 3.5 and drew a hard grey seam straight across a
-   mother's face. There is now exactly ONE: Figure's, placed per card, and
-   named here because placement is a composition decision.
-
-     01 anchor  type along the whole bottom edge → a low full-width ramp
-     02 aside   nothing written on it but the corner credit → a corner
-     03 turn    name at the TOP → ink at the top, none at the bottom, so the
-                photograph's lower two thirds are simply seen
-     04 close   nothing written on it at all → no ink but the bar strip.
-
-   Which is also the page's other order: 01 sets its type INTO the picture,
-   02 beside it, 03 at the top of it, 04 underneath it. Four relationships
-   between a sentence and a photograph, in the order the argument runs.  */
-const SCRIM = {
-  anchor: { scrim: 'bottom', reach: 1.00, rise: 0.42, ink: 0.94, vig: 0.55 },
-  aside:  { scrim: 'bottom-left', reach: 0.42, rise: 0.30, ink: 0.9, vig: 0.35 },
-  turn:   { scrim: 'bottom-left', reach: 0.46, rise: 0.30, ink: 0.92, vig: 0.30 },
-  close:  { scrim: 'none', vig: 0.35 },
-};
-const sk = SCRIM[shape] ?? SCRIM.close;
+/* Every frame is now written on in the same two places — the rail at the top
+   edge, the name at the foot — so every frame takes the same ink, placed
+   once, by Figure. One system, one placement. The ramp's HEIGHT is the one
+   thing that has to track the ranking: a name set on the foot of a 42vh
+   frame sits proportionally higher in it than the same name on an 86vh
+   frame, so the ramp opens as the frame shortens. Measured against
+   photo-meter, not chosen. */
+const RISE = { 1: 0.46, 2: 0.60, 3: 0.68, 4: 0.78 };
+const SCRIM = { scrim: 'bottom', reach: 1.0, rise: RISE[rank] ?? 0.6, ink: 0.98, vig: 0.5 };
 ---
-<article class:list={['pcard', `pcard--${shape}`]} id={p.id} aria-labelledby={hid}>
-  {isAside ? (
-    <div class="aside">
-      <!-- TERRITORY, then WEIGHT: the plate is uncovered rather than faded,
-           and then it keeps responding — the one photograph on this page held
-           at full exposure is also the one that answers the reader's scroll. -->
-      <div class="aside__fig" data-wipe="left">
-        <div class="aside__plate" data-settle="0.5">
-        <Figure
-          src={p.image} alt="" ratio="auto" fill={true}
-          grade={grade} focal={focal} parallax={parallax} loading={loading}
-          credit={p.credit} creditPos="bottom-left"
-          scrim={sk.scrim} reach={sk.reach} rise={sk.rise} ink={sk.ink} vig={sk.vig}
-        />
-        </div>
-      </div>
+<article class:list={['pcard', `pcard--r${rank}`]} id={p.id} aria-labelledby={hid}>
+  <div class="band">
+    <!-- WHAT THE PHOTOGRAPH IS. Three of these four photographs are of
+         somewhere and something other than the pilot they illustrate, and a
+         name set across a full-bleed frame reads as that frame's caption
+         whether or not it was meant as one. The credit is the house remedy;
+         refs/PHOTO-FACTS.md names the misreading it prevents. -->
+    <Figure
+      src={p.image} alt="" ratio="auto"
+      grade={grade} focal={focal} parallax={parallax} loading={loading}
+      credit={p.credit} creditPos="bottom-right"
+      scrim={SCRIM.scrim} reach={SCRIM.reach} rise={SCRIM.rise} ink={SCRIM.ink} vig={SCRIM.vig}
+    />
 
-      <div class="aside__side" data-seq="120" data-seq-from="180">
-        <p class="rail" data-reveal>
-          <span class="index">{p.index}</span>
-          <span class="eyebrow rail__partner">{p.partner}</span>
-          <span class="label rail__field">{p.field}</span>
-        </p>
+    <p class="shell rail" data-reveal>
+      <span class="index">{p.index}</span>
+      <span class="eyebrow rail__partner">{p.partner}</span>
+      <span class="label rail__field">{p.field}</span>
+    </p>
 
-        <div class="say" data-reveal>
-          <h2 class:list={['display', rung, 'say__t', 'lines']} id={hid}>{p.title}</h2>
-          <p class="say__tag">{p.tagline}</p>
-        </div>
-
-        <dl class="arg arg--side" data-reveal>
-          <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-          <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-          <div class="arg__out">
-            <dt class="label label--brass">Goal</dt>
-            <dd class="bridge bridge--fg">{p.goal}</dd>
-          </div>
-        </dl>
-      </div>
+    <!-- a TRIGGER, not a fade: neutralised below, so the masked name lands on
+         the earlier [data-reveal] threshold and the line hangs off that beat -->
+    <div class="shell say" data-reveal>
+      <h2 class:list={['display', rung, 'say__t', 'lines']} id={hid}>{p.title}</h2>
+      <p class="say__tag">{p.tagline}</p>
     </div>
-  ) : (
-    <div class="band">
-      <!-- WHAT THE PHOTOGRAPH IS. A pilot's name set across a full-bleed frame
-           reads as that frame's caption whether or not it was meant as one, and
-           three of these four photographs are of somewhere and something other
-           than the pilot they illustrate — most sharply card 01, where a
-           Unified track event carries the words "Healthy Athletes" and "a free
-           screening". refs/PHOTO-FACTS.md names that exact misreading as the
-           one this site must not make. The credit is the house remedy and it
-           already runs on the two other full-bleed scenes. -->
-      <Figure
-        src={p.image} alt="" ratio="auto"
-        grade={grade} focal={focal} parallax={parallax} loading={loading}
-        credit={p.credit} creditPos={shape === 'turn' ? 'bottom-right' : 'bottom-right'}
-        scrim={sk.scrim} reach={sk.reach} rise={sk.rise} ink={sk.ink} vig={sk.vig}
-      />
+  </div>
 
-      <p class="shell rail" data-reveal>
-        <span class="index">{p.index}</span>
-        <span class="eyebrow rail__partner">{p.partner}</span>
-        <span class="label rail__field">{p.field}</span>
-      </p>
-
-      <!-- a TRIGGER, not a fade: neutralised below, so the masked name lands
-           on the earlier threshold and the tagline is delayed off that beat -->
-      {shape !== 'close' && (
-        <div class="shell say" data-reveal>
-          <h2 class:list={['display', 'say__t', 'lines', rung]} id={hid}>{p.title}</h2>
-          {shape === 'turn' && <span class="turn__lead" aria-hidden="true" data-wipe="left" data-delay="520"></span>}
-          {shape !== 'turn' && <p class="say__tag">{p.tagline}</p>}
-        </div>
-      )}
-
-      <!-- 03 only. The name is set at poster size ACROSS the top of the frame
-           and the one supporting line is set at its FOOT, in the corner the
-           ramp protects. Between them is nothing but the photograph, at
-           near-screen height: type at both ends, picture in the middle. -->
-      {shape === 'turn' && (
-        <p class="shell turn__foot bridge" data-reveal="240">{p.tagline}</p>
-      )}
-
-    </div>
-  )}
-
-  {/* 03's argument used to sit ON the frame, mid-picture, over a lit wall at
-      L* 63, with its own ramp cutting a grey seam across the photograph. It
-      comes off. What is left on the picture is the bar rail and the name,
-      inside the top band the system guarantees — and the lower two thirds of
-      the frame, which is the whole photograph, is handed back. */}
-  {shape === 'turn' && (
-    <dl class="shell arg arg--row" data-wipe="left" data-delay="200">
-      <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-      <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-      <div class="arg__out"><dt class="label label--brass">Goal</dt><dd class="bridge bridge--fg">{p.goal}</dd></div>
-    </dl>
-  )}
-
-  <!-- ── THE PAGE TURNED OVER ──────────────────────────────────────────
-       This page's one exception, spent once, on the one sentence it exists
-       to make. Everything on this site is cream on navy; the institute
-       talking. Pilot 01's outcome is not the institute talking — it is the
-       thing that will be true or not true in ninety days, and the thing the
-       page promises to publish either way. So it is PRINTED: full bleed,
-       navy on cream, edge to edge, immediately after the largest photograph
-       on the page. One tonal event, at the top of the argument, and then the
-       page closes back to ground and stays there for pilots 02, 03 and 04.
-       Ground budget (tokens.css): photography + this. Nothing else. -->
-  {shape === 'anchor' && (
+  {rank === 1 ? (
     <div class="print on-cream">
-    <div class="shell arg arg--descent">
-      <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
-
-      <!-- PROBLEM and APPROACH are two halves of one sentence, so they are
-           set as two adjacent columns under one hairline with a rule between
-           them, not thrown to opposite edges of the page. -->
-      <!-- SETUP AND INSTRUMENT, one block. The two clauses and the axis that
-           measures them used to be three polite bands with 119px of dead
-           field between the first two and the third stranded under the
-           outcome. They are one object now: what the problem is, what we
-           will do, and the window we are accountable inside — read together,
-           in the top half of the sheet. -->
-      <div class="arg__top">
+      <!-- ── THE PAGE TURNED OVER ──────────────────────────────────────
+           This page's one exception, spent once, on the one sentence it
+           exists to make. Everything on this site is cream on navy; the
+           institute talking. Pilot 01's outcome is not the institute talking
+           — it is the thing that will be true or not true in ninety days,
+           and the thing the page promises to publish either way. So it is
+           PRINTED. The anatomy does not change: problem, approach, then
+           goal. Only the goal's size and the ground under it do. -->
+      <div class="shell arg">
+        <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
         <dl class="arg__setup" data-seq="150" data-seq-from="80">
           <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
           <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
         </dl>
       </div>
-    </div>
 
-    <!-- THE SENTENCE, SET THROUGH THE AXIS.
-         The outcome is a claim about a quantity, so the page stops stating
-         the quantity in words and draws it: a twelve-month axis at the full
-         width of the viewport, and the sentence set across it. The head runs
-         from the page's own left margin; the tail begins at 25% — the closing
-         edge of the ninety-day span and the x of the numeral 3. You do not
-         read that ninety days is a quarter of the window. You see it. -->
-    <div class="measure">
-      <p class="label label--brass measure__gl" data-reveal>Goal</p>
-      <p class="display display--poster measure__g" data-reveal="90">{p.goalHead ?? p.goal}</p>
-      <Scale />
-      {p.goalTail && (
-        <p class="display display--poster measure__g measure__g--hang" data-settle="0.62">{p.goalTail}</p>
-      )}
-    </div>
-    </div>
-  )}
-
-  {shape === 'close' && (
-    <div class="shell say say--ground" data-reveal>
-      <h2 class:list={['display', 'say__t', 'lines', rung]} id={hid}>{p.title}</h2>
-      <p class="say__tag">{p.tagline}</p>
-    </div>
-  )}
-
-  <!-- ── THE SECOND GROUND EVENT ───────────────────────────────────────
-       The page ran dark / cream / dark and then held one navy value for the
-       whole back half — 52% of the scroll in a single tone with four photo
-       bands cut into it. The coda now rests on a PLATE (--ink-700, L* 15):
-       an object set down on the page, with its own edges, carrying the last
-       outcome. tokens.css allows three ground changes and one cream; this is
-       the third, and it is the one the page closes on. -->
-  {shape === 'close' && (
-    <div class="shell coda">
-    <div class="arg arg--coda on-plate">
-      <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
-      <!-- The close reverses the series — outcome first, setup after — but it
-           still reads left to right and top to bottom. The reversal is carried
-           by weight: the goal at full cream on the bridge rung, the setup that
-           produced it set small and dim beside it, as a note. -->
-      <div class="arg__goal">
-        <p class="label label--brass arg__gl" data-reveal>Goal</p>
-        <p class="bridge bridge--fg arg__g" data-reveal="110">{p.goal}</p>
+      <!-- THE SENTENCE, SET THROUGH THE AXIS.
+           The outcome is a claim about a quantity, so the page stops stating
+           the quantity in words and draws it: a twelve-month axis run at the
+           page's own measure, margin to margin, and the sentence set across
+           it. The head starts on the page's left rail like every other line
+           on this site; the tail starts at the closing edge of the ninety-day
+           span, which is the x of the numeral 3. You do not read that ninety
+           days is a quarter of the window. You see it.
+           Round 7: the axis used to be composed against the VIEWPORT — its 0
+           at x=11, its tail hanging at x=357 on no rail — and it was the one
+           object on the site with no grid under it. The idea is unchanged.
+           It is on the armature now. -->
+      <div class="shell measure">
+        <p class="label label--brass measure__gl" data-reveal>Goal</p>
+        <p class="display display--poster measure__g" data-reveal="90">{p.goalHead ?? p.goal}</p>
+        <Scale />
+        {p.goalTail && (
+          <p class="display display--poster measure__g measure__g--hang" data-settle="0.62">{p.goalTail}</p>
+        )}
       </div>
-      <dl class="arg__setup" data-seq="120" data-seq-from="200">
-        <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-        <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-      </dl>
     </div>
+  ) : (
+    <div class="shell argwrap">
+      <div class:list={['arg', 'arg--std', rank === 4 && 'arg--plate', rank === 4 && 'on-plate']}>
+        <span class="arg__rule" aria-hidden="true" data-wipe="center"></span>
+        <dl class="arg__setup" data-seq="150" data-seq-from="80">
+          <div data-reveal><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+          <div data-reveal><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+        </dl>
+        <div class="arg__goal" data-reveal="120">
+          <p class="label label--brass">Goal</p>
+          <p class="bridge bridge--fg arg__g">{p.goal}</p>
+        </div>
+      </div>
     </div>
   )}
 </article>
 
 <style>
-  /* overflow-x: clip, not hidden — it clips the strip's full-bleed ink ramp
-     and the aside's left bleed without making the card a scroll container. */
+  /* overflow-x: clip, not hidden — it clips the frame's full-bleed ink ramp
+     without making the card a scroll container. */
   .pcard { scroll-margin-top: calc(var(--nav-h) + 0.5rem); position: relative; overflow-x: clip; }
 
-  /* ── The band ─────────────────────────────────────────────────────
-     Four rows so the nameplate can sit at either end of the frame. */
+  /* ── The frame ────────────────────────────────────────────────────
+     Four rows: rail on the top edge, the name on the foot. Identical on all
+     four cards; only --band changes. */
   .band {
     position: relative;
     isolation: isolate;
-    /* The foot of the band belongs to the photograph's credit. The credit is
-       painted by the absolutely-positioned figure, so this padding moves the
-       say block and the strip UP off it rather than moving both together —
-       without it the credit reads as a third line of the tagline, which is
-       the caption misreading refs/PHOTO-FACTS.md exists to prevent. */
+    /* The foot of the frame belongs to the photograph's credit, which is
+       painted by the absolutely-positioned figure. This padding lifts the
+       name clear of it — without it the credit reads as a third line of the
+       tagline, the caption misreading PHOTO-FACTS exists to prevent. */
     padding-bottom: clamp(1.7rem, 3.4vw, 3rem);
     min-height: var(--band, clamp(19rem, 48vh, 28rem));
     display: grid;
     grid-template-rows: auto auto 1fr auto;
   }
-  .pcard--anchor { --band: clamp(31rem, 86vh, 48rem); }
-  .pcard--turn   { --band: clamp(28rem, 82vh, 44rem); }
-  .pcard--close  { --band: clamp(17rem, 42vh, 25rem); }
-
-  /* The band paints NO ink of its own. Figure carries the whole treatment
-     now, placed per card by the SCRIM table above — one system, so nothing
-     doubles and no ramp lands anywhere the type is not. */
+  /* THE RANKING, and it is the only thing that separates one card from the
+     next: 86 → 66 → 54 → 42 vh, one step apart the whole way down. */
+  .pcard--r1 { --band: clamp(31rem, 86vh, 48rem); }
+  .pcard--r2 { --band: clamp(24rem, 66vh, 36rem); }
+  .pcard--r3 { --band: clamp(21rem, 54vh, 30rem); }
+  .pcard--r4 { --band: clamp(17rem, 42vh, 25rem); }
 
   /* padding lives on the children: the fill Figure is positioned against the
      band's padding box, so padding here would inset the photograph. */
@@ -316,18 +185,12 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     display: flex;
     align-items: baseline;
     gap: 1.15ch;
+    grid-row: 1;
   }
   .rail__field { margin-left: auto; text-align: right; white-space: nowrap; }
 
-  .band > .rail { grid-row: 1; }
-  .band > .say { grid-row: 4; }
-
-  /* The tagline used to sit in a second column at the right of the frame —
-     86% across, which on a directional ramp is exactly where the system
-     hands the picture back, and on the track photograph is lit asphalt at
-     L* 55. It comes down under the name, into the ink, and the right half of
-     every frame stays a photograph. */
   .say {
+    grid-row: 4;
     padding-bottom: clamp(1.75rem, 3.4vw, 3rem);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -335,264 +198,54 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     align-items: start;
   }
   .say__t { line-height: 0.94; letter-spacing: -0.026em; text-wrap: initial; }
-  /* the small serif display rung wants less negative tracking and more leading
-     than the poster rung does */
-  .pcard--close .say__t { line-height: 1.04; letter-spacing: -0.012em; }
-  /* the coda's name is the quietest on the page; the note beside it has to be
-     quieter still, or the ranking inverts inside the card */
-  /* 04's tagline used to sit in the right column, which on this photograph
-     is the welding flash — L* 55 under a 70% register. It comes down under
-     the name instead, into the ramp, and the light stays in the picture. */
-  .pcard--close .say__tag { max-width: 30ch; padding-bottom: 0; }
-  .pcard--turn .say__t { line-height: 0.98; letter-spacing: -0.02em; }
+  /* the small serif display rung wants less negative tracking and more
+     leading than the poster rung does */
+  .pcard--r4 .say__t { line-height: 1.04; letter-spacing: -0.012em; }
+  .pcard--r2 .say__t { line-height: 1.0; letter-spacing: -0.02em; }
   .say__tag {
     margin: 0;
     padding-bottom: 0;
+    max-width: 34ch;
     font-size: var(--step-lede);
     line-height: 1.45;
     color: var(--fg-mute);
     text-wrap: pretty;
   }
 
-  /* ── THE PRINT: the page turned over ──────────────────────────────
-     Full bleed, navy on cream, once on this page. It lands directly off the
-     foot of the largest photograph on the site, so the change of value is
-     also a change of medium: a photograph, then a printed page. */
-  .print {
-    /* the deep top rule is the seam between the picture and the page */
-    border-top: 1px solid color-mix(in srgb, var(--ink-900) 22%, transparent);
-    padding-block: clamp(1.6rem, 3vw, 2.6rem) clamp(2.5rem, 5vw, 4.25rem);
-  }
-  /* the block's own top padding is the print band's now */
-  .print .arg--descent { padding-top: 0; padding-bottom: 0; }
-  .print { padding-bottom: clamp(2.6rem, 5vw, 4.5rem); }
-
-  /* ── 01 ANCHOR: the argument descends ─────────────────────────────
-     Setup small and left under a hairline; then a held pause, bounded above
-     by that rule and below by the brass label; then the outcome alone at the
-     page's one --step-feature. */
-  .arg--descent {
+  /* ── THE ARGUMENT ─────────────────────────────────────────────────
+     One block, four times, same rails: a hairline, two clauses side by side
+     under it, the outcome alone beneath them. */
+  .argwrap { padding-block: clamp(1.5rem, 3vw, 2.4rem) clamp(2.25rem, 4.5vw, 3.75rem); }
+  .arg {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    padding-top: clamp(1.4rem, 2.6vw, 2.1rem);
-    padding-bottom: 0;
+    row-gap: clamp(1.4rem, 2.8vw, 2.3rem);
   }
   .arg__rule {
-    grid-column: 1 / -1;
     height: 1px; background: var(--rule);
-    margin-bottom: clamp(1rem, 2vw, 1.6rem);
+    margin-bottom: calc(clamp(1.4rem, 2.8vw, 2.3rem) * -1 + clamp(1rem, 2vw, 1.6rem));
   }
-  /* two halves of one argument: adjacent, sharing a gutter rule, held to the
-     left two thirds so the pause below them is a held rest and not a margin */
-  .arg--descent .arg__setup {
+  /* two halves of one sentence: adjacent, sharing a gutter rule, held to the
+     left two thirds so what follows them lands as the conclusion it is */
+  .arg__setup {
     margin: 0;
     display: grid;
     grid-template-columns: minmax(0, 24rem) minmax(0, 24rem);
     column-gap: clamp(1.75rem, 3.4vw, 3.25rem);
     align-items: start;
   }
-  .arg--descent .arg__setup > div + div {
+  .arg__setup > div + div {
     border-left: 1px solid var(--rule-soft);
     padding-left: clamp(1.75rem, 3.4vw, 3.25rem);
     margin-left: calc(clamp(1.75rem, 3.4vw, 3.25rem) * -1);
   }
-
-  /* the setup and its instrument, ruled together: two clauses across the top,
-     the twelve-month axis under them at the same measure. One block. */
-  .arg--descent .arg__top {
-    display: grid;
-    row-gap: clamp(1.5rem, 3vw, 2.4rem);
-  }
-
-
-  /* ── THE MEASURE: the axis, and the sentence set through it ────────
-     Everything here is composed against the VIEWPORT, not against the text
-     column — that is the exception, and it is spent once, on the one object
-     this site has invented. --shell-x is the page's own left margin, so the
-     head of the sentence still starts where every other line on the page
-     starts; only the axis and the hanging tail are viewport-measured. */
-  .print { --shell-x: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter))); }
-  .measure {
-    position: relative;
-    width: 100%;
-    margin-top: clamp(1.9rem, 4vw, 3.4rem);
-  }
-  .measure__gl { margin: 0 0 clamp(0.5rem, 1vw, 0.8rem); padding-left: var(--shell-x); }
-  .measure__g {
-    margin: 0;
-    max-width: none;
-    color: var(--fg);
-    line-height: 0.98;
-    letter-spacing: -0.024em;
-    text-wrap: initial;
-    padding-left: var(--shell-x);
-    --settle-origin: 0% 100%;
-    --settle-shift: 2.4vh;
-  }
-  /* the axis is the space between the two halves of the sentence */
-  .measure :global(.mscale) { margin-block: clamp(0.7rem, 1.6vw, 1.25rem) 0; }
-  /* …and the tail hangs off the closing edge of the ninety-day span */
-  .measure__g--hang { padding-left: 25%; margin-top: clamp(0.15rem, 0.5vw, 0.4rem); }
-
-  /* 04's nameplate stands on ground, under an open photograph. */
-  .say--ground {
-    padding-top: clamp(1.5rem, 3vw, 2.4rem);
-    padding-bottom: clamp(0.9rem, 1.8vw, 1.4rem);
-    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
-    column-gap: clamp(2rem, 5vw, 5rem);
-    align-items: end;
-  }
-  .say--ground .say__tag { padding-bottom: 0.35em; }
-
-  /* ── 04 CLOSE: the coda — the argument read backwards ─────────────
-     Outcome first at full cream, the setup after it as one small dim note.
-     Everything still reads left-to-right; the reversal is in the weight. */
-  .coda { padding-top: clamp(1rem, 2.2vw, 1.9rem); padding-bottom: clamp(1rem, 2.4vw, 2rem); }
-  .arg--coda {
-    display: grid;
-    /* the outcome used to be capped at 22ch inside a 1.35fr track, which
-       left 660px of empty plate between it and the note at the right edge —
-       an unfilled table, not a pause. The claim now runs its own track. */
-    grid-template-columns: minmax(0, 1fr) minmax(1.25rem, 0.1fr) minmax(0, 30rem);
-    align-items: start;
-    /* a plate has edges. It is set down on the page, not bled off it. */
-    background: var(--bg);
-    border: 1px solid var(--rule-soft);
-    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3.4vw, 3rem) clamp(1.75rem, 3.4vw, 2.75rem);
-  }
-  .arg--coda .arg__rule { margin-bottom: clamp(1.1rem, 2.2vw, 1.8rem); }
-  .arg--coda .arg__goal {
-    grid-column: 1; display: grid; gap: clamp(0.7rem, 1.4vw, 1.05rem);
-  }
-  .arg--coda .arg__g { max-width: 34ch; }
-  .arg--coda .arg__setup {
-    grid-column: 3; margin: 0;
-    display: grid; gap: clamp(0.65rem, 1.3vw, 0.95rem);
-    align-content: start;
-    /* the note is set against the goal, and the hairline says so */
-    border-left: 1px solid var(--rule-soft);
-    padding-left: clamp(1rem, 2vw, 1.6rem);
-  }
-  .arg--coda .arg__setup dd { max-width: 30ch; }
-
-  /* ── 03 TURN: the page's one piece of type set AT the picture ───────
-     Every other name on this page is a caption in a corner — 53px of ink in
-     a 750,000px frame. This one is the exception the page is allowed. The
-     name runs at --step-poster, the same rung as the printed GOAL, straight
-     across the top of a near-screen frame and over the dark left of the
-     photograph rather than politely beside it; the one supporting line is
-     set at the frame's FOOT, in the corner the ramp protects. Between them
-     is the photograph, whole, for two thirds of the height of the screen.
-     Type at both ends, picture in the middle — and nothing else on the page
-     is composed this way. */
-  .pcard--turn .band > .say {
-    grid-row: 2;
-    align-self: start;
-    grid-template-columns: minmax(0, 1fr);
-    padding-top: clamp(1.4rem, 3vw, 2.6rem);
-    padding-bottom: 0;
-    row-gap: 0;
-    align-items: start;
-  }
-  /* the measure is the frame, not a column: the name is allowed to run into
-     the picture, and where the inked letters stop a hairline carries the line
-     the rest of the way to the edge — the same leader the masthead index
-     uses, so the top of this frame is one mark 1337px wide rather than a
-     577px caption with void beside it. */
-  .pcard--turn .band > .say {
-    grid-template-columns: auto minmax(1.5rem, 1fr);
-    align-items: baseline;
-    column-gap: clamp(1.25rem, 2.6vw, 2.25rem);
-  }
-  .pcard--turn .say__t { max-width: none; }
-  .turn__lead {
-    height: 0;
-    align-self: baseline;
-    border-bottom: 1px solid color-mix(in srgb, var(--cream) 26%, transparent);
-    transform: translateY(-0.26em);
-  }
-  /* the foot line, at the bottom-left of the frame, inside the corner ramp */
-  .turn__foot {
-    grid-row: 4;
-    align-self: end;
-    position: relative;
-    z-index: 1;
-    margin: 0;
-    max-width: 26ch;
-    color: var(--fg-mute);
-    padding-bottom: clamp(0.2rem, 0.8vw, 0.6rem);
-  }
-  /* 03 sets its name at the TOP at poster size, so the top band has to be
-     deeper than the bar strip Figure guarantees by default. These are
-     Figure's own placement variables, retuned by the scene that needs them —
-     the ink is still painted once, in one place. */
-  .pcard--turn .band :global(.fig) {
-    --sc-top-h: clamp(17rem, 42vh, 26rem);
-    --sc-top-flat: clamp(8.5rem, 22vh, 13rem);
-  }
-  /* 03's argument, on ground, under the frame: one wide row of three. It used
-     to be the tightest block on the page — 172px against card 01's 545 — and
-     read as the argument being rushed. It now runs at the aside's measure,
-     each field on its own hairline, so the fastest card still gets a full
-     breath under it. */
-  .arg--row {
-    margin: 0;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr);
-    column-gap: clamp(1.75rem, 4vw, 4rem);
-    border-top: 1px solid var(--rule);
-    padding-top: clamp(1.4rem, 2.8vw, 2.1rem);
-    padding-bottom: clamp(2.75rem, 5.5vw, 4.5rem);
-    margin-top: clamp(2rem, 4vw, 3.25rem);
-  }
-  .arg--row > div { row-gap: 0.7rem; }
-  .arg--row .arg__out { border-top: 0; }
-
-  /* ── 02 ASIDE: the plate bleeds, the argument stands beside it ─────── */
-  .aside {
-    display: grid;
-    grid-template-columns: minmax(0, 53%) minmax(0, 1fr);
-    column-gap: clamp(1.75rem, 4.5vw, 4.5rem);
-    align-items: stretch;
-    padding-right: var(--gutter);
-    padding-block: clamp(2rem, 4vw, 3.75rem);
-  }
-  /* The plate used to be a 4/3 box that happened to end five pixels above
-     the bottom of the column beside it — a near-miss reads as a mistake, and
-     the last 88px of it were empty sky under the credit. It now FILLS the
-     row: the picture's bottom edge and the argument's last rule are the same
-     line, exactly, and the crop is taken from the middle of the frame. */
-  .aside__fig { grid-column: 1; position: relative; min-height: 18rem; }
-  .aside__plate { position: absolute; inset: 0; }
-  /* WEIGHT lives on this wrapper, parallax on the media inside Figure: two
-     elements, so the two transforms never fight. */
-  .aside__plate { --settle-scale: 0.945; --settle-shift: 2.6vh; --settle-origin: 0% 50%; }
-  /* anchored at BOTH ends of the plate: the nameplate on its top edge, the
-     outcome on its bottom one. The air between them is held, not left over. */
-  .aside__side {
-    grid-column: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: clamp(1.5rem, 3vw, 2.4rem);
-    max-width: 34rem;
-  }
-  .aside__side .rail { padding-top: 0; }
-  .aside__side > * { grid-column: 1; }
-  .aside__side .say { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 0.7rem; padding-bottom: 0; }
-  .aside__side .say__tag { padding-bottom: 0; max-width: 32ch; }
-  .aside__side .say__t { line-height: 1.0; letter-spacing: -0.02em; }
-
-  .arg--side { margin: 0; display: grid; }
-  .arg--side > div {
-    padding-block: clamp(0.75rem, 1.5vw, 1.05rem);
-    border-top: 1px solid var(--rule-soft);
-  }
-  .arg--side > div:first-child { border-top: 1px solid var(--rule); }
-  .arg--side .arg__out { border-top: 1px solid color-mix(in srgb, var(--brass) 70%, transparent); }
+  /* the outcome, on the left rail, under both clauses */
+  .arg__goal { display: grid; gap: clamp(0.6rem, 1.2vw, 0.95rem); }
+  .arg__goal .label { color: var(--brass); }
+  .arg__g { margin: 0; max-width: 26ch; }
 
   /* ── Field grammar, shared ───────────────────────────────────────── */
-  .arg div { display: grid; gap: 0.55rem; align-content: start; }
+  .arg__setup > div { display: grid; gap: 0.55rem; align-content: start; }
   .arg dt { color: var(--brass); }
   .arg dd {
     margin: 0;
@@ -602,11 +255,55 @@ const sk = SCRIM[shape] ?? SCRIM.close;
     max-width: 34ch;
     text-wrap: pretty;
   }
-  .arg .arg__out dd { max-width: 26ch; }
-  /* the goal is never body copy: on three cards it is the bridge rung, on the
-     anchor it is --step-poster. Field bodies are one treatment everywhere. */
-  .arg .arg__out dd.bridge { max-width: 24ch; font-size: var(--step-bridge); }
-  .arg__gl { color: var(--brass); }
+
+  /* ── The close, on a plate ────────────────────────────────────────
+     The series opens on cream and closes on an object set down on the page,
+     with its own edges. Two ground events, at the two ends of the run; the
+     anatomy inside them is the same anatomy. */
+  .arg--plate {
+    /* an object, not a wide box with a hole in it: the plate is cut to the
+       measure of the argument it carries, so its right edge closes on the
+       text rather than on the page margin */
+    width: min(100%, 58rem);
+    background: var(--bg);
+    border: 1px solid var(--rule-soft);
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3.4vw, 3rem) clamp(1.75rem, 3.4vw, 2.75rem);
+  }
+
+  /* ── THE PRINT ────────────────────────────────────────────────────
+     Full bleed, navy on cream, once on this page. It lands directly off the
+     foot of the largest photograph on the site, so the change of value is
+     also a change of medium: a photograph, then a printed page. */
+  .print {
+    border-top: 1px solid color-mix(in srgb, var(--ink-900) 22%, transparent);
+    padding-block: clamp(1.6rem, 3vw, 2.6rem) clamp(2.6rem, 5vw, 4.5rem);
+  }
+
+  /* ── THE MEASURE ──────────────────────────────────────────────────
+     The axis is the widest rule on the site — and it now begins and ends on
+     the page's own margins, so its 0 sits on the same x as every other line
+     on every page and its 12 closes on the right one. The tail of the
+     sentence starts at 25% of that measure: the closing edge of the
+     ninety-day span, the x of the numeral 3, and a real column on the grid. */
+  .measure {
+    position: relative;
+    margin-top: clamp(1.9rem, 4vw, 3.4rem);
+  }
+  .measure__gl { margin: 0 0 clamp(0.5rem, 1vw, 0.8rem); }
+  .measure__g {
+    margin: 0;
+    max-width: none;
+    color: var(--fg);
+    line-height: 0.98;
+    letter-spacing: -0.024em;
+    text-wrap: initial;
+    --settle-origin: 0% 100%;
+    --settle-shift: 2.4vh;
+  }
+  /* the axis is the space between the two halves of the sentence */
+  .measure :global(.mscale) { margin-block: clamp(0.7rem, 1.6vw, 1.25rem) 0; }
+  /* …and the tail hangs off the closing edge of the ninety-day span */
+  .measure__g--hang { margin-left: 25%; margin-top: clamp(0.15rem, 0.5vw, 0.4rem); }
 
   /* ── Motion ───────────────────────────────────────────────────────
      The masked name has to lead. .say is a bare trigger so it fires on the
@@ -620,8 +317,8 @@ const sk = SCRIM[shape] ?? SCRIM.close;
       transform 900ms var(--ease-out) var(--tag-delay, 190ms);
   }
   .say.is-in .say__tag { opacity: 1; transform: none; }
-  .pcard--anchor { --tag-delay: 620ms; }
-  .pcard--anchor .say__t :global(.line > span) { transition-duration: 1400ms; }
+  .pcard--r1 { --tag-delay: 620ms; }
+  .pcard--r1 .say__t :global(.line > span) { transition-duration: 1400ms; }
 
   @media (prefers-reduced-motion: reduce) {
     .say__tag { opacity: 1; transform: none; transition: none; }
@@ -629,70 +326,43 @@ const sk = SCRIM[shape] ?? SCRIM.close;
 
   /* ── Narrow ───────────────────────────────────────────────────────── */
   @media (max-width: 1080px) {
-    .arg--descent .arg__setup { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-    .arg--coda { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.25rem, 3.5vw, 1.9rem); }
-    .arg--coda .arg__goal, .arg--coda .arg__setup { grid-column: 1; }
-    .arg--coda .arg__setup {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: clamp(1rem, 3vw, 2rem);
-      border-left: 0; padding-left: 0;
-      border-top: 1px solid var(--rule-soft);
-      padding-top: clamp(0.9rem, 2.4vw, 1.3rem);
-    }
-    .aside { grid-template-columns: minmax(0, 48%) minmax(0, 1fr); }
-    .aside__side { gap: clamp(1.1rem, 2.6vw, 1.8rem); justify-content: flex-start; }
+    .arg__setup { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   }
 
   @media (max-width: 860px) {
     /* The credit wraps to two lines at this measure and the say block sits
-       far closer to the band's foot, so the shelf has to be deeper here or
-       the credit reads as a third line of the tagline. */
+       far closer to the frame's foot, so the shelf has to be deeper here. */
     .band { padding-bottom: clamp(2.7rem, 8vw, 3.4rem); }
 
     /* Below ~700px the display range compresses and size alone stops reading
-       as rank, so the break is carried by space and by band height instead. */
-    .pcard--anchor { --band: clamp(25rem, 68vh, 34rem); }
-    .pcard--turn   { --band: clamp(24rem, 66vh, 32rem); }
-    .pcard--close  { --band: clamp(15rem, 40vh, 21rem); }
+       as rank, so the descent is carried by frame height as well. */
+    .pcard--r1 { --band: clamp(25rem, 68vh, 34rem); }
+    .pcard--r2 { --band: clamp(22rem, 58vh, 30rem); }
+    .pcard--r3 { --band: clamp(19rem, 50vh, 26rem); }
+    .pcard--r4 { --band: clamp(15rem, 40vh, 21rem); }
 
-    .say { grid-template-columns: minmax(0, 1fr); align-items: start; row-gap: 0.6rem; }
-    .say__tag { padding-bottom: 0; max-width: 34ch; }
     .rail { gap: 0.9ch; }
-
-    .arg--row { grid-template-columns: minmax(0, 1fr); row-gap: clamp(0.9rem, 3vw, 1.3rem); }
-
-    /* the corner credit wraps to two lines at this measure, so 03's foot line
-       lifts clear of it rather than reading as its first line */
-    .turn__foot { max-width: 24ch; padding-bottom: clamp(2.4rem, 8vw, 3.2rem); }
-
-    /* the aside stacks, but keeps its left bleed and its ruled column */
-    .aside {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: clamp(1.5rem, 5vw, 2.25rem);
-      padding-left: 0;
-      padding-block: clamp(1.5rem, 5vw, 2.5rem) clamp(2rem, 6vw, 3rem);
-    }
-    .aside__fig {
-      grid-column: 1; margin-right: var(--gutter);
-      position: relative; min-height: 0;
-      aspect-ratio: 5 / 4;
-    }
-    .aside__side { grid-column: 1; padding-left: var(--gutter); max-width: none; }
-  }
-
-  @media (max-width: 860px) {
-    /* the axis stays full bleed and the tail stays on the ninety-day edge;
-       only the type comes down a rung so the head sets inside the measure */
+    /* the axis stays margin to margin and the tail stays on the ninety-day
+       edge; only the type comes down a rung so the head sets inside it */
     .measure__g { font-size: clamp(1.4rem, 0.7rem + 3.5vw, 2.4rem); }
-    .measure__g--hang { padding-left: 25%; margin-top: clamp(0.4rem, 1.6vw, 0.8rem); }
+    .measure__g--hang { margin-top: clamp(0.4rem, 1.6vw, 0.8rem); }
+    /* the axis caption is a footnote on the axis, not a line of the sentence.
+       At this width it falls back to the flow and landed BETWEEN the two
+       halves of the goal — so it is hung out of flow at the foot of the whole
+       block instead, and the sentence closes uninterrupted. */
+    .measure { padding-bottom: 1.9rem; }
+    .measure :global(.mscale) { position: static; }
+    .measure :global(.mscale__cap) {
+      /* the shell's own left margin — an absolutely positioned child is laid
+         against the padding box, so 0 would be the page edge */
+      position: absolute; left: var(--gutter); right: auto; bottom: 0;
+      margin: 0; text-align: left;
+    }
   }
 
   @media (max-width: 560px) {
-    .arg--coda .arg__setup { grid-template-columns: minmax(0, 1fr); }
-    /* the explicit grid-column above would otherwise keep an implicit
-       second track alive after the tracks collapse to one */
-    .arg--descent .arg__setup { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.1rem, 3vw, 1.5rem); }
-    .arg--descent .arg__setup > div + div { border-left: 0; padding-left: 0; margin-left: 0; }
-    .arg dd, .arg .arg__out dd { max-width: 38ch; }
+    .arg__setup { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.1rem, 3vw, 1.5rem); }
+    .arg__setup > div + div { border-left: 0; padding-left: 0; margin-left: 0; }
+    .arg dd { max-width: 38ch; }
   }
 </style>

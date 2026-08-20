@@ -83,9 +83,18 @@ const cohorts = cohortsOf(board);
   <div class="people__wall on-panel">
     <div class="shell people__wallIn">
       <div class="people__wall-head">
+        {/* THE QUALIFIER CARRIES THE SAME WEIGHT AS THE CLAIM.
+            These sixteen people have been ASKED; none has agreed. The word
+            that says so was set at 11.7px in the micro register while the
+            names beneath it ran at 27px in the serif — a hierarchy that
+            asserts more than the copy admits, on a page that names sitting
+            and former officials. "Prospective" is now set in the serif at
+            reading size, one rung under the names it governs rather than
+            three, so the qualifier is read at the same glance as the roster
+            it qualifies. No new copy: the same two words, promoted. */}
         <p class="people__board-label" data-reveal>
           <span class="index tnum">16</span>
-          <span class="label">Prospective board</span>
+          <span class="people__qual">Prospective board</span>
         </p>
         <a class="link tap label label--lit people__more" href="/people/" data-reveal="220">All people</a>
       </div>
@@ -175,6 +184,14 @@ const cohorts = cohortsOf(board);
     gap: 1.5rem;
   }
   .people__board-label { display: flex; align-items: baseline; gap: 0.75rem; }
+  .people__qual {
+    font-family: var(--serif);
+    font-weight: 340;
+    font-size: var(--step-body);
+    line-height: 1.2;
+    letter-spacing: -0.008em;
+    color: var(--fg);
+  }
   .people__cohorts {
     list-style: none; margin: 0; padding: 0;
     display: grid;

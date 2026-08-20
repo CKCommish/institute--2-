@@ -1,11 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import Figure from '../components/Figure.astro';
 import { site, pilots } from '../data/site.js';
-
-/* Same photograph as pilot 01, so it takes pilot 01's credit rather than a
-   second string that can drift away from it. */
-const health = pilots.find((p) => p.image.includes('pilot-health')) || pilots[0];
 
 const roles = [
   { t: 'Fund it', p: 'Underwrite one pilot, end to end.' },
@@ -21,25 +16,20 @@ const roles = [
        one big thing; the address is the action under it, a rung down, on the
        rule. Eyebrow → bridge → poster, so the climb has a step in it. -->
   <section class="phead">
-    <!-- The one photograph on this route, and the only warm, sunlit frame on
-         the site: a child running at a Unified Special Olympics meet — pilot
-         01, four rows below. It runs the full height of the first screen and
-         bleeds off the right edge, so the ask is set against a person rather
-         than against 640px of empty navy. -->
-    <Figure
-      src="/media/pilot-health-portrait.jpg" alt="" ratio="auto" loading="eager"
-      grade={0.34} focal="46% 34%" zoom={1.04} lift={1.06} vig={0.3}
-      scrim="bottom" align="right" reach={0.5} rise={0.42} ink={0.9}
-      credit={health.credit} creditPos="bottom-right"
-      class="phead__fig" sizes="(max-width: 860px) 100vw, 44vw" />
-    <span class="phead__veil" aria-hidden="true"></span>
-
+    <!-- No photograph. This route used to run a full-height frame of a real
+         child at a Special Olympics meet behind the ask — a person with no
+         relationship to this institute, carrying no line and answering no
+         question. That photograph does honest work on /pilots/, where it is
+         the pilot it belongs to. Here it was ground. A closing ask does not
+         need a picture; it needs one line, one address, and room. -->
     <div class="shell phead__in">
-      <p class="eyebrow" data-reveal>Work with us</p>
-      <p class="bridge phead__bridge" data-reveal="120">
-        Every pilot still needs money, a technology, or somewhere real to
-        run it. Most need two of the three.
-      </p>
+      <div class="phead__top" data-reveal>
+        <p class="eyebrow">Work with us</p>
+        <p class="bridge phead__bridge">
+          Every pilot still needs money, a technology, or somewhere real to
+          run it. Most need two of the three.
+        </p>
+      </div>
 
       <div class="phead__lead">
         <h1 class="display display--poster phead__h lines">Partner on a pilot.</h1>
@@ -47,14 +37,16 @@ const roles = [
         <div class="ask">
           <span class="ask__rule" data-wipe="left" data-delay="420" aria-hidden="true"></span>
 
-          <a class="ask__mail" href={`mailto:${site.email}`} data-reveal="520">
+          <div class="ask__act" data-reveal="520">
+          <a class="ask__mail" href={`mailto:${site.email}`}>
             <svg class="arrow ask__arrow" viewBox="0 0 22 10" aria-hidden="true">
               <path d="M16 1l5 4-5 4M21 5H0"/>
             </svg>
             <span class="ask__mail-t">{site.email}</span>
           </a>
 
-          <p class="ask__sub" data-reveal="580">Name the pilot and the role. A person answers.</p>
+          <p class="ask__sub">Name the pilot and the role. A person answers.</p>
+          </div>
         </div>
       </div>
 
@@ -71,8 +63,10 @@ const roles = [
   <section class="pfour" id="pilots">
     <div class="shell pfour__in">
       <div class="pfour__head">
-        <p class="eyebrow" data-reveal>Open for 2026</p>
-        <p class="bridge pfour__bridge" data-reveal="120">Four pilots, four partners already at the table.</p>
+        <div class="pfour__top" data-reveal>
+          <p class="eyebrow">Open for 2026</p>
+          <p class="bridge pfour__bridge">Four pilots, four partners already at the table.</p>
+        </div>
       </div>
 
       <ol class="pindex" data-seq="90" data-seq-from="40">
@@ -95,7 +89,7 @@ const roles = [
 
   <!-- The one hard cut in the scroll: the ground changes and the three
        doors arrive. Numeral is the index, the verb is the content. -->
-  <section class="on-panel proles">
+  <section class="on-cream proles">
     <div class="shell proles__in">
       <div class="proles__head">
         <p class="eyebrow" data-reveal>Three ways in</p>
@@ -103,7 +97,11 @@ const roles = [
       </div>
       <!-- The page's one spatial idea: three doors opening outward from a
            single point, as one gesture. Not three identical lift-fades. -->
-      <ol class="proles__list" data-wipe="center" data-delay="120">
+      <!-- Anchored left, not centre. A centre wipe grows outward from the
+           middle, so column 01's leading characters are the LAST thing to
+           arrive: "Fund it" reads as "und it" for a third of the wipe. The
+           rows hang off a left rule; the mask opens off the same edge. -->
+      <ol class="proles__list" data-wipe="left" data-delay="120">
         {roles.map((r, i) => (
           <li>
             <span class="proles__rule" aria-hidden="true"></span>
@@ -125,39 +123,27 @@ const roles = [
      on the page read as marginalia. The ask now takes the whole measure and
      stops; the pilots get their own band underneath, full width. */
   .phead {
-    --fig-w: clamp(20rem, 42vw, 40rem);
     position: relative; isolation: isolate;
-    min-height: min(94svh, 52rem);
+    /* Was min(94svh, 52rem) with the content bottom-aligned, which left the
+       top 41% of the first screen empty — a hole where a photograph used to
+       be, and it read as a loading state rather than as restraint. The block
+       is now sized to the type it holds. */
+    min-height: min(76svh, 42rem);
     display: grid; align-content: end;
     padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(3.5rem, 2rem + 3.4vw, 5.5rem);
   }
-  /* The photograph holds the right two-fifths of the first screen, floor to
-     bar, and bleeds off the edge of the page. It is not a card: it has no
-     rule, no caption and no left margin between it and the type — the ask is
-     simply set against it. The scrim protects the bar strip only; nothing is
-     written on the picture, so the picture keeps its own light. */
-  .phead :global(.phead__fig) {
-    position: absolute; z-index: -1; aspect-ratio: auto;
-    /* Figure paints `inset: 0` on every fill figure, so `left` has to be
-       released explicitly or the column pins to the wrong wall. */
-    top: 0; bottom: 0; right: 0; left: auto;
-    width: var(--fig-w);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16%);
-    mask-image: linear-gradient(to right, transparent 0, #000 16%);
-  }
-  /* Inert on a wide screen: nothing is written on the picture there. Below
-     860px the frame becomes the ground the ask sits on, and the foot has to
-     carry cream type — so the ink arrives with the breakpoint, not before. */
-  .phead__veil { display: none; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
   .phead__in {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     row-gap: clamp(1.2rem, 2.2vw, 2rem);
     justify-items: start;
-    /* The type keeps clear of the picture: the measure ends where the
-       photograph's left edge begins, plus a gutter. */
-    padding-right: calc(var(--fig-w) - var(--gutter) + clamp(1.5rem, 3vw, 3rem));
   }
+  /* The open right third is held by the measures of the lines themselves —
+     13ch on the poster, 34ch on the bridge — not by padding on the container.
+     Padding stopped the brass rule 236px short of the right margin, ending it
+     at the edge of a photograph that no longer exists. The rule now runs the
+     full measure and the pause is bounded by it. */
+  .phead__top { display: grid; row-gap: clamp(0.9rem, 1.8vw, 1.5rem); justify-items: start; }
   .phead__bridge {
     max-width: 34ch;
     margin-bottom: clamp(0.9rem, 2vw, 1.9rem);
@@ -176,6 +162,8 @@ const roles = [
      rule arrives fast and tight behind it. */
   .phead__h :global(.line > span) { transition-duration: 1400ms; }
   .ask [data-reveal] { --reveal-y: 8px; transition-duration: 460ms, 560ms; }
+  /* The address and its instruction are one object and arrive as one. */
+  .ask__act { display: grid; row-gap: clamp(0.7rem, 1.4vw, 1.1rem); justify-items: start; }
 
   /* ONE focal point. The page prints the ask once, at --step-feature; the
      address is the ACTION under it, at the bridge rung, so 86px answers to
@@ -185,9 +173,8 @@ const roles = [
      right two-fifths of the first screen was open navy running out into the
      viewport edge, which reads as absence rather than as a pause. A held
      pause has to be bounded on both sides; this is the second side. */
-  /* The measure is narrower than it was — the photograph has the right two
-     fifths — so the address and its instruction stack instead of sharing a
-     row and breaking the address mid-domain. */
+  /* Address and instruction stack rather than sharing a row: the address is
+     the action and nothing sits level with it. */
   .ask {
     padding-top: clamp(2.4rem, 1.4rem + 3.2vw, 4.4rem);
     width: 100%;
@@ -237,7 +224,8 @@ const roles = [
     padding-block: clamp(3rem, 1.6rem + 3.6vw, 5.5rem) clamp(3.5rem, 1.8rem + 4vw, 6rem);
   }
   .pfour__in { display: grid; gap: clamp(2rem, 3.4vw, 3.2rem); }
-  .pfour__head { display: grid; gap: clamp(0.8rem, 1.6vw, 1.3rem); }
+  .pfour__head { display: grid; }
+  .pfour__top { display: grid; gap: clamp(0.8rem, 1.6vw, 1.3rem); justify-items: start; }
   .pfour__bridge { max-width: 32ch; }
 
   .pindex { list-style: none; margin: 0; padding: 0; }
@@ -272,11 +260,19 @@ const roles = [
   .pindex__a:hover .pindex__n { color: var(--brass); }
   .pindex__a:hover .pindex__arrow { transform: translateX(9px); opacity: 1; }
 
-  /* ── Three ways in — the cream field ──
+  /* ── Three ways in — the page turned over ──
+     The route's tonal event. It was a panel six points off the page ground,
+     which is not a change of ground; the ask above it is now type on navy
+     floor to bar, so the one 20+ L* step on this page happens here. */
+  /*
      The numeral indexes; it does not outrank. It is a tracked cap sitting on
      the column rule, and the verb underneath it carries the weight. */
+  /* Top padding clears the nav bar AND the tail of its scrim, so this
+     section's own eyebrow can never be read through the bar at any scroll
+     position. The bar inverts over cream, but the clearance is not left to
+     where the page happens to stop. */
   .proles {
-    padding-block: clamp(3rem, 1.6rem + 3.6vw, 5.5rem) clamp(4rem, 2rem + 4.4vw, 6.5rem);
+    padding-block: calc(var(--nav-h) + 3.5rem + clamp(2rem, 1.2rem + 2.4vw, 3.5rem)) clamp(4rem, 2rem + 4.4vw, 6.5rem);
   }
   .proles__in { display: grid; gap: clamp(2.2rem, 3.8vw, 3.6rem); }
   .proles__head { display: grid; gap: clamp(0.9rem, 1.8vw, 1.5rem); }
@@ -298,35 +294,12 @@ const roles = [
 
   @media (max-width: 900px) {
     .proles__list { grid-template-columns: 1fr; gap: clamp(1.5rem, 5vw, 2rem); }
-    /* The centre wipe is three doors opening outward from one point. With one
-       column there is no outward: the mask just eats the first letter of every
-       line for a second and a half. Re-anchor it to the left rule the rows
-       already hang from. Only while it is still covered — `.is-in` still ends
-       at inset(0 0 0 0). */
-    .proles__list:not(.is-in) { clip-path: inset(0 100% 0 0); }
   }
 
   @media (max-width: 860px) {
-    /* A 42vw column is 164px on a phone — a strip, not a photograph. It
-       becomes the ground of the whole first screen instead, with the ask set
-       into its foot. */
     .phead {
-      min-height: 100svh;
+      min-height: min(60svh, 32rem);
       padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(2.5rem, 9vw, 3.5rem);
-    }
-    .phead :global(.phead__fig) {
-      inset: 0; width: auto;
-      -webkit-mask-image: none; mask-image: none;
-    }
-    .phead__in { padding-right: var(--gutter); }
-    .phead__veil {
-      display: block;
-      background: linear-gradient(180deg,
-        color-mix(in srgb, var(--ink-900) 30%, transparent) 0%,
-        color-mix(in srgb, var(--ink-900) 12%, transparent) 26%,
-        color-mix(in srgb, var(--ink-900) 46%, transparent) 54%,
-        color-mix(in srgb, var(--ink-900) 88%, transparent) 78%,
-        color-mix(in srgb, var(--ink-900) 96%, transparent) 100%);
     }
     .phead__in { row-gap: clamp(1.5rem, 6vw, 2.2rem); }
     .phead__h { max-width: 14ch; }

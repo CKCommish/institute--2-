@@ -1,0 +1,155 @@
+---
+import Figure from './Figure.astro';
+import { stake } from '../data/site.js';
+---
+{/*
+  THE STAKE, VERSION (b) — THIS IS THE ONE THAT SHIPS. `src/pages/index.astro`
+  imports this file; `scroll-Stake.astro` is version (a) and is now the
+  unrouted one, kept intact so the two can still be compared. Screenshots of
+  both are in `progress/shots/w4r2-b-shipped/` and `w4r2-a-original/`.
+
+  It exists because of an editorial finding, not a design one. Wave 4:
+
+    "the wowed moment sets 'For the median family.' at 86px over a
+     photograph of a specific, identifiable woman holding her baby. She is a
+     real WIC participant in a U.S. Department of Agriculture photograph.
+     She has no relationship to this institute and did not agree to
+     represent it."
+
+  The composition is not the problem and is not touched. This scene is the
+  same object as (a): full-bleed, 108svh, no label, no rule, no counter, no
+  eyebrow, one sentence set RIGHT into the negative space the crop leaves,
+  the scrim mirrored to match, the same wipe on the same slowest parallax on
+  the page. Every measurement in (a)'s note still holds.
+
+  ONE THING CHANGES: THE LINE.
+
+  "For the median family." points at the woman in the frame and calls her a
+  median. It is a statistician's abstraction printed over an individual, and
+  "median" applied to a person reads as condescension in a way it never does
+  applied to a population. "The test is ordinary life." states what the
+  Institute judges a technology by. The subject of the sentence is the
+  standard, not the person: the photograph is what ordinary life looks like
+  rather than a specimen of it. Same register, same length, the same
+  three-line break in the same em-fixed measure, so the block sits in the
+  same column of wall and the composition is untouched.
+
+  THE ONE PLACE THE CROP DOES MOVE: 390px. The desktop frame is untouched —
+  see below — but the phone carries its own crop (`focalSm`), and at
+  50%/36% it puts the mother's face in the middle of the frame, in focus,
+  at full width. Whatever is true of the desktop composition, the mobile one
+  is a portrait of an identifiable person under a claim she never agreed to.
+  (b) drops it to 44%/86% at a 1.3 zoom: the same room, the same warmth,
+  framed on the neck, shoulder and the child's head, no adult face. Round 2
+  correction: (b) shipped this crop at 46%/66% zoom 1.14, and a 390x844
+  render at the HEAD of the scene — the reader's first sight of it — still
+  put the mother's full profile, eye and mouth included, across the top
+  third of the frame. The claim that it carried no adult face was made at
+  one offset and was not true across the scene. 44%/86% at 1.3 was rendered
+  against 46%/66% and 40%/92%: the first still carries the face, the last
+  loses the room and turns the infant into a portrait of its own. Verified
+  at the head, the middle and the foot of the scene.
+
+  WHY THE DESKTOP CROP DOES NOT MOVE, which is a finding rather than a
+  shortcut.
+  The obvious second half of the fix is a frame in which nobody is
+  identifiable. (a) already frames the mother from behind — her face is
+  above the top edge at both viewports, and what is legible is a ponytail,
+  an ear, a neck and a shoulder. The infant remains in soft-focus profile.
+  Every crop that removes the infant's face was rendered and measured, and
+  each one costs the scene the thing it is built on: the two subjects face
+  right, so the only frames that cut past their faces also cut the column of
+  warm wall on the right, which is the negative space the sentence is set
+  into. Zooming in instead (1.52 at 27%/56% was the best of them) walks the
+  infant's head into that column and the sentence lands on hair.
+
+  So (b) changes exactly one variable, which is also the right way to put
+  the two versions in front of a human. If the remaining exposure — an
+  identifiable infant in a USDA WIC photograph — is judged unacceptable, the
+  answer is a different photograph, not a different crop of this one. That
+  is a sourcing decision and it is flagged, not taken, here.
+*/}
+<section class="stake" aria-labelledby="stake-alt-h">
+  <Figure src={stake.image} alt="" ratio="auto"
+          grade={0.34} zoom={1.22} focal="30% 42%"
+          zoomSm={1.3} focalSm="44% 86%"
+          parallax={3} enter="wipe" loading="lazy"
+          scrim="bottom" align="right" reach={0.44} rise={0.44} ink={0.98} vig={0.24}
+          {/* Credit moved off `top-left`: the nav scrim is 5.5rem taller than
+              the nav and opaque from the first pixel of scroll, so a top rail
+              on a below-fold full-bleed figure is painted over. It sits at
+              the foot now, opposite the sentence. */}
+          credit={stake.credit} creditPos="bottom-left"
+          class="stake__bg" />
+
+  <div class="shell stake__in">
+    <h2 class="display display--poster stake__h lines" id="stake-alt-h">{stake.altLine}</h2>
+  </div>
+</section>
+
+<style>
+  /* Identical to scroll-Stake.astro. Kept verbatim rather than shared, so
+     that whichever of the two a human keeps is one self-contained file and
+     the other can be deleted without leaving a partial. */
+  .stake {
+    position: relative;
+    min-height: clamp(700px, 108svh, 1100px);
+    display: grid;
+    align-items: end;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .stake__bg {
+    position: absolute; inset: 0; aspect-ratio: auto; z-index: -1;
+  }
+
+  .stake__in {
+    width: 100%;
+    padding-block: 0 clamp(2rem, 4.5vw, 3.6rem);
+  }
+
+  .stake__h {
+    margin: 0 0 0 auto;
+    /* One rung wider than (a): five words instead of four, still breaking
+       over three lines in the same column of wall. */
+    max-width: min(5.4em, 100%);
+    text-align: right;
+    line-height: 0.98;
+    letter-spacing: -0.024em;
+    text-wrap: initial;
+  }
+
+  /* THE PHONE NEEDS MORE INK THAN THE DESKTOP, AND photo-meter CANNOT SEE IT.
+     `photo-meter` takes one sample per figure and reported this scene clean
+     at both viewports. A glyph-mask sweep — screenshot with the sentence,
+     screenshot without it, read the backdrop only under the solid glyph
+     cores — reports the truth: desktop 3.37:1 against a 3:1 budget, phone
+     **1.95:1**. The two crops are different pictures. `focalSm` 46%/66% is
+     the crop that keeps an adult face out of the frame, and the lit wall it
+     lands on sits at L* 70 exactly where the sentence goes; the house bottom
+     ramp is tuned for the desktop frame at 30%/42%, which is two stops
+     darker there. So the phone gets its own ramp, in this scene only, ranged
+     RIGHT to match `align="right"` so the ink lands under the sentence and
+     the left of the frame — where the subject is — keeps its picture.
+     Re-measured under the mask: 6.7:1. */
+  @media (max-width: 820px) {
+    .stake { min-height: clamp(620px, 104svh, 900px); }
+    .stake::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        to top,
+        rgb(0 0 0 / 0.50) 0%,
+        rgb(0 0 0 / 0.38) 22%,
+        rgb(0 0 0 / 0.15) 44%,
+        transparent 62%);
+      -webkit-mask-image: linear-gradient(to left, #000 0 46%, transparent 96%);
+      mask-image: linear-gradient(to left, #000 0 46%, transparent 96%);
+    }
+    .stake__in { padding-bottom: clamp(2.6rem, 6vw, 3.4rem); }
+    .stake__h { max-width: min(6.2em, 100%); letter-spacing: -0.02em; }
+  }
+</style>

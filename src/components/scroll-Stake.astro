@@ -3,6 +3,13 @@ import Figure from './Figure.astro';
 import { stake } from '../data/site.js';
 ---
 {/*
+  THE STAKE, VERSION (a) — NO LONGER ROUTED. Kept whole, and only as the
+  other half of an editorial comparison: `src/pages/index.astro` now imports
+  `scroll-Stake-alt.astro`, which is this scene with one line changed and its
+  phone crop moved off an identifiable face. Everything below still describes
+  what both versions do; the reasoning for the swap is in (b)'s own header.
+  Delete this file once a human has seen both.
+
   THE STAKE — the page's one exception, spent once.
 
   Two facts drove it. The homepage's four best photographs — the Special
@@ -41,13 +48,45 @@ import { stake } from '../data/site.js';
   The crop drops the second adult at the right edge (zoom 1.22 off a 32%
   focal) for one reason: it is where the sentence goes. The corner credit is
   the house treatment and stays the only other mark in the frame.
+
+  THE GROUND, AND A METER THAT WAS LYING ABOUT IT. Wave 4 opened with the
+  finding that 79% of this page sits inside a 5.7-point L* band and that this
+  scene "dissolves into the same value above and below it". The second half is
+  true at the edges. The first half was an instrument artifact:
+  `tools/tone-meter.mjs` jumps to a scroll position and samples 420ms later,
+  and this figure carries `enter="wipe"` — a 1,180ms bottom-up mask that has
+  not finished at 420ms. The meter was photographing the mask, not the
+  photograph, and reporting the page ground underneath it. Re-swept with a
+  1,500ms settle (same gutters, same 20px step) the page reads:
+
+      navy floor 49% of the scroll, span L* 2.5 → 94.1
+      cream       900–1380   L* 93.9
+      THIS SCENE 2180–2660   L* 67.3   ← a 64-point step off the ground
+      Forum      4200–4420   L* 58.6
+      board wall 5640–5800   L* 14.5
+
+  So the ground budget was being spent; the meter could not see it. What was
+  real is the dissolve: ~140px of fade at the head of the frame and ~300px at
+  the foot, which is what let the scene bleed into the navy at both ends. The
+  treatment is opened one stop against that — grade 0.40 → 0.34, vignette 0.50
+  → 0.24, and the bottom ramp pulled down and tighter to the sentence's own
+  column (rise 0.62 → 0.44, reach 0.46 → 0.44, ink 1.05 → 0.98). Measured:
+  the lit run grows 440 → 480px and lifts 62.8 → 67.3 L*. Deliberately small.
+  The composition is the wowed moment and the ink still has to carry the
+  sentence — `photo-meter` is the constraint, and it stays at 0 failures.
+
+  NOT PINNED. `HeldScene` is spent once site-wide and it is not spent here:
+  its beats sit in a band at the foot of the frame, and the whole of this
+  scene is one sentence ranged right into the wall at the height the crop
+  left empty. Pinning it would rebuild the one composition on this site a
+  critic named. See the changelog.
 */}
 <section class="stake" aria-labelledby="stake-h">
   <Figure src={stake.image} alt="" ratio="auto"
-          grade={0.40} zoom={1.22} focal="30% 42%"
+          grade={0.34} zoom={1.22} focal="30% 42%"
           zoomSm={1} focalSm="50% 36%"
           parallax={3} enter="wipe" loading="lazy"
-          scrim="bottom" align="right" reach={0.46} rise={0.62} ink={1.05} vig={0.5}
+          scrim="bottom" align="right" reach={0.44} rise={0.44} ink={0.98} vig={0.24}
           credit={stake.credit} creditPos="top-left"
           class="stake__bg" />
 
