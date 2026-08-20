@@ -183,7 +183,6 @@ export const forum = {
   },
   cta: 'Inquire about the Forum',
   image: '/media/forum.jpg',
-  imageDetail: '/media/forum-detail.jpg',
   /* What the PHOTOGRAPH is — a harbour at dusk on Block Island, RI. It is not
      Hyannis Port and must never be set where it reads as one with `place`.
      See refs/PHOTO-FACTS.md. */

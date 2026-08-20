@@ -97,6 +97,12 @@ const {
   zoom = 1,
   zoomSm,
   eyebrow,                 // names the scene; held for the whole pin
+  /* A held scene that REPLACES a titled section has to keep that section's
+     heading, or the page loses a rung in its outline. Pass the id the
+     section's aria-labelledby points at and the FIRST beat's line is set as
+     the <h2> instead of a <p>. Nothing about its size or position changes —
+     a beat is a beat; this is semantics, not a second display rung. */
+  headingId,
   /* THE METER — one short hairline per beat, the live one drawn in brass.
      Defaults on at 2+ beats. It is deliberately NOT a numeral: a counter set
      over a photograph is either bright enough to compete with the eyebrow or
@@ -107,6 +113,16 @@ const {
      raises: how long is this. */
   counter,
   beats = [],              // string | { line, note }
+  /* THE NOTE'S REGISTER. A beat's note defaults to the micro `.label` voice,
+     which is right for a duration or a count. It is WRONG for a place-name:
+     tracked micro-caps at low contrast over a full-bleed photograph is
+     exactly the shape of a photo credit, and a scene whose picture was taken
+     somewhere other than the place it names cannot afford that reading. Pass
+     `noteAs="bridge"` and the note is set at the bridge rung instead — plain
+     sentence case, sans, one rung under the display line, which is the voice
+     the site uses for "this is a fact about the subject" rather than "this is
+     a fact about the photograph". See refs/PHOTO-FACTS.md. */
+  noteAs = 'label',
   credit,
   /* BOTTOM, not top. Figure's own default puts the location credit under the
      bar — which is invisible below the fold, because Nav.astro's scrim is
@@ -139,6 +155,7 @@ const style = [
 <section
   class:list={['held', { 'held--right': align === 'right' }, klass]}
   style={style}
+  aria-labelledby={headingId}
   data-hold
   data-arc={arc}
 >
@@ -200,8 +217,10 @@ const style = [
     <div class="shell held__beats">
       {items.map((b, i) => (
         <div class="held__beat" data-beat={i}>
-          <p class="display display--head held__line">{b.line}</p>
-          {b.note && <p class="label held__note">{b.note}</p>}
+          {headingId && i === 0
+            ? <h2 class="display display--head held__line" id={headingId}>{b.line}</h2>
+            : <p class="display display--head held__line">{b.line}</p>}
+          {b.note && <p class:list={[noteAs, 'held__note', noteAs === 'bridge' && 'held__note--bridge']}>{b.note}</p>}
         </div>
       ))}
       {hasCoda && <div class="held__coda" data-coda><slot name="coda" /></div>}
@@ -223,7 +242,27 @@ const style = [
   /* The meter counts beats through a hold. With no hold it is a mark that
      measures nothing, so it is not drawn. */
   .held__meter { display: none; }
-  .held__cap, .held__ink { display: none; }
+  .held__ink { display: none; }
+  /* THE CAP, IN THE STACKED LAYOUT TOO. It used to be display:none here, on
+     the reasoning that the stacked figure carries no type. It carries one
+     piece: the photograph's own location credit, which `creditPos="top-*"`
+     puts on the sky. Measured on the reduced-motion homepage that credit read
+     1.68 : 1 against a 4.5 budget — and neither photo-meter nor hold-meter
+     could see it, because both run with motion enabled and the enhanced cap
+     covers it there. So the cap is drawn here as well, sized to the figure
+     instead of to the viewport, and at a fixed weight: there is no arc in
+     this layout, so there is nothing for it to track. */
+  .held__cap {
+    display: block;
+    position: absolute;
+    left: 0; right: 0; top: 0; height: 36%;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+      rgb(3 9 16 / 0.68) 0%,
+      rgb(3 9 16 / 0.56) 44%,
+      rgb(3 9 16 / 0.28) 74%,
+      transparent 100%);
+  }
 
   .held__stage { position: relative; isolation: isolate; }
 
@@ -296,12 +335,28 @@ const style = [
   }
   .held__line { max-width: 18ch; }
   .held__note { margin-top: clamp(0.7rem, 1.5vw, 1.05rem); }
+  /* The bridge rung sits directly under the display line it belongs to, so
+     it reads as part of the same stack rather than as a separate mark. */
+  .held__note--bridge { margin-top: clamp(0.35rem, 0.8vw, 0.6rem); color: var(--fg-mute); max-width: 26ch; }
+  .held--right .held__note--bridge { margin-left: auto; }
 
   .held--right .held__line, .held--right .held__note { margin-left: auto; text-align: right; }
 
   @media (max-width: 720px) {
     .held :global(.held__fig), .held__grade { aspect-ratio: var(--held-ratio-sm); }
     .held__line { max-width: 14ch; }
+    /* The small-screen crop is a 4/5 portrait, so the credit sits higher up a
+       brighter sky than it does on the 16/9: measured 4.28 : 1 at the desktop
+       weight, against 4.5. Taller and heavier here, for the same reason the
+       beat ink is. */
+    .held__cap {
+      height: 42%;
+      background: linear-gradient(180deg,
+        rgb(3 9 16 / 0.80) 0%,
+        rgb(3 9 16 / 0.68) 48%,
+        rgb(3 9 16 / 0.34) 78%,
+        transparent 100%);
+    }
   }
 
   /* ── ENHANCED: the hold ───────────────────────────────────────────

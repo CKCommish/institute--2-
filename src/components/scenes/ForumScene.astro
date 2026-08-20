@@ -1,85 +1,101 @@
 ---
-import Figure from '../Figure.astro';
+import HeldScene from '../HeldScene.astro';
 import { forum } from '../../data/site.js';
 ---
 {/*
-  The homepage's one Forum scene.
+  The homepage's one Forum scene — and the SITE'S ONE HELD SCENE.
 
-  It used to set "Kennedy Compound, Hyannis Port" in the .label register —
-  tracked micro-caps, low contrast, over a full-bleed photograph — which is
-  exactly the shape of a photo credit, on a picture that is a harbour on
-  BLOCK ISLAND. refs/PHOTO-FACTS.md exists to stop that reading. The event's
-  location now sits in the display stack as the bridge rung, and the real
-  credit sits in the opposite corner in the register that means "this is what
-  the photograph is".
+  WHY THE HOLD IS SPENT HERE. refs/MOTION-FINDINGS.md measured the reference
+  and found one structural idea we did not have: the subject is held in place
+  while the environment changes around it and successive text beats fade
+  through. Hold the visual, move the type. `HeldScene` was built for that and
+  then shipped nowhere — it existed only in `src/pages/_lab.astro`, which is
+  underscore-prefixed and does not build, so the site had ZERO held scenes and
+  the finding was unspent.
 
-  Ladder: 11.7 eyebrow → 26.6 bridge → 86 display. No hole.
+  Of the six full-bleed photographs on this site, this is the only one that is
+  not already carrying an exception:
+
+    hero.jpg       homepage  holds the four 2026 partners by name inside the
+                             first screen; pinning it puts the Institute's only
+                             credential two viewport heights below the fold
+    pilot-maternal homepage  the Stake — one sentence ranged right into the one
+                             patch of empty wall the crop was chosen to leave.
+                             HeldScene sets its beats in a band at the FOOT of
+                             the frame; pinning that scene replaces it
+    forum.jpg      /forum/   the masthead, whose baseline is registered to
+                             where the breakwater crosses the frame
+    institute.jpg  /institute/ the 40-star flag on the committee room's axis
+    institute.jpg  /people/  the turn from navy to cream
+    forum.jpg      HERE      an eyebrow, a bridge line, a name and a link, laid
+                             over a picture that scrolls past exactly like every
+                             other frame on the site
+
+  It is also the scene refs/MOTION-FINDINGS.md nominates ("the Forum, whose
+  photograph is the most evocative asset the Institute has"). The /forum/ page
+  itself cannot host the hold: its copy is fully spent — masthead, claim,
+  ledger, close — and there is no beat left there that is not a duplicate of a
+  section 1,000px above it. Here every string the hold needs is already in this
+  scene, in `site.js`, so the hold costs the homepage no new words.
+
+  ONE PER SITE. `[data-hold]` appears exactly once in `dist/`. If a second
+  scene wants this, one of the two is not the scene its page is about.
+
+  WHAT CHANGED, EXACTLY. Nothing in the copy. `forum.access` was the eyebrow
+  and is the eyebrow; `forum.name` was the h2 and is the h2 (via `headingId`,
+  so the page keeps its outline); `forum.place` was the bridge under the name
+  and is now that beat's note; `forum.line` was the body line under the rule
+  and is the second beat; `forum.cta` was the link and is the coda. The name
+  steps down from --step-poster to --step-head, which is what a beat is — the
+  scene buys 2,400px of held photograph and a navy → lit → navy arc for 33px
+  of type, and the ladder still has the hero at 126 and six posters at 86.
+
+  arc="lift". The scene arrives out of the Pilots ledger — this page's one
+  remaining event-free run — opens to the lit harbour, and closes back into
+  navy to hand the People wall a dark edge to start from. `fall` would strand
+  the ledger's flat navy against a flat navy opening; `rise` would light the
+  People wall's own head.
+
+  The two location strings still do two jobs and still do not share a corner:
+  `forum.place` — the CONVENING — rides the name's beat; the photograph's own
+  credit — Block Island, Rhode Island — is in the opposite corner in the dim
+  credit register — top-right, on the eyebrow's line and the full width of
+  the frame away from the event line at the foot, which is the same diagonal
+  the /forum/ masthead uses. HeldScene's own default is bottom-right, and on
+  this frame that put the two location strings in the same foot band, and put
+  the credit on water that is lit for the middle two thirds of the hold.
+  refs/PHOTO-FACTS.md.
 */}
-<section class="forum" aria-labelledby="forum-h">
-  <Figure src={forum.image} alt="" ratio="auto" grade={0.60} focal="52% 52%"
-          parallax={7} scrim="bottom" credit={forum.credit} creditPos="top-right"
-          class="forum__bg" />
-
-  <div class="shell forum__in">
-    <p class="eyebrow forum__brow" data-reveal>{forum.access}</p>
-    <p class="bridge forum__place" data-reveal="90">{forum.place}</p>
-    <h2 class="display display--poster forum__h lines" id="forum-h">{forum.name}</h2>
-
-    <div class="forum__ruleWrap" data-reveal="120"><span class="forum__rule"></span></div>
-
-    <div class="forum__cells">
-      <p class="forum__line" data-reveal="560">{forum.line}</p>
-      <a class="label label--lit forum__more" href="/forum/" data-reveal="660">
-        {forum.cta}
-        <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
-      </a>
-    </div>
-  </div>
-</section>
+<HeldScene
+  src={forum.image}
+  alt="A harbour at dusk: moored sailboats inside a stone breakwater under a blue-hour sky."
+  eyebrow={forum.access}
+  headingId="forum-h"
+  hold={1.9}
+  holdSm={1.6}
+  focal="52% 52%"
+  focalSm="46% 52%"
+  credit={forum.credit}
+  creditPos="top-right"
+  noteAs="bridge"
+  arc="lift"
+  beats={[
+    { line: forum.name, note: forum.place },
+    { line: forum.line },
+  ]}
+>
+  <a slot="coda" class="label label--lit forum__more" href="/forum/">
+    {forum.cta}
+    <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+  </a>
+</HeldScene>
 
 <style>
-  .forum {
-    position: relative;
-    min-height: clamp(600px, 94svh, 940px);
-    display: grid;
-    align-items: end;
-    isolation: isolate;
-  }
-  .forum__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -1; }
-  .forum__in {
-    width: 100%;
-    padding-block: clamp(3rem, 8vw, 7rem) clamp(1.5rem, 2.6vw, 2.6rem);
-  }
-
-  .forum__brow { margin-bottom: clamp(0.7rem, 1.2vw, 1.05rem); }
-  /* THE BRIDGE — the event's location, in the scene's own voice. */
-  .forum__place { max-width: 26ch; margin-bottom: clamp(0.45rem, 0.9vw, 0.8rem); }
-  .forum__h { max-width: 12ch; }
-
-  /* Local motion primitive: hairline that draws in on reveal (not in
-     base.css). --reveal-y:0 cancels the default lift on the wrapper. */
-  .forum__ruleWrap { --reveal-y: 0px; display: block; margin-top: clamp(2.25rem, 5vw, 4rem); }
-  .forum__rule {
-    display: block; height: 1px; width: 100%;
-    background: var(--mark);
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 850ms var(--ease-io) 60ms;
-  }
-  .forum__ruleWrap.is-in .forum__rule { transform: scaleX(1); }
-
-  .forum__cells {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    gap: clamp(1.25rem, 4vw, 3.5rem);
-    padding-top: clamp(1rem, 1.6vw, 1.4rem);
-  }
-  .forum__line {
-    color: var(--fg-mute);
-    max-width: 34ch;
-    text-wrap: pretty;
-  }
-  /* The .label register at link brightness — a state, not a fourth scale. */
+  /* The coda link keeps the register it had before the scene was held: the
+     .label voice at link brightness, with the arrow and the underline that
+     draws in from the left. This is a state on an existing class, not a new
+     rung. The clip-path wipe HeldScene runs on the coda needs an inline-flex
+     box to clip, which is what this is. */
   .forum__more {
     position: relative;
     display: inline-flex; align-items: center; gap: 0.9ch;
@@ -88,18 +104,10 @@ import { forum } from '../../data/site.js';
     padding-block: 0.5rem;
   }
   .forum__more:hover :global(.arrow) { transform: translateX(4px); }
-  /* local hover rule — the shared .link underline assumes inline-block */
   .forum__more::after {
-    content: ''; position: absolute; left: 0; right: 0; bottom: -0.5em; height: 1px;
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0.1em; height: 1px;
     background: currentColor; transform: scaleX(0); transform-origin: right;
     transition: transform 520ms var(--ease-out);
   }
   .forum__more:hover::after { transform: scaleX(1); transform-origin: left; }
-
-  @media (max-width: 720px) {
-    .forum__h { max-width: 9ch; }
-    .forum__place { max-width: 20ch; }
-    .forum__cells { grid-template-columns: minmax(0, 1fr); row-gap: 1.35rem; }
-    .forum__more { justify-self: start; }
-  }
 </style>

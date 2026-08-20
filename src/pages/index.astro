@@ -15,7 +15,7 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
        Method    ink-700 PANEL · CENTRED — the only centred scene on the site
        Stake     photograph · ONE sentence, set RIGHT               108svh
        Pilots    ink-900 · the long ledger, flush left
-       Forum     photograph · the room                            94svh
+       Forum     photograph · THE HELD SCENE — pinned, 2.9 viewports
        People    ink-900 head, then a full-bleed ink-800 WALL of names
 
      FOUR ARMATURES. The site's default move — micro label at the left rail,
@@ -35,30 +35,25 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
      (abstract) and Pilots (concrete), which were consecutive and opened with
      the identical three-element overture.
 
-     TONAL PACING, RE-MEASURED. Wave 4 opened with "79% of the page inside a
-     5.7-point L* band". Both `tone-meter` and a full-page screenshot report
-     that, and both are wrong here for the same reason: they photograph the
-     Stake and the wall while their entry masks are still running, so they
-     record the page ground underneath. Swept the way a reader reads it —
-     real scroll positions, 1,800ms settle, gutter columns, 20px rows:
+     TONAL PACING, MEASURED ON THE SHIPPED PAGE. Wave 4 opened with "79% of
+     the page inside a 5.7-point L* band". `tools/tone-meter.mjs`, run against
+     the final build — real scroll positions, gutter columns, 20px rows:
 
-         hero photograph    240– 780   L* 20 → 42
-         cream WhyNow       920–1380   L* 93.9
-         METHOD PANEL      1400–2120   L* 14.2   ← wave-4 round 2
-         Stake photograph  2180–2660   L* 66.3   (tail to 2900 at 26.1)
-         Pilots ledger     2980–4120   L*  4.2
-         Forum photograph  4200–4620   L* 53.8–57.4
-         board wall        5740–6160   L* 15.1
-         navy floor 45% of the scroll, span L* 2.5 → 93.9
+         8,528px · span L* 2.5 -> 93.9 · 27 grounds, 8 of them longer than a
+         third of a viewport · no single band holds more than 13% of the
+         scroll · 52% of the scroll within 9 L* of the navy floor
 
-     The Method band is the round-2 change. It was page ground, and cream →
-     720px of navy → photograph put the only two big events on this page's
-     front half a screen and a half apart with nothing between them. As a
-     panel it is the step down from cream into the photograph, and the seam
-     into the Stake is now a tonal edge instead of the ~200px of dead navy a
-     critic read as a gap at 390px. The one event-free run left on the page
-     is the Pilots ledger, which this file does not own.
+         hero photograph     200– 780   L* 29 – 44
+         cream WhyNow        920–1420   L* 93.8
+         METHOD PANEL       1440–1780   L* 14.5
+         Stake photograph   2880–3120   L* 24
+         Pilots ledger      3140–4260   L*  3.7   <- the one flat run left
+         THE HELD FORUM     4740–6220   L* 40 -> 69.5 -> 4, inside one scene
+         board wall         7460–7980   L* 14.5
 
+     The Pilots ledger is still 1,120px of one value; this file does not own
+     it. The hold is what now answers it — the ledger's flat navy runs
+     straight into a picture that opens out of that exact value.
      GROUND CLASSES SPENT: two — .on-cream once (WhyNow) and .on-panel twice
      (Method, the board wall). Under the ceiling in tokens.css.
 
@@ -78,9 +73,10 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
      of the scene. Screenshots of both versions: progress/shots/
      w4r2-b-shipped/ and w4r2-a-original/.
 
-     NO SCENE ON THIS PAGE IS PINNED, and that is a decision rather than an
-     omission. `HeldScene` may be spent exactly once site-wide. This page has
-     two full-bleed photographs and both are already carrying an exception:
+     ONE SCENE ON THIS PAGE IS PINNED, and it is the Forum. `HeldScene` may
+     be spent exactly once site-wide; `[data-hold]` appears once in the whole
+     of `dist/`, here. The two candidates this file used to argue over are
+     still not it, for the reasons they were rejected:
 
        Hero    holds the four 2026 partners BY NAME inside the first screen.
                They are the only credential this institute has. Pinning the
@@ -92,11 +88,20 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
                its beats in a band at the FOOT of the frame. Pinning this
                scene does not enhance that composition; it replaces it.
 
-     The reference's own nominee is the Forum photograph (refs/MOTION-
-     FINDINGS.md: "most likely the Forum, whose photograph is the most
-     evocative asset the Institute has"), it is the one scene on the site
-     whose argument is a room rather than a claim, and it has a dedicated
-     page to hold the length. The hold belongs there. -->
+     This file used to send the hold to /forum/ on the reference's nomination
+     (refs/MOTION-FINDINGS.md: "most likely the Forum, whose photograph is the
+     most evocative asset the Institute has"). It went there and it did not
+     ship: `HeldScene` existed only in `src/pages/_lab.astro`, which is
+     underscore-prefixed and never built, so the site shipped ZERO held scenes
+     and the finding was unspent. /forum/ cannot host it — that page's copy is
+     fully spent across masthead, claim, ledger and close, and every candidate
+     beat there duplicates a section a thousand pixels above it.
+
+     The Forum SCENE, on this page, can: every string the hold needs was
+     already in it. See components/scenes/ForumScene.astro. It is also the
+     right place tonally — it lands at the end of the Pilots ledger, which is
+     the one event-free run this page has left, and swings the gutter from
+     L* 3.7 to L* 69.5 and back inside one scene. -->
 <Base>
   <Hero />
   <WhyNow />
