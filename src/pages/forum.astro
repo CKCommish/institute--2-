@@ -121,7 +121,12 @@ const claim = forum.line
           <p class="bridge fh__place">{forum.place}</p>
         </div>
         <span class="fh__rule" aria-hidden="true"></span>
-        <a class="cue tap fh__cue" href="#fsay-h">
+        <!-- Points at the SECTION, not its heading. The h2 carries
+             data-settle, so it is transformed while it arrives and the
+             browser scrolls to a position it is no longer at — the claim
+             landed 33px above the viewport top, under the fixed bar. The
+             section is untransformed and is what "Scroll" means anyway. -->
+        <a class="cue tap fh__cue" href="#fsay">
           <span class="label">Scroll</span><i class="cue__line" aria-hidden="true"></i>
         </a>
       </div>
@@ -130,7 +135,7 @@ const claim = forum.line
 
   <!-- 2 ── the claim. Flush left, nothing in a margin beside it, and the
        only thing on the page that moves with the scroll rather than at it. -->
-  <section class="fsay" aria-labelledby="fsay-h">
+  <section class="fsay" id="fsay" aria-labelledby="fsay-h">
     <div class="shell">
       <div class="frow">
         <span class="frow__rule" aria-hidden="true" data-wipe="left"></span>

@@ -41,6 +41,13 @@ const { tone = 'lit', class: klass } = Astro.props;
   .wm--quiet .wm__b { color: var(--fg-meta); }
   .wm--quiet:hover, .wm--quiet:hover .wm__b { color: var(--fg); }
 
+  /* The mark carries its own copy of the a.tap device (base.css) because
+     this scoped rule outranks it. Keep the two in step: where the pointer
+     is a thumb, the same growth to a comfortable box. */
+  @media (pointer: coarse) {
+    .wm { padding-block: 1.05rem; margin-block: -1.05rem; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .wm, .wm__b { transition-duration: 1ms; }
   }

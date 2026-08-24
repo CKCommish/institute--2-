@@ -9,8 +9,8 @@ import { nav } from '../data/site.js';
       <h1 class="display display--poster lines">That page isn’t here.</h1>
       <p class="bridge" data-reveal="220">It may have moved, or it may never have existed. Everything the Institute publishes is below.</p>
       <ul class="nf__list" data-seq="90">
-        <li data-reveal><a class="link" href="/">Home</a></li>
-        {nav.map((n) => <li data-reveal><a class="link" href={n.href}>{n.label}</a></li>)}
+        <li data-reveal><a class="link tap" href="/">Home</a></li>
+        {nav.map((n) => <li data-reveal><a class="link tap" href={n.href}>{n.label}</a></li>)}
       </ul>
     </div>
   </section>
@@ -31,5 +31,15 @@ import { nav } from '../data/site.js';
     border-top: 1px solid var(--rule);
     font-size: var(--step-micro, 0.73rem);
     letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500;
+  }
+  /* Five 18px destinations wrapped into rows 16px apart is a coin-toss for
+     a thumb — and this is the page you land on when something has already
+     gone wrong. Stack them one per row, and give the row enough pitch that
+     the boxes a.tap grows on a touch screen do not overlap: the links keep
+     an 18px layout height (the tap padding is cancelled by a negative
+     margin), so the pitch IS the row-gap plus 18, and it has to clear the
+     ~50px box. 2.3rem leaves a few pixels of daylight. */
+  @media (max-width: 620px) {
+    .nf__list { flex-direction: column; row-gap: 2.3rem; }
   }
 </style>

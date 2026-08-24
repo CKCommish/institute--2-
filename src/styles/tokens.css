@@ -168,6 +168,10 @@
   --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-io: cubic-bezier(0.65, 0.02, 0.24, 1);
   --ease-wipe: cubic-bezier(0.16, 0.84, 0.28, 1);
+  /* --dur-0 is the press register only: the acknowledgement a finger or a
+     mouse gets on the way DOWN. It has to resolve inside the gesture, so it
+     is shorter than anything else in the scale by a wide margin. */
+  --dur-0: 140ms;
   --dur-1: 420ms;
   --dur-2: 760ms;
   --dur-3: 1150ms;

@@ -171,6 +171,15 @@ const { pilot: p } = Astro.props;
     transition: opacity 380ms var(--ease-out), transform 520ms var(--ease-out);
   }
 
+  /* On a touch screen there is no hover, so the arrow — the only mark that
+     says the whole cell is a door — never appeared at all: the door read as
+     a static block of text. Where there is no hover it is simply drawn, and
+     the hover choreography below never applies. Same rule as .link's
+     underline, which is already handled this way in base.css. */
+  @media (hover: none) {
+    .card__arrow { opacity: 1; transform: none; }
+  }
+
   @media (hover: hover) {
     .card:hover::before { transform: scaleX(1); transform-origin: left; }
     .card:hover .card__partner { color: var(--brass); }

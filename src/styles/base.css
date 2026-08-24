@@ -191,6 +191,17 @@ a.tap {
 /* .link hangs its underline off the padding edge; keep it under the word. */
 a.link.tap::after { bottom: calc(0.5rem - 2px); }
 
+/* 27px clears WCAG's 24px floor but is still a small thing to hit with a
+   thumb, and on a touch screen there is no hover to tell you that you are
+   near it. Where the pointer is actually coarse, take the same device to
+   44px. Still a real box on the element — a pseudo-element overlay would
+   hit-test at 44 while every audit, inspector and WCAG measurement kept
+   reading the 11px anchor. */
+@media (pointer: coarse) {
+  a.tap { padding-block: 1.05rem; margin-block: -1.05rem; }
+  a.link.tap::after { bottom: calc(1.05rem - 2px); }
+}
+
 .lede {
   font-size: clamp(1.06rem, 0.98rem + 0.42vw, 1.35rem);
   line-height: 1.5;
@@ -465,4 +476,64 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
 @media (hover: hover) {
   .link::after { transform: scaleX(0); transform-origin: right; }
   .link:hover::after { transform: scaleX(1); transform-origin: left; }
+}
+
+
+/* ── Press ────────────────────────────────────────────────────────
+   The site had no :active state anywhere. Hover answers "this is a
+   thing" and focus answers "you are here", but neither answers "I got
+   that" — and on a touch screen there is no hover at all, so a tap on
+   the CTA, a pilot card or a menu row produced no acknowledgement
+   between the finger landing and the next page painting.
+
+   It is one gesture-length dip, not a bounce: the target takes a small
+   amount of weight and gives it straight back. Scale, not colour,
+   because the palette is closed and every lit object in the chrome
+   already spends its colour on hover. */
+:where(a[href], button, [role='button']):active {
+  transform: scale(0.985);
+  transition-duration: var(--dur-0);
+}
+/* Type set at the poster rung does not squash — at that size a 1.5%
+   scale reads as a reflow, not a press. The menu rows dim instead. */
+.menu__links a:active,
+.display:active {
+  transform: none;
+  opacity: 0.62;
+  transition-duration: var(--dur-0);
+}
+
+/* ── Page-to-page ─────────────────────────────────────────────────
+   Six routes, all on the same navy ground, and every click between them
+   was a hard cut: the old page vanished, the new one arrived with its
+   reveals unfired, and the ground flashed in between. A cross-document
+   view transition holds the ground still and crossfades what changed,
+   so the bar and the field read as continuous and only the content
+   turns over.
+
+   Cross-document, so it costs no router and no client-side navigation —
+   the pages are still six separate documents. Browsers without it get
+   exactly what they got before. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  ::view-transition-old(root) {
+    animation: vtOut 220ms var(--ease-out) both;
+  }
+  ::view-transition-new(root) {
+    animation: vtIn 420ms var(--ease-out) both;
+  }
+  /* The bar is the same object on both sides of the navigation, so it
+     must not crossfade with the page under it. */
+  .nav { view-transition-name: nav; }
+  ::view-transition-old(nav),
+  ::view-transition-new(nav) { animation: none; mix-blend-mode: normal; }
+}
+@keyframes vtOut { to { opacity: 0; } }
+@keyframes vtIn  { from { opacity: 0; transform: translate3d(0, 8px, 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  /* A press is still worth acknowledging when motion is turned down —
+     but as a change in weight, not a change in size. */
+  :where(a[href], button, [role='button']):active { transform: none; opacity: 0.62; }
 }

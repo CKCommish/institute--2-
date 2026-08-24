@@ -178,8 +178,34 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .pill.is-active:hover { color: var(--ink-900); border-color: var(--brass); }
   .nav.is-inverted .pill:hover { color: var(--cream); }
 
+  /* The burger is the ONLY navigation control below 940px, and it was a
+     69x26 target. Grow the hit area to the 44px comfortable floor with
+     padding and give the row back with a negative margin, so the pill's
+     drawn size and the bar's height are unchanged. */
+  /* The burger is the ONLY navigation control below 940px, and it was a
+     69x26 target — under the 44px comfortable floor in the one place the
+     whole site's navigation lives. Grow the HIT AREA with an overlay
+     rather than the box, so the drawn pill and the bar's height are
+     untouched: the ring is still 26px, the target is 44. */
   .pill--burger { display: none; }
+  /* The burger is the ONLY navigation control below 940px, and it was a
+     69x26 target. Unlike a.tap in base.css, this one cannot take the box
+     invisibly — the pill has a drawn ring, so a real 44px box is a
+     visibly taller pill. It is still the right trade where the pointer is
+     actually a thumb, and a hairline capsule at 44px sits comfortably in
+     the 58px bar. A pseudo-element overlay is not the alternative: it
+     hit-tests at 44 while the button's own geometry — what an inspector
+     and WCAG's target-size measurement read — stays 26.
+
+     Scoped to coarse pointers, so a narrowed desktop window still gets
+     the 26px ring the bar was drawn around. */
+  @media (pointer: coarse) {
+    .pill--burger { min-height: 44px; }
+  }
   .pill__t { min-width: 4.4ch; text-align: left; }
+  /* Open is a state, and "Close" was carrying it alone. Turn the star to
+     the diagonal — the same mark, rotated to read as a cross. */
+  .pill--burger[aria-expanded='true'] .star { transform: rotate(45deg); }
 
   @media (max-width: 940px) {
     .nav__links, .nav__in > a.pill:not(.pill--burger) { display: none; }
@@ -201,31 +227,49 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     overflow-y: auto;
     overscroll-behavior: contain;
     opacity: 0; pointer-events: none;
-    transition: opacity 420ms var(--ease-out);
+    /* Dismissal is a reply to a tap and wants to be quick; arrival is the
+       sheet introducing itself and can take its time. Asymmetric on
+       purpose. The JS still waits 420ms before [hidden], which is longer
+       than either — it only has to outlast the exit. */
+    transition: opacity 240ms var(--ease-out);
   }
   /* [hidden] sets display:none at UA weight; .menu's own display:grid was
      beating it, so the six menu links stayed in the tab order of every page
      at every width. Restore it explicitly. */
   .menu[hidden] { display: none; }
-  .menu[data-open] { opacity: 1; pointer-events: auto; }
+  .menu[data-open] { opacity: 1; pointer-events: auto; transition-duration: 420ms; }
   .menu__in { padding: calc(var(--nav-h) + 2rem) var(--gutter) var(--gutter); width: 100%; }
   .menu__links { display: grid; gap: 0.14em; }
-  .menu__links a {
-    line-height: 1.1;
-    display: flex; align-items: baseline; gap: 1rem;
-    opacity: 0; transform: translateY(14px);
-    transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
-    transition-delay: calc(var(--i) * 55ms + 80ms);
-  }
-  .menu__links .index { font-size: var(--step-micro); }
-  .menu[data-open] .menu__links a { opacity: 1; transform: none; }
+  /* Rows arrive in sequence and leave together.
+
+     The stagger used to live on the base rule, which meant it ran in BOTH
+     directions: closing the sheet walked the six rows out one at a time
+     over ~400ms while the panel itself faded in 420ms and went [hidden] at
+     exactly 420 — so the last rows were cut off mid-exit and the whole
+     dismissal read as slower than the panel it was inside.
+
+     A stagger is for reading order, and on the way out there is nothing
+     left to read. So the delay and the long duration are on [data-open]
+     only; the closed state is the exit, and it is fast and simultaneous. */
+  .menu__links a,
   .menu__cta,
   .menu__foot {
     opacity: 0; transform: translateY(14px);
+    transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+    transition-delay: 0ms;
+  }
+  .menu__links a {
+    line-height: 1.1;
+    display: flex; align-items: baseline; gap: 1rem;
+  }
+  .menu__links .index { font-size: var(--step-micro); }
+  .menu[data-open] .menu__links a,
+  .menu[data-open] .menu__cta,
+  .menu[data-open] .menu__foot {
+    opacity: 1; transform: none;
     transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
     transition-delay: calc(var(--i) * 55ms + 80ms);
   }
-  .menu[data-open] .menu__cta, .menu[data-open] .menu__foot { opacity: 1; transform: none; }
   .menu__cta {
     margin-top: 2.4rem; display: inline-flex; align-items: center; gap: 0.8ch;
     color: var(--fg);

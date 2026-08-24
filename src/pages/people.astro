@@ -374,7 +374,9 @@ const founderCount = String(founders.length).padStart(2, '0');
     /* The photograph above is the break; the cream field does not need to
        open on 10rem of nothing as well. */
     padding-block: clamp(3rem, 1.5rem + 4.5vw, 6rem) clamp(3rem, 5vw, 5.5rem);
-    scroll-margin-top: var(--nav-h);
+    /* nav-h alone lands the section flush against the bottom of the bar,
+       with nothing between them. Match the global stop. */
+    scroll-margin-top: calc(var(--nav-h) + 1rem);
   }
   .bd__head {
     display: grid;
