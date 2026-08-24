@@ -354,7 +354,10 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
    Delay: `data-delay="180"` on any of the three. `data-reveal="180"`
    still works. `data-seq` on a parent auto-staggers its children.
    -------------------------------------------------------------------- */
-[data-reveal] {
+/* Gated on `html.js`, set synchronously in Base.astro's <head>. Without
+   JS — a blocked bundle, a parse error, a crawler that does not execute —
+   the hidden state never applies and the page renders as written. */
+:where(html.js) [data-reveal] {
   opacity: 0;
   transform: translate3d(0, var(--reveal-y, 14px), 0);
   transition:
@@ -369,10 +372,10 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
 .lines .line { display: block; overflow: hidden; }
 .lines .line > span {
   display: block;
-  transform: translate3d(0, 105%, 0);
   transition: transform var(--dur-3) var(--ease-out) var(--line-delay, 0ms);
   will-change: transform;
 }
+:where(html.js) .lines .line > span { transform: translate3d(0, 105%, 0); }
 .is-in .lines .line > span,
 .lines.is-in .line > span { transform: none; }
 
@@ -392,16 +395,17 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
    Pair `data-wipe="center"` with a rule or a full-bleed figure and it
    resolves outward from the middle of the composition.                */
 [data-wipe] {
-  clip-path: inset(0 100% 0 0);
   transition: clip-path var(--dur-4) var(--ease-wipe) var(--reveal-delay, 0ms);
   will-change: clip-path;
 }
-[data-wipe="right"]    { clip-path: inset(0 0 0 100%); }
-[data-wipe="top"]      { clip-path: inset(0 0 100% 0); }
-[data-wipe="bottom"]   { clip-path: inset(100% 0 0 0); }
-[data-wipe="center"]   { clip-path: inset(0 50% 0 50%); }
-[data-wipe="center-y"] { clip-path: inset(50% 0 50% 0); }
-[data-wipe].is-in      { clip-path: inset(0 0 0 0); }
+/* Same gate as [data-reveal]: covered only while JS is there to uncover it. */
+:where(html.js) [data-wipe]              { clip-path: inset(0 100% 0 0); }
+:where(html.js) [data-wipe="right"]      { clip-path: inset(0 0 0 100%); }
+:where(html.js) [data-wipe="top"]        { clip-path: inset(0 0 100% 0); }
+:where(html.js) [data-wipe="bottom"]     { clip-path: inset(100% 0 0 0); }
+:where(html.js) [data-wipe="center"]     { clip-path: inset(0 50% 0 50%); }
+:where(html.js) [data-wipe="center-y"]   { clip-path: inset(50% 0 50% 0); }
+[data-wipe].is-in                        { clip-path: inset(0 0 0 0); }
 
 /* A wipe over type reads better if the words hold still while the mask
    travels — put the wipe on a wrapper, never on the .lines element. */

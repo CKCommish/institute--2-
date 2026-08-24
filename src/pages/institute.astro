@@ -204,7 +204,6 @@ const spec = [
 
   .brg__list { display: contents; }
   .brg__k, .brg__list li {
-    opacity: 0; transform: translate3d(0, 8px, 0);
     transition:
       opacity 380ms var(--ease-out) var(--d, 0ms),
       transform 460ms var(--ease-out) var(--d, 0ms);
@@ -241,7 +240,9 @@ const spec = [
   .brg__rail i {
     display: block; width: 1px; height: 100%;
     background: var(--rule);
-    transform: scaleY(0); transform-origin: top;
+    transform-origin: top;
+    /* scaleY(0) lives in the html.js block below: .brg.is-in is written by
+       the reveal engine, so with JS off the rails must start drawn. */
     transition: transform 460ms var(--ease-out) var(--d, 0ms);
   }
   .brg__rail--a i { --d: 540ms; }
@@ -257,10 +258,19 @@ const spec = [
     display: grid; justify-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem);
     padding: clamp(1.8rem, 3.2vw, 3rem) clamp(1rem, 2vw, 1.8rem);
     border: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
-    opacity: 0;
     transition: opacity 460ms var(--ease-out) 640ms;
   }
   .brg.is-in .brg__hub { opacity: 1; }
+
+  /* ── The one place the diagram's hidden state is declared ──────────
+     Every part of the bridge arrives on `.brg.is-in`, and only the reveal
+     engine sets that class. Gated on `html.js` (written synchronously in
+     Base.astro's <head>) so a page without JS gets the finished diagram
+     rather than three invisible columns. */
+  html.js .brg__k,
+  html.js .brg__list li { opacity: 0; transform: translate3d(0, 8px, 0); }
+  html.js .brg__hub { opacity: 0; }
+  html.js .brg__rail i { transform: scaleY(0); }
   .brg__hub::before, .brg__hub::after {
     content: ''; position: absolute; top: 50%;
     width: calc(var(--brg-gap) + 1px); height: 1px;

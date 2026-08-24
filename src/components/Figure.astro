@@ -592,6 +592,21 @@ const style = [
     .fig__credit { max-width: 26ch; line-height: 1.4; }
   }
 
+  /* ── No JS: land the finished grade directly ──────────────────────
+     data-state is written by this component's own script (loading → ready
+     | failed). With JS off or broken it never leaves 'loading', so the img
+     holds opacity 0, the tint/veil/scrim never arrive and a --wipe figure
+     stays fully masked: every photograph on the site renders as an empty
+     plate. `html.js` is set synchronously in Base.astro's <head>, so its
+     absence is a reliable "the engine is not coming" signal — paint the
+     ready state and skip the transition rather than animate into it. */
+  :global(html:not(.js)) .fig__media img { opacity: 1; transform: scale(var(--zoom, 1)); transition: none; }
+  :global(html:not(.js)) .fig__tint  { opacity: calc(var(--grade) * var(--fig-tint)); transition: none; }
+  :global(html:not(.js)) .fig__veil  { opacity: calc(var(--grade) * var(--fig-veil)); transition: none; }
+  :global(html:not(.js)) .fig__scrim { opacity: 1; transition: none; }
+  :global(html:not(.js)) .fig--wipe  { -webkit-mask-image: none; mask-image: none; transition: none; }
+  :global(html:not(.js)) .fig--wipe .fig__plate { transform: none; transition: none; }
+
   @media (prefers-reduced-motion: reduce) {
     .fig__media img { transition-duration: 1ms; transform: scale(calc(1.02 * var(--zoom, 1))); }
     .fig__scrim, .fig__tint, .fig__veil { transition-duration: 1ms; }
