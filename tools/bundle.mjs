@@ -87,6 +87,13 @@ body = entify(body);
 
 const out = `<meta charset="utf-8">
 <title>Lion Forum Institute</title>
+<!-- Base.astro sets this in <head> before first paint, and the reveal system
+     gates every hidden state on it (html.js / html:not(.js) in base.css,
+     Figure.astro, institute.astro). It is an is:inline script, not a module,
+     so the module-only sweep below never picked it up — without it the
+     bundle silently rendered the whole site in its no-JS fallback: every
+     reveal already landed, no motion at all. -->
+<script>document.documentElement.classList.add('js');${'</scr' + 'ipt>'}
 <style>${css.replace(/[\u0080-\uFFFF]/g, (c) => '\\' + c.codePointAt(0).toString(16) + ' ')}</style>
 <style>
   .rt[hidden]{display:none}
