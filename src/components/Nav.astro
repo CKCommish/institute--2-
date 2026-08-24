@@ -23,7 +23,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
 
     <button class="label pill pill--burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
       <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
-      <span class="pill__t" data-burger-label>Menu</span>
+      <span class="pill__t t-text-swap" data-burger-label>Menu</span>
     </button>
   </div>
 
@@ -187,6 +187,50 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      whole site's navigation lives. Grow the HIT AREA with an overlay
      rather than the box, so the drawn pill and the bar's height are
      untouched: the ring is still 26px, the target is 44. */
+  /* ── Text states swap ── transitions-dev/04-text-states-swap.md
+     The burger's label is the word that reports the sheet's state, and it
+     used to change between two frames: 'Menu' was simply not there and
+     'Close' simply was. The swap now reads as one word leaving and another
+     arriving, which is what actually happened.
+
+     Only the four variables this transition reads are declared, not the
+     skill's full :root block -- ~90 tokens for eleven transitions this site
+     has no surfaces for would be dead weight in a codebase whose whole
+     discipline is a closed token set. The semantic names are unchanged, so
+     the snippet below is verbatim. */
+  .pill--burger {
+    --text-swap-dur: 200ms;
+    --text-swap-translate-y: 8px;
+    --text-swap-blur: 2px;
+    --text-swap-ease: ease-out;
+  }
+  .t-text-swap {
+    display: inline-block;
+    transform: translateY(0);
+    filter: blur(0);
+    opacity: 1;
+    transition:
+      transform var(--text-swap-dur) var(--text-swap-ease),
+      filter    var(--text-swap-dur) var(--text-swap-ease),
+      opacity   var(--text-swap-dur) var(--text-swap-ease);
+    will-change: transform, filter, opacity;
+  }
+  .t-text-swap.is-exit {
+    transform: translateY(calc(var(--text-swap-translate-y) * -1));
+    filter: blur(var(--text-swap-blur));
+    opacity: 0;
+  }
+  .t-text-swap.is-enter-start {
+    transform: translateY(var(--text-swap-translate-y));
+    filter: blur(var(--text-swap-blur));
+    opacity: 0;
+    transition: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .t-text-swap { transition: none !important; }
+  }
+
   .pill--burger { display: none; }
   /* The burger is the ONLY navigation control below 940px, and it was a
      69x26 target. Unlike a.tap in base.css, this one cannot take the box
@@ -368,9 +412,38 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   }
 
   if (burger && menu) {
+    /* Three-phase text swap — transitions-dev/04-text-states-swap.md.
+       The pending timer is tracked so a fast double-tap cannot leave the
+       label stuck mid-exit: a second swap cancels the first outright. */
+    const swapDur = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--text-swap-dur')
+    ) || 200;
+    let swapT = null;
+    const swapLabel = (next) => {
+      if (!burgerLabel) return;
+      if (swapT) { clearTimeout(swapT); swapT = null; }
+      /* Already showing the right word — but a cancelled swap may have left
+         the label mid-exit, so put it back on its feet before returning.
+         Without this, a double-tap inside --text-swap-dur ends with the
+         label at opacity 0 and the button apparently blank. */
+      if (burgerLabel.textContent === next) {
+        burgerLabel.classList.remove('is-exit', 'is-enter-start');
+        return;
+      }
+      burgerLabel.classList.add('is-exit');
+      swapT = setTimeout(() => {
+        swapT = null;
+        burgerLabel.textContent = next;
+        burgerLabel.classList.remove('is-exit');
+        burgerLabel.classList.add('is-enter-start');
+        void burgerLabel.offsetHeight; // force reflow so the next change transitions
+        burgerLabel.classList.remove('is-enter-start');
+      }, swapDur);
+    };
+
     const set = (open) => {
       burger.setAttribute('aria-expanded', String(open));
-      if (burgerLabel) burgerLabel.textContent = open ? 'Close' : 'Menu';
+      if (burgerLabel) swapLabel(open ? 'Close' : 'Menu');
       if (open) { menu.hidden = false; requestAnimationFrame(() => menu.setAttribute('data-open', '')); }
       else { menu.removeAttribute('data-open'); setTimeout(() => { menu.hidden = true; }, 420); }
       nav?.classList.toggle('is-menu', open);
