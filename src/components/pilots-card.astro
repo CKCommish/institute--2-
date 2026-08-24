@@ -102,7 +102,13 @@ const { pilot: p } = Astro.props;
     min-width: 0;
   }
   .card__partner { transition: color 380ms var(--ease-out); }
-  .card__q { color: var(--fg-meta); white-space: nowrap; opacity: 0.72; }
+  /* No opacity on top of --fg-meta. The token IS the bottom of the
+     contrast ladder (cream 54%, measured 5.3 : 1); multiplying it by a
+     further 0.72 lands 38.9% effective = 3.27 : 1, under the 4.5 : 1 AA
+     floor for text this size. axe flags it; so does the site's own
+     documented budget in tokens.css. The same stack had been copied into
+     .pd__q and .pindex__q for the same word. */
+  .card__q { color: var(--fg-meta); white-space: nowrap; }
   .card__q::before { content: '\00b7'; margin-right: 0.85ch; }
 
   .card__t {
