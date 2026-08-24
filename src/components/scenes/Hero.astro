@@ -279,10 +279,19 @@ import { pilots } from '../../data/site.js';
   }
 
   /* Measured: the longest partner name and the longest project title stop
-     sharing a line below 375px. Rather than truncate a partner, the project
+     sharing a line below ~390px. Rather than truncate a partner, the project
      drops to its own line — in every row, so the block is still four
-     identical rows and not four ragged ones. */
-  @media (max-width: 374px) {
+     identical rows and not four ragged ones.
+
+     The guard used to stop at 374px, which left a live band from 375 to
+     ~385 where the fix was off and the truncation was on: at 375px --- the
+     iPhone SE and iPhone 8, still the common small screen --- "Secretary
+     Miguel Cardona" rendered as "Secretary Miguel Card...". A named public
+     official is the credibility this page runs on; it is the one string on
+     the site that must never be elided. Re-measured across 360-460: clean
+     at 360 (guard on) and at 390+ (room), truncating by 5px at 375 and 2px
+     at 380. The guard now covers the whole band. */
+  @media (max-width: 389px) {
     .hcell__sub {
       grid-column: 2 / -1;
       grid-row: 2;
