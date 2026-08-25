@@ -1,0 +1,15 @@
+import { launch } from '/home/user/institute--2-/tools/browser.mjs';
+const [label, sel, name, port = '4410'] = process.argv.slice(2);
+const OUT = '/tmp/claude-0/-home-user-institute--2-/4aae5723-f3fa-5aaa-8cbc-ebd9e16d8b73/scratchpad/shots';
+const vp = name === 'mobile' ? { width: 390, height: 844, isMobile: true, hasTouch: true } : { width: 1440, height: 900 };
+const b = await launch({ proxy: false });
+const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: 2 });
+const p = await ctx.newPage();
+await p.goto(`http://127.0.0.1:${port}/people/`, { waitUntil: 'networkidle' });
+await p.evaluate(async () => { const h = document.body.scrollHeight; for (let y = 0; y < h; y += 300) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 70)); } await new Promise((r) => setTimeout(r, 1500)); });
+const el = await p.$(sel);
+await el.scrollIntoViewIfNeeded();
+await p.waitForTimeout(1400);
+await el.screenshot({ path: `${OUT}/${label}-${name}.png` });
+console.log('ok');
+await b.close();

@@ -150,7 +150,21 @@ import { whyNow, whyNowLead } from '../../data/site.js';
   }
   .why__note:hover,
   .why__note:focus-visible { color: var(--fg); }
-  .why__note[data-reveal] { transition-duration: 520ms, 640ms; }
+  /* This has to be the whole list, not a `transition-duration` override.
+     The rule above sets `transition: color …`, which resets
+     transition-property to `color` alone — so base.css's [data-reveal]
+     pair was gone, `520ms, 640ms` landed the 520 on the HOVER and dropped
+     the 640, and this footnote was the one thing in the scene that
+     snapped into place instead of arriving. Both jobs are now declared
+     together: the reveal at this scene's tempo, the hover on the site's
+     register. Reduced motion still flattens all three — base.css sets
+     transition-duration on [data-reveal] with !important. */
+  .why__note[data-reveal] {
+    transition:
+      opacity 520ms var(--ease-out) var(--reveal-delay, 0ms),
+      transform 640ms var(--ease-out) var(--reveal-delay, 0ms),
+      color var(--dur-hover) var(--ease-out);
+  }
   .why__note-ast { font-family: var(--serif); font-size: 1.3em; color: var(--brass); line-height: 1; }
 
   /* Direction, not decoration: the footnote points into the scene that

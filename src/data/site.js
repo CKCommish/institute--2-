@@ -82,6 +82,31 @@ export const pilots = [
        programme she has no relationship to. The band keeps the event and
        drops the individual: a stride, a lane, a track. See PHOTO-FACTS. */
     image: '/media/pilot-health-track.jpg',
+    /* ── THE PLATE GRADE, PER SOURCE ────────────────────────────────
+       Measured over the exact 537.7 x 358.4 plate box on /pilots/ at 1440,
+       the four frames arrived as four commissions: mean chroma 41.7 / 22.0 /
+       20.7 / 13.3 — a 3.1x span — and the hue swung warm-red, cool-blue,
+       warm, neutral across four blocks a reader scrolls in ten seconds.
+       One `grade` could not close that, because `grade` is one number and
+       the four sources differ in saturation, not in exposure. So each frame
+       now carries its own trim on the two colour halves of the house grade
+       (`sat`, `tint`) plus a small hue correction (`warm`), chosen against
+       the meter, not by eye. Held target: chroma 15 +/- 1.5, |R-B| <= 6.
+       Re-measure before changing any of these; they are a SET, and a number
+       moved on one frame is only correct if the other three still hold.
+
+       01 is also the only frame with a CROP problem. It is a privacy crop
+       (PHOTO-FACTS: the master is an identifiable seven-year-old and the
+       face may not come back), and at zoom 1 the band read as a headless
+       waist-down figure adrift in a field of terracotta — the loudest,
+       most saturated object on the page, and it is first. The crop now
+       closes on the stride itself: legs, shoes, two lane lines. Same
+       privacy, an actual subject, and a third less open track. */
+    plate: {
+      grade: 0.5, sat: 3.3, tint: 3.3, warm: 0, lift: 1.2,
+      zoom: 1.3, focal: '28% 70%',
+      zoomSm: 1.18, focalSm: '26% 70%',
+    },
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Unified track event · U.S. Army',
@@ -108,6 +133,8 @@ export const pilots = [
     goal: 'Those terms adopted by one state.',
     horizon: '3–12 months',
     image: '/media/pilot-energy.jpg',
+    /* the cool outlier: +22 blue-over-red before the trim. See pilot 01. */
+    plate: { grade: 0.5, sat: 4.6, tint: 0, warm: 35, lift: 0.1 },
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Muskingum County, Ohio',
@@ -138,6 +165,8 @@ export const pilots = [
        obsolete; /pilots/ carried the correction as a component override
        until now. See refs/PHOTO-FACTS.md. */
     image: '/media/pilot-maternal.jpg',
+    /* the warm interior. See pilot 01. */
+    plate: { grade: 0.5, sat: 1.5, tint: 2.7, warm: 0, lift: 2.0 },
     /* What the PHOTOGRAPH is, not who owns it. This one frame's subject is a
        private individual at full scale, so the credit names the room she is
        standing in rather than the federal agency that holds the rights. */
@@ -168,6 +197,9 @@ export const pilots = [
     goal: 'More students land in a defined pathway.',
     horizon: '3–12 months',
     image: '/media/pilot-education.jpg',
+    /* already close to the target; it is the frame the other three were
+       brought toward. See pilot 01. */
+    plate: { grade: 0.5, sat: 1.1, tint: 2.3, warm: 0, lift: 0.8 },
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Adrian, Oregon',

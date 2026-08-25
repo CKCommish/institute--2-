@@ -20,7 +20,13 @@ const { tone = 'lit', class: klass } = Astro.props;
   .wm {
     display: inline-flex; align-items: baseline; gap: 0.5ch;
     font-family: var(--sans);
-    font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.85rem);
+    /* Published as a variable, not just consumed: the bar has to align this
+       mark's BASELINE with a row of --step-micro labels, and the offset
+       between two centre-aligned boxes is a function of the difference
+       between their two font sizes. Nav reads --wm-fs to compute it rather
+       than keeping a second copy of this clamp. */
+    --wm-fs: clamp(0.75rem, 0.7rem + 0.2vw, 0.85rem);
+    font-size: var(--wm-fs);
     font-weight: 400;
     letter-spacing: 0.15em;
     text-transform: uppercase;

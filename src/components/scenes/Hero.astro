@@ -141,7 +141,13 @@ import { pilots } from '../../data/site.js';
   <div class="hero__mid shell">
     <h1 class="hero__h" id="hero-h">
       <span class="bridge bridge--lift hero__kicker">The Lion Forum Institute exists to ensure</span>
-      <span class="display hero__poster">the technologies <span class="hero__keep">of tomorrow</span> strengthen American families today.</span>
+      <span class="display hero__poster"
+        >the technologies <br class="pbr pbr--2" aria-hidden="true"
+        />of <br class="pbr pbr--3" aria-hidden="true"
+        />tomorrow <br class="pbr pbr--4" aria-hidden="true"
+        />strengthen <br class="pbr pbr--5" aria-hidden="true"
+        />American <br class="pbr pbr--6" aria-hidden="true"
+        />families today.</span>
     </h1>
   </div>
 
@@ -318,22 +324,38 @@ import { pilots } from '../../data/site.js';
        the front door ran a local 5.9rem clamp and was out-shouted by 35% by
        two secondary pages. It is the banner now, at 126.2px on a 1440 frame.
 
-       THE RAG IS THE RAG. This used to claim that 10.6em fixed the line
-       breaks "identical at every viewport width" and landed the claim
-       "corner-to-corner across the frame". Measured, neither is true and
-       neither can be: the claim sets three lines above 1081px, four between
-       1081 and ~430, five below, and on a 1440 frame its longest line ends
-       at 1263px inside a 1338px measure — 75px short, because that is what
-       the words are, and nothing short of retracking a 126px serif to zero
-       would close it. So it is left as a rag and composed as one. With the
-       clause on a single line (see .hero__kicker) the block is
+       THE RAG IS SET, NOT FOUND. It used to be left to the browser's greedy
+       wrapper at every width, and the only width anyone had tuned was 1440.
+       Measured line boxes before:
 
-           627 · 969 · 1093 · 1263
+         1440   969 / 1093 / 1263            a clean staircase
+         1024   726 / 819 / 694 / 233        "today." alone at 25% of measure
+          768   577 / 651 / 551 / 185        the same orphan, 26%
+          390   295 / 231 / 194 / 328 / 109  longest line FOURTH, then a stub
 
-       four steps, each longer than the one above it, opening to the right
-       the way the light on this river does. A staircase is a rag a reader
-       can see the reason for; the previous 377 / 243 / 969 / 1093 / 1263
-       was not. */
+       The span that was meant to hold "of tomorrow" together computed
+       white-space: normal and split across two lines, so it did nothing.
+
+       The claim now carries an explicit break schedule — five <br class="pbr">
+       elements, each switched on in exactly the bands that want it. Line
+       widths are word widths, so a schedule is stable in a way a max-width
+       knife edge is not:
+
+         >= 1100   3 lines, breaks after "of" and "strengthen"
+                   969 / 1093 / 1263 at 1440 — every step longer than the last.
+                   The band ends at 1100, 19px above the 1081 where the third
+                   line finally touches the measure: air to the right of that
+                   line runs 65px at 1440, 39.8 at 1240, 14.2 at 1100 and 0 at
+                   1081, and the 0.09em right bearing is 9px more below that.
+          621-1099 4 lines, the SAME first two lines with the third split at
+                   its only orphan-free point: 726 / 822 / 380 / 547 at 1024,
+                   closing on a rising step
+         <= 620    5 lines, 295 / 231 / 194 / 179 / 257 at 390 — a funnel that
+                   narrows four times and closes, no line inside 45px of the
+                   margin and no single-word stub at the foot
+
+       The wrapper is still the fallback: if a face ever sets wider than
+       measured, a line wraps rather than overflowing. */
     font-size: var(--step-banner);
     line-height: 0.93;
     letter-spacing: -0.028em;
@@ -436,6 +458,54 @@ import { pilots } from '../../data/site.js';
     -webkit-mask-size: 100% 0%; mask-size: 100% 0%;
     animation: posterInk 980ms var(--ease-out) 240ms forwards;
   }
+  /* THE BREAK SCHEDULE. All five breaks are off by default and each band
+     turns on the ones it wants; `display: none` on a <br> removes the break,
+     and the space that precedes it collapses with the following one, so the
+     off state is the plain sentence. Positions are named by the word they
+     follow: 2 technologies · 3 of · 4 tomorrow · 5 strengthen · 6 American. */
+  .pbr { display: none; }
+  .pbr--3, .pbr--5 { display: inline; }              /* >= 1100: three lines */
+
+  /* THE CEILING WAS 160px TOO LOW. The three-line rag was switched off at
+     1240 on the theory that the third line only "touches the measure" at
+     1081, and that a set break wants margin of error. Re-measured by forcing
+     the three-line schedule at each width, the tuned rag keeps real air the
+     whole way down: 1240 -> 852/962/1111, 39.8px to the shell's right edge;
+     1200 -> 32.4; 1180 -> 28.9; 1152 -> 23.8; 1120 -> 17.9; 1100 -> 14.2;
+     1082 -> 11.0. It only genuinely breaks at 1060. The margin of error was
+     therefore being bought at 1100-1240 by a rag that is worse than the risk:
+     at 1180 the four-line set is 817/922/428/616 — "American" alone on line 3
+     at 46% of the measure with a 494px empty field beside it, then a fourth
+     106px line. The ceiling moves to 1100, where line 3 still holds 14.2px of
+     air and the 0.09em right bearing reserved on .hero__poster guarantees a
+     further 9px below that. 1100-1440 all get the staircase; the four-line
+     set now serves 621-1099, where it is the right answer. */
+  @media (max-width: 1099px) {                       /* four lines */
+    .pbr--6 { display: inline; }
+  }
+
+  @media (max-width: 620px) {                        /* five lines */
+    .pbr--2, .pbr--4 { display: inline; }
+    .pbr--3 { display: none; }
+  }
+
+  /* Below ~360 the schedule outruns the measure. --step-poster floors at
+     2.3rem, which sets the longest scheduled line ("the technologies") at
+     295px inside a 276px measure at 320 — so the browser wraps INSIDE a
+     line the schedule had already set, and the claim opens on a 58px
+     orphan reading "the". The break schedule is right; the type is 7% too
+     large for the last real phone width. Bring the poster down just enough
+     that the scheduled longest line fits, and the five-line set holds all
+     the way to 320. */
+  @media (max-width: 360px) {
+    /* Off --step-poster, not a percentage: a % font-size resolves against
+       the PARENT (h1.hero__h), not against this element's own computed
+       size, which over-shrank the claim to 63% and put a visible cliff
+       between 361 and 360. This element is set in --step-banner, not
+       --step-poster, so the fraction has to come off the banner. */
+    .hero__poster { font-size: calc(var(--step-banner) * 0.93); }
+  }
+
   @keyframes posterInk { to { -webkit-mask-size: 100% 190%; mask-size: 100% 190%; } }
 
   /* ── Register 3: the 2026 ledger ──────────────────────────────────
@@ -646,23 +716,65 @@ import { pilots } from '../../data/site.js';
     }
   }
 
-  /* THE PHONE SETTING, COMPOSED.
-     At 390 the claim wraps naturally to 343 / 183 / 194 / 328 / 109 px on a
-     348px measure: the first line jammed to within 5px of the margin, then
-     two single-word lines. Five lines of 46px serif is the right amount of
-     voice on a phone; that rag is not.
+  /* The claim goes to five lines at 620 and the type there is 64px, not the
+     phone's 46px: same top (171 vs 166), block foot 89px lower (479 vs 390).
+     The ≤760 stops below are set to the phone's block, so its tail is carried
+     down by the same 89px here — nothing else about the band moves. */
+  @media (min-width: 561px) and (max-width: 620px) {
+    .hero__veil {
+      --claim-hold: 465px;
+      --claim-out:  493px;
+      --claim-fade: 529px;
+      --claim-end:  565px;
+    }
+  }
 
-     Holding "of tomorrow" together moves one word up and one word down and
-     the rag becomes 295 / 230 / 194 / 328 / 109 — no line inside 20px of the
-     margin, no orphan, and the block keeps a left column instead of running
-     edge to edge. It is done with a nowrap group rather than a narrower
-     max-width on purpose: a measure that sits 7px below "the technologies of"
-     and 9px above "American families" is a knife edge that a font fallback or
-     a different rasteriser flips. The group depends only on the ORDER of the
-     word widths, which does not move. */
+  /* The phone tightens the tracking one notch; the rag itself is set by the
+     break schedule above, not by a nowrap group. */
   @media (max-width: 620px) {
     .hero__poster { letter-spacing: -0.026em; }
-    .hero__keep { white-space: nowrap; }
+  }
+
+  /* THE CLAIM HAD A WIDTH BUDGET AND NO HEIGHT BUDGET. The break schedule
+     caps how wide the block may run at every viewport; nothing capped how
+     TALL it runs, and the block is top-anchored under the bar while the
+     ledger is bottom-anchored to the frame. So on a short phone the two
+     march into each other. Measured, claim box bottom to the "FOUR PILOTS ·
+     2026" eyebrow:
+
+       390 x 844   256.2px   the frame this was tuned on
+       375 x 667    41.8
+       360 x 640    18.8     five 216px lines + a 56px kicker, no air left
+       320 x 568    -4.2     overlapping, and the block wraps to SIX lines
+                             with a 58px "the" orphan; cell 04 lands 64px
+                             below the fold
+
+     The fix is a height budget, expressed the same way the width one is: a
+     ceiling, not a rewrite.
+
+     5.5vh is chosen so the cap is CONTINUOUS at the frame it was tuned on:
+     at 844px tall it computes to 46.42px against --step-banner's 46.44 at
+     390 wide, so min() is inert there to a hundredth of a pixel and there is
+     no step at the query's edge — the claim simply stops growing once the
+     frame stops being tall enough to hold it.
+
+     The shelf under the bar gets a FLOOR to go with it. It is 5.4vh, which on
+     a 568px frame is 30.7px — and the location credit Figure sets on the
+     top-right rail is a fixed object whose foot lands at y90 there, so the
+     clause was starting at y89 and running THROUGH it. (Measured: 320 x 568
+     kicker top 89 vs credit foot 90; 360 x 640, 93 vs 93. It was a collision
+     before this round and a percentage cannot see it.) 2.65rem is the
+     smallest floor that puts the clause clear of the credit at every short
+     frame — kicker top 100 / 101 / 102 at 568 / 640 / 667 — and it is below
+     5.4vh from 786px tall upward, so again the tuned frame does not move.
+     Below all this the claim gives ground before the ledger
+     does, which is the right order: the four names are the page's only
+     credential and they must stay inside the first screen. */
+  @media (max-width: 620px) and (max-height: 860px) {
+    .hero__poster { font-size: min(var(--step-banner), 5.5vh); }
+  }
+  @media (max-width: 620px) and (max-height: 786px) {
+    .hero__mid { padding-top: calc(var(--nav-h) + clamp(2.65rem, 5.4vh, 3.4rem)); }
   }
 
   /* ── THE PHONE'S PHOTOGRAPHIC BAND ───────────────────────────────
@@ -693,6 +805,26 @@ import { pilots } from '../../data/site.js';
     .hero__index { padding-bottom: clamp(1.3rem, 3.1vh, 2.1rem); }
     .hero__index-head { margin-bottom: clamp(0.6rem, 1.3vh, 0.95rem); }
     .hcell { padding-block: clamp(0.42rem, 1.12vh, 0.62rem); }
+  }
+
+  /* THE LAST 25px COME FROM THE LEDGER, NOT FROM THE CLAIM. Below 600px tall
+     the 5.5vh cap above has taken the claim as far as it can go without
+     breaking the ladder: the rungs are 11.7 rail / clause / claim, and at
+     568 a claim capped to 31px is already only ~1.6x its own lead-in clause
+     against 2.8x on the desktop. Taking it lower to buy air would invert the
+     two voices — the sentence would end up quieter than its own preamble.
+     The ledger's pitch is the right place to find the difference instead:
+     every clamp below is already sitting on its floor at this height, and
+     those floors were set for a 620–844 phone. The values are flat here
+     rather than clamped for exactly that reason — at 568 the vh term is
+     already the smaller of the two, so lowering a clamp's floor bought 6px
+     of the 25 needed. Four rows lose 2.2px a side, the head 1.6 and the foot
+     8.8: 24.8px the claim keeps. Every row is still a 36px vertical target
+     and nothing in the manifest changes but its pitch. */
+  @media (max-width: 620px) and (max-height: 600px) {
+    .hero__index { padding-bottom: 0.75rem; }
+    .hero__index-head { margin-bottom: 0.5rem; }
+    .hcell { padding-block: 0.26rem; }
   }
 
   /* Measured: the longest partner name and the longest project title stop

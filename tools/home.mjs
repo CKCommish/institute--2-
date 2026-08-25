@@ -1,0 +1,11 @@
+import { launch } from '/home/user/institute--2-/tools/browser.mjs';
+const OUT='/tmp/claude-0/-home-user-institute--2-/4aae5723-f3fa-5aaa-8cbc-ebd9e16d8b73/scratchpad/shots';
+const b=await launch({proxy:false});
+const c=await b.newContext({viewport:{width:1440,height:900},deviceScaleFactor:2});
+const p=await c.newPage(); await p.goto('http://127.0.0.1:4420/',{waitUntil:'networkidle'}); await p.mouse.move(700,700); await p.waitForTimeout(1500);
+await p.screenshot({path:OUT+'/home-1440-top.png'});
+await p.screenshot({path:OUT+'/home-1440-bar.png',clip:{x:0,y:0,width:1440,height:80}});
+const m=await b.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
+const p2=await m.newPage(); await p2.goto('http://127.0.0.1:4420/',{waitUntil:'networkidle'}); await p2.waitForTimeout(1500);
+await p2.screenshot({path:OUT+'/home-390-top.png'});
+await b.close();

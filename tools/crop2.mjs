@@ -1,0 +1,10 @@
+import { launch } from '/home/user/institute--2-/tools/browser.mjs';
+const OUT='/tmp/claude-0/-home-user-institute--2-/4aae5723-f3fa-5aaa-8cbc-ebd9e16d8b73/scratchpad/shots';
+const b = await launch({ proxy:false });
+const ctx = await b.newContext({ viewport:{width:1440,height:900}, deviceScaleFactor:4 });
+const p = await ctx.newPage();
+await p.goto('http://127.0.0.1:4451/',{waitUntil:'networkidle'}); await p.waitForTimeout(2500);
+await p.screenshot({path:`${OUT}/c-artifact.png`, clip:{x:930,y:150,width:180,height:120}});
+await p.screenshot({path:`${OUT}/c-leftrail.png`, clip:{x:38,y:0,width:120,height:250}});
+await p.screenshot({path:`${OUT}/c-leftrail2.png`, clip:{x:38,y:760,width:120,height:110}});
+await b.close();

@@ -91,7 +91,13 @@ import { pilots } from '../../data/site.js';
     align-items: baseline;
     column-gap: clamp(1.1rem, 2.2vw, 2.4rem);
     row-gap: 0.55rem;
-    transition: opacity 300ms var(--ease-out), background-color var(--dur-hover) var(--ease-out);
+    /* Both halves of ONE gesture. Entering a row dims its siblings and
+       tints the row itself; those were running at 300ms and 380ms, so the
+       ledger fell away fractionally before the row it was making way for
+       lit up. Same event, same register — and the register is the site's,
+       so the row now answers a cursor at the speed the pilot CARDS on
+       /pilots/ already answer at. */
+    transition: opacity var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out);
   }
   /* one hairline, not a table: it divides who runs it from what it does */
   .pilot__v {

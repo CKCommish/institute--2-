@@ -1,48 +1,48 @@
 {
- "wave": 1,
+ "wave": 2,
  "pieces": [
   {
-   "name": "Nav & chrome",
-   "status": "won",
-   "round": 4,
-   "verdict": "ours",
-   "gap": "Mobile sheet: the four serif menu words have a ragged left edge. Measured box-lefts are Institute 54.02, Pilots 55.50, Forum 55.83, People 56.02 CSS px \u2014 about a 3.5px ink rag between \"Institute\" and \"People\" at 36.8px Newsreader, plainly visible at 1x. The ca"
-  },
-  {
    "name": "Home hero & first screen",
-   "status": "judging",
-   "round": 4,
-   "verdict": "apple",
-   "gap": "The hero sentence's line breaking is left entirely to the browser's greedy wrapper \u2014 `.hero__poster` computes `text-wrap: wrap` at every width, with no `balance`, no per-breakpoint `<br>`, and the `.hero__keep` span that was written to hold \"of tomorrow\" toget"
+   "status": "won",
+   "round": 2,
+   "verdict": "ours",
+   "gap": "The four named partners in the ledger \u2014 set as the second-largest voice in the frame and the page's only credential \u2014 are inert `<li>` elements. Zero `:hover` / `:focus-visible` rules exist on `.hcell` (grep count 0 in Hero.astro), no anchor wraps th"
   },
   {
    "name": "Pilots index & cards",
    "status": "won",
    "round": 1,
    "verdict": "ours",
-   "gap": "Between 621px and 1180px the vertical column rule is dead \u2014 the two-up grid renders with no separator between its columns at all. Cause is a specificity/property mismatch in pilots.astro's narrow block: `.pgrid__cell + .pgrid__cell::after { display: none }` ki"
+   "gap": "The row seam in the two-up band (621\u20131180px) is a four-way junction where nothing meets anything. Two separate faults stack at the same crossing: (a) the band's structural horizontal is no longer continuous \u2014 at \u22641180 `.pgrid__grid { border-top: 0 }`"
   },
   {
-   "name": "Pilot detail blocks",
+   "name": "Pilot detail photograph grade",
+   "status": "won",
+   "round": 1,
+   "verdict": "ours",
+   "gap": "The set now matches on frame-mean chroma but not on the one colour a reader actually audits \u2014 skin. Sampled inside the same plates: plate 01 runner's calf 113/109/121 (R\u2212B \u22128, lavender), plate 03 mother's face 142/133/132 (R\u2212B +10), plate 04 welder's"
+  },
+  {
+   "name": "People masthead lockup",
+   "status": "won",
+   "round": 1,
+   "verdict": "ours",
+   "gap": "The index's declared entrance is dead, so on frame 1 of every load the \"lockup\" is asserted before the thing it locks to exists. `.pm__idx-i` carries `transition: border-color var(--dur-hover) var(--ease-out)` \u2014 a shorthand that overwrites the reveal"
+  },
+  {
+   "name": "Partner \u2014 the three doors",
+   "status": "won",
+   "round": 1,
+   "verdict": "ours",
+   "gap": "All three action lines still open with a byte-identical 4-word head \u2014 \"Email us about \u2026\" \u2014 so the only differentiating token is the LAST word, 89\u2013100px into each line (measured text-box lefts at 1440: 88.45 / 550.53 / 1012.60; widths 194.09 / 224.80 "
+  },
+  {
+   "name": "Nav \u2014 sheet rag & restored ring",
    "status": "won",
    "round": 2,
    "verdict": "ours",
-   "gap": "The four photograph plates are not one grade \u2014 they are four unrelated images sitting in four identical frames. Measured over each plate's exact 537.7\u00d7358.4 box: pilot 01 (track) mean RGB 126/99/96, mean chroma 41.7, +30 red-over-blue; pilot 02 (pylons) 102/11"
-  },
-  {
-   "name": "People",
-   "status": "won",
-   "round": 3,
-   "verdict": "ours",
-   "gap": "The hero's right-hand index block (\"02 FOUNDERS / 16 PROSPECTIVE BOARD\") has no optical relationship to the headline it sits beside \u2014 it is placed by eye, not by system, and it is the first screen. Measured at 1440: the headline \"The people accountable / for t"
-  },
-  {
-   "name": "Partner & the ask",
-   "status": "won",
-   "round": 4,
-   "verdict": "ours",
-   "gap": "The three doors \u2014 the page's stated chooser \u2014 end in three byte-identical \"EMAIL US\" labels set at 11.664px/w500/ls1.4, which is the SMALLEST type in the scene and smaller even than the decorative ordinal. Measured door scale: title 33.79px \u2192 body 15.79px \u2192 or"
+   "gap": "Mobile bar: the burger label's baseline prints exactly 1.00 CSS px BELOW the wordmark's at every width from 768 down to 320 \u2014 including 390. Ink-measured at dpr 4 on /pilots/: \"LION FORUM INSTITUTE\" cap bottom y=32.00, \"MENU\" cap bottom y=33.00 (bl2."
   }
  ],
- "note": "Wave 1 complete \u2014 37 agents, 5.8M tokens, 5h20m. The pill CTA \"violation\" was an error in my brief, not a finding; the ring has been restored."
+ "note": "Wave 2 complete \u2014 6/6 pieces winning, 6/6 named gaps closed. 17 agents, 2.1M tokens. Six regressions the critics flagged were then fixed by hand and re-measured; gates green at 84/84 overflow checks and 12/12 axe routes."
 }

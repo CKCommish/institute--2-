@@ -130,6 +130,18 @@ import Figure from './Figure.astro';
 
 const { pilot: p, loading = 'lazy', focal = '50% 50%', focalSm, grade = 0.5 } = Astro.props;
 const d = p.detail;
+
+/* ── ONE GRADE, FOUR FRAMES ──────────────────────────────────────────
+   The four plates were four unrelated pictures in four identical frames:
+   measured over the exact 537.7 x 358.4 box at 1440, mean chroma ran
+   41.7 / 22.0 / 20.7 / 13.3 and the hue swung warm-red -> cool-blue ->
+   warm -> neutral. A frame is not a grade; four frames that match while
+   the pictures inside them do not is the thing that makes a set read as
+   stock. The trim per source lives with the photograph in site.js
+   (`pilot.plate`) because it is a fact about that FILE, not about this
+   layout — and it wins over anything the page passes, since a page-level
+   crop or grade guess cannot know what the meter said. */
+const pl = p.plate ?? {};
 const hid = `${p.id}-h`;
 
 /* THREE AND THREE. `Proposed by` is gone: it set the partner's name in
@@ -176,9 +188,15 @@ const needs = [
           alt={p.alt ?? ''}
           ratio="3 / 2"
           ratioSm="4 / 3"
-          grade={grade}
-          focal={focal}
-          focalSm={focalSm ?? focal}
+          grade={pl.grade ?? grade}
+          sat={pl.sat ?? 1}
+          lift={pl.lift ?? 1}
+          tint={pl.tint ?? 1}
+          warm={pl.warm ?? 0}
+          zoom={pl.zoom ?? 1}
+          zoomSm={pl.zoomSm}
+          focal={pl.focal ?? focal}
+          focalSm={pl.focalSm ?? focalSm ?? pl.focal ?? focal}
           parallax={3}
           loading={loading}
           credit={p.credit}
@@ -428,7 +446,11 @@ const needs = [
     .pd__ask:hover::before { transform: scaleX(1); transform-origin: left; }
     .pd__ask:hover .pd__arrow { opacity: 1; transform: translateX(0.3rem); }
   }
-  .pd__ask:focus-visible { outline-offset: 6px; }
+  /* The house ring, unmodified. This carried outline-offset: 6px — the
+     only value on the site that was neither base.css's 3px nor the pilot
+     CARD's argued 8px (a ring round a cell rather than round a word).
+     This is a word and an arrow on a rule, which is the case base.css's
+     3px was written for, so it takes it. */
   .pd__ask:focus-visible::before { transform: scaleX(1); transform-origin: left; }
   .pd__ask:focus-visible .pd__arrow { opacity: 1; transform: none; }
 

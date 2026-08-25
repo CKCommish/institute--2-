@@ -39,6 +39,25 @@ const {
   ratioSm,             // optional aspect ratio below 720px
   parallax = 0,
   grade = 0.5,
+  /* ── PER-SOURCE TRIM ON THE UNIFICATION ────────────────────────────
+     `grade` is one number driving three moves at once (desaturate, tint,
+     veil), which is right for one picture and not enough for a SET. Four
+     frames from four cameras do not arrive at the same saturation, so one
+     `grade` applied to all four preserves their differences rather than
+     removing them — a terracotta running track at grade 0.34 stays three
+     times more saturated than a welding shop at 0.56, and a reader who
+     scrolls the four in ten seconds sees four commissions.
+
+     `sat` and `tint` are MULTIPLIERS on the two colour halves of the
+     grade, so a set can be brought to ONE measured chroma without each
+     frame having to give up the same amount of light. Default 1 = the
+     grade as declared, so every existing call site is unchanged. `warm`
+     is the last correction after that: a small hue rotation, in degrees,
+     for a frame whose remaining cast still pulls against the others.
+     Trim these against measurements, never by eye. */
+  sat = 1,
+  tint = 1,
+  warm = 0,
   focal = '50% 50%',
   loading = 'lazy',
   grain = 1,
@@ -189,6 +208,9 @@ const style = [
   ...(zoomSm ? [`--zoom-sm:${zoomSm}`] : []),
   ...(focalSm ? [`--focal-sm:${focalSm}`] : []),
   `--grade:${grade}`,
+  `--sat-k:${sat}`,
+  `--tint-k:${tint}`,
+  `--warm:${warm}deg`,
   `--lift:${lift}`,
   `--vig:${vig === undefined ? 1 : vig}`,
   `--sc-top-a:${topA}`,
@@ -348,7 +370,8 @@ const style = [
        while the midtones open; the contrast term then pushes the shadows back
        down so the lift never reads as a grey haze. */
     filter:
-      saturate(calc(1 - var(--grade) * var(--fig-sat)))
+      hue-rotate(var(--warm, 0deg))
+      saturate(calc(1 - var(--grade) * var(--fig-sat) * var(--sat-k, 1)))
       brightness(calc(1 + var(--lift) * var(--fig-lift-b)))
       contrast(calc(1 + var(--lift) * var(--fig-lift-c) + var(--grade) * 0.05));
     opacity: 0;
@@ -381,7 +404,7 @@ const style = [
      navy, and the pictures stopped being about the light they were taken in.
      `color` blending keeps luminance either way, so this number is purely
      "how much of the photograph's own colour survives". */
-  .fig[data-state='ready'] .fig__tint { opacity: calc(var(--grade) * var(--fig-tint)); }
+  .fig[data-state='ready'] .fig__tint { opacity: calc(var(--grade) * var(--fig-tint) * var(--tint-k, 1)); }
 
   /* THE VEIL — what `grade` now costs the photograph tonally, and all it
      costs it. One thin sheet of the page's own navy across the whole frame,
@@ -555,7 +578,30 @@ const style = [
     align-items: baseline;
     gap: 0.7rem;
     pointer-events: none;
-    text-shadow: 0 1px 14px rgba(3, 9, 16, 0.75);
+    /* PROTECTION, PLACED — and it has to be enough for the WORST corner
+       this component is allowed to occupy, not the average one.
+
+       The credit is the micro register, and tokens.css puts a hard ceiling
+       on that register over photography: --fg-meta needs a backdrop under
+       L* 20. `creditPos` offers four corners and each caller picks one, so
+       the same mark lands on four different pieces of picture. Measured,
+       backdrop only, type hidden:
+
+         /            hero, top-right      mean L*  9.0   p95 15.4   inside
+         /institute/  bottom-right         mean L* 19.6   p95 23.7   at it
+         /forum/      masthead, top-right  mean L* 25.5   p95 32.9   over
+
+       Three routes, one component, three answers — and the forum masthead's
+       three free corners are all spoken for (the invitation line, the
+       Scroll cue), so the fix cannot be "move it". A wide 14px halo alone
+       does not hold a 11.7px cap: there is a lot of perimeter and very
+       little ink. The tight ring is what buys the glyph its edge back; the
+       wide one still carries the field. Both are the page's own ground, so
+       nothing is added to the palette and a dark corner sees no change at
+       all — on navy this paints ink onto ink. */
+    text-shadow:
+      0 0 3px rgba(3, 9, 16, 0.86),
+      0 1px 14px rgba(3, 9, 16, 0.78);
   }
   .fig__credit[data-pos^='top']    { top: var(--ci); }
   .fig__credit[data-pos^='bottom'] { bottom: var(--ci); }
@@ -601,7 +647,7 @@ const style = [
      absence is a reliable "the engine is not coming" signal — paint the
      ready state and skip the transition rather than animate into it. */
   :global(html:not(.js)) .fig__media img { opacity: 1; transform: scale(var(--zoom, 1)); transition: none; }
-  :global(html:not(.js)) .fig__tint  { opacity: calc(var(--grade) * var(--fig-tint)); transition: none; }
+  :global(html:not(.js)) .fig__tint  { opacity: calc(var(--grade) * var(--fig-tint) * var(--tint-k, 1)); transition: none; }
   :global(html:not(.js)) .fig__veil  { opacity: calc(var(--grade) * var(--fig-veil)); transition: none; }
   :global(html:not(.js)) .fig__scrim { opacity: 1; transition: none; }
   :global(html:not(.js)) .fig--wipe  { -webkit-mask-image: none; mask-image: none; transition: none; }

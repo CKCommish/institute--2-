@@ -35,54 +35,54 @@ footer{margin-top:2rem;color:var(--dim);font-size:.86rem}
 <h1>Gauntlet</h1>
 <p class="sub">Lion Forum Institute judged frame-by-frame against apple.com. Each piece loops build → blind A/B critique until ours wins.</p>
 <div class="meta">
-  <div><span class="k">Wave</span><span class="val">1</span></div>
+  <div><span class="k">Wave</span><span class="val">2</span></div>
   <div><span class="k">Pieces</span><span class="val">6</span></div>
-  <div><span class="k">Won</span><span class="val">5</span></div>
+  <div><span class="k">Won</span><span class="val">6</span></div>
   <div><span class="k">Apple frames</span><span class="val">55</span></div>
 </div>
 <div class="tw">
 <table><thead><tr><th>Piece</th><th>Status</th><th>Round</th><th>Blind A/B</th><th>Biggest remaining gap</th></tr></thead><tbody><tr>
-    <td class="pc">Nav &amp; chrome</td>
-    <td><span class="chip won">won</span></td>
-    <td class="num">4</td>
-    <td><span class="v win">ours wins</span></td>
-    <td class="gap">Mobile sheet: the four serif menu words have a ragged left edge. Measured box-lefts are Institute 54.02, Pilots 55.50, Forum 55.83, People 56.02 CSS px — about a 3.5px ink rag between "Institute" and "People" at 36.8px Newsreader, plainly visible at 1x. The ca</td>
-  </tr>
-<tr>
     <td class="pc">Home hero &amp; first screen</td>
-    <td><span class="chip judging">judging</span></td>
-    <td class="num">4</td>
-    <td><span class="v lose">Apple wins</span></td>
-    <td class="gap">The hero sentence's line breaking is left entirely to the browser's greedy wrapper — `.hero__poster` computes `text-wrap: wrap` at every width, with no `balance`, no per-breakpoint `&lt;br&gt;`, and the `.hero__keep` span that was written to hold "of tomorrow" toget</td>
+    <td><span class="chip won">won</span></td>
+    <td class="num">2</td>
+    <td><span class="v win">ours wins</span></td>
+    <td class="gap">The four named partners in the ledger — set as the second-largest voice in the frame and the page's only credential — are inert `&lt;li&gt;` elements. Zero `:hover` / `:focus-visible` rules exist on `.hcell` (grep count 0 in Hero.astro), no anchor wraps th</td>
   </tr>
 <tr>
     <td class="pc">Pilots index &amp; cards</td>
     <td><span class="chip won">won</span></td>
     <td class="num">1</td>
     <td><span class="v win">ours wins</span></td>
-    <td class="gap">Between 621px and 1180px the vertical column rule is dead — the two-up grid renders with no separator between its columns at all. Cause is a specificity/property mismatch in pilots.astro's narrow block: `.pgrid__cell + .pgrid__cell::after { display: none }` ki</td>
+    <td class="gap">The row seam in the two-up band (621–1180px) is a four-way junction where nothing meets anything. Two separate faults stack at the same crossing: (a) the band's structural horizontal is no longer continuous — at ≤1180 `.pgrid__grid { border-top: 0 }`</td>
   </tr>
 <tr>
-    <td class="pc">Pilot detail blocks</td>
+    <td class="pc">Pilot detail photograph grade</td>
+    <td><span class="chip won">won</span></td>
+    <td class="num">1</td>
+    <td><span class="v win">ours wins</span></td>
+    <td class="gap">The set now matches on frame-mean chroma but not on the one colour a reader actually audits — skin. Sampled inside the same plates: plate 01 runner's calf 113/109/121 (R−B −8, lavender), plate 03 mother's face 142/133/132 (R−B +10), plate 04 welder's</td>
+  </tr>
+<tr>
+    <td class="pc">People masthead lockup</td>
+    <td><span class="chip won">won</span></td>
+    <td class="num">1</td>
+    <td><span class="v win">ours wins</span></td>
+    <td class="gap">The index's declared entrance is dead, so on frame 1 of every load the "lockup" is asserted before the thing it locks to exists. `.pm__idx-i` carries `transition: border-color var(--dur-hover) var(--ease-out)` — a shorthand that overwrites the reveal</td>
+  </tr>
+<tr>
+    <td class="pc">Partner — the three doors</td>
+    <td><span class="chip won">won</span></td>
+    <td class="num">1</td>
+    <td><span class="v win">ours wins</span></td>
+    <td class="gap">All three action lines still open with a byte-identical 4-word head — "Email us about …" — so the only differentiating token is the LAST word, 89–100px into each line (measured text-box lefts at 1440: 88.45 / 550.53 / 1012.60; widths 194.09 / 224.80 </td>
+  </tr>
+<tr>
+    <td class="pc">Nav — sheet rag &amp; restored ring</td>
     <td><span class="chip won">won</span></td>
     <td class="num">2</td>
     <td><span class="v win">ours wins</span></td>
-    <td class="gap">The four photograph plates are not one grade — they are four unrelated images sitting in four identical frames. Measured over each plate's exact 537.7×358.4 box: pilot 01 (track) mean RGB 126/99/96, mean chroma 41.7, +30 red-over-blue; pilot 02 (pylons) 102/11</td>
-  </tr>
-<tr>
-    <td class="pc">People</td>
-    <td><span class="chip won">won</span></td>
-    <td class="num">3</td>
-    <td><span class="v win">ours wins</span></td>
-    <td class="gap">The hero's right-hand index block ("02 FOUNDERS / 16 PROSPECTIVE BOARD") has no optical relationship to the headline it sits beside — it is placed by eye, not by system, and it is the first screen. Measured at 1440: the headline "The people accountable / for t</td>
-  </tr>
-<tr>
-    <td class="pc">Partner &amp; the ask</td>
-    <td><span class="chip won">won</span></td>
-    <td class="num">4</td>
-    <td><span class="v win">ours wins</span></td>
-    <td class="gap">The three doors — the page's stated chooser — end in three byte-identical "EMAIL US" labels set at 11.664px/w500/ls1.4, which is the SMALLEST type in the scene and smaller even than the decorative ordinal. Measured door scale: title 33.79px → body 15.79px → or</td>
+    <td class="gap">Mobile bar: the burger label's baseline prints exactly 1.00 CSS px BELOW the wordmark's at every width from 768 down to 320 — including 390. Ink-measured at dpr 4 on /pilots/: "LION FORUM INSTITUTE" cap bottom y=32.00, "MENU" cap bottom y=33.00 (bl2.</td>
   </tr></tbody></table>
 </div>
-<footer>Wave 1 complete — 37 agents, 5.8M tokens, 5h20m. The pill CTA "violation" was an error in my brief, not a finding; the ring has been restored.</footer>
+<footer>Wave 2 complete — 6/6 pieces winning, 6/6 named gaps closed. 17 agents, 2.1M tokens. Six regressions the critics flagged were then fixed by hand and re-measured; gates green at 84/84 overflow checks and 12/12 axe routes.</footer>
 </div>

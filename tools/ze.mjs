@@ -1,0 +1,12 @@
+import { launch } from '/home/user/institute--2-/tools/browser.mjs';
+const OUT='/tmp/claude-0/-home-user-institute--2-/4aae5723-f3fa-5aaa-8cbc-ebd9e16d8b73/scratchpad/shots';
+const b=await launch({proxy:false});
+const ctx=await b.newContext({viewport:{width:1440,height:900},deviceScaleFactor:6});
+const p=await ctx.newPage();
+await p.goto('http://127.0.0.1:4454/people/',{waitUntil:'networkidle'}); await p.waitForTimeout(1000);
+const before=await p.evaluate(()=>getComputedStyle(document.querySelector('.wm__b')).color);
+await p.hover('.nav__mark'); await p.waitForTimeout(800);
+const after=await p.evaluate(()=>getComputedStyle(document.querySelector('.wm__b')).color);
+await p.screenshot({path:`${OUT}/wm-hover2.png`,clip:{x:44,y:12,width:230,height:38}});
+console.log('before',before,'after',after);
+await b.close();

@@ -1,0 +1,17 @@
+import { launch } from '/home/user/institute--2-/tools/browser.mjs';
+const S='/tmp/claude-0/-home-user-institute--2-/4aae5723-f3fa-5aaa-8cbc-ebd9e16d8b73/scratchpad/shots/';
+const b = await launch({ proxy:false });
+const p = await (await b.newContext({viewport:{width:1440,height:900}})).newPage();
+await p.goto('http://127.0.0.1:4454/people/',{waitUntil:'networkidle'});
+await p.waitForTimeout(1000);
+console.log('scrollBehavior', await p.evaluate(()=>getComputedStyle(document.documentElement).scrollBehavior));
+console.log('targets', await p.evaluate(()=>['#founders','#board'].map(id=>{const e=document.querySelector(id); return e? {id, cls:e.className, st:getComputedStyle(e).scrollMarginTop}:null;})));
+await p.click('a[href="#board"]');
+await p.waitForTimeout(2500);
+console.log('after click scrollY', await p.evaluate(()=>window.scrollY));
+await p.screenshot({path:S+'anchor-board.png'});
+await p.evaluate(()=>window.scrollTo(0,0)); await p.waitForTimeout(1200);
+await p.click('a[href="#founders"]'); await p.waitForTimeout(2500);
+console.log('founders scrollY', await p.evaluate(()=>window.scrollY));
+await p.screenshot({path:S+'anchor-founders.png'});
+await b.close();

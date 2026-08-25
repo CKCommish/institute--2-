@@ -1,0 +1,12 @@
+import { launch } from '/home/user/institute--2-/tools/browser.mjs';
+const [label, sel, name] = process.argv.slice(2);
+const OUT = '/tmp/claude-0/-home-user-institute--2-/4aae5723-f3fa-5aaa-8cbc-ebd9e16d8b73/scratchpad/shots';
+const vp = name === 'mobile' ? { width: 390, height: 844, isMobile: true, hasTouch: true } : { width: 1440, height: 900 };
+const b = await launch({ proxy: false });
+const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: 2, reducedMotion: 'reduce' });
+const p = await ctx.newPage();
+await p.goto('http://127.0.0.1:4410/people/', { waitUntil: 'networkidle' });
+await p.waitForTimeout(1000);
+await (await p.$(sel)).screenshot({ path: `${OUT}/${label}-${name}.png` });
+console.log('ok');
+await b.close();

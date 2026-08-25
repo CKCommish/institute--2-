@@ -201,7 +201,21 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
 
      :global() is already how this block addresses the child component, so
      the switch belongs on the same rule as its margin. */
-  :global(.nav__mark) { margin-right: auto; pointer-events: auto; }
+  /* ── One baseline across the bar ──────────────────────────────────
+     .nav__in centres each item's BOX. For a plain text item the baseline
+     then sits (asc − desc)/2 below that centre — a distance proportional
+     to the item's own font size. The wordmark is a logotype and is a step
+     larger than the label row beside it, so its baseline printed 1.04px
+     BELOW the links' on a 1440 bar (measured 35.88 against 34.84) while
+     both boxes were perfectly centred. Give back exactly the difference
+     the two sizes buy: 0.537 is (asc − desc)/2 for Libre Franklin,
+     measured off this pair. Resolves to 0 when the two sizes converge
+     (they do at narrow widths), so nothing is nudged that is not off. */
+  :global(.nav__mark) {
+    margin-right: auto; pointer-events: auto;
+    position: relative;
+    top: calc((var(--step-micro) - var(--wm-fs, var(--step-micro))) * 0.537);
+  }
 
   /* ── Links: the .label register, dimmed against whatever is behind the bar.
      --nav-dim is --fg-meta's ratio for the ground the bar is currently on,
@@ -286,25 +300,72 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      the inversion tokens. */
   .cta {
     display: inline-flex; align-items: center; gap: 0.7ch;
-    padding: 0.5em 0.85em 0.48em;
+    /* Interior air, measured to the INK and not to the box: the label
+       register lays its 0.12em track after the last glyph too, so 0.85em of
+       padding on both sides put 0.85em of air on the left of the star and
+       0.97em on the right of the T — the word sat 1.4px left of centre
+       inside its own ring. Trim the track out of the right pad. */
+    /* Vertical: the capsule centres a LINE BOX, and an all-caps label uses
+       none of the descender space in it — so 0.5em/0.48em (near-symmetric,
+       inherited from the wave-1 box) printed the caps high: measured 7.49px
+       of air over the cap line and 9.72px under the baseline on a 26px ring.
+       Solving airTop = airBot for this face gives a fixed asymmetry of
+       0.21em between the two pads, which is what these are: sum unchanged at
+       0.98em, so the ring's height does not move. */
+    padding: 0.595em calc(0.85em - 0.12em) 0.385em 0.85em;
     min-height: 26px;
+    /* …and the cost of that asymmetry, paid back to the ROW. The pads
+       centre the caps inside the ring; but the ring's contents are then
+       centred as a block inside the 26px box, so half of the asymmetry —
+       (0.595 − 0.385)/2 = 0.105em, 1.22px — displaces the LABEL downward
+       off the line the four nav links sit on. Two caps of the same face at
+       the same size, 1.22px apart, in a row of caps: visible. So the whole
+       capsule moves up by that half. The ring is then 1.2px above the
+       centre of a 63.36px bar, which is not: a 999px curve floating in
+       empty air has no neighbour to be measured against, and the label
+       does. Apple's Newsroom bar makes the same trade — the "Search
+       Newsroom" pill's label shares cap-top to the pixel with the plain
+       links while the pill box keeps its own row. */
+    position: relative;
+    top: -0.105em;
     border: 1px solid color-mix(in srgb, var(--brass) 20%, transparent);
     border-radius: 999px;
     color: currentColor;
     white-space: nowrap;
-    transition: background-color 420ms var(--ease-out), border-color 420ms var(--ease-out), color 420ms var(--ease-out);
-    /* The label register is tracked 0.12em, and the track is applied
-       after the last glyph too — so the drawn edge of the final T sits
-       0.12em inside its own box. Pull the box out by exactly that, and
-       the word lands on the gutter the wordmark starts from. */
-    margin-right: -0.12em;
+    /* THE HOVER REGISTER, not a local speed. This is a pure ink change —
+       ring, fill and label under a cursor — which is exactly what
+       --dur-hover is for. It was restored from wave 1 carrying that wave's
+       hand-written 420ms, and it was then the only hover object left on the
+       site off the register: eight to thirteen coloured hovers per route at
+       380ms, and the bar's one lit control at 420. A reader crossing from a
+       nav link to the capsule felt the chrome change its reflexes on the
+       most-used object of the site. The geometry that accompanies the fill —
+       the star's turn — keeps its own longer duration below, which is the
+       rule tokens.css states: the ink answers first, the geometry follows. */
+    transition:
+      background-color var(--dur-hover) var(--ease-out),
+      border-color var(--dur-hover) var(--ease-out),
+      color var(--dur-hover) var(--ease-out);
+    /* Wave 1 pulled this box out by the label's trailing 0.12em track so
+       the final glyph landed on the gutter. With the ring restored the
+       drawn edge is no longer a glyph — it is a 999px curve, and a curve
+       stopped on the same line as a flat cap reads as short of it. So the
+       same pull is kept and re-derived: 1.4px of overshoot on a 29.7px
+       capsule, which is the round-object overhang that puts the ring
+       optically on the gutter the wordmark starts from.
+       Re-derived against the ring rather than inherited: 0.06em, 0.70px,
+       2.7% of the capsule's height — the tangent of a 999px curve reads
+       short of a flat cap stopped on the same line, and 0.7px is what it
+       takes at this size. (The interior trim above shrinks the box from the
+       left, since the right edge is what this margin pins, so the two
+       corrections do not compound.) Measured: ring right 1389.34 against a
+       mark left of 51.36. */
+    margin-right: -0.06em;
     /* The CTA is the bar's one action and does not belong to the run of
-       places, so it keeps the wider beat: .nav__in's gap is 37px at 1440
-       where the links give each other 29px. The capsule used to buy that
-       separation by drawing a box; the flex gap already had it. */
-    /* A comfortable target without a drawn one: the same 28px box the
-       links carry, and not a pixel of it visible. */
-    padding-block: 0.5rem;
+       places, so it keeps the wider beat: the ring's left edge sits 37px
+       off the last link where the links give each other 29px. The ring's
+       own 0.85em of interior air is on top of that, which is what makes it
+       read as an object rather than a fifth place. */
   }
   .cta__t { position: relative; }
   /* Same object as .nav__link::after, drawn on the word rather than on
@@ -332,7 +393,13 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      state in the bar sits behind this query — base.css already puts
      .link's there and the chrome agrees with it. */
   @media (hover: hover) {
-    .cta:hover .cta__t::after { transform: scaleX(1); transform-origin: left; }
+    /* The rule was the CTA's hover mark for exactly as long as the capsule
+       was gone. With the brass fill restored, drawing both paints a dark
+       1px line across a solid brass ground — two answers to one pointer,
+       and the only frame in the bar that looks unfinished. The fill is the
+       hover; the rule stays behind for .cta.is-active, which is a
+       different statement (you are standing here) on an unfilled ground. */
+    .cta:hover .cta__t::after { transform: scaleX(0); }
     /* The burger has no word to rule under, so its one move is the mark.
        NOT a rotation: the star is four-fold symmetric, so the 90° turn
        the capsule used to carry alongside its fill was a transform that
@@ -351,7 +418,12 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   }
 
   /* The ring fills on hover; the star turns with it. */
-  .cta .star { width: 7px; height: 7px; color: var(--brass); flex: none; transition: transform 620ms var(--ease-out), color 420ms var(--ease-out); }
+  /* Same two speeds as `.nav .star` above, and now literally the same
+     tokens: this rule re-declared the pair at 420ms and, being later and
+     equal in specificity, quietly overrode the register the bar's other
+     star already used. The colour is the hover register; the turn is
+     geometry and keeps its own 620ms. */
+  .cta .star { width: 7px; height: 7px; color: var(--brass); flex: none; transition: transform 620ms var(--ease-out), color var(--dur-hover) var(--ease-out); }
   .cta:hover { background: var(--brass); border-color: var(--brass); color: var(--ink-900); }
   .cta:hover .star { transform: rotate(90deg); color: var(--ink-900); }
   .nav.is-inverted .cta:hover { color: var(--cream); }
@@ -413,13 +485,13 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   /* Same object as the CTA — on mobile the burger IS the bar's one lit
      control, so it carries the same ring rather than a bare word. */
   .nav__burger {
-    display: none; align-items: center; gap: 0.7ch;
-    padding: 0.5em 0.85em 0.48em;
-    min-height: 26px;
-    border: 1px solid color-mix(in srgb, var(--brass) 20%, transparent);
-    border-radius: 999px;
+    display: none; align-items: center;
+    padding: 0; border: 0; background: none;
     white-space: nowrap;
-    transition: background-color 420ms var(--ease-out), border-color 420ms var(--ease-out), color 420ms var(--ease-out);
+    /* The same round-object overhang the CTA takes, and only that: this
+       control's trailing track is already trimmed inside the ring by
+       .burger__t's own negative margin, so there is nothing to give back. */
+    margin-right: -0.06em;
   }
   /* currentColor, not .label's --fg-meta: below 940px this is the only
      control in the bar and it takes the CTA's brightness — lit, because
@@ -427,6 +499,38 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .burger__o {
     display: inline-flex; align-items: center; gap: 0.7ch;
     color: currentColor; pointer-events: none;
+    /* The capsule is drawn HERE, not on the button. Wave 1 could put the
+       44px target straight on .nav__burger because nothing was painted;
+       with the ring restored that made the phone's one control a 44px-tall
+       pill against the desktop's 29.7px one — the loudest object on the
+       site, in the chrome. So the two boxes split again: the button is the
+       target (44px, transparent), the span is the object (the same capsule
+       the CTA draws, to the pixel). */
+    /* Same box as the CTA and the same cap-centring correction (see .cta),
+       tuned to this control's own type: the phone's label is 11px where the
+       desktop's is 11.664, and the ring is a fixed 26px either way, so the
+       leading left over the caps is not the same number. Measured here:
+       0.12em of asymmetry lands airTop 8.86 / airBot 8.86 on a 26px ring. */
+    padding: 0.55em 0.85em 0.43em;
+    min-height: 26px;
+    /* Half of this control's own asymmetry, given back to the row, exactly
+       as the CTA does — see .cta. 0.12em/2 = 0.06em = 0.66px here. The
+       shift is on the OBJECT, not on the 44px target, so the thumb box is
+       untouched. Lands the burger's caps on the corrected wordmark's
+       baseline to 0.04px at 390. */
+    position: relative;
+    top: -0.06em;
+    border: 1px solid color-mix(in srgb, var(--brass) 20%, transparent);
+    border-radius: 999px;
+    /* The same capsule as the CTA, so the same register — see .cta. */
+    transition:
+      background-color var(--dur-hover) var(--ease-out),
+      border-color var(--dur-hover) var(--ease-out),
+      color var(--dur-hover) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .nav__burger:hover .burger__o { background: var(--brass); border-color: var(--brass); color: var(--ink-900); }
+    .nav__burger:hover .star { color: var(--ink-900); }
   }
   /* The focus ring belongs to the object a keyboard user can see, not to
      the invisible 44px box around it. base.css's ring exactly — 1.5px,
@@ -434,8 +538,12 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      held further out than that starts drawing the capsule back on. */
   .nav__burger:focus-visible { outline: none; }
   .nav__burger:focus-visible .burger__o {
-    outline: 1.5px solid var(--brass); outline-offset: 3px; border-radius: 1px;
+    outline: 1.5px solid var(--brass); outline-offset: 3px; border-radius: 999px;
   }
+  /* Same correction on the desktop control: base.css rings at radius 1,
+     which drew a rounded RECTANGLE 3px outside a capsule — two different
+     curvatures, 3px apart, on one object. */
+  .cta:focus-visible { border-radius: 999px; }
   /* The burger is the ONLY navigation control below 940px, and it was a
      69x26 target — under the 44px comfortable floor in the one place the
      whole site's navigation lives. With the drawn capsule gone the box can
@@ -450,6 +558,9 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   @media (pointer: coarse) {
     .nav__burger { min-height: 44px; }
   }
+  /* …and the drawn capsule inside it does not grow with the target: the
+     span keeps its own 26px floor, so the phone's control is the same
+     object the desktop bar draws, centred in a 44px thumb box. */
   /* 'Menu' is 38.6px and 'Close' is 42.8px, and the button is the last
      item on a flex row, so its right edge is pinned to the gutter and it
      grows leftward — which would walk the STAR 4px left every time the
@@ -547,6 +658,20 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
        animation for opacity and transform. The colour step is static. */
     color: var(--fg-mute);
   }
+  /* The numerals are a COLUMN, and until now they were not one: .index is
+     tabular inside itself, but Libre Franklin's tabular figures do not make
+     "01" and "04" the same advance once the register's 0.18em track is
+     applied to a different pair of glyphs — measured 17.92px under Institute
+     and 20.00px under People. The four serif words therefore started at four
+     different x (54.83 / 56.36 / 56.72 / 56.91), a 2.1px ink rag on a 36.8px
+     face, plainly visible at 1x on a phone.
+     A fixed inline-size on the numeral makes the column a column: every word
+     now starts from the same edge, and the sheet's left margin is one line
+     from the wordmark down. Sized to the widest measured advance and set
+     flush left, so the numerals keep their own rag on the RIGHT — where it
+     falls inside the 1rem channel and no serif is measured against it. */
+  .menu__links .index { flex: none; inline-size: 20px; text-align: left; }
+
   /* The .index register is one size site-wide. This sheet used to drop it a
      step to --step-micro, which made the site's brass numeral render at two
      sizes for a 1.4px difference beside an 86px word — a second declaration

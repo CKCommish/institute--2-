@@ -11,10 +11,20 @@ import { site, pilots } from '../data/site.js';
    `s` is the subject; it is the only new string on the route and it never
    reaches the page as copy. Nothing is claimed, nothing is collected: one
    mailto, three doors into it. */
+/* THE ACTION IS NAMED, ONCE PER DOOR.
+   All three doors used to close on the same string — EMAIL US, at 11.66px,
+   the smallest type in the scene and smaller than the decorative ordinal
+   above it. On the one page whose job is to be chosen from, the thing you
+   press was the last thing the eye reached in every column, and the three
+   options were indistinguishable at the action level: the only difference
+   was a subject line nobody can see. `a` is now the ask itself, in the same
+   three words /pilots/ already uses for this content — funding, technology,
+   somewhere to run it — and the subject is derived from it, so the label
+   and what lands in the mail client are one string. */
 const roles = [
-  { t: 'Fund it', p: 'Underwrite one pilot, end to end.', s: 'Funding a pilot' },
-  { t: 'Build it', p: 'Bring the model, the product, or the team.', s: 'Building a pilot' },
-  { t: 'Run it', p: 'A health system, district, university, or agency.', s: 'Running a pilot' },
+  { t: 'Fund it', p: 'Underwrite one pilot, end to end.', a: 'Funding' },
+  { t: 'Build it', p: 'Bring the model, the product, or the team.', a: 'Technology' },
+  { t: 'Run it', p: 'A health system, district, university, or agency.', a: 'Somewhere to run it' },
 ];
 const mailto = (subject) =>
   `mailto:${site.email}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}`;
@@ -205,21 +215,26 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
         <ol class="proles__list">
           {roles.map((r, i) => (
             <li>
-              <a class="door" href={mailto(r.s)}>
+              <a class="door" href={mailto(`${r.a} — a 2026 pilot`)} data-door>
                 <span class="door__rule" aria-hidden="true"></span>
                 <span class="index door__n">{String(i + 1).padStart(2, '0')}</span>
                 <h3 class="display display--sub door__t">{r.t}</h3>
                 <p class="door__p">{r.p}</p>
-                <!-- Named, not implied. Three parallel doors take the same
-                     verb the way three configuration tiles take the same
-                     button; an unlabelled arrow at the foot of a text column
-                     reads as ornament. -->
+                <!-- The action, named and sized as one. It sits one rung
+                     under the door's own title and above every other line in
+                     the column, so the ladder inside a door now ends on the
+                     thing you press instead of starting there. -->
                 <span class="door__go">
                   <svg class="arrow door__arrow" viewBox="0 0 22 10" aria-hidden="true">
                     <path d="M16 1l5 4-5 4M21 5H0"/>
                   </svg>
-                  <span class="label label--lit door__go-t">Email us</span>
+                  <span class="door__go-t">Email us about {r.a.toLowerCase()}</span>
                 </span>
+                <!-- The one thing a mailto cannot do is tell you it heard.
+                     The page leaves the door marked, and the two you did not
+                     take step back, so returning to this tab shows which of
+                     the three was chosen. -->
+                <span class="door__got" aria-hidden="true">Opening your mail app</span>
               </a>
             </li>
           ))}
@@ -364,6 +379,21 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
     padding-block: clamp(1.5rem, 0.7rem + 2.6vw, 3rem);
     border-bottom: 1px solid color-mix(in srgb, var(--brass) 50%, transparent);
     transition: background-color var(--dur-hover) var(--ease-out);
+  }
+  /* Same trap as `.why__note` on the homepage: the line above resets
+     transition-property to `background-color`, so `.ask [data-reveal]`'s
+     `460ms, 560ms` could not re-time a reveal that no longer existed —
+     it re-timed the HOVER instead, and the page's one action arrived as a
+     hard cut while the cue and the instruction under it lifted. The reveal
+     is restored at the ask's own tempo; the hover goes back on register. */
+  /* `.ask [data-reveal]` above is (0,2,0) and so is `.ask__mail[data-reveal]`;
+     the extra class settles it rather than leaving two equal rules to be
+     ordered by whatever the bundler emits. */
+  .ask .ask__mail[data-reveal] {
+    transition:
+      opacity 460ms var(--ease-out) var(--reveal-delay, 0ms),
+      transform 560ms var(--ease-out) var(--reveal-delay, 0ms),
+      background-color var(--dur-hover) var(--ease-out);
   }
   .ask__mail:hover,
   .ask__mail:focus-visible {
@@ -543,7 +573,16 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
   /* 6px of slack inside the mask so a focus ring on an edge column is not
      clipped by the wipe that revealed it; the negative margin gives it all
      back, so the columns sit exactly where they sat. */
-  .proles__wrap { padding: 6px; margin: -6px; }
+  /* The BOTTOM slack is a different amount and a different reason. The
+     receipt is position:absolute at top:100% — outside the door's own box
+     and therefore outside this wrap, which data-wipe clips to. So the one
+     element in the scene that reports "your choice registered" rendered at
+     y 708-726 inside a wrap clipped at 703 and was invisible at every
+     desktop width: present in the DOM, opacity 1, painted nowhere. It
+     showed only under prefers-reduced-motion, where clip-path resolves to
+     none — the single mode nobody tests. Give the mask enough room below
+     to contain it, and hand the space straight back. */
+  .proles__wrap { padding: 6px 6px 3.4rem; margin: -6px -6px calc(-3.4rem); }
   .proles__list {
     list-style: none; margin: 0; padding: 0;
     display: grid; grid-template-columns: repeat(3, 1fr);
@@ -565,6 +604,7 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
      sentence — same reason the section arrives on a wipe and the words in
      the ask arrive on a lift. */
   .door {
+    position: relative;
     display: flex; flex-direction: column; align-items: flex-start;
     height: 100%;
   }
@@ -612,13 +652,69 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
   .door:hover .door__go,
   .door:focus-visible .door__go { transform: translateX(8px); }
   .door__arrow { width: clamp(22px, 1.8vw, 26px); color: var(--brass); }
-  .door__go-t { transition: color var(--dur-hover) var(--ease-out); }
+  /* NOT `.label`. That register is 11.66px / w500 / 1.4 tracking — credits
+     and field names — and it was carrying the only act on the page. The ask
+     is set in the sans at the lede rung: 19px at 1440, one rung under the
+     33.8px door title and above the 15.8px sentence and the 13.1px ordinal,
+     so the column reads title -> action -> sentence -> ordinal. */
+  .door__go-t {
+    font-family: var(--sans); font-size: var(--step-lede); font-weight: 400;
+    line-height: 1.2; letter-spacing: -0.008em; color: var(--fg);
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+
+  /* THE SHARED ACTION LINE, 901-1129px. margin-top:auto aligns the three
+     action BOXES at the bottom, which is exact while every label is one
+     line. Door 03's label is the longest ("...somewhere to run it") and
+     wraps to two lines in this band: its box grows upward by 21px and its
+     arrow — vertically centred — drops to the middle of two lines, so the
+     three arrows and the three first lines sit at three heights. That is
+     precisely the failure this layout's own comment says the shared
+     baseline exists to prevent.
+     Reserve two lines for all three in the band, so the set stays one row
+     whichever label wraps. Outside the band every label is one line and
+     the reservation costs nothing. */
+  @media (min-width: 901px) and (max-width: 1129px) {
+    /* line-height is 1.2em, so two lines is 2.4em. */
+    .door__go-t { display: block; min-height: 2.4em; }
+  }
   .door:hover .door__go-t,
   .door:focus-visible .door__go-t { color: var(--brass); }
+
+  /* The receipt. Zero-height at rest so it costs the three columns nothing
+     and cannot be read or focused; it opens only on the door that was
+     actually pressed. */
+  .door__got {
+    /* Out of flow: a receipt that changed the height of one column would
+       shove the other two doors' action lines off the shared baseline the
+       whole set is built on. */
+    position: absolute; top: 100%; left: 0;
+    margin-top: 0.7rem;
+    display: block; overflow: hidden;
+    max-height: 0; opacity: 0;
+    font-family: var(--sans); font-size: var(--step-micro);
+    letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;
+    color: var(--brass);
+    transition: max-height 320ms var(--ease-out), opacity var(--dur-hover) var(--ease-out);
+  }
+  .proles__list[data-chosen] .door { opacity: 0.45; transition: opacity var(--dur-hover) var(--ease-out); }
+  .proles__list[data-chosen] .door[data-chosen] { opacity: 1; }
+  .door[data-chosen] .door__rule::after { transform: scaleX(1); }
+  .door[data-chosen] .door__t,
+  .door[data-chosen] .door__go-t { color: var(--brass); }
+  .door[data-chosen] .door__got { max-height: 3em; opacity: 1; }
 
 
   @media (max-width: 900px) {
     .proles__list { grid-template-columns: 1fr; gap: clamp(1.5rem, 5vw, 2rem); }
+    /* Out of flow is a rule about COLUMNS: it exists so a receipt opening
+       under one door cannot shove its neighbours' action lines off the
+       shared baseline. In a single-column stack there are no neighbours to
+       protect, and absolute positioning instead dropped the receipt onto
+       the next door's opening hairline (receipt bottom 682 vs door top 678
+       at 390) so the rule visibly restarted to the right of the words. In
+       the stack it takes its own space. */
+    .door__got { position: static; margin-top: 0.55rem; }
     /* Stacked, `margin-top:auto` has nothing to push against and the action
        line would sit tight under its sentence. Space carries it instead. */
     .door__go { padding-top: clamp(0.9rem, 3.4vw, 1.2rem); }
@@ -723,7 +819,8 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
   @media (prefers-reduced-motion: reduce) {
     .ask__mail, .ask__mail-t, .ask__arrow,
     .pindex__a, .pindex__n, .pindex__arrow,
-    .door__rule::after, .door__t, .door__go, .door__go-t {
+    .door__rule::after, .door__t, .door__go, .door__go-t, .door__got,
+    .proles__list[data-chosen] .door {
       transition-duration: 1ms;
     }
     /* Every hover state still resolves — it just resolves at once. The rule
@@ -734,3 +831,19 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
     .pindex__a:focus-visible .pindex__arrow { transform: none; }
   }
 </style>
+
+<script>
+  /* A mailto leaves no trace in the page: the tab does not navigate, so a
+     reader who comes back has no way to see which door they took. This is
+     the only feedback it can honestly give — the door that was pressed
+     stays lit, the other two step back. No storage, no network, nothing
+     claimed beyond "the mail app was asked to open". */
+  const list = document.querySelector('.proles__list');
+  list?.addEventListener('click', (e) => {
+    const door = (e.target instanceof Element) && e.target.closest('[data-door]');
+    if (!door) return;
+    for (const d of list.querySelectorAll('[data-door]')) d.removeAttribute('data-chosen');
+    door.setAttribute('data-chosen', '');
+    list.setAttribute('data-chosen', '');
+  });
+</script>

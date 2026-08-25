@@ -1,0 +1,11 @@
+import { launch } from '/home/user/institute--2-/tools/browser.mjs';
+const OUT='/tmp/claude-0/-home-user-institute--2-/4aae5723-f3fa-5aaa-8cbc-ebd9e16d8b73/scratchpad/shots';
+const b = await launch({ proxy:false });
+const ctx = await b.newContext({ viewport:{width:1440,height:900} });
+const p = await ctx.newPage();
+await p.goto('http://127.0.0.1:4420/pilots/', { waitUntil:'networkidle' });
+await p.evaluate(()=>window.scrollTo(0,document.body.scrollHeight)); await p.waitForTimeout(1800);
+await p.screenshot({path:`${OUT}/pilots-tail.png`});
+const t = await p.evaluate(()=>document.body.innerText.slice(-900));
+console.log(t);
+await b.close();

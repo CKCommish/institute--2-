@@ -310,15 +310,16 @@ const grades = {
        onto the cells, where there is one per row of cards. */
     .pgrid__grid { border-top: 0; }
     .pgrid__cell { border-top: 1px solid var(--rule); }
-    /* on a two-up grid the vertical rule belongs between the columns only */
+    /* On a two-up grid the vertical rule belongs between the columns only:
+       cell 3 opens a new row, so its rule would hang in open ground at the
+       left edge of the band. So the base rule is hidden and restored on the
+       even cells — and BOTH selectors must carry the same adjacent-sibling
+       shape, because Astro scopes every compound with its own attribute and
+       a lone ':nth-child(even)' therefore loses the cascade to
+       '.pgrid__cell + .pgrid__cell'. Every even cell has a preceding
+       sibling, so the '+' costs nothing and buys the specificity. */
     .pgrid__cell + .pgrid__cell::after { display: none; }
-    .pgrid__cell:nth-child(even)::after {
-      content: ''; position: absolute; top: 0; bottom: 0;
-      left: calc(var(--bay) * -1);
-      width: 1px; background: var(--rule-soft);
-      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 87%, transparent 100%);
-      mask-image: linear-gradient(to bottom, #000 0%, #000 87%, transparent 100%);
-    }
+    .pgrid__cell + .pgrid__cell:nth-child(even)::after { display: block; }
   }
 
   @media (max-width: 860px) {
@@ -333,7 +334,7 @@ const grades = {
 
   @media (max-width: 620px) {
     .pgrid__grid { grid-template-columns: minmax(0, 1fr); }
-    .pgrid__cell:nth-child(even)::after { display: none; }
+    .pgrid__cell + .pgrid__cell:nth-child(even)::after { display: none; }
     .terms__i { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
   }
 </style>

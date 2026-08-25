@@ -274,7 +274,9 @@ const founderCount = String(founders.length).padStart(2, '0');
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: clamp(2rem, 5vw, 5.5rem);
-    align-items: end;
+    /* The index is stretched, not bottom-hung: it is locked to the display
+       block's own two horizontals (see .pm__idx). */
+    align-items: stretch;
   }
   .pm__h { max-width: 21ch; text-wrap: pretty; }
   /* motion.js builds .line at runtime, so it never carries the scope hash. */
@@ -282,17 +284,32 @@ const founderCount = String(founders.length).padStart(2, '0');
 
   /* Contents index: the only navigable object on the screen, hung on the
      right edge and set on the display's last baseline. */
+  /* ONE LOCKUP, NOT TWO MASSES SET BY EYE. The index used to be hung on the
+     bottom of the row and given a 0.3em shim, which put its top hairline 35px
+     below the display's cap-line and its bottom hairline 15px below the last
+     baseline — four candidate anchors, no hits. It is now bound to the display
+     block's own two horizontals: the box top IS the cap-line (the display's
+     first line box opens on its cap), and the bottom is pulled up off the
+     h1's box by exactly the descent + half-leading + the .line shim, so the
+     final hairline lands on the last baseline. That trailing distance is a
+     fixed fraction of the poster size (line-height is a ratio), so the lock
+     holds at every width the two sit side by side. The two rows then divide
+     the interval equally instead of being sized by their own padding. */
   .pm__idx {
     display: grid;
-    align-content: end;
+    align-content: stretch;
+    grid-auto-rows: 1fr;
     min-width: clamp(13rem, 20vw, 19.5rem);
-    padding-bottom: 0.3em;
+    margin-bottom: calc(var(--step-poster) * 0.26);
   }
   .pm__idx-i {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     column-gap: clamp(1rem, 2vw, 1.75rem);
     align-items: baseline;
+    /* The row is now as tall as its share of the lockup, so its type is
+       centred in that band rather than pinned under the hairline. */
+    align-content: center;
     padding-block: clamp(0.7rem, 1.3vw, 1rem);
     border-top: 1px solid var(--rule);
     transition: border-color var(--dur-hover) var(--ease-out);
@@ -761,7 +778,7 @@ const founderCount = String(founders.length).padStart(2, '0');
     /* Masthead stacks: the contents index sits under the display line and
        runs the full measure, so it stays an object rather than a scrap. */
     .pm__main { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.9rem, 6vw, 2.75rem); }
-    .pm__idx { min-width: 0; padding-bottom: 0; }
+    .pm__idx { min-width: 0; margin-bottom: 0; grid-auto-rows: auto; }
   }
   @media (max-width: 760px) {
     /* At this width the claim is a stack, and both display lines are
