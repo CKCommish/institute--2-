@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "layout-transition",
+        "value": "transition: width",
+        "files": [
+          "src/pages/forum.astro"
+        ],
+        "createdAt": "2026-08-25T16:08:46.938Z",
+        "reason": "Claude: measured deliberate gesture, not thrash. .frole__ctaRule grows 72px -> 129.6px on hover and carries its label ~58px right; the push IS the interaction. Scoped to one inline row, hover-only, 520ms, single leaf hairline - no page-level reflow. A transform equivalent is not cleanly expressible: the travel distance is a clamp() of vw, so scaleX would need the clamp math duplicated as a translate on the sibling. Not user confirmed."
+      }
+    ]
+  }
+}

@@ -234,7 +234,7 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
                      The page leaves the door marked, and the two you did not
                      take step back, so returning to this tab shows which of
                      the three was chosen. -->
-                <span class="door__got" aria-hidden="true">Opening your mail app</span>
+                <span class="door__got" aria-hidden="true"><span class="door__got-t">Opening your mail app</span></span>
               </a>
             </li>
           ))}
@@ -690,19 +690,31 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
        whole set is built on. */
     position: absolute; top: 100%; left: 0;
     margin-top: 0.7rem;
-    display: block; overflow: hidden;
-    max-height: 0; opacity: 0;
+    /* Opens on grid-template-rows, not max-height. max-height is a layout
+       property: animating it reflows on every frame. Out of flow on
+       desktop that only cost this box, but the stacked layout below sets
+       position: static — so in the one-column case it was reflowing every
+       door under it, 320ms at a time, on the lowest-powered devices, on
+       the page whose whole job is to be acted on. 0fr -> 1fr animates the
+       track instead and needs no magic number standing in for the content
+       height (the old 3em was one). */
+    display: grid; grid-template-rows: 0fr;
+    opacity: 0;
     font-family: var(--sans); font-size: var(--step-micro);
     letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;
     color: var(--brass);
-    transition: max-height 320ms var(--ease-out), opacity var(--dur-hover) var(--ease-out);
+    transition: grid-template-rows 320ms var(--ease-out), opacity var(--dur-hover) var(--ease-out);
   }
+  /* The clip has to live on the grid ITEM; a track animating to 0fr does
+     not hide overflow by itself. min-height:0 stops the item claiming its
+     min-content height and refusing to close. */
+  .door__got-t { overflow: hidden; min-height: 0; }
   .proles__list[data-chosen] .door { opacity: 0.45; transition: opacity var(--dur-hover) var(--ease-out); }
   .proles__list[data-chosen] .door[data-chosen] { opacity: 1; }
   .door[data-chosen] .door__rule::after { transform: scaleX(1); }
   .door[data-chosen] .door__t,
   .door[data-chosen] .door__go-t { color: var(--brass); }
-  .door[data-chosen] .door__got { max-height: 3em; opacity: 1; }
+  .door[data-chosen] .door__got { grid-template-rows: 1fr; opacity: 1; }
 
 
   @media (max-width: 900px) {
