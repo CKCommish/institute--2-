@@ -1,0 +1,47 @@
+<title>Gauntlet — Lion Forum Institute</title>
+<style>
+:root{--bg:#fbfbfd;--fg:#1d1d1f;--dim:#6e6e73;--line:#d2d2d7;--card:#fff;--win:#0a7d33;--lose:#b3261e;--acc:#0071e3}
+:root:not([data-theme="light"]){}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#000;--fg:#f5f5f7;--dim:#86868b;--line:#2a2a2c;--card:#111113;--win:#3ddc7a;--lose:#ff6b5e;--acc:#2997ff}}
+:root[data-theme="dark"]{--bg:#000;--fg:#f5f5f7;--dim:#86868b;--line:#2a2a2c;--card:#111113;--win:#3ddc7a;--lose:#ff6b5e;--acc:#2997ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;padding:clamp(1.5rem,5vw,4rem)}
+.w{max-width:1080px;margin:0 auto}
+h1{font-size:clamp(1.9rem,1.2rem+2.4vw,3rem);letter-spacing:-.022em;line-height:1.05;margin:0 0 .4rem;text-wrap:balance}
+.sub{color:var(--dim);margin:0 0 2.2rem;font-size:1.05rem}
+.meta{display:flex;gap:2.2rem;flex-wrap:wrap;padding:1.1rem 0;border-block:1px solid var(--line);margin-bottom:2rem}
+.meta div{display:flex;flex-direction:column;gap:.15rem}
+.meta .k{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim)}
+.meta .val{font-size:1.5rem;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th{text-align:left;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);font-weight:600;padding:.9rem 1rem;border-bottom:1px solid var(--line)}
+td{padding:.95rem 1rem;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.pc{font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.num{font-variant-numeric:tabular-nums;color:var(--dim)}
+.gap{color:var(--dim);font-size:.93rem;max-width:34rem}
+.dim{color:var(--dim)}
+.chip{display:inline-block;padding:.2rem .6rem;border-radius:99px;font-size:.76rem;letter-spacing:.02em;border:1px solid var(--line)}
+.chip.building{border-color:var(--acc);color:var(--acc)}
+.chip.judging{border-color:var(--dim)}
+.chip.won{border-color:var(--win);color:var(--win)}
+.v.win{color:var(--win);font-weight:600}
+.v.lose{color:var(--lose);font-weight:600}
+.empty{padding:3rem 1rem;text-align:center;color:var(--dim)}
+footer{margin-top:2rem;color:var(--dim);font-size:.86rem}
+</style>
+<div class="w">
+<h1>Gauntlet</h1>
+<p class="sub">Lion Forum Institute judged frame-by-frame against apple.com. Each piece loops build → blind A/B critique until ours wins.</p>
+<div class="meta">
+  <div><span class="k">Wave</span><span class="val">0</span></div>
+  <div><span class="k">Pieces</span><span class="val">0</span></div>
+  <div><span class="k">Won</span><span class="val">0</span></div>
+  <div><span class="k">Apple frames</span><span class="val">55</span></div>
+</div>
+<div class="tw">
+<p class="empty">Wave 1 spinning up…</p>
+</div>
+<footer>Updated as the run proceeds.</footer>
+</div>
