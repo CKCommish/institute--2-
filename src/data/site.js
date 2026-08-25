@@ -29,7 +29,14 @@ export const cta = { label: 'Partner on a pilot', href: '/partner/' };
                  with: what the pilot actually does, who it is for, the
                  kind of place it would run in, and — set apart, because
                  it is half the truth about a proposed pilot — what it
-                 still needs.
+                 still needs. SIX FIELDS, ONE SHORT LINE EACH — the same
+                 cap the brief puts on a card field, because that is the
+                 only reading of "at most 3 short lines of supporting
+                 text" a dedicated detail block can honour: prose is
+                 capped at three lines (see pilots-detail.astro), and
+                 everything else here is a labelled fact, not a sentence.
+                 `who` names the PEOPLE and `where` names the PLACE — if a
+                 value repeats the other's noun, one of them is wrong.
 
    EVERY STRING IN `detail` IS A RESTATEMENT OF refs/BRIEF.md, nothing
    more. The brief gives each pilot one sentence; those sentences carry
@@ -66,7 +73,7 @@ export const pilots = [
     field: 'Health',
     problem: 'Screenings find the problem. Care rarely follows.',
     approach: 'An app that carries the result home.',
-    goal: 'Follow-up care completed, not just recommended.',
+    goal: 'Care completed, not just recommended.',
     horizon: '3–12 months',
     /* The 3:1 band cut from the foot of the Army frame. The full frame is
        a seven-year-old girl at a Unified track meet in South Korea, face
@@ -79,13 +86,13 @@ export const pilots = [
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Unified track event · U.S. Army',
     detail: {
-      what: 'Reminders, adherence and navigation, carried from the screening to the appointment after it.',
-      who: 'Athletes who get a free screening at a Special Olympics event.',
-      where: 'Wherever Healthy Athletes screenings already happen.',
+      what: 'Reminders, adherence and navigation.',
+      who: 'Athletes who take a free screening.',
+      where: 'Special Olympics screening events.',
       needs: {
-        fund: 'Underwrite one pilot, end to end.',
+        fund: 'One pilot, end to end.',
         build: 'A team to build the app.',
-        run: 'A Special Olympics programme, and the care it refers into.',
+        run: 'A programme, and follow-up care.',
       },
     },
   },
@@ -105,12 +112,12 @@ export const pilots = [
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Muskingum County, Ohio',
     detail: {
-      what: 'Four terms a state can put on the table: clean power, jobs, affordability, community benefit.',
-      who: 'State governments, and the communities a data center lands in.',
-      where: 'One state, at the point a data center is sited.',
+      what: 'Clean power, jobs, affordability, community benefit.',
+      who: 'State governments, and affected communities.',
+      where: 'One state, at the point of siting.',
       needs: {
-        fund: 'Underwrite one pilot, end to end.',
-        build: 'A partner to build the playbook and the numbers under it.',
+        fund: 'One pilot, end to end.',
+        build: 'A partner to build the playbook.',
         run: 'A state preparing to negotiate.',
       },
     },
@@ -122,7 +129,7 @@ export const pilots = [
     title: 'Infant Mortality',
     tagline: 'Risk found early, in the weeks that decide outcomes.',
     field: 'Health',
-    problem: 'Infant mortality in Indianapolis, concentrated among mothers on Medicaid.',
+    problem: 'Infant mortality in Indianapolis, concentrated among Medicaid mothers.',
     approach: 'Maternal health data read for early risk.',
     goal: 'Risk identified early enough to act on.',
     horizon: '3–12 months',
@@ -139,13 +146,13 @@ export const pilots = [
        places and events the copy already describes, this one is a person. */
     alt: 'A mother holds her infant against her shoulder in the doorway of a family child care home.',
     detail: {
-      what: 'A model reading maternal health data for early risk, and an intervention that acts on what it finds.',
-      who: 'Mothers on Medicaid in Indianapolis.',
+      what: 'Maternal health data read early, and acted on.',
+      who: 'Mothers on Medicaid.',
       where: 'Indianapolis.',
       needs: {
-        fund: 'Underwrite one pilot, end to end.',
+        fund: 'One pilot, end to end.',
         build: 'A partner to build the model.',
-        run: 'A health system or health department in Indianapolis, alongside Butler.',
+        run: 'A health system, alongside Butler.',
       },
     },
   },
@@ -157,7 +164,7 @@ export const pilots = [
     tagline: 'Guidance that follows a student from school to work.',
     field: 'Education',
     problem: 'The largest choices, with the least guidance.',
-    approach: 'Guidance built with districts, school to work.',
+    approach: 'Built with districts, school to work.',
     goal: 'More students land in a defined pathway.',
     horizon: '3–12 months',
     image: '/media/pilot-education.jpg',
@@ -165,13 +172,13 @@ export const pilots = [
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Adrian, Oregon',
     detail: {
-      what: 'Personalised guidance for the students who get the least of it, from school through to work.',
-      who: 'Low-income students in public schools.',
+      what: 'Personalised guidance, school through to work.',
+      who: 'Low-income students.',
       where: 'Public school districts.',
       needs: {
-        fund: 'Underwrite one pilot, end to end.',
+        fund: 'One pilot, end to end.',
         build: 'A partner to build the guidance.',
-        run: 'A district willing to run it with its own students.',
+        run: 'A district willing to run it.',
       },
     },
   },

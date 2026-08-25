@@ -2,19 +2,47 @@
 import Base from '../layouts/Base.astro';
 import { site, pilots } from '../data/site.js';
 
+/* THE THREE WAYS IN ARE DOORS, NOT DESCRIPTIONS.
+   This is the conversion page and, until now, its one chooser was three
+   inert paragraphs: no target, no hover, no focus ring, nothing to press.
+   The page told a reader to "name the pilot and the role" and then made
+   them type both into a blank message. Each role is now the same address
+   with the role already in the subject line, so choosing IS the action.
+   `s` is the subject; it is the only new string on the route and it never
+   reaches the page as copy. Nothing is claimed, nothing is collected: one
+   mailto, three doors into it. */
 const roles = [
-  { t: 'Fund it', p: 'Underwrite one pilot, end to end.' },
-  { t: 'Build it', p: 'Bring the model, the product, or the team.' },
-  { t: 'Run it', p: 'A health system, district, university, or agency.' },
+  { t: 'Fund it', p: 'Underwrite one pilot, end to end.', s: 'Funding a pilot' },
+  { t: 'Build it', p: 'Bring the model, the product, or the team.', s: 'Building a pilot' },
+  { t: 'Run it', p: 'A health system, district, university, or agency.', s: 'Running a pilot' },
 ];
+const mailto = (subject) =>
+  `mailto:${site.email}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}`;
+
+/* OPTICAL LEFT EDGE FOR THE PILOT INDEX.
+   Four 53px serif titles stacked on one rail is the largest repeated left
+   edge on the site, and metric flush is not visual flush there: a round cap
+   set flush reads as indented, because only its middle touches the rail.
+   Measured off the rendered face (Newsreader 320, ink extents sampled at
+   16x), the left ink sidebearing at --step-head is 1.688px for the flat
+   stems — H I P B D E F — 2.500px for the round C G O Q, and 2.188px for S.
+   The nudge closes that gap and then adds the ~2% of cap height a round
+   form has to hang past a stem to LOOK flush. Values are in em, so they
+   scale with the step down to 28px on a phone. Anything not listed is a
+   flat or diagonal stem and is already where it should be — A and M carry
+   their own overhang in the metrics and must not be nudged twice. */
+const OPTIC = { C: 0.028, G: 0.028, O: 0.028, Q: 0.028, S: 0.020 };
+const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
 ---
 <Base title="Partner" description="Partner on a 2026 pilot with the Lion Forum Institute.">
   <!-- ── The ask, once ────────────────────────────────────────────────
-       ONE focal point. The page used to print the ask twice: a display line
-       and, a row below it, the address at near-display size — two objects of
-       near-equal optical weight and no single action. The line is now the
-       one big thing; the address is the action under it, a rung down, on the
-       rule. Eyebrow → bridge → poster, so the climb has a step in it. -->
+       ONE focal point, and it is the ACT, not the statement about the act.
+       The screen holds four things and they are ranked: a quiet lead-in, the
+       86px line that says what this is, a brass rule, and the address —
+       drawn as a row between two brass hairlines, on a rung nothing else on
+       the screen uses. The order a reader's eye takes them in is the order
+       they are listed in only because the last one is the only object on the
+       screen with edges — and those edges are the page's own measure. -->
   <section class="phead">
     <!-- No photograph. This route used to run a full-height frame of a real
          child at a Special Olympics meet behind the ask — a person with no
@@ -26,8 +54,8 @@ const roles = [
       <div class="phead__top" data-reveal>
         <p class="eyebrow">Work with us</p>
         <p class="bridge phead__bridge">
-          Every pilot still needs money, a technology, or somewhere real to
-          run it. Most need two of the three.
+          Every pilot needs money, a technology, or somewhere real to run it.
+          Most need two of the three.
         </p>
       </div>
 
@@ -37,16 +65,47 @@ const roles = [
         <div class="ask">
           <span class="ask__rule" data-wipe="left" data-delay="420" aria-hidden="true"></span>
 
-          <div class="ask__act" data-reveal="520">
-          <a class="ask__mail" href={`mailto:${site.email}`}>
+          <!-- THE ACTION STANDS ON THE PAGE'S RAIL, LIKE EVERYTHING ELSE.
+               It was a shrink-to-fit plate: 32.6px of horizontal padding
+               inside a 1px border that sat on the rail, so the border was on
+               51.4 and the ADDRESS — the one string this whole route exists
+               to deliver — started at 84.0, the only element on /partner/
+               that landed nowhere. Its right edge fell at 787.8, a number set
+               by the length of an email string and by no column on the page,
+               under a rule that ran to 1388.7.
+               The plate ground is gone and the row is the object now: full
+               measure, no horizontal padding, so the address's own sidebearing
+               stands on 51.4 with the eyebrow, the 86px line, the caption and
+               all four pilot ordinals, and the arrow ends on 1388.7 with the
+               rule above it and the pilot arrows below it. Its edges are two
+               brass hairlines at the page's own measure, and the hover wash
+               fills rail to rail — the same grammar as the four pilot rows,
+               at the action's rung. -->
+          <a class="ask__mail" href={mailto()} data-reveal="520">
+            <span class="ask__mail-t">{site.email}</span>
             <svg class="arrow ask__arrow" viewBox="0 0 22 10" aria-hidden="true">
               <path d="M16 1l5 4-5 4M21 5H0"/>
             </svg>
-            <span class="ask__mail-t">{site.email}</span>
           </a>
 
-          <p class="ask__sub">Name the pilot and the role. A person answers.</p>
-          </div>
+          <!-- The instruction and the cue are ONE ROW and they share a
+               baseline. They were two boxes bottom-aligned, which is not the
+               same thing: `.tap`'s negative margin sits under the cue's
+               border box, so the two lines of 11–16px type were landing 8px
+               apart. Grid baseline alignment reads the type, not the box. -->
+          <p class="ask__sub" data-reveal="560">Name the pilot and the role. A person answers.</p>
+
+          <!-- The rule ran the full 1338px measure and ended in nothing: the
+               ask hangs off its left end and the right two-thirds terminated
+               at the viewport edge. A pause is only held when it is bounded
+               on both sides. This is that second side, and it is the one
+               object the first screen was actually missing — the fold gave a
+               reader no signal that the page continued. House `.cue`, set at
+               the sub's rung so nothing sits level with the address. -->
+          <a class="cue tap ask__cue" href="#pilots" data-reveal="640">
+            <span class="label">The four pilots</span>
+            <i class="cue__line" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
 
@@ -63,7 +122,15 @@ const roles = [
   <section class="pfour" id="pilots">
     <div class="shell pfour__in">
       <div class="pfour__head">
-        <div class="pfour__top" data-reveal>
+        <!-- NO REVEAL ON THIS BLOCK, DELIBERATELY. It is the first thing
+             under the fold, and the reveal observer discounts the bottom 12%
+             of the viewport: at 1440x900 this block sat at y=805 — on screen,
+             and at opacity 0 for ever, because nothing below the trigger line
+             can trigger. Geometry alone cannot fix that, since the dead band
+             scales with the window and this block does not. It is static;
+             the four rows under it still arrive in sequence, which is the
+             section's actual motion event. -->
+        <div class="pfour__top">
           <p class="eyebrow">Open for 2026</p>
           <!-- The eyebrow already says OPEN FOR 2026; this line used to open
                "Four pilots are open for 2026" and spend a line and a half
@@ -72,7 +139,7 @@ const roles = [
                say for itself, and the one a reader must not get wrong: the
                names in the second column proposed these pilots. None of them
                has signed. -->
-          <p class="bridge pfour__bridge">Each pilot is named for whoever proposed it. None is signed.</p>
+          <p class="lede pfour__bridge">Each pilot is named for whoever proposed it. None is signed.</p>
         </div>
       </div>
 
@@ -81,7 +148,7 @@ const roles = [
           <li class="pindex__r" data-reveal>
             <a class="pindex__a" href={`/pilots/#${p.id}`}>
               <span class="index pindex__i">{p.index}</span>
-              <span class="display display--head pindex__n">{p.title}</span>
+              <span class="display display--head pindex__n" style={optic(p.title)}>{p.title}</span>
               <!-- WHOSE PILOT THIS IS, AND HOW FAR ALONG. Two of these four
                    values are living, identifiable public officials. In an
                    unlabelled second column on a page whose verb is "Partner
@@ -110,10 +177,17 @@ const roles = [
 
   <!-- The one hard cut in the scroll: the ground changes and the three
        doors arrive. Numeral is the index, the verb is the content. -->
-  <section class="on-cream proles">
+  <section class="on-cream proles" id="ways">
     <div class="shell proles__in">
       <div class="proles__head">
         <p class="eyebrow" data-reveal>Three ways in</p>
+        <!-- The rung this scene was missing. base.css: "Every scene that
+             opens with an eyebrow and a display line should carry one of
+             these between them." Both other sections on this route do; this
+             one jumped 11px → 53px. It also carries the instruction, which
+             the headline underneath cannot: the headline states what a pilot
+             needs, the bridge says what the reader is being asked to do. -->
+        <p class="bridge proles__bridge" data-reveal="110">Pick the one you can do.</p>
         <h2 class="display display--head proles__h" data-settle="0.62">Every pilot needs all three.</h2>
       </div>
       <!-- The page's one spatial idea: three doors opening outward from a
@@ -122,16 +196,35 @@ const roles = [
            middle, so column 01's leading characters are the LAST thing to
            arrive: "Fund it" reads as "und it" for a third of the wipe. The
            rows hang off a left rule; the mask opens off the same edge. -->
-      <ol class="proles__list" data-wipe="left" data-delay="120">
-        {roles.map((r, i) => (
-          <li>
-            <span class="proles__rule" aria-hidden="true"></span>
-            <span class="index proles__n">{String(i + 1).padStart(2, '0')}</span>
-            <h3 class="display display--sub proles__t">{r.t}</h3>
-            <p>{r.p}</p>
-          </li>
-        ))}
-      </ol>
+      <!-- The wipe moved off the <ol> and onto a wrapper with 6px of slack.
+           `clip-path: inset(0)` clips to the BORDER box even when the mask is
+           fully open, so a focus ring on the first or last door — 1.5px at
+           3px offset — was being sliced by the mask that revealed it. The
+           columns now have somewhere to put a ring. -->
+      <div class="proles__wrap" data-wipe="left" data-delay="120">
+        <ol class="proles__list">
+          {roles.map((r, i) => (
+            <li>
+              <a class="door" href={mailto(r.s)}>
+                <span class="door__rule" aria-hidden="true"></span>
+                <span class="index door__n">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="display display--sub door__t">{r.t}</h3>
+                <p class="door__p">{r.p}</p>
+                <!-- Named, not implied. Three parallel doors take the same
+                     verb the way three configuration tiles take the same
+                     button; an unlabelled arrow at the foot of a text column
+                     reads as ornament. -->
+                <span class="door__go">
+                  <svg class="arrow door__arrow" viewBox="0 0 22 10" aria-hidden="true">
+                    <path d="M16 1l5 4-5 4M21 5H0"/>
+                  </svg>
+                  <span class="label label--lit door__go-t">Email us</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   </section>
 
@@ -149,14 +242,29 @@ const roles = [
        top 41% of the first screen empty — a hole where a photograph used to
        be, and it read as a loading state rather than as restraint. The block
        is now sized to the type it holds. */
-    min-height: min(76svh, 42rem);
-    display: grid; align-content: end;
-    padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(3.5rem, 2rem + 3.4vw, 5.5rem);
+    /* The floor is the type; the CEILING is the fold. At 1440x900 the ask
+       used to close at y=632 and the next section's eyebrow opened at
+       y=805 — inside the viewport and, because the reveal observer discounts
+       the bottom 12% of the screen, at opacity 0 permanently at rest. 265px
+       of the first screen was a dead band holding invisible type. The air
+       below now belongs to THIS section (its own bottom margin, bounded by
+       the cue), and /pilots/ opens under the fold where it can arrive. */
+    min-height: min(calc(100svh - 2rem), 52rem);
+    /* START, not END. The block already carried the house shelf in its
+       padding-top and then bottom-aligned its content inside the frame, so
+       the first line of this route landed at y=196 on desktop and y=200 on a
+       phone while /pilots/ and /people/ — the site's other two text
+       mastheads — both opened at 165 / 122. --head-pad exists so every inner
+       page starts on one shelf; a page that pays the padding and then pushes
+       past it is not on it. The frame still reserves the fold, so the pilots
+       band below still opens under it. */
+    display: grid; align-content: start;
+    padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(4rem, 2rem + 4.6vw, 7.5rem);
   }
   .phead__in {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    row-gap: clamp(1.2rem, 2.2vw, 2rem);
+    row-gap: clamp(1.2rem, 2.4vw, 2.6rem);
     justify-items: start;
   }
   /* The open right third is held by the measures of the lines themselves —
@@ -165,9 +273,19 @@ const roles = [
      at the edge of a photograph that no longer exists. The rule now runs the
      full measure and the pause is bounded by it. */
   .phead__top { display: grid; row-gap: clamp(0.9rem, 1.8vw, 1.5rem); justify-items: start; }
+  /* THE LEAD-IN IS A BRIDGE, AT THE BRIDGE'S RUNG. It used to be dropped to
+     --step-lede to keep it off the address's size — and that was true when
+     the address sat inside a shrink-to-fit plate at 26.56px. The address is
+     sized to the measure now and renders at 40px, so the collision the drop
+     was avoiding no longer exists, and the drop had made this the only
+     .bridge on the site not set at --step-bridge: the one class whose job is
+     to hand a reader from an 11px label up to a display line was rendering
+     at three sizes across six routes. Back on its rung. The wider measure
+     stays — it is what keeps the clause to two quiet lines. The screen still
+     climbs 11.7 -> 26.6 -> 86 -> 40, with nothing on the action's size. */
   .phead__bridge {
-    max-width: 34ch;
-    margin-bottom: clamp(0.9rem, 2vw, 1.9rem);
+    max-width: 52ch;
+    margin-bottom: clamp(1.1rem, 2.6vw, 2.9rem);
   }
   .phead__lead { display: flex; flex-direction: column; width: 100%; }
 
@@ -183,54 +301,101 @@ const roles = [
      rule arrives fast and tight behind it. */
   .phead__h :global(.line > span) { transition-duration: 1400ms; }
   .ask [data-reveal] { --reveal-y: 8px; transition-duration: 460ms, 560ms; }
-  /* The address and its instruction are one object and arrive as one. */
-  .ask__act { display: grid; row-gap: clamp(0.7rem, 1.4vw, 1.1rem); justify-items: start; }
 
-  /* ONE focal point. The page prints the ask once, at --step-feature; the
-     address is the ACTION under it, at the bridge rung, so 86px answers to
-     27px instead of to a second 50px line on the same row. */
+  /* THE ONE ACTION, AND IT IS SET LIKE ONE. Every size on this screen is
+     measured against 40px now: the poster line at 86, the lead-in and the
+     cue at 18.7, the instruction at 15.8, the labels at 11.7. Nothing else
+     on the route is set at 40 and nothing on this screen is within a rung
+     of it, so there is exactly one place for the eye to land second. */
   /* The rule runs the full measure and the two halves of the ask hang off
      its ends — address at the left, instruction at the right. Without it the
      right two-fifths of the first screen was open navy running out into the
      viewport edge, which reads as absence rather than as a pause. A held
      pause has to be bounded on both sides; this is the second side. */
   /* Address and instruction stack rather than sharing a row: the address is
-     the action and nothing sits level with it. */
+     the action and nothing sits level with it. The second column holds the
+     cue only, and it is aligned to the BOTTOM of the block — level with the
+     instruction, two rungs under the address. */
   .ask {
-    padding-top: clamp(2.4rem, 1.4rem + 3.2vw, 4.4rem);
+    /* THE ACTION'S RUNG. The ladder holds --step-sub (33.8px at 1440), which
+       is under the step this needs, and --step-head (53.1px), which is the
+       size of the four pilot names below and would make the address a second
+       headline. This is the one interpolation on the site and it exists
+       because this page has exactly one thing to press: 40px at 1280 and up,
+       0.47 of the poster line, 2.1x the supporting register, and no other
+       element on the route is set at it. */
+    --ask-step: clamp(0.88rem, 0.42rem + 2.6vw, 2.5rem);
+    /* The beat before the ask. 63px of navy between the line and the rule
+       read as a line-gap, not as a pause; the pause is the composition on a
+       closing screen and it is now bounded by the rule under it. */
+    padding-top: clamp(2.6rem, 1.4rem + 5.4vw, 7.5rem);
     width: 100%;
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: clamp(0.7rem, 1.4vw, 1.1rem);
-    align-items: baseline;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    column-gap: var(--gutter);
+    /* No row-gap: the brass rule is the action row's TOP EDGE, not a thing
+       floating 60px above it. The air the ask needs is inside the row, where
+       a hover wash and a keyboard ring can both see it; the supporting
+       register below carries its own margin. */
+    row-gap: 0;
   }
   .ask__rule {
-    grid-column: 1 / -1;
+    grid-column: 1 / -1; grid-row: 1;
     display: block; height: 1px; align-self: start;
     background: color-mix(in srgb, var(--brass) 50%, transparent);
     width: 100%; transform-origin: left;
-    margin-bottom: clamp(0.95rem, 1.7vw, 1.5rem);
   }
-  /* Real padding, not a .tap pseudo: the address is the page's one action and
-     its own box has to clear the touch minimum. */
+  /* THE ROW, AT THE MEASURE. Horizontal padding is the one thing this
+     element may not have: it is what pushed the address 32.6px inboard of the
+     rail every other element on the route stands on. So the row takes the
+     full measure and pads only in the block direction — the identical
+     construction to `.pindex__a` below, which pads block-only for the same
+     reason ("that box's left edge is the same left edge the eyebrow, the
+     bridge and the 86px line all stand on. Nothing on this page may break
+     it."). The edges are still there and they are still pointable — they are
+     the brass hairline above and its pair below, both at 1337px, both ending
+     where the rule, the pilot rules and the door columns end. The hover wash
+     is the ground the old plate held, and it now lands rail to rail. */
   .ask__mail {
-    display: inline-flex; align-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem);
-    max-width: 100%; padding-block: 0.35rem; margin-block: -0.35rem;
+    grid-column: 1 / -1; grid-row: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: clamp(1.4rem, 4vw, 4rem);
+    width: 100%;
+    padding-block: clamp(1.5rem, 0.7rem + 2.6vw, 3rem);
+    border-bottom: 1px solid color-mix(in srgb, var(--brass) 50%, transparent);
+    transition: background-color var(--dur-hover) var(--ease-out);
   }
-  .ask__arrow { width: clamp(26px, 2.6vw, 34px); color: var(--brass); flex: none; }
+  .ask__mail:hover,
+  .ask__mail:focus-visible {
+    background-color: color-mix(in srgb, var(--brass) 9%, transparent);
+  }
+  .ask__arrow { width: clamp(24px, 2.6vw, 34px); color: var(--brass); flex: none; }
   .ask__mail-t {
     font-family: var(--sans); font-weight: 400;
-    font-size: var(--step-bridge);
-    letter-spacing: -0.006em; line-height: 1.2;
-    color: var(--fg);
-    transition: color 380ms var(--ease-out);
+    font-size: var(--ask-step);
+    letter-spacing: -0.014em; line-height: 1.12;
+    color: var(--fg); min-width: 0;
+    transition: color var(--dur-hover) var(--ease-out);
     overflow-wrap: anywhere;
   }
-  .ask__mail:hover .ask__mail-t { color: var(--brass); }
-  .ask__mail:hover .ask__arrow { transform: translateX(9px); }
+  .ask__mail:hover .ask__mail-t,
+  .ask__mail:focus-visible .ask__mail-t { color: var(--brass); }
+  .ask__mail:hover .ask__arrow,
+  .ask__mail:focus-visible .ask__arrow { transform: translateX(9px); }
+  /* --fg-meta is the micro register — "credits, counts, field names, footer.
+     Never a whole sentence." (tokens.css). This is a whole sentence, and it
+     is the sentence that makes a stranger send the email: somebody reads it,
+     somebody replies. It sits at the supporting rung where it belongs. */
   .ask__sub {
-    grid-column: 1; justify-self: start; text-align: left;
-    color: var(--fg-meta); font-size: var(--step-body); max-width: 34ch;
+    grid-column: 1; grid-row: 3; justify-self: start; align-self: baseline;
+    text-align: left;
+    color: var(--fg-mute); font-size: var(--step-body); max-width: 34ch;
+    margin-top: clamp(1rem, 2.2vw, 2.1rem);
+  }
+  .ask__cue {
+    grid-column: 2; grid-row: 3;
+    justify-self: end; align-self: baseline;
+    margin-top: clamp(1rem, 2.2vw, 2.1rem);
   }
 
   /* ── The four, at full width ─────────────────────────────────────
@@ -247,26 +412,88 @@ const roles = [
   .pfour__in { display: grid; gap: clamp(2rem, 3.4vw, 3.2rem); }
   .pfour__head { display: grid; }
   .pfour__top { display: grid; gap: clamp(0.8rem, 1.6vw, 1.3rem); justify-items: start; }
-  .pfour__bridge { max-width: 32ch; }
+  /* Same rung as the lead-in on the ask screen above it, and for the same
+     reason. At 1440x1000 both are on one screen, and a section head sitting
+     one scroll below the ask may not be set larger than the ask's own
+     lead-in — the route would then climb backwards. --step-bridge survives
+     on this page exactly once, on the cream act, where the page turns over. */
+  /* .lede, not .bridge. This is a qualifier under an eyebrow, not the rung
+     that hands a reader up to a display line — and set as a .bridge it had
+     to be dropped to --step-lede by hand, which made .bridge the one closed
+     class on the site rendering at three sizes. .lede IS that rung, already
+     declared, already at --fg-mute. */
+  .pfour__bridge { max-width: 46ch; }
 
-  .pindex { list-style: none; margin: 0; padding: 0; }
-  .pindex__r { border-top: 1px solid var(--rule); }
+  /* ONE SET OF COLUMN TRACKS FOR THE WHOLE INDEX — NOT ONE PER ROW.
+     The tracks used to live on `.pindex__a`, so every row sized its own
+     ordinal column from its own two digits. `.index` asks for tabular
+     figures and the Google build of Libre Franklin ships no `tnum` table,
+     so that request is a no-op and the ordinals measure 20.39 / 22.16 /
+     22.55 / 22.77px. Every column to the right of them inherited the
+     difference: the four 53px titles started at 109.19 / 110.95 / 111.34 /
+     111.56, the partner names at 672.38 → 673.66, the glosses at 972.69 →
+     973.42. Four ragged left edges on the one stack a stranger looks at
+     longest, on a page where everything else holds 51.36 / 1388.64 exactly.
+     The tracks are on the `ol` now and the rows are subgrids of it, so the
+     ordinal track is measured ONCE — by the widest ordinal in the index —
+     and all four rows resolve to the same five columns whatever the digits
+     do. `.pindex__i` also carries a min-width in em of its own step, which
+     pins that shared track to a figure-independent width and is what keeps
+     the columns flush if subgrid is unavailable. */
+  .pindex {
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    grid-template-columns:
+      max-content minmax(0, 6fr) minmax(0, 3fr) minmax(0, 4fr) max-content;
+    column-gap: clamp(1rem, 2.6vw, 2.6rem);
+  }
+  .pindex__r {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    border-top: 1px solid var(--rule);
+  }
   .pindex__r:last-child { border-bottom: 1px solid var(--rule); }
   .pindex__r[data-reveal] { --reveal-y: 8px; transition-duration: 440ms, 560ms; }
 
   /* Name left, principal and one line right, arrow on the far edge. The row
      is the object; everything in it is baseline-aligned to the name. */
+  /* THE ROW IS THE TARGET, SO THE ROW LIGHTS. A 1338px-wide link whose only
+     hover state was the colour of the title in its left third gave a pointer
+     sitting over the tagline — most of the row's width — no feedback at all,
+     while the cursor was over a live link. The wash is a transient state, not
+     a ground: 5% cream, one step off the page, and it is exactly the width the
+     hairlines above and below it already declare. It bled 16px wider on each
+     side first, to hold the type off its edge, and that put the lit box out of
+     register with the two rules that bound it — the more expensive mistake,
+     because that box's left edge is the same left edge the eyebrow, the bridge
+     and the 86px line all stand on. Nothing on this page may break it. */
   .pindex__a {
+    grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: max-content minmax(0, 6fr) minmax(0, 3fr) minmax(0, 4fr) max-content;
-    column-gap: clamp(1rem, 2.6vw, 2.6rem);
+    grid-template-columns: subgrid;
     align-items: baseline;
     padding-block: clamp(1.1rem, 2.2vw, 2rem);
+    transition: background-color var(--dur-hover) var(--ease-out);
   }
-  .pindex__i { padding-top: 0.35em; }
+  .pindex__a:hover,
+  .pindex__a:focus-visible { background-color: color-mix(in srgb, var(--cream) 5%, transparent); }
+  /* 1.74em of the numeral's own step is the widest two-figure ordinal this
+     index can hold, trailing letterspace included. Declaring it makes the
+     shared track's width a property of the type, not of which digits
+     happen to be in the list. */
+  .pindex__i {
+    padding-top: 0.35em;
+    min-width: 1.74em;
+    font-variant-numeric: tabular-nums;
+  }
+  /* --optic is set per row in the frontmatter: 0 for a flat stem, a hair of
+     negative lead for a round cap so the four titles share a VISUAL left
+     edge and not merely a metric one. */
   .pindex__n {
     color: var(--fg); line-height: 1.02;
-    transition: color 340ms var(--ease-out);
+    margin-left: calc(var(--optic, 0em) * -1);
+    transition: color var(--dur-hover) var(--ease-out);
   }
   /* Inslee and Cardona are the most interesting words on the route. They no
      longer sit at 11px and 54%. */
@@ -283,9 +510,15 @@ const roles = [
     font-size: var(--step-body); line-height: 1.4; color: var(--fg-mute);
     max-width: 30ch;
   }
-  .pindex__arrow { width: clamp(22px, 2vw, 28px); color: var(--brass); align-self: center; opacity: 0.55; transition: transform 460ms var(--ease-out), opacity 340ms var(--ease-out); }
-  .pindex__a:hover .pindex__n { color: var(--brass); }
-  .pindex__a:hover .pindex__arrow { transform: translateX(9px); opacity: 1; }
+  .pindex__arrow { width: clamp(22px, 2vw, 28px); color: var(--brass); align-self: center; opacity: 0.55; transition: transform 460ms var(--ease-out), opacity var(--dur-hover) var(--ease-out); }
+  /* A KEYBOARD GETS THE SAME ROW A POINTER GETS. The ring says "you are
+     here"; it does not say "this row is the one that is live". Focus was
+     drawing the ring and nothing else, so the two ways of reaching the same
+     link resolved to two different-looking states. */
+  .pindex__a:hover .pindex__n,
+  .pindex__a:focus-visible .pindex__n { color: var(--brass); }
+  .pindex__a:hover .pindex__arrow,
+  .pindex__a:focus-visible .pindex__arrow { transform: translateX(9px); opacity: 1; }
 
   /* ── Three ways in — the page turned over ──
      The route's tonal event. It was a panel six points off the page ground,
@@ -305,22 +538,90 @@ const roles = [
   .proles__head { display: grid; gap: clamp(0.9rem, 1.8vw, 1.5rem); }
   /* One rung under the H1: three columns at --step-sub under a --step-head
      line, which answers to the title rather than competing with it. */
+  .proles__bridge { max-width: 26ch; }
   .proles__h { max-width: 14ch; line-height: 1.02; }
+  /* 6px of slack inside the mask so a focus ring on an edge column is not
+     clipped by the wipe that revealed it; the negative margin gives it all
+     back, so the columns sit exactly where they sat. */
+  .proles__wrap { padding: 6px; margin: -6px; }
   .proles__list {
     list-style: none; margin: 0; padding: 0;
     display: grid; grid-template-columns: repeat(3, 1fr);
     gap: clamp(1.75rem, 3.4vw, 3.4rem);
   }
-  .proles__list li { display: grid; gap: clamp(0.55rem, 1vw, 0.9rem); align-content: start; }
+  .proles__list li { display: grid; }
 
-  .proles__n { margin-bottom: clamp(0.15rem, 0.4vw, 0.35rem); }
-  .proles__rule { display: block; height: 1px; background: var(--rule); margin-bottom: clamp(0.75rem, 1.4vw, 1.15rem); }
-  .proles__t { font-weight: 320; line-height: 1.08; }
-  .proles__list p { color: var(--fg-mute); font-size: var(--step-body); max-width: 28ch; }
+  /* ── A door ───────────────────────────────────────────────────────
+     The whole column is the target: rule, numeral, verb, line and the verb
+     under it. Every state is drawn — none of it is left to the browser.
+
+       rest     hairline rule, ink verb, the arrow already there
+       hover    the rule fills brass off its left edge, the verb takes the
+                accent, the arrow travels
+       focus    the brass ring from base.css, around the whole column
+       press    the house dip
+
+     The rule fills rather than fades because a rule is territory, not a
+     sentence — same reason the section arrives on a wipe and the words in
+     the ask arrive on a lift. */
+  .door {
+    display: flex; flex-direction: column; align-items: flex-start;
+    height: 100%;
+  }
+  .door__rule {
+    position: relative; overflow: hidden;
+    display: block; height: 1px; width: 100%;
+    background: var(--rule);
+    margin-bottom: clamp(0.75rem, 1.4vw, 1.15rem);
+  }
+  .door__rule::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--brass);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 560ms var(--ease-out);
+  }
+  .door:hover .door__rule::after,
+  .door:focus-visible .door__rule::after { transform: scaleX(1); }
+
+  .door__n { margin-bottom: clamp(0.15rem, 0.4vw, 0.35rem); }
+  .door__t {
+    font-weight: 320; line-height: 1.08;
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+  .door:hover .door__t,
+  .door:focus-visible .door__t { color: var(--brass); }
+  .door__p {
+    color: var(--fg-mute); font-size: var(--step-body); max-width: 28ch;
+    margin-top: clamp(0.55rem, 1vw, 0.9rem);
+  }
+  /* margin-top:auto pins the three verbs to one baseline across columns of
+     unequal text length — the alternative is three action lines at three
+     heights, which is what makes a set of choices look assembled rather than
+     designed. */
+  /* THE WHOLE ACTION LINE TRAVELS, NOT THE ARROW. Everywhere else on the site
+     the arrow has open page to its right and slides into it. Here the word
+     sits on that side, so an arrow moving 9px closed an 11px gap and drove
+     its head into the E of EMAIL. The line advances as one object instead —
+     which also puts it on the same vector as the rule filling above it, so
+     hover is one gesture left-to-right rather than two unrelated ones. */
+  .door__go {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    margin-top: auto; padding-top: clamp(1.1rem, 2vw, 1.7rem);
+    transition: transform 460ms var(--ease-out);
+  }
+  .door:hover .door__go,
+  .door:focus-visible .door__go { transform: translateX(8px); }
+  .door__arrow { width: clamp(22px, 1.8vw, 26px); color: var(--brass); }
+  .door__go-t { transition: color var(--dur-hover) var(--ease-out); }
+  .door:hover .door__go-t,
+  .door:focus-visible .door__go-t { color: var(--brass); }
 
 
   @media (max-width: 900px) {
     .proles__list { grid-template-columns: 1fr; gap: clamp(1.5rem, 5vw, 2rem); }
+    /* Stacked, `margin-top:auto` has nothing to push against and the action
+       line would sit tight under its sentence. Space carries it instead. */
+    .door__go { padding-top: clamp(0.9rem, 3.4vw, 1.2rem); }
   }
 
   @media (max-width: 860px) {
@@ -330,16 +631,51 @@ const roles = [
     }
     .phead__in { row-gap: clamp(1.5rem, 6vw, 2.2rem); }
     .phead__h { max-width: 14ch; }
-    .phead__bridge { max-width: 30ch; margin-bottom: clamp(0.3rem, 2vw, 0.8rem); }
-    .ask { padding-top: clamp(2rem, 8vw, 2.8rem); }
+    /* At 390 the measure carries the address at ~21px before the string has
+       to break, so the lead-in drops the last rung with it. The action stays
+       the largest thing on the screen that is not the title. */
+    .phead__bridge {
+      max-width: 38ch;
+      margin-bottom: clamp(0.4rem, 2.4vw, 1rem);
+    }
+    .ask {
+      /* The address is sized to the measure now, not to the room left inside
+         a plate — dropping the horizontal padding gave the string back 27px
+         at 390, so it takes a rung with it and still sets on one line. */
+      --ask-step: clamp(0.9rem, 5.3vw, 1.5rem);
+      padding-top: clamp(2rem, 8vw, 3.2rem);
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 0;
+    }
+    /* Same construction as 1440, one column: the address's sidebearing on
+       20.9 with the eyebrow, the title and the caption, the arrow on 369.1
+       with the rule above it. There is no inline padding at any width — that
+       padding is the whole defect this row had. */
+    .ask__mail {
+      padding-block: clamp(1.1rem, 5vw, 1.9rem);
+      gap: clamp(0.5rem, 2.2vw, 1.1rem);
+    }
+    .ask__arrow { width: 20px; }
+    /* The cue answers a question a phone does not ask: at 390px the next
+       section is already on screen under the ask, so the fold carries its own
+       continuation. Removed, not hidden off-screen — it takes its tab stop
+       with it rather than leaving a focus target nobody can see. */
+    .ask__cue { display: none; }
 
     /* Four columns collapse to two: the numeral keeps its gutter, everything
        else stacks under the name. The arrow goes — a row that fills the
        column IS the affordance at this width. */
     .pfour { padding-block: clamp(2.75rem, 10vw, 4rem) clamp(3.25rem, 12vw, 4.5rem); }
-    .pindex__a {
+    /* The lead-in above follows the ask's down to --step-body here, for the
+       same reason it followed it down at 1440: this line may not outrank the
+       one on the screen the route exists for. */
+    .pfour__bridge { max-width: 40ch; }
+    /* Two columns now, and they are still declared once, on the `ol`. */
+    .pindex {
       grid-template-columns: max-content minmax(0, 1fr);
       column-gap: clamp(0.8rem, 4vw, 1.2rem);
+    }
+    .pindex__a {
       row-gap: 0.3rem;
       align-items: start;
       padding-block: clamp(1rem, 4.4vw, 1.5rem);
@@ -358,7 +694,43 @@ const roles = [
     .proles__h { max-width: 12ch; }
   }
 
+  /* Under ~370px the string is the constraint, not the composition: the gap
+     to the arrow closes so the address never breaks in two. The rails are
+     not negotiable at any width, so nothing here touches the inline box. */
+  @media (max-width: 370px) {
+    .ask__mail { gap: 0.5rem; }
+    .ask__arrow { width: 18px; }
+  }
+
+  /* Without subgrid the rows cannot read the `ol`'s tracks, so they get the
+     same five (or two) columns declared on themselves. The ordinal track is
+     the min-width above rather than `max-content`, which is what keeps all
+     four rows flush even though the row can no longer see its siblings. */
+  @supports not (grid-template-columns: subgrid) {
+    .pindex__a {
+      grid-template-columns:
+        max-content minmax(0, 6fr) minmax(0, 3fr) minmax(0, 4fr) max-content;
+      column-gap: clamp(1rem, 2.6vw, 2.6rem);
+    }
+    @media (max-width: 860px) {
+      .pindex__a {
+        grid-template-columns: max-content minmax(0, 1fr);
+        column-gap: clamp(0.8rem, 4vw, 1.2rem);
+      }
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .ask__mail-t, .ask__mail-arrow { transition-duration: 1ms; }
+    .ask__mail, .ask__mail-t, .ask__arrow,
+    .pindex__a, .pindex__n, .pindex__arrow,
+    .door__rule::after, .door__t, .door__go, .door__go-t {
+      transition-duration: 1ms;
+    }
+    /* Every hover state still resolves — it just resolves at once. The rule
+       fills, it does not travel; the arrow lights, it does not slide. */
+    .door:hover .door__go, .door:focus-visible .door__go,
+    .ask__mail:hover .ask__arrow,
+    .pindex__a:hover .pindex__arrow,
+    .pindex__a:focus-visible .pindex__arrow { transform: none; }
   }
 </style>

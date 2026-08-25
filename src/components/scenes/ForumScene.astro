@@ -103,11 +103,19 @@ import { forum } from '../../data/site.js';
     color: var(--fg);
     padding-block: 0.5rem;
   }
-  .forum__more:hover :global(.arrow) { transform: translateX(4px); }
+  .forum__more:hover :global(.arrow),
+  .forum__more:focus-visible :global(.arrow) { transform: translateX(4px); }
+  /* The link lights, the arrow does not slide. */
+  @media (prefers-reduced-motion: reduce) {
+    .forum__more::after { transition-duration: 1ms; }
+    .forum__more:hover :global(.arrow),
+    .forum__more:focus-visible :global(.arrow) { transform: none; }
+  }
   .forum__more::after {
     content: ''; position: absolute; left: 0; right: 0; bottom: 0.1em; height: 1px;
     background: currentColor; transform: scaleX(0); transform-origin: right;
     transition: transform 520ms var(--ease-out);
   }
-  .forum__more:hover::after { transform: scaleX(1); transform-origin: left; }
+  .forum__more:hover::after,
+  .forum__more:focus-visible::after { transform: scaleX(1); transform-origin: left; }
 </style>

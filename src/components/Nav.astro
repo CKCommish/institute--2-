@@ -16,14 +16,23 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
       ))}
     </nav>
 
-    <a href={cta.href} class:list={['label', 'pill', { 'is-active': ctaActive }]} aria-current={ctaActive ? 'page' : undefined}>
+    <a href={cta.href} class:list={['label', 'cta', { 'is-active': ctaActive }]} aria-current={ctaActive ? 'page' : undefined}>
       <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
-      <span>{cta.label}</span>
+      <span class="cta__t">{cta.label}</span>
     </a>
 
-    <button class="label pill pill--burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
-      <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
-      <span class="pill__t t-text-swap" data-burger-label>Menu</span>
+    <!-- The burger's HIT BOX and the burger's OBJECT are two different
+         boxes. The button is the target — transparent, 44px tall where the
+         pointer is a thumb. The span is the object — a star and a word, in
+         the same register the desktop bar sets everything else in. It used
+         to be a drawn capsule, which made the only control on a phone the
+         loudest thing in the bar and gave the chrome a filled-button
+         vocabulary the pages underneath do not have. -->
+    <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
+      <span class="label burger__o">
+        <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
+        <span class="burger__t t-text-swap" data-burger-label>Menu</span>
+      </span>
     </button>
   </div>
 
@@ -37,7 +46,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   <div class="menu__in">
     <nav class="menu__links" aria-label="Menu">
       {nav.map((n, i) => (
-        <a class="display display--poster" href={n.href} style={`--i:${i}`} aria-current={isActive(n.href) ? 'page' : undefined}><span class="index">{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
+        <a class="display display--poster" href={n.href} style={`--i:${i}`} aria-current={isActive(n.href) ? 'page' : undefined}><span class="index">{String(i + 1).padStart(2, '0')}</span><span class="menu__w">{n.label}</span></a>
       ))}
     </nav>
     <a class="label menu__cta" href={cta.href} style={`--i:${nav.length}`} aria-current={ctaActive ? 'page' : undefined}>
@@ -52,17 +61,18 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
 </div>
 
 <style>
-  /* The bar has no chrome of its own: no panel, no border, no blur. A wordmark,
-     four whisper-quiet labels, and exactly one lit object — the CTA pill. On
-     scroll an edgeless scrim keeps type legible; over a cream scene the whole
-     bar inverts to ink. --nav-scrim / --nav-fg are local to this file. */
+  /* The bar has no chrome of its own: no panel, no border, no blur, and — as
+     of this round — no drawn control either. A wordmark, four whisper-quiet
+     labels, and one lit label carrying a star and a rule. On scroll an
+     edgeless scrim keeps type legible; over a cream scene the whole bar
+     inverts to ink. --nav-scrim / --nav-fg are local to this file. */
   .nav {
     position: fixed; inset: 0 0 auto 0; z-index: 100;
     height: var(--nav-h);
     color: var(--nav-fg, var(--cream));
     --nav-scrim: var(--ink-900);
     --nav-tail: 3.5rem;
-    transition: color 420ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
     pointer-events: none;
   }
   /* The scrim has one job: nothing on the page may be read through the bar.
@@ -106,7 +116,52 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     pointer-events: none;
   }
   .nav.is-scrolled::before { opacity: 1; }
-  .nav.is-inverted { --nav-fg: var(--ink-900); --nav-scrim: var(--cream); }
+  /* NOTE on the open sheet: the scrim stays ON. The sheet is fixed at z 99
+     and the bar at z 100, so while the menu is open the thing behind the
+     bar IS the sheet — ink — and sync() writes ink into --nav-a/--nav-b to
+     match. Switching the scrim off instead left the bar bare for the whole
+     240ms the sheet takes to leave, and the page underneath came up through
+     the wordmark. A scrim that already carries the right ground has nothing
+     to gain by disappearing. */
+
+  /* Inversion used to flip two of the bar's four values: the type and the
+     scrim. The accent stayed at its navy-ground brass, so over a cream
+     scene the star, the current-page rule and the progress hairline all
+     lost most of their contrast at once — every accent in the bar going
+     dark exactly where the ground is loudest.
+
+     `.on-cream` already swaps --brass for --brass-deep on the page; the bar
+     is outside those elements, so it has to make the same swap itself. */
+  /* ── The two mixes the bar has to retune when it inverts ───────────
+     --nav-dim   the quiet register. The bar writes it in currentColor so
+                 it can follow the inversion, and that is precisely how it
+                 lost the correction tokens.css already makes: --fg-meta is
+                 54% on navy and 62% on CREAM, because the same mix does
+                 not buy the same contrast on the two grounds. Measured
+                 against the real grounds, 54% is 5.36 : 1 on navy and
+                 4.03 : 1 on cream — the bar's links, and INSTITUTE in the
+                 wordmark, were failing AA on every cream scene on the
+                 site. 62% puts cream back at 5.27 : 1, the house step.
+                 --nav-dim is also the CTA's rule, which is why the rule
+                 gains weight over cream along with the links it sits
+                 beside rather than thinning out under them.
+     --nav-prog  the scroll rule: same problem, measured in L* rather than
+                 in a contrast ratio because it is not text. The hairline
+                 is 41.2 points on navy at 0.6 and 29.3 on cream; 0.82 puts
+                 it at 40.6, so both grounds carry the same hairline.
+
+     (--nav-ring retired with the capsule it drew.) */
+  .nav {
+    --nav-dim: 54%;
+    --nav-prog: 0.6;
+  }
+  .nav.is-inverted {
+    --nav-fg: var(--ink-900);
+    --nav-scrim: var(--cream);
+    --brass: var(--brass-deep);
+    --nav-dim: 62%;
+    --nav-prog: 0.82;
+  }
 
   .nav__prog {
     position: absolute; left: 0; bottom: 0; z-index: 1;
@@ -116,7 +171,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     opacity: 0; transition: opacity 460ms var(--ease-out);
     pointer-events: none;
   }
-  .nav.is-scrolled .nav__prog { opacity: 0.6; }
+  .nav.is-scrolled .nav__prog { opacity: var(--nav-prog, 0.6); }
   /* While the sheet is open the bar sits on top of it, and a hairline
      reporting how far down a page you cannot see you are is noise. */
   .nav.is-menu .nav__prog { opacity: 0; }
@@ -130,63 +185,182 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   }
   .nav__in > * { pointer-events: auto; }
 
-  /* Wordmark: chrome-mark.astro. The bar only says where it sits. */
-  :global(.nav__mark) { margin-right: auto; }
+  /* Wordmark: chrome-mark.astro. The bar only says where it sits.
+
+     pointer-events, and why it is HERE and not on .nav__in > *:
+     the bar itself is pointer-events:none so the page scrolls under its
+     dead air, and each control switches itself back on. `.nav__in > *`
+     does that for the links and the CTA, but it is a SCOPED rule — Astro
+     compiles it to `.nav__in[cid-nav] > *[cid-nav]`, and the wordmark's
+     root <a> comes from chrome-mark.astro carrying only that component's
+     own scope attribute. Nav's cid is absent from it, so the selector
+     missed the one element in the bar it could not reach, and the site's
+     home link was inert on every route: elementFromPoint over the mark
+     returned the page section behind the bar, and the authored hover
+     (INSTITUTE brightening to full currentColor) was unreachable.
+
+     :global() is already how this block addresses the child component, so
+     the switch belongs on the same rule as its margin. */
+  :global(.nav__mark) { margin-right: auto; pointer-events: auto; }
 
   /* ── Links: the .label register, dimmed against whatever is behind the bar.
-     54% of currentColor is --fg-meta's ratio, written in currentColor because
-     the bar inverts over cream and the tokens do not follow it. ── */
+     --nav-dim is --fg-meta's ratio for the ground the bar is currently on,
+     written in currentColor because the bar inverts over cream and the
+     tokens do not follow it. ── */
   .nav__links { display: flex; align-items: center; gap: clamp(1rem, 2vw, 2.1rem); }
   .nav__link {
-    color: color-mix(in srgb, currentColor 54%, transparent);
-    transition: color 340ms var(--ease-out);
+    color: color-mix(in srgb, currentColor var(--nav-dim, 54%), transparent);
+    transition: color var(--dur-hover) var(--ease-out);
     position: relative; padding-block: 0.5rem;
     white-space: nowrap;
   }
+  /* ── Two states, two objects ──────────────────────────────────────
+     Hover and current-page used to draw the SAME rule: 1px of currentColor
+     at half strength, wiped in. Which meant that on /pilots/, pointing at
+     Forum made Forum look exactly as current as Pilots — the bar's only
+     "you are here" mark was forgeable by a mouse sitting still.
+
+     So they are now different marks and cannot be confused:
+       hover    currentColor at 38%, wiped in from the right. A pointer.
+       current  BRASS at full, already there, no transition. A location.
+     Brass is the site's one accent and the bar spends it exactly once per
+     page, on the door you are standing in.
+
+     RIGHT EDGE. The label register is tracked 0.12em, and tracking is
+     applied AFTER the last glyph too — so a rule drawn to the box edge
+     overshoots the final letter by 1.4px and the word looks unbalanced
+     under its own underline. Pull the rule in by exactly that much. */
   .nav__link::after {
-    content: ''; position: absolute; left: 0; right: 0; bottom: 0.2rem;
-    height: 1px; background: currentColor; opacity: 0.5;
+    content: ''; position: absolute; left: 0; right: 0.12em; bottom: 0.2rem;
+    height: 1px; background: currentColor; opacity: 0.38;
     transform: scaleX(0); transform-origin: right;
     transition: transform 460ms var(--ease-out);
   }
-  .nav__link:hover { color: currentColor; }
-  .nav__link:hover::after, .nav__link.is-active::after { transform: scaleX(1); transform-origin: left; }
+  @media (hover: hover) {
+    .nav__link:hover { color: currentColor; }
+    .nav__link:hover::after { transform: scaleX(1); transform-origin: left; }
+  }
   .nav__link.is-active { color: currentColor; }
+  .nav__link.is-active::after {
+    background: var(--brass); opacity: 1;
+    transform: scaleX(1); transform-origin: left;
+    transition: none;
+  }
 
+  /* ── The one lit object in the bar ───────────────────────────────
+     It is a LABEL, not a button. It used to be a hairline capsule that
+     filled solid brass on hover — a control from a different design
+     system than every page under it: nothing else on this site is a
+     filled shape, and a capsule is the one CTA form the brief rules out.
+     Dropped whole: the radius, the ring, the fill, and the padding the
+     ring needed. What is left is the house's sanctioned .label--lit
+     register carrying two marks — the brass star, which is the site's
+     action glyph, and a rule under the words.
+
+     One rule system runs the whole bar, and at rest exactly one rule is
+     drawn on any page — the one that says where you are:
+
+       rest        no rule                       somewhere you can go
+       hover       38% cream, wiped in           the pointer
+       current     BRASS, full, already there    where you are
+
+     The CTA takes those three states unchanged; what makes it the
+     primary object is not a box but the two things nothing else in the
+     bar has — full brightness at rest, and the brass star. Brass is
+     spent twice in the whole bar and both spends are meaningful: the
+     action's glyph, and the reader's position. Nothing fills and nothing
+     rounds; every control answers a pointer with exactly one move. */
   /* ── The one lit object in the bar ──
-     Hairline brass pill; fills on hover. Radius/fill are local to the chrome —
-     no token exists for a pill and none should. */
-  .pill {
+     RESTORED. Wave 1's brief listed "pill CTA buttons" among the Apple
+     idioms to avoid; that was an error in the brief, not a finding about
+     this site. The hairline brass capsule is this bar's own pre-existing
+     design — "the one lit object", spent once per page — and it is not
+     Apple's blue Buy pill in another colour: it is a 1px brass ring on a
+     dark ground that fills only on hover.
+     The critic that judged this piece named the cost of removing it in
+     its own words: Apple's CTA "is an unmissable object where ours is a
+     label among labels". It could not fix that, because the brief forbade
+     the fix. The ring is back.
+     Everything else wave 1 did to this control is kept: the -0.12em
+     optical pull so the final glyph lands on the wordmark's gutter, and
+     the inversion tokens. */
+  .cta {
     display: inline-flex; align-items: center; gap: 0.7ch;
     padding: 0.5em 0.85em 0.48em;
     min-height: 26px;
     border: 1px solid color-mix(in srgb, var(--brass) 20%, transparent);
     border-radius: 999px;
-    white-space: nowrap;
-    /* The bar owns exactly two brightnesses: 54% for the quiet register and
-       full for the lit one. The pill used to sit at 72% — a singleton level
-       with one member. It is the lit object; it is lit. */
     color: currentColor;
+    white-space: nowrap;
     transition: background-color 420ms var(--ease-out), border-color 420ms var(--ease-out), color 420ms var(--ease-out);
+    /* The label register is tracked 0.12em, and the track is applied
+       after the last glyph too — so the drawn edge of the final T sits
+       0.12em inside its own box. Pull the box out by exactly that, and
+       the word lands on the gutter the wordmark starts from. */
+    margin-right: -0.12em;
+    /* The CTA is the bar's one action and does not belong to the run of
+       places, so it keeps the wider beat: .nav__in's gap is 37px at 1440
+       where the links give each other 29px. The capsule used to buy that
+       separation by drawing a box; the flex gap already had it. */
+    /* A comfortable target without a drawn one: the same 28px box the
+       links carry, and not a pixel of it visible. */
+    padding-block: 0.5rem;
   }
-  .pill .star { width: 7px; height: 7px; color: var(--brass); flex: none; transition: transform 620ms var(--ease-out), color 420ms var(--ease-out); }
-  .pill:hover { background: var(--brass); border-color: var(--brass); color: var(--ink-900); }
-  .pill:hover .star { transform: rotate(90deg); color: var(--ink-900); }
-  /* Already on the page the pill points at: the ring comes off, so the bar
-     never carries a lit button for a door you are standing in. */
-  .pill.is-active { border-color: transparent; color: color-mix(in srgb, currentColor 54%, transparent); }
-  .pill.is-active:hover { color: var(--ink-900); border-color: var(--brass); }
-  .nav.is-inverted .pill:hover { color: var(--cream); }
+  .cta__t { position: relative; }
+  /* Same object as .nav__link::after, drawn on the word rather than on
+     the box (the star is the CTA's mark, not part of the word) and sat
+     on the same y as the links' rule so the bar has one underline
+     height. `right` is the label's trailing 0.12em track, again. */
+  .cta__t::after {
+    content: ''; position: absolute; left: 0; right: 0.12em;
+    /* The links' rule sits 0.2rem off the bottom of a box that is 0.5rem
+       of padding deep; this rule hangs off the WORD, which is that 0.5rem
+       higher. Subtract it and the two land on the same pixel row. */
+    bottom: calc(0.2rem - 0.5rem); height: 1px;
+    background: currentColor; opacity: 0.38;
+    transform: scaleX(0); transform-origin: right;
+    transition: transform 460ms var(--ease-out);
+  }
+  /* The colour transition is not decoration: --brass becomes --brass-deep
+     when the bar inverts over a cream scene, and without it the one warm
+     mark in the chrome hard-cuts while the type around it fades. */
+  .nav .star {
+    width: 7px; height: 7px; color: var(--brass); flex: none;
+    transition: transform 620ms var(--ease-out), color var(--dur-hover) var(--ease-out);
+  }
+  /* A touch screen keeps :hover on the last thing tapped, so every hover
+     state in the bar sits behind this query — base.css already puts
+     .link's there and the chrome agrees with it. */
+  @media (hover: hover) {
+    .cta:hover .cta__t::after { transform: scaleX(1); transform-origin: left; }
+    /* The burger has no word to rule under, so its one move is the mark.
+       NOT a rotation: the star is four-fold symmetric, so the 90° turn
+       the capsule used to carry alongside its fill was a transform that
+       rendered no visible change. 45° is the only turn this glyph can
+       read, and that turn already means "open" below. */
+    .nav__burger:hover .star { transform: scale(1.3); }
+  }
+  /* ── The CTA on the page it points at ──
+     Same mark as an active nav link: brass, full, already there. Brass is
+     the site's one accent and the bar spends it once per page, on the
+     door you are standing in — including when that door is /partner/. */
+  .cta.is-active .cta__t::after {
+    background: var(--brass); opacity: 1;
+    transform: scaleX(1); transform-origin: left;
+    transition: none;
+  }
 
-  /* The burger is the ONLY navigation control below 940px, and it was a
-     69x26 target. Grow the hit area to the 44px comfortable floor with
-     padding and give the row back with a negative margin, so the pill's
-     drawn size and the bar's height are unchanged. */
-  /* The burger is the ONLY navigation control below 940px, and it was a
-     69x26 target — under the 44px comfortable floor in the one place the
-     whole site's navigation lives. Grow the HIT AREA with an overlay
-     rather than the box, so the drawn pill and the bar's height are
-     untouched: the ring is still 26px, the target is 44. */
+  /* The ring fills on hover; the star turns with it. */
+  .cta .star { width: 7px; height: 7px; color: var(--brass); flex: none; transition: transform 620ms var(--ease-out), color 420ms var(--ease-out); }
+  .cta:hover { background: var(--brass); border-color: var(--brass); color: var(--ink-900); }
+  .cta:hover .star { transform: rotate(90deg); color: var(--ink-900); }
+  .nav.is-inverted .cta:hover { color: var(--cream); }
+  /* Standing in the door the CTA points at: the ring comes off, so the bar
+     never carries a lit button for a page you are already on. The word's
+     own brass rule (.cta.is-active .cta__t::after, above) still marks it. */
+  .cta.is-active { border-color: transparent; }
+  .cta.is-active:hover { border-color: var(--brass); }
+
   /* ── Text states swap ── transitions-dev/04-text-states-swap.md
      The burger's label is the word that reports the sheet's state, and it
      used to change between two frames: 'Menu' was simply not there and
@@ -198,11 +372,11 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      has no surfaces for would be dead weight in a codebase whose whole
      discipline is a closed token set. The semantic names are unchanged, so
      the snippet below is verbatim. */
-  .pill--burger {
+  .burger__o {
     --text-swap-dur: 200ms;
     --text-swap-translate-y: 8px;
     --text-swap-blur: 2px;
-    --text-swap-ease: ease-out;
+    --text-swap-ease: var(--ease-out);
   }
   .t-text-swap {
     display: inline-block;
@@ -231,29 +405,70 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     .t-text-swap { transition: none !important; }
   }
 
-  .pill--burger { display: none; }
-  /* The burger is the ONLY navigation control below 940px, and it was a
-     69x26 target. Unlike a.tap in base.css, this one cannot take the box
-     invisibly — the pill has a drawn ring, so a real 44px box is a
-     visibly taller pill. It is still the right trade where the pointer is
-     actually a thumb, and a hairline capsule at 44px sits comfortably in
-     the 58px bar. A pseudo-element overlay is not the alternative: it
-     hit-tests at 44 while the button's own geometry — what an inspector
-     and WCAG's target-size measurement read — stays 26.
-
-     Scoped to coarse pointers, so a narrowed desktop window still gets
-     the 26px ring the bar was drawn around. */
-  @media (pointer: coarse) {
-    .pill--burger { min-height: 44px; }
+  /* padding-block, not 0: with the drawn capsule gone the button had no
+     box of its own left and collapsed to the 11px of its own label — a
+     55x11 target on a narrow desktop window, where the coarse-pointer
+     floor below does not apply. It takes the CTA's box: the same 28px
+     the links carry, and not a pixel of it visible. */
+  /* Same object as the CTA — on mobile the burger IS the bar's one lit
+     control, so it carries the same ring rather than a bare word. */
+  .nav__burger {
+    display: none; align-items: center; gap: 0.7ch;
+    padding: 0.5em 0.85em 0.48em;
+    min-height: 26px;
+    border: 1px solid color-mix(in srgb, var(--brass) 20%, transparent);
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background-color 420ms var(--ease-out), border-color 420ms var(--ease-out), color 420ms var(--ease-out);
   }
-  .pill__t { min-width: 4.4ch; text-align: left; }
+  /* currentColor, not .label's --fg-meta: below 940px this is the only
+     control in the bar and it takes the CTA's brightness — lit, because
+     it is the lit object down there. */
+  .burger__o {
+    display: inline-flex; align-items: center; gap: 0.7ch;
+    color: currentColor; pointer-events: none;
+  }
+  /* The focus ring belongs to the object a keyboard user can see, not to
+     the invisible 44px box around it. base.css's ring exactly — 1.5px,
+     3px off, radius 1 — because the object here is a word, and a ring
+     held further out than that starts drawing the capsule back on. */
+  .nav__burger:focus-visible { outline: none; }
+  .nav__burger:focus-visible .burger__o {
+    outline: 1.5px solid var(--brass); outline-offset: 3px; border-radius: 1px;
+  }
+  /* The burger is the ONLY navigation control below 940px, and it was a
+     69x26 target — under the 44px comfortable floor in the one place the
+     whole site's navigation lives. With the drawn capsule gone the box can
+     simply BE 44px: nothing is painted, so a taller target costs nothing
+     and the bar's height is set by --nav-h either way. A pseudo-element
+     overlay is not the alternative: it hit-tests at 44 while the button's
+     own geometry — what an inspector and WCAG's target-size measurement
+     read — stays 26.
+
+     Scoped to coarse pointers, so a narrowed desktop window keeps the
+     tighter box the bar was drawn around. */
+  @media (pointer: coarse) {
+    .nav__burger { min-height: 44px; }
+  }
+  /* 'Menu' is 38.6px and 'Close' is 42.8px, and the button is the last
+     item on a flex row, so its right edge is pinned to the gutter and it
+     grows leftward — which would walk the STAR 4px left every time the
+     sheet opened. Reserve the wider word and set the word right, so both
+     fixed points hold still and the only thing the swap changes is the
+     air between the mark and the word.
+
+     The negative margin is the same trailing-track trim the CTA takes:
+     the label register carries a letter-space after its last glyph, so
+     the drawn U of MENU sits 0.12em inside its own box. Give that back
+     and it lands on the gutter the wordmark starts from. */
+  .burger__t { min-width: 5.7ch; text-align: right; margin-right: -0.12em; }
   /* Open is a state, and "Close" was carrying it alone. Turn the star to
      the diagonal — the same mark, rotated to read as a cross. */
-  .pill--burger[aria-expanded='true'] .star { transform: rotate(45deg); }
+  .nav__burger[aria-expanded='true'] .star { transform: rotate(45deg); }
 
   @media (max-width: 940px) {
-    .nav__links, .nav__in > a.pill:not(.pill--burger) { display: none; }
-    .pill--burger { display: inline-flex; }
+    .nav__links, .nav__in > a.cta { display: none; }
+    .nav__burger { display: inline-flex; }
   }
 
   /* ── Mobile menu ── */
@@ -271,17 +486,39 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     overflow-y: auto;
     overscroll-behavior: contain;
     opacity: 0; pointer-events: none;
-    /* Dismissal is a reply to a tap and wants to be quick; arrival is the
-       sheet introducing itself and can take its time. Asymmetric on
-       purpose. The JS still waits 420ms before [hidden], which is longer
-       than either — it only has to outlast the exit. */
-    transition: opacity 240ms var(--ease-out);
+    /* ── The sheet opens in two moves, never in one ──────────────────
+       The ground and the words used to cross-fade CONCURRENTLY: the panel
+       ran 0 -> 1 over 420ms while the rows started lifting at 80ms. For
+       roughly a third of a second the sheet was a sheet of gauze — at
+       ~200ms the ground sat at 0.57 and the serif word "Institute" was
+       printed straight across the page's own serif line underneath it,
+       both legible, with the pilots table still showing through. Two
+       readable texts on the same pixels is not a transition, it is a
+       collision.
+
+       So the two are SEQUENCED and the boundary is exact: --menu-ground is
+       the ground's own fade, and the rows' delay starts at that number
+       (see .menu[data-open] .menu__links a). The ground is at 1 before the
+       first word is drawn, so the sheet is never translucent while it has
+       contents.
+
+       Reversed on close, for the same reason: the words go first, all
+       together (on the way out there is nothing left to read), and the
+       ground only starts leaving once they have gone — hence the exit
+       delay here. Exit total 160 + 200 = 360ms, which is what the JS
+       timers below are set against. */
+    --menu-ground: 200ms;
+    transition: opacity 200ms var(--ease-out);
+    transition-delay: 160ms;
   }
   /* [hidden] sets display:none at UA weight; .menu's own display:grid was
      beating it, so the six menu links stayed in the tab order of every page
      at every width. Restore it explicitly. */
   .menu[hidden] { display: none; }
-  .menu[data-open] { opacity: 1; pointer-events: auto; transition-duration: 420ms; }
+  .menu[data-open] {
+    opacity: 1; pointer-events: auto;
+    transition-duration: var(--menu-ground); transition-delay: 0ms;
+  }
   .menu__in { padding: calc(var(--nav-h) + 2rem) var(--gutter) var(--gutter); width: 100%; }
   .menu__links { display: grid; gap: 0.14em; }
   /* Rows arrive in sequence and leave together.
@@ -299,26 +536,76 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .menu__cta,
   .menu__foot {
     opacity: 0; transform: translateY(14px);
-    transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+    transition: opacity 150ms var(--ease-out), transform 150ms var(--ease-out);
     transition-delay: 0ms;
   }
   .menu__links a {
     line-height: 1.1;
     display: flex; align-items: baseline; gap: 1rem;
+    /* No transition here: the shared stagger rule above owns this
+       selector's `transition`, and re-declaring it would drop the exit
+       animation for opacity and transform. The colour step is static. */
+    color: var(--fg-mute);
   }
-  .menu__links .index { font-size: var(--step-micro); }
+  /* The .index register is one size site-wide. This sheet used to drop it a
+     step to --step-micro, which made the site's brass numeral render at two
+     sizes for a 1.4px difference beside an 86px word — a second declaration
+     of a closed register, bought for nothing. */
+
+  /* ── Where you are, in the sheet ───────────────────────────────────
+     Below 940px this sheet is the ENTIRE navigation surface, and it used
+     to be the one place on the site with no current-page state at all:
+     four identical poster rows, and the only brass rule in the panel sat
+     under the CTA — pointing at the door you are NOT standing in, on
+     every route. The bar's best idea, dropped exactly where the reader
+     has the least context.
+
+     So the sheet now answers it the way the bar does, with the same two
+     moves: the row you are on comes up to full cream out of the run, and
+     it takes the accent — brass, full strength, already there, no
+     transition. One accent in the panel, and it means "here".
+
+     The rule is drawn with text-decoration rather than the ::after the
+     bar uses, because here it has to sit under a SERIF: a pseudo-element
+     can only measure the span's box, and an inline box under Newsreader
+     is deep enough that a rule hung off its bottom edge lands on the row
+     below. text-underline-offset measures from the baseline, which is
+     the line the eye actually reads the rule against. skip-ink is off so
+     the descender in "People" cuts no gap in it.
+
+     Both numbers are in em, not px: the rule sits under 37px of serif on
+     a phone, 56px on a tablet and 13px of caps up in the bar, and a
+     hairline that is optically right at one size is invisible at another.
+     0.045em holds the weight-to-type ratio the bar's 1px holds. */
+  .menu__links a[aria-current='page'] { color: var(--fg); }
+  .menu__links a[aria-current='page'] .menu__w {
+    text-decoration: underline;
+    text-decoration-color: var(--brass);
+    text-decoration-thickness: max(1px, 0.045em);
+    text-underline-offset: 0.16em;
+    text-decoration-skip-ink: none;
+  }
   .menu[data-open] .menu__links a,
   .menu[data-open] .menu__cta,
   .menu[data-open] .menu__foot {
     opacity: 1; transform: none;
-    transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
-    transition-delay: calc(var(--i) * 55ms + 80ms);
+    transition: opacity 420ms var(--ease-out), transform 520ms var(--ease-out);
+    /* The stagger is measured FROM the ground, not from the tap. Nothing
+       here may start before --menu-ground has elapsed, or the words are
+       being drawn on a panel you can still read the page through. */
+    transition-delay: calc(var(--menu-ground) + var(--i) * 38ms);
   }
+  /* The CTA's rule used to be brass unconditionally, which spent the
+     panel's only accent on a fixed destination instead of on the reader's
+     position. It drops to the quiet register — --fg-meta, the same 54% of
+     cream the bar's --nav-dim resolves to on navy — and goes brass only on
+     the page it points at, exactly like the CTA in the bar. */
   .menu__cta {
     margin-top: 2.4rem; display: inline-flex; align-items: center; gap: 0.8ch;
     color: var(--fg);
-    padding-bottom: 0.6rem; border-bottom: 1px solid var(--brass);
+    padding-bottom: 0.6rem; border-bottom: 1px solid var(--fg-meta);
   }
+  .menu__cta[aria-current='page'] { border-bottom-color: var(--brass); }
   .menu__cta .star { width: 8px; height: 8px; color: var(--brass); flex: none; }
   .menu__foot {
     margin-top: 3.2rem; display: grid; gap: 0.75rem; justify-items: start;
@@ -336,8 +623,18 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .nav, .nav::before, .nav__prog, .nav__link::after, .pill, .pill .star,
+    /* .nav__link itself, not only its rule: the link's 340ms colour fade
+       was the one thing in the bar still animating under reduce. */
+    .nav, .nav::before, .nav__prog, .nav__link, .nav__link::after,
+    .cta, .cta__t::after, .nav .star,
     .menu, .menu__links a, .menu__cta, .menu__foot { transition-duration: 1ms !important; }
+    /* The sheet's sequence is carried by DELAY, and collapsing durations
+       alone left it fully intact: the ground and the rows landed at 200ms
+       while the foot was still at 0 and only arrived at ~420ms. A reader
+       who has asked for less motion still got a staged, two-wave reveal —
+       the house rule is that everything is inert, and a 0ms duration on a
+       410ms delay is not inert. Both numbers go. */
+    .menu, .menu__links a, .menu__cta, .menu__foot { transition-delay: 0ms !important; }
   }
 </style>
 
@@ -346,6 +643,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   const burger = document.querySelector('[data-burger]');
   const burgerLabel = document.querySelector('[data-burger-label]');
   const menu = document.querySelector('[data-menu]');
+  const mark = document.querySelector('.nav__mark');
 
   /* Scrim + inversion. motion.js also toggles .is-scrolled at the same
      threshold, so the two agree frame to frame. Inversion is local: no
@@ -366,7 +664,15 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
       const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
       const tail = 3.5 * rem;
       const reach = band + tail;
-      const open = menu?.hasAttribute('data-open');
+      /* The sheet's own [data-open] is set a frame late (so the panel has a
+         paint to transition from), and set() called this sync BEFORE that
+         frame — so every time the menu opened, the bar answered "closed",
+         computed the ground under the page behind the sheet, and painted a
+         cream tail across the top of an open dark panel. Read the state
+         that is set synchronously and is authoritative: the bar's own
+         .is-menu class, which set() now adds before it calls here and
+         removes only after the sheet has finished leaving. */
+      const open = nav.classList.contains('is-menu');
 
       const rects = open ? [] : light.map((el) => el.getBoundingClientRect());
       const creamAt = (y) => rects.some((r) => r.top <= y && r.bottom > y);
@@ -418,10 +724,23 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     const swapDur = parseFloat(
       getComputedStyle(document.documentElement).getPropertyValue('--text-swap-dur')
     ) || 200;
+    /* Every timer in this block is gated on this. The CSS side of the sheet
+       is inert under reduce, but the two JS-scheduled sequences were not:
+       the burger's word still left, waited 200ms, and arrived, and the
+       panel still sat invisible for 420ms before it was allowed to be
+       [hidden]. A timed sequence is a sequence whether a duration or a
+       setTimeout carries it. */
+    const quiet = matchMedia('(prefers-reduced-motion: reduce)');
     let swapT = null;
     const swapLabel = (next) => {
       if (!burgerLabel) return;
       if (swapT) { clearTimeout(swapT); swapT = null; }
+      /* No exit, no wait, no enter: the word is simply the other word. */
+      if (quiet.matches) {
+        burgerLabel.classList.remove('is-exit', 'is-enter-start');
+        burgerLabel.textContent = next;
+        return;
+      }
       /* Already showing the right word — but a cancelled swap may have left
          the label mid-exit, so put it back on its feet before returning.
          Without this, a double-tap inside --text-swap-dur ends with the
@@ -444,11 +763,29 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     const set = (open) => {
       burger.setAttribute('aria-expanded', String(open));
       if (burgerLabel) swapLabel(open ? 'Close' : 'Menu');
-      if (open) { menu.hidden = false; requestAnimationFrame(() => menu.setAttribute('data-open', '')); }
-      else { menu.removeAttribute('data-open'); setTimeout(() => { menu.hidden = true; }, 420); }
-      nav?.classList.toggle('is-menu', open);
       document.documentElement.style.overflow = open ? 'hidden' : '';
-      if (window.__navSync) window.__navSync();
+      if (open) {
+        nav?.classList.add('is-menu');
+        menu.hidden = false;
+        requestAnimationFrame(() => menu.setAttribute('data-open', ''));
+        /* .is-menu is on, so this resolves the bar to its own ground. */
+        if (window.__navSync) window.__navSync();
+      } else {
+        menu.removeAttribute('data-open');
+        /* The exit is now sequential — rows out over 150ms, then the ground
+           out over 200ms after a 160ms hold — so the sheet is gone at 360ms
+           and these two timers move with it. Under reduce there is nothing
+           to outlast: both run on the next tick. */
+        setTimeout(() => { menu.hidden = true; }, quiet.matches ? 0 : 420);
+        /* …and the bar goes back to reading the page only once the sheet
+           has actually gone. Dropping .is-menu on the same tick would fade
+           the scrim and the cream inversion back in UNDER a panel that is
+           still on screen. */
+        setTimeout(() => {
+          nav?.classList.remove('is-menu');
+          if (window.__navSync) window.__navSync();
+        }, quiet.matches ? 0 : 380);
+      }
     };
     burger.addEventListener('click', () => set(burger.getAttribute('aria-expanded') !== 'true'));
     menu.addEventListener('click', (e) => { if (e.target.closest('a')) set(false); });
@@ -456,11 +793,19 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
       if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') { set(false); burger.focus(); }
     });
 
-    /* The panel covers the page, so Tab must stay inside it: the burger (which
-       is the close control) plus everything in the sheet, and nothing behind. */
+    /* The panel covers the page, so Tab must stay inside it: the bar's two
+       controls that stay ON TOP of the open sheet — the wordmark and the
+       burger, in the order they are drawn, left then right — plus everything
+       in the sheet, and nothing behind.
+
+       The wordmark joins the ring in the same round that made it clickable.
+       While the sheet is open the bar sits above it at z 100, so the mark is
+       a fully visible, fully live link at the top of the panel; leaving it
+       out of the ring would make the home link reachable by thumb and not by
+       keyboard — the same dead link, moved to a different input. */
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Tab' || burger.getAttribute('aria-expanded') !== 'true') return;
-      const ring = [burger, ...menu.querySelectorAll('a[href], button:not([disabled])')];
+      const ring = [mark, burger, ...menu.querySelectorAll('a[href], button:not([disabled])')].filter(Boolean);
       const i = ring.indexOf(document.activeElement);
       const next = e.shiftKey
         ? ring[(i <= 0 ? ring.length : i) - 1]

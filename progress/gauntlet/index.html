@@ -35,13 +35,54 @@ footer{margin-top:2rem;color:var(--dim);font-size:.86rem}
 <h1>Gauntlet</h1>
 <p class="sub">Lion Forum Institute judged frame-by-frame against apple.com. Each piece loops build → blind A/B critique until ours wins.</p>
 <div class="meta">
-  <div><span class="k">Wave</span><span class="val">0</span></div>
-  <div><span class="k">Pieces</span><span class="val">0</span></div>
-  <div><span class="k">Won</span><span class="val">0</span></div>
+  <div><span class="k">Wave</span><span class="val">1</span></div>
+  <div><span class="k">Pieces</span><span class="val">6</span></div>
+  <div><span class="k">Won</span><span class="val">5</span></div>
   <div><span class="k">Apple frames</span><span class="val">55</span></div>
 </div>
 <div class="tw">
-<p class="empty">Wave 1 spinning up…</p>
+<table><thead><tr><th>Piece</th><th>Status</th><th>Round</th><th>Blind A/B</th><th>Biggest remaining gap</th></tr></thead><tbody><tr>
+    <td class="pc">Nav &amp; chrome</td>
+    <td><span class="chip won">won</span></td>
+    <td class="num">4</td>
+    <td><span class="v win">ours wins</span></td>
+    <td class="gap">Mobile sheet: the four serif menu words have a ragged left edge. Measured box-lefts are Institute 54.02, Pilots 55.50, Forum 55.83, People 56.02 CSS px — about a 3.5px ink rag between "Institute" and "People" at 36.8px Newsreader, plainly visible at 1x. The ca</td>
+  </tr>
+<tr>
+    <td class="pc">Home hero &amp; first screen</td>
+    <td><span class="chip judging">judging</span></td>
+    <td class="num">4</td>
+    <td><span class="v lose">Apple wins</span></td>
+    <td class="gap">The hero sentence's line breaking is left entirely to the browser's greedy wrapper — `.hero__poster` computes `text-wrap: wrap` at every width, with no `balance`, no per-breakpoint `&lt;br&gt;`, and the `.hero__keep` span that was written to hold "of tomorrow" toget</td>
+  </tr>
+<tr>
+    <td class="pc">Pilots index &amp; cards</td>
+    <td><span class="chip won">won</span></td>
+    <td class="num">1</td>
+    <td><span class="v win">ours wins</span></td>
+    <td class="gap">Between 621px and 1180px the vertical column rule is dead — the two-up grid renders with no separator between its columns at all. Cause is a specificity/property mismatch in pilots.astro's narrow block: `.pgrid__cell + .pgrid__cell::after { display: none }` ki</td>
+  </tr>
+<tr>
+    <td class="pc">Pilot detail blocks</td>
+    <td><span class="chip won">won</span></td>
+    <td class="num">2</td>
+    <td><span class="v win">ours wins</span></td>
+    <td class="gap">The four photograph plates are not one grade — they are four unrelated images sitting in four identical frames. Measured over each plate's exact 537.7×358.4 box: pilot 01 (track) mean RGB 126/99/96, mean chroma 41.7, +30 red-over-blue; pilot 02 (pylons) 102/11</td>
+  </tr>
+<tr>
+    <td class="pc">People</td>
+    <td><span class="chip won">won</span></td>
+    <td class="num">3</td>
+    <td><span class="v win">ours wins</span></td>
+    <td class="gap">The hero's right-hand index block ("02 FOUNDERS / 16 PROSPECTIVE BOARD") has no optical relationship to the headline it sits beside — it is placed by eye, not by system, and it is the first screen. Measured at 1440: the headline "The people accountable / for t</td>
+  </tr>
+<tr>
+    <td class="pc">Partner &amp; the ask</td>
+    <td><span class="chip won">won</span></td>
+    <td class="num">4</td>
+    <td><span class="v win">ours wins</span></td>
+    <td class="gap">The three doors — the page's stated chooser — end in three byte-identical "EMAIL US" labels set at 11.664px/w500/ls1.4, which is the SMALLEST type in the scene and smaller even than the decorative ordinal. Measured door scale: title 33.79px → body 15.79px → or</td>
+  </tr></tbody></table>
 </div>
-<footer>Updated as the run proceeds.</footer>
+<footer>Wave 1 complete — 37 agents, 5.8M tokens, 5h20m. The pill CTA "violation" was an error in my brief, not a finding; the ring has been restored.</footer>
 </div>

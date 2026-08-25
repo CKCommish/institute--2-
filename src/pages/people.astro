@@ -45,14 +45,22 @@ const founderCount = String(founders.length).padStart(2, '0');
       <p class="bridge pm__bridge" data-reveal="110">{mastheadBridge}</p>
       <div class="pm__main">
         <h1 class="display display--poster pm__h lines">The people accountable for the work.</h1>
+        {/* The only navigable object on this screen. It used to be a count
+            and a label on a ruled row and nothing else — no mark saying it
+            could be followed, no closure at the right end on a phone, and a
+            colour change as its whole hover. It is a control now: count,
+            name, and the house arrow turned down the page, on a row that is
+            bounded at both ends at every width. */}
         <nav class="pm__idx" aria-label="On this page">
           <a class="pm__idx-i" href="#founders" data-reveal="320">
             <span class="pm__idx-n tnum">{founderCount}</span>
             <span class="label pm__idx-l">Founders</span>
+            <svg class="arrow arrow--down pm__idx-a" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
           </a>
           <a class="pm__idx-i" href="#board" data-reveal="400">
             <span class="pm__idx-n tnum">{boardCount}</span>
             <span class="label pm__idx-l">Prospective board</span>
+            <svg class="arrow arrow--down pm__idx-a" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
           </a>
         </nav>
       </div>
@@ -107,10 +115,10 @@ const founderCount = String(founders.length).padStart(2, '0');
   {/* The roster's problem was never the names, it was the form: sixteen
       rows at one pitch make a reader process a directory before they can
       feel a room. So the calibre is stated once, in the bridge, and the
-      names are set as a plate — three constituencies side by side, bounded
-      top and bottom by a rule, six rows deep instead of sixteen. Each
-      column wipes down as a territory, so the section arrives in three
-      moves rather than in sixteen identical blinks. */}
+      names are set as a plate — three constituencies on three shared column
+      tracks, bounded top and bottom by a rule, two rows deep per band
+      instead of sixteen. Each band wipes down as a territory, so the section
+      arrives in three moves rather than in sixteen identical blinks. */}
   {/* THE SEAM. The page's one photograph, and the only place on it a picture
       can arrive without interrupting a reading: the turn from navy to cream.
       It is an empty meeting room — the room this roster is being assembled
@@ -151,34 +159,65 @@ const founderCount = String(founders.length).padStart(2, '0');
             line here opens on the left rule; the claim starts a column in
             and runs past the right one, so the page's loudest sentence is
             the one thing that does not obey its grid. */}
+        {/* TWO SENTENCES, TWO LINES, AND THE COPY IS CUT TO MAKE THAT TRUE.
+            "Advising the pilots. Opening the doors they need." set at the
+            series-breaker rung and given the whole measure put seven words
+            on line one and the word "need." alone on line two — a one-word
+            widow at 67px, on the loudest line of the page, at every width
+            from 860 up. It could not be fixed with a measure: the second
+            sentence is WIDER than the first sentence plus the next word, so
+            there is no column in which a greedy line breaks at the full
+            stop. The sentences had to be made the same length. Three words
+            of fact do it — the institute runs the pilots — and now the two
+            clauses are within 100px of each other at every width, which is
+            the condition under which `text-wrap: balance` breaks a two-line
+            display at the punctuation instead of in the middle of a
+            clause. */}
         <div class="bd__claim">
-          <h2 class="display display--feature bd__h lines" id="board-h">Advising the pilots. Opening the doors they need.</h2>
+          <h2 class="display display--feature bd__h lines" id="board-h">Advising the pilots we run. Opening the doors they need.</h2>
         </div>
       </header>
 
-      {/* THE ROSTER. Sixteen names in three tidy bays at one pitch is a
-          directory: every entry the same width, the same weight, the same
-          distance apart, so a former cabinet secretary and an investor
-          occupy identical rectangles and the room reads flat.
+      {/* THE ROSTER, ON ONE GRID.
 
-          So the roster stops being a grid. Each constituency is a band, and
-          inside it the names are set as a field that wraps: every entry is
-          only as wide as the office it holds, ticked off by a hairline, so
-          the rows break at irregular places and the wall has a rag. The
-          emphasis is not editorial and nobody has been ranked — it falls out
-          of the data. "First Chief Technology Officer of the United States"
-          takes more ink than "Investor" because it is more words. The calibre
-          of the room is the area it covers, and you can see that before you
-          have read a single row. */}
+          It used to be a run: every entry only as wide as the office it
+          carried, each with its own left hairline, wrapping greedily. The
+          argument was that the calibre of the room would read as the area it
+          covered. What it actually produced was three unrelated layouts — a
+          six-deep stacked list for Policy, and two wrapped fields whose
+          hairlines landed at seven different x-values (51, 382, 392, 415,
+          446, 813, 836) for what the eye reads as ONE repeated column edge,
+          with a right rag from 637px to 1304px inside a 1389px measure. Two
+          rules that miss each other by 33px do not read as a rag. They read
+          as a mistake.
+
+          So the roster is a plate. Three tracks, one fixed gutter, the same
+          three x-values in every row of every group, filled column-major so
+          a reader takes a column at a time. The column rule is the left edge
+          of a RECORD — it is drawn on the entry, exactly as tall as the entry
+          box, so a rule can only ever exist beside a name. The tracks are
+          fixed, so every rule still lands on one of the same three x-values;
+          what it can no longer do is outlive the last name in its column.
+          Nobody is ranked: one name register, one title register, sixteen
+          entries the same. The difference between the constituencies is
+          stated in the head above each band, in words, which is where a
+          difference belongs. */}
       <div class="wall">
         {cohorts.map((c, ci) => (
-          <section class:list={['co', ci === 0 && 'co--lead']} data-wipe="top" data-delay={String(140 + ci * 130)} aria-labelledby={c.id}>
+          <section class="co" data-wipe="top" data-delay={String(140 + ci * 130)} aria-labelledby={c.id}>
             <h3 class="co__head" id={c.id}>
-              <span class="index tnum">{c.count}</span>
-              <span class="label">{c.label}</span>
+              <span class="co__mark">
+                <span class="index tnum">{c.count}</span>
+                <span class="label">{c.label}</span>
+              </span>
               <span class="co__def">{c.def}</span>
             </h3>
-            <ul class="co__field">
+            {/* Column-major fill needs a row count, and the row count is a
+                function of how many tracks are showing. All three are
+                declared here and the stylesheet picks one per breakpoint,
+                so the fill order survives the fold instead of silently
+                becoming row-major. */}
+            <ul class="co__field" style={`--rows-3:${Math.ceil(c.people.length / 3)};--rows-2:${Math.ceil(c.people.length / 2)};--rows-1:${c.people.length}`}>
               {c.people.map((p) => (
                 <li class="ent">
                   <span class="ent__n">{p.name}</span>
@@ -190,12 +229,33 @@ const founderCount = String(founders.length).padStart(2, '0');
         ))}
       </div>
 
-      <p class="label bd__foot" data-reveal="140">Membership is prospective · Titles for identification</p>
+      {/* The point is bound to the clause it closes. Left to break freely it
+          wrapped onto the second line on a phone and the footnote opened
+          with a separator — "· TITLES FOR IDENTIFICATION" — which is a
+          hanging mark, not a rule. */}
+      <p class="label bd__foot" data-reveal="140">Membership is prospective&nbsp;· Titles for identification</p>
     </div>
   </section>
 </Base>
 
 <style>
+  /* ── THE SECOND RAIL ─────────────────────────────────────────────
+     Two things on this page set a micro-label and a clause on ONE line:
+     the founders band (Founders → "Both are Founding Partners of …") and
+     every band head on the wall (06 · Policy → "They have governed at
+     scale."). They were laid out independently — the first as an auto
+     column plus a 5vw gap, the second as a flex row with two gaps — so
+     the four clauses opened at x = 203, 182, 190 and 200. Four axes for
+     one relationship, and three of them were a function of how many
+     letters are in the word "Practice", which is not a design decision.
+
+     One measured column instead. Left of the rail is the label; on the
+     rail is the clause. The width is set to clear the longest mark the
+     page sets — 06 + PRACTICE — at every viewport where a clause still
+     sits beside it, and the value is declared once, here, so the axis
+     cannot drift the next time a head is written. */
+  .fs, .bd { --rail-2: clamp(7.5rem, 3.95rem + 6.05vw, 9.4rem); }
+
   /* ── Masthead ───────────────────────────────────────────────────── */
   /* --head-pad IS the shelf. It was being multiplied by 0.72 here to buy
      back vertical space, which put this page's first line 29px higher than
@@ -230,12 +290,18 @@ const founderCount = String(founders.length).padStart(2, '0');
   }
   .pm__idx-i {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr) auto;
     column-gap: clamp(1rem, 2vw, 1.75rem);
     align-items: baseline;
     padding-block: clamp(0.7rem, 1.3vw, 1rem);
     border-top: 1px solid var(--rule);
+    transition: border-color var(--dur-hover) var(--ease-out);
   }
+  /* Closed at the bottom as well as the top: two hairlines with type hanging
+     off the underside of the second is a stack that was cut off, not an
+     object. Both rows now have a floor, and the numerals, names and arrows
+     all range on the same three axes. */
+  .pm__idx-i:last-child { border-bottom: 1px solid var(--rule); }
   .pm__idx-n {
     font-family: var(--serif);
     font-weight: 300;
@@ -244,14 +310,52 @@ const founderCount = String(founders.length).padStart(2, '0');
     letter-spacing: -0.025em;
     color: var(--brass);
   }
+  /* The name sits against the numeral rather than against the far edge:
+     the row is closed by the arrow now, so the two marks that belong
+     together — 02 and FOUNDERS — no longer stand 200px apart. */
   .pm__idx-l {
     line-height: 1.2;
-    text-align: right;
-    transition: color 380ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
   }
+  /* The house arrow, turned down the page, because that is where these two
+     links go. Set at --mark: it is a glyph, not a word. */
+  .pm__idx-a {
+    --idx-arrow: 1.15rem;
+    width: var(--idx-arrow);
+    /* base.css caps every svg at max-width:100%, and 100% of a track that
+       the pull below has already narrowed is a smaller arrow — the cap and
+       the pull chase each other until the glyph has lost a quarter of its
+       width. The arrow is 18px by declaration, not by whatever its column
+       happens to measure. */
+    max-width: none;
+    align-self: center;
+    justify-self: end;
+    color: var(--mark);
+    /* Turned a quarter, the arrow keeps its untransformed box for layout,
+       so the ink — 8 of the viewBox's 10 units — ends up ((22 − 8) ÷ 22) ÷ 2
+       of the box short of the column edge that every other mark on this
+       page ranges to. Exactly that much, taken back. */
+    margin-right: calc(var(--idx-arrow) * -0.318);
+    transition: transform 460ms var(--ease-out), color var(--dur-hover) var(--ease-out);
+  }
+  /* Hover lights the row's own two hairlines — its top rule and the rule
+     under it, which is the next row's top rule — so the thing that responds
+     is the row, not a word inside it. */
   @media (hover: hover) {
-    .pm__idx-i:hover .pm__idx-l { color: var(--fg); }
+    .pm__idx-i:hover,
+    .pm__idx-i:hover + .pm__idx-i { border-top-color: var(--mark); }
+    .pm__idx-i:last-child:hover { border-bottom-color: var(--mark); }
   }
+  /* Keyboard gets the identical row treatment — the same hover/focus parity
+     the homepage ledger and the /partner/ rows already keep. Outside the
+     hover query, because a keyboard exists on touch devices too. */
+  .pm__idx-i:focus-visible,
+  .pm__idx-i:focus-visible + .pm__idx-i { border-top-color: var(--mark); }
+  .pm__idx-i:last-child:focus-visible { border-bottom-color: var(--mark); }
+  .pm__idx-i:hover .pm__idx-l,
+  .pm__idx-i:focus-visible .pm__idx-l { color: var(--fg); }
+  .pm__idx-i:hover .pm__idx-a,
+  .pm__idx-i:focus-visible .pm__idx-a { color: var(--brass); transform: rotate(90deg) translateX(3px); }
   .pm__rule { margin-top: clamp(2rem, 3.8vw, 3.2rem); }
 
   /* ── Founders ───────────────────────────────────────────────────── */
@@ -263,8 +367,7 @@ const founderCount = String(founders.length).padStart(2, '0');
   }
   .fs__head {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    column-gap: clamp(2rem, 5vw, 5.5rem);
+    grid-template-columns: var(--rail-2) minmax(0, 1fr);
     align-items: baseline;
   }
   /* The one affiliation both founders share, stated once at the bridge rung
@@ -274,6 +377,12 @@ const founderCount = String(founders.length).padStart(2, '0');
 
   /* The diptych. Two equal bays, one spine. */
   .dip {
+    /* Declared once, because three things have to agree on them: the inset
+       of the second bay, the pull that keeps the two bays equal, and the
+       spine itself. --cred-gap is the air above the credential rule, and the
+       spine has to cross exactly that much to stay one line. */
+    --bay-pad: clamp(1rem, 2.5vw, 2.75rem);
+    --cred-gap: clamp(1.1rem, 2.2vw, 1.8rem);
     margin-top: clamp(2rem, 4vw, 3.5rem);
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -297,9 +406,38 @@ const founderCount = String(founders.length).padStart(2, '0');
      twice as far off the spine as hers. "Two equal bays" has to be measured,
      not asserted. */
   .dip > .fr + .fr {
-    border-left: 1px solid var(--rule);
-    padding-left: clamp(1rem, 2.5vw, 2.75rem);
-    margin-left: calc(-1 * clamp(1rem, 2.5vw, 2.75rem));
+    padding-left: var(--bay-pad);
+    margin-left: calc(-1 * var(--bay-pad));
+  }
+
+  /* THE SPINE IS THE SECOND RECORD'S EDGE, NOT THE SECOND COLUMN'S.
+     It used to be the article's border-left, and an article is as tall as
+     its grid row — which is set by the LONGER name. So the rule opened at
+     the top of a three-line name in the left bay and ran 108px before the
+     right bay had put down a single mark. A pair that is bottom-aligned on
+     purpose then read as a pair that had failed to align.
+
+     The rule is hung off the record instead, in two segments that meet: the
+     first spans the rank-and-name block plus the air above the credential
+     rule (and the hairline itself, hence the +1px), the second spans the
+     credential block. Together they are one unbroken line that starts on
+     Judd Olanoff's first mark and ends on his last, and there is no width
+     at which it can outrun him. */
+  .dip > .fr + .fr .fr__id,
+  .dip > .fr + .fr .fr__cred { position: relative; }
+  .dip > .fr + .fr .fr__id::before,
+  .dip > .fr + .fr .fr__cred::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--bay-pad));
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--rule);
+  }
+  .dip > .fr + .fr .fr__id::before {
+    bottom: auto;
+    height: calc(100% + var(--cred-gap) + 1px);
   }
 
   .fr__meta {
@@ -321,7 +459,7 @@ const founderCount = String(founders.length).padStart(2, '0');
   .fr__name { max-width: 13ch; text-wrap: balance; }
   .fr__cred {
     border-top: 1px solid var(--rule);
-    margin-top: clamp(1.1rem, 2.2vw, 1.8rem);
+    margin-top: var(--cred-gap);
     padding-top: clamp(0.9rem, 1.7vw, 1.35rem);
   }
   .fr__credhead {
@@ -360,7 +498,9 @@ const founderCount = String(founders.length).padStart(2, '0');
     justify-items: start;
     row-gap: clamp(0.35rem, 0.7vw, 0.6rem);
   }
-  .seam__l { color: var(--fg-mute); }
+  /* .label at its own level — see PilotsScene. This one sits in the scrim's
+     deep zone at the foot of the frame, which is where the legibility budget
+     in tokens.css puts a meta-register mark over photography. */
 
   /* The count, on the room's axis. Off the type ladder by design: the
      largest rung on the site is 86px and this is ~245px, because a rung is a
@@ -409,7 +549,7 @@ const founderCount = String(founders.length).padStart(2, '0');
   }
   .bd__h {
     max-width: none;
-    text-wrap: wrap;
+    text-wrap: balance;
     --settle-shift: 2.2vh;
     --settle-origin: 0% 100%;
     /* The one display line in this scene gets the slowest, latest ramp on
@@ -421,12 +561,25 @@ const founderCount = String(founders.length).padStart(2, '0');
   .bd__h :global(.line > span) { transition-delay: calc(var(--line-delay, 0ms) + 120ms); }
 
   /* ── The wall ───────────────────────────────────────────────────── */
-  /* Three bands, each a constituency. The entries inside are not cells: they
-     are only as wide as the office they carry, so the field wraps unevenly
-     and the roster has a rag instead of a ruled table. */
+  /* Three bands, each a constituency, all three standing on ONE set of
+     column tracks. The bands differ in what their heads say and in nothing
+     else: same tracks, same gutter, same rules, same two registers. */
   .wall {
     margin-top: clamp(2.5rem, 5vw, 5rem);
     border-top: 1px solid var(--mark);
+    /* THE ONE PLACE THE ROSTER'S GEOMETRY IS DECLARED. Every band reads
+       --cols, --gut and --rows from here, so all three bands stand on the
+       same tracks and a rule cannot land at a fourth x-value. --rows is
+       written as a pointer into the three counts each field carries, so
+       changing the column count at a breakpoint changes the fill with it. */
+    --cols: 3;
+    --gut: clamp(1.4rem, 2.6vw, 2.6rem);
+    /* Everything inside the plate hangs off its column rule by the same
+       measure — the band head included. The plate's own left edge is the
+       page's left rule, so the vertical rules and the horizontal band rules
+       start on one x and the whole roster reads as a ruled sheet rather than
+       as text with lines near it. */
+    --tick: clamp(0.8rem, 1.15vw, 1.15rem);
   }
   .co {
     padding-block: clamp(1.9rem, 3.6vw, 3.1rem);
@@ -439,77 +592,129 @@ const founderCount = String(founders.length).padStart(2, '0');
   :global(html:not(.js)) .fs__rule,
   :global(html:not(.js)) .wall { clip-path: none; }
 
+  /* THE SECOND RAIL, USED. Count and label are one mark and they hold the
+     left rule; the clause opens on the rail. The head is a grid rather than
+     a flex row precisely so the clause's x does not depend on how long the
+     word "Practice" is. */
   .co__head {
-    display: flex;
+    display: grid;
+    grid-template-columns: var(--rail-2) minmax(0, 1fr);
+    padding-left: var(--tick);
     align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0.85rem;
     font-weight: 400;
     margin-bottom: clamp(1.25rem, 2.4vw, 2rem);
   }
+  .co__mark {
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+    /* THE COUNT IS INK HERE, NOT BRASS. .index is the brass register, and on
+       a cream ground brass resolves to --brass-deep — a fourth value that is
+       neither the sanctioned #C4A469 nor an ink, invented only because true
+       brass on cream measures 2.0 : 1 and cannot carry 13px of text. The
+       palette is closed at three, so the count drops into the same ink as
+       the label it belongs to and the mark reads as one object. Brass on
+       this page stays where it is legible: the masthead, on navy. */
+    /* The rail is measured for "06 Practice" at every width it is used at;
+       if a longer label is ever added, it stops the mark rather than
+       silently pushing the clause off the rail. */
+    min-width: 0;
+  }
+  /* The count keeps the index register's brass. `.on-cream` already remaps
+     --brass to --brass-deep for exactly this, and #7E6431 on #F2EDE3 measures
+     4.79 : 1 — over the 4.5 floor at 13px. /forum/ and /partner/ both let the
+     remap do its work on their cream grounds; this page was the one that
+     opted out, so a reader met the same numeral in two colours. */
   .co__def {
     font-size: var(--step-body);
     line-height: 1.4;
     color: var(--fg-mute);
-    margin-left: clamp(0.5rem, 2vw, 2rem);
   }
 
-  /* Not cells. The entries are set as ONE RUN of text that wraps like a
-     paragraph, so the field fills its measure by construction and there is
-     no cell to leave empty. A name is serif at the sub rung, the office it
-     holds is sans at the body rung immediately after it, and a brass point
-     separates one from the next. That is a credit block, or the lettering on
-     a board room wall, and it is the one object on this page that does not
-     answer to a column: where an entry breaks is decided by how long an
-     office is, not by a grid. */
+  /* THE PLATE. Three tracks, one gutter, declared once on the wall so every
+     band inherits the same geometry and no band can invent its own. The
+     column count is the only thing a breakpoint changes; the row count
+     follows it so the fill stays column-major at every width. */
   .co__field {
+    /* The pointer has to be resolved on the element that carries the three
+       counts — a custom property is substituted where it is DECLARED, so
+       --rows: var(--rows-3) written on .wall would resolve against .wall,
+       where --rows-3 does not exist, and take grid-template-rows down with
+       it. It is declared here, beside the inline counts. */
+    --rows: var(--rows-3);
     list-style: none; margin: 0; padding: 0;
-    display: block;
-    line-height: 1.55;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--rows), auto);
+    column-gap: var(--gut);
+    row-gap: clamp(1.35rem, 2.3vw, 2.15rem);
   }
-  /* Each entry wraps as one piece, so a line never breaks a man away from
-     the office he held. The pieces are wildly different widths and the run
-     fills greedily, so the right rag is decided by the lengths of the titles
-     in the room — which is the only ordering principle this scene has. */
-  /* Ticked off a hairline, not separated by a point. A middot belongs to the
-     entry before it, so an entry that ends a line hangs its separator into
-     the rag — visible at two places in the last round. A leading rule cannot:
-     it marks the start of an entry wherever the entry happens to fall, and at
-     the head of a wrapped line it reads as the wall's own ruling. */
+
+  /* THE COLUMN RULES. They used to be painted on this field as a repeating
+     gradient across its full height — one continuous edge per track, drawn
+     on the period (100% + gutter) / cols so a hairline landed on every track
+     origin. It is the right geometry and the wrong object. Two of the three
+     constituencies hold five names, so on three tracks the last cell of the
+     third column is EMPTY, and the field's rule ran 93px down past Helen
+     Zhang and past Kyla Scanlon into nothing — twice, in the section that is
+     the whole payload of the page. A hairline beside no name is not a
+     column edge, it is a bug with a straight edge.
+
+     So the rule is drawn on the entry instead: an absolutely positioned
+     hairline on the entry's own left edge, top to bottom of its row box.
+     The old argument against this — that an entry's border stops where the
+     entry stops, so a reader sees seven edges where the grid has three —
+     was an argument against the OLD roster, which was a wrapped run of
+     shrink-to-fit entries. On fixed tracks every entry starts on one of the
+     same three x-values, so the rules still stack into three edges; the only
+     thing that changes is that an edge now ends with its last name. */
+  /* Name over office, top-aligned in the track: a person is a name and one
+     title line, and the two share a left edge with the rule that opens the
+     column. Rows are as tall as their tallest entry and every entry starts
+     at the top of its row, so the name baselines range across a row even
+     when one office takes two lines. */
   .ent {
-    display: inline-block;
-    border-left: 1px solid var(--rule);
-    padding-left: clamp(0.7rem, 1.1vw, 1rem);
-    margin-right: clamp(1.1rem, 2.2vw, 2.2rem);
+    position: relative;
+    display: grid;
+    align-content: start;
+    row-gap: 0.12em;
+    padding-left: var(--tick);
+  }
+  /* The rule itself: not a border, because a border sits inside the padding
+     and would push every name 1px off the track origin the band head is
+     already ranged on. An absolutely positioned hairline on the entry's own
+     left edge, floor to ceiling of its row box — the entry is stretched to
+     its row, so the three rules of a row open and close on the same two
+     y-values and the plate still reads as one ruled sheet. */
+  .ent::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--rule);
   }
   .ent__n {
     font-family: var(--serif);
     font-weight: 340;
-    font-size: var(--step-bridge);
-    letter-spacing: -0.014em;
+    font-size: var(--step-sub);
+    line-height: 1.06;
+    letter-spacing: -0.017em;
     color: var(--fg);
-    white-space: nowrap;
+    text-wrap: balance;
   }
-  /* THE TRANCHE THAT IS NOT A REPETITION. Three bands at one pitch is a
-     table by its third appearance. The first band — the people who have
-     governed at scale, which is the claim the bridge above actually makes —
-     is set two rungs up; the other two sit at the bridge rung and read as
-     the room around it. Nobody inside a band is ranked against anybody. */
-  .co--lead .ent { margin-right: clamp(1.4rem, 2.8vw, 2.8rem); }
-  .co--lead .ent__n {
-    font-size: var(--step-head);
-    letter-spacing: -0.019em;
-  }
-  .co--lead .co__field { line-height: 1.35; }
-  .co--lead .ent__t { font-size: var(--step-lede); }
-  /* The office is the payload of this scene. Because the field is a run, a
-     long office simply takes more of the wall than a short one — the calibre
-     of the room is the area it covers, and nobody had to be ranked to say so. */
+  /* One register for all sixteen. The old wall set the first band two rungs
+     up and let the run's rag do the rest, which ranked a constituency by
+     type size on a page that has no standing to rank one. What separates
+     Policy from Capital is written in the head above the band. */
   .ent__t {
     font-size: var(--step-body);
     font-weight: 400;
+    line-height: 1.4;
     color: var(--fg-mute);
-    padding-left: 0.55em;
+    text-wrap: pretty;
   }
 
   .bd__foot {
@@ -521,16 +726,28 @@ const founderCount = String(founders.length).padStart(2, '0');
   }
 
   /* ── Narrow ─────────────────────────────────────────────────────── */
+  /* THE ONLY THING A BREAKPOINT CHANGES ABOUT THE ROSTER. Column count and
+     the row count that keeps the fill column-major; the gutter, the rules,
+     the indent and both registers are the same object at every width. At
+     980 a track is 284px and a two-line office is the worst case; below it
+     three tracks start breaking names, so the plate goes to two, then to
+     one at 620. */
+  @media (max-width: 980px) { .wall { --cols: 2; } .co__field { --rows: var(--rows-2); } }
+  @media (max-width: 620px) { .wall { --cols: 1; } .co__field { --rows: var(--rows-1); } }
+
   @media (max-width: 1180px) {
-    .co__field { max-width: none; }
     .bd__bridge { max-width: 52ch; }
   }
   @media (max-width: 980px) {
     /* The diptych folds into two stacked bays. The spine becomes the rule
        between them, so the pair survives the fold as a pair. */
     .dip { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+    /* Folded, the spine is the horizontal rule between the stacked bays —
+       so the vertical one is not drawn at all, rather than left to collapse
+       to a stub. */
+    .dip > .fr + .fr .fr__id::before,
+    .dip > .fr + .fr .fr__cred::before { content: none; }
     .dip > .fr + .fr {
-      border-left: 0;
       padding-left: 0;
       margin-left: 0;
       border-top: 1px solid var(--rule);
@@ -551,46 +768,52 @@ const founderCount = String(founders.length).padStart(2, '0');
        balanced so neither closes on a one-word orphan. */
     .bd__claim { margin-left: 0; margin-right: 0; }
     .bd__h, .pm__h { text-wrap: balance; }
-    .ent:first-child .ent__n { line-height: 1.02; }
   }
   @media (max-width: 700px) {
     .bd__head { grid-template-columns: minmax(0, 1fr); }
     .fs__note { max-width: 30ch; }
-    .co__def { margin-left: 0; flex-basis: 100%; max-width: 40ch; }
+    /* Below this the rail is narrower than the clause needs, so the clause
+       leaves it and takes its own row under the mark — the same fold the
+       founders head already makes at 980. */
+    .co__head { grid-template-columns: minmax(0, 1fr); row-gap: 0.6rem; }
+    .co__def { max-width: 40ch; }
   }
   @media (max-width: 620px) {
     /* A 34vw band is 130px on a phone: the room stops being a room. The
        seam keeps a readable frame instead of a stripe. */
     .seam { min-height: min(88vh, 40rem); }
-    /* The field stops wrapping and runs one entry per row, ticked off the
-       same hairline — still a wall, read down instead of across. */
-    /* Below 620 a run at two registers is soup. The field becomes a stack,
-       one entry per row, ticked off a single hairline — still a wall, read
-       down instead of across. */
-    /* The lead band reads down, one entry per row. The other two stay a
-       two-up flow: collapsing all three to a single column turned the cream
-       half into sixteen identical rows over 1400px and cost the page its
-       only density contrast at the breakpoint. */
-    .co__field { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 1.1rem; max-width: none; line-height: 1.3; }
-    .co:not(.co--lead) .co__field {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: 1rem; row-gap: 0.9rem;
-    }
-    .co:not(.co--lead) .ent__n { font-size: var(--step-body); }
-    .co:not(.co--lead) .ent__t { font-size: var(--step-micro); letter-spacing: 0.01em; }
-    .ent { display: grid; row-gap: 0.2rem; padding-left: 1rem; border-left: 1px solid var(--rule); }
-    .ent::after { content: none; }
-    .ent__n { white-space: normal; }
-    .ent__t { padding-left: 0; }
+    /* ONE TRACK. Two 163px columns at 390 put "Tess deBlanc-Knowles" on two
+       lines and "First Chief Technology Officer of the United States" on
+       four, which is not a denser roster, it is a narrower one. The plate
+       becomes a single track. The name keeps its register — sixteen people
+       set the same way is the point of the plate and a breakpoint is not a
+       reason to rank them differently — and the rule follows the column
+       count on its own, because it is drawn from --cols. */
+    .co__field { row-gap: 1.15rem; }
     .bd__foot { justify-self: start; text-align: left; }
     /* The masthead line was breaking into four ragged lines at 390. Given
        its own tighter measure and a wrap it can balance, it sets in three. */
     .pm__h { max-width: 14ch; line-height: 0.98; }
-    .pm__idx-l { text-align: left; }
-    .pm__idx-i { grid-template-columns: auto minmax(0, 1fr); column-gap: 1rem; }
+    .pm__idx-i { column-gap: 1rem; }
+  }
+
+  /* THE LAST WIDTH AT WHICH THE CLAIM IS STILL TWO SENTENCES. Under about
+     440px the second clause is wider than the column, so the series-breaker
+     rung buys a third line and a break in the middle of "we run. Opening".
+     tokens.css already says what to do: below ~700px the display range has
+     compressed and --step-feature has stopped reading as a break anyway
+     (31.7 against --step-head's 28.0 at 390), so the claim takes the rung
+     that fits and keeps the thing that is actually doing the work — one
+     sentence, one line. */
+  @media (max-width: 440px) {
+    .bd__h { font-size: var(--step-head); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .bd__h :global(.line > span) { transition-delay: 0ms; }
+    .pm__idx-i, .pm__idx-l, .pm__idx-a { transition-duration: 1ms; }
+    /* The arrow lights, it does not slide. It keeps its quarter-turn. */
+    .pm__idx-i:hover .pm__idx-a,
+    .pm__idx-i:focus-visible .pm__idx-a { transform: rotate(90deg); }
   }
 </style>

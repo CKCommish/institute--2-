@@ -27,19 +27,26 @@ const { tone = 'lit', class: klass } = Astro.props;
     line-height: 1;
     white-space: nowrap;
     padding-block: 0.5rem; margin-block: -0.5rem;
-    transition: color 380ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
   }
   /* Same weight as .eyebrow — the mark is the site's first eyebrow. */
   .wm__a { font-weight: 620; }
-  .wm__b { transition: color 380ms var(--ease-out); }
+  .wm__b { transition: color var(--dur-hover) var(--ease-out); }
 
+  /* --nav-dim is the bar's quiet register for the ground it is currently
+     on: 54% over navy, 62% over cream. Hard-coding 54% here put INSTITUTE
+     at 4.03 : 1 on every cream scene. The fallback is the navy value, for
+     the footer copy, which sets no such variable. */
   .wm--lit { color: currentColor; }
-  .wm--lit .wm__b { color: color-mix(in srgb, currentColor 54%, transparent); }
-  .wm--lit:hover .wm__b { color: currentColor; }
+  .wm--lit .wm__b { color: color-mix(in srgb, currentColor var(--nav-dim, 54%), transparent); }
+  @media (hover: hover) {
+    .wm--lit:hover .wm__b { color: currentColor; }
+    .wm--quiet:hover, .wm--quiet:hover .wm__b { color: var(--fg); }
+  }
 
   .wm--quiet { color: var(--fg-mute); }
   .wm--quiet .wm__b { color: var(--fg-meta); }
-  .wm--quiet:hover, .wm--quiet:hover .wm__b { color: var(--fg); }
+
 
   /* The mark carries its own copy of the a.tap device (base.css) because
      this scoped rule outranks it. Keep the two in step: where the pointer

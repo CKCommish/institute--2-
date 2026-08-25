@@ -9,8 +9,8 @@ import { nav } from '../data/site.js';
       <h1 class="display display--poster lines">That page isn’t here.</h1>
       <p class="bridge" data-reveal="220">It may have moved, or it may never have existed. Everything the Institute publishes is below.</p>
       <ul class="nf__list" data-seq="90">
-        <li data-reveal><a class="link tap" href="/">Home</a></li>
-        {nav.map((n) => <li data-reveal><a class="link tap" href={n.href}>{n.label}</a></li>)}
+        <li data-reveal><a class="link tap label label--lit" href="/">Home</a></li>
+        {nav.map((n) => <li data-reveal><a class="link tap label label--lit" href={n.href}>{n.label}</a></li>)}
       </ul>
     </div>
   </section>
@@ -20,17 +20,25 @@ import { nav } from '../data/site.js';
   .nf {
     min-height: 78svh;
     display: grid;
-    align-items: center;
-    padding-block: calc(var(--nav-h) + clamp(4rem, 10vw, 8rem)) clamp(4rem, 9vw, 8rem);
+    /* The house shelf, like every other inner page: --head-pad under the bar,
+       content starting on it. This page hand-rolled its own top pad and then
+       vertically centred inside 78svh on top of it, which opened it 64px
+       below /pilots/ and /people/ — the one route a reader arrives at when
+       something has already gone wrong was also the one that did not look
+       like the rest of the site. */
+    align-content: start;
+    padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(4rem, 9vw, 8rem);
   }
   .nf__in { display: grid; gap: clamp(1rem, 2.2vw, 1.75rem); }
   .nf h1 { max-width: 14ch; }
+  /* The rows are .label .label--lit — the house micro register at link
+     brightness, the same object the footer's nav row is. This block used to
+     restate size, tracking, transform and weight by hand, which is a fourth
+     copy of a register base.css already owns. */
   .nf__list {
     list-style: none; margin: 0; padding: clamp(1.5rem, 3vw, 2.5rem) 0 0;
     display: flex; flex-wrap: wrap; gap: clamp(1rem, 2.6vw, 2.4rem);
     border-top: 1px solid var(--rule);
-    font-size: var(--step-micro, 0.73rem);
-    letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500;
   }
   /* Five 18px destinations wrapped into rows 16px apart is a coin-toss for
      a thumb — and this is the page you land on when something has already

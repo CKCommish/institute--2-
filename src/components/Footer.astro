@@ -132,9 +132,11 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
   /* The house arrow, at the house size. No second arrow construction. */
   .foot__go { display: inline-flex; align-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem); }
   .foot__arrow { width: clamp(26px, 2.6vw, 34px); color: var(--brass); }
-  .foot__go-t { transition: color 380ms var(--ease-out); }
-  .foot__cta:hover .foot__arrow { transform: translateX(9px); }
-  .foot__cta:hover .foot__go-t { color: var(--brass); }
+  .foot__go-t { transition: color var(--dur-hover) var(--ease-out); }
+  .foot__cta:hover .foot__arrow,
+  .foot__cta:focus-visible .foot__arrow { transform: translateX(9px); }
+  .foot__cta:hover .foot__go-t,
+  .foot__cta:focus-visible .foot__go-t { color: var(--brass); }
 
   /* Two ranks below the ask. It used to be set at --step-lede, which made the
      quiet door optically HEAVIER than the primary action's verb sitting on the
@@ -148,9 +150,10 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
     font-size: var(--step-body); line-height: 1.35; color: var(--fg-mute);
     padding-bottom: 0.3rem;
     border-bottom: 1px solid var(--rule);
-    transition: color 380ms var(--ease-out), border-color 380ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out);
   }
-  .foot__second:hover .foot__second-t { color: var(--fg); border-bottom-color: var(--brass); }
+  .foot__second:hover .foot__second-t,
+  .foot__second:focus-visible .foot__second-t { color: var(--fg); border-bottom-color: var(--brass); }
 
   /* ── Mode B: the coda ───────────────────────────────────────────────
      A page whose hero already holds the address ends on a note, not on a
@@ -168,11 +171,13 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
   .coda__line {
     font-size: var(--step-head);
     line-height: 1.02; letter-spacing: -0.018em;
-    transition: color 380ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
   }
   .coda__arrow { width: clamp(26px, 2.6vw, 34px); color: var(--brass); align-self: center; }
-  .coda__a:hover .coda__line { color: var(--brass); }
-  .coda__a:hover .coda__arrow { transform: translateX(9px); }
+  .coda__a:hover .coda__line,
+  .coda__a:focus-visible .coda__line { color: var(--brass); }
+  .coda__a:hover .coda__arrow,
+  .coda__a:focus-visible .coda__arrow { transform: translateX(9px); }
 
   /* ── Base: lockup, two routes, fine print ───────────────────────── */
   .foot__base { display: grid; gap: clamp(0.9rem, 1.6vw, 1.4rem); }
@@ -189,9 +194,10 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
   .foot__nav { display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(1rem, 2.2vw, 1.8rem); }
   .foot__nav-a {
     padding-block: 0.55rem; margin-block: -0.55rem;
-    transition: color 340ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
   }
-  .foot__nav-a:hover { color: var(--fg); }
+  .foot__nav-a:hover,
+  .foot__nav-a:focus-visible { color: var(--fg); }
 
   @media (max-width: 860px) {
     .foot { gap: clamp(2.4rem, 9vw, 4rem); }
@@ -210,5 +216,9 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
 
   @media (prefers-reduced-motion: reduce) {
     .foot__arrow, .foot__go-t, .foot__second-t, .coda__line, .coda__arrow { transition-duration: 1ms; }
+    /* Every hover state still resolves — it just resolves in place. The ink
+       lights; the arrow does not travel. Same rule /partner/ holds. */
+    .foot__cta:hover .foot__arrow, .foot__cta:focus-visible .foot__arrow,
+    .coda__a:hover .coda__arrow, .coda__a:focus-visible .coda__arrow { transform: none; }
   }
 </style>

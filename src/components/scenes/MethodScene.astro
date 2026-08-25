@@ -162,11 +162,19 @@ import { method } from '../../data/site.js';
     border-top: 1px solid var(--rule-soft);
     width: min(20rem, 100%);
   }
+  /* THE BRASS FIGURE, ONE WAY. The site sets a piece of key data as a brass
+     tabular numeral beside a .label twice: here, and in the /people/ masthead
+     ledger ("02 Founders", "16 Prospective board"). They were two objects —
+     Libre Franklin 400 here, Newsreader 300 there — so the same move read as
+     two. Newsreader is the one that carries a figure at display scale, so
+     this takes its face and its weight. The rung stays where it is: this is
+     the smaller of the two moments and does not need the size as well. */
   .method__stat-n {
+    font-family: var(--serif);
     font-size: var(--step-bridge);
-    font-weight: 400;
+    font-weight: 300;
     line-height: 1;
-    letter-spacing: -0.012em;
+    letter-spacing: -0.025em;
     color: var(--brass);
     white-space: nowrap;
   }

@@ -54,7 +54,11 @@ import { pilots } from '../../data/site.js';
   }
   .pilots__count { font-variant-numeric: tabular-nums; }
   .pilots__h { grid-column: 1 / -1; max-width: 20ch; }
-  .pilots__note { grid-column: 1 / -1; color: var(--fg-mute); margin: 0; }
+  /* .label at its own level. It was set to --fg-mute here and to --fg-mute
+     again on /people/ — a fourth brightness of a class base.css declares at
+     three, invented twice, on flat navy where the meta register measures
+     5.3 : 1 and needs no help. */
+  .pilots__note { grid-column: 1 / -1; margin: 0; }
 
   /* ── The register ───────────────────────────────────────────────────
      Horizontal rules carry the rhythm. One quiet vertical hairline carries
@@ -87,7 +91,7 @@ import { pilots } from '../../data/site.js';
     align-items: baseline;
     column-gap: clamp(1.1rem, 2.2vw, 2.4rem);
     row-gap: 0.55rem;
-    transition: opacity 300ms var(--ease-out), background-color 420ms var(--ease-out);
+    transition: opacity 300ms var(--ease-out), background-color var(--dur-hover) var(--ease-out);
   }
   /* one hairline, not a table: it divides who runs it from what it does */
   .pilot__v {
@@ -102,7 +106,7 @@ import { pilots } from '../../data/site.js';
   .pilot__i { grid-column: 1; grid-row: 1; }
   .pilot__partner {
     grid-column: 2; grid-row: 1;
-    transition: color 380ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
   }
   /* --step-sub, not a hand-rolled clamp. The clamp landed on 40.5px at 1440,
      which is a rung the ladder does not have: the page then ran
@@ -126,14 +130,14 @@ import { pilots } from '../../data/site.js';
     grid-column: 4 / -1; grid-row: 1;
     justify-self: end;
     white-space: nowrap;
-    transition: color 380ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
   }
   .pilot__arrow {
     grid-column: 5; grid-row: 2;
     justify-self: end; align-self: baseline;
     width: 22px; color: var(--brass);
     opacity: 0; transform: translateX(-10px);
-    transition: opacity 380ms var(--ease-out), transform 520ms var(--ease-out);
+    transition: opacity var(--dur-hover) var(--ease-out), transform 520ms var(--ease-out);
   }
   .pilot__arrow :global(.arrow) { width: 100%; }
 
@@ -157,6 +161,10 @@ import { pilots } from '../../data/site.js';
 
   @media (prefers-reduced-motion: reduce) {
     .pilot::after, .pilot__title, .pilot__arrow { transition-duration: 1ms; }
+    /* The row lights, it does not travel: the title holds its rail and the
+       arrow arrives where it sits. */
+    .pilot:hover .pilot__title, .pilot:focus-within .pilot__title { transform: none; }
+    .pilot__arrow { transform: none; }
   }
 
   /* ── The hover state is ink, not photography ────────────────────

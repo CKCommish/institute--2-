@@ -277,7 +277,7 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
   display: inline-flex;
   align-items: center;
   gap: 0.8rem;
-  transition: color 380ms var(--ease-out);
+  transition: color var(--dur-hover) var(--ease-out);
 }
 .cue:hover { color: var(--brass); }
 .cue__line {

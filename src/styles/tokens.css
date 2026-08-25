@@ -177,6 +177,16 @@
      mouse gets on the way DOWN. It has to resolve inside the gesture, so it
      is shorter than anything else in the scale by a wide margin. */
   --dur-0: 140ms;
+  /* THE HOVER REGISTER. One duration for "the pointer is on this and the
+     ink has changed": every colour/border fade under a cursor or a focus
+     ring. It was written by hand in eleven components at 340ms, 380ms and
+     420ms — three speeds for one gesture, so a reader crossing from the
+     footer (340) to a pilot row (380) to the wordmark (420) felt the site
+     change its reflexes between objects. 380ms is the value the majority
+     of them already used. Movement that accompanies the colour (an arrow
+     stepping, a rule wiping) keeps its own, longer duration: the ink
+     answers first and the geometry follows. */
+  --dur-hover: 380ms;
   --dur-1: 420ms;
   --dur-2: 760ms;
   --dur-3: 1150ms;

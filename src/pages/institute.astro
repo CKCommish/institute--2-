@@ -169,7 +169,8 @@ const spec = [
     margin: 0; font-size: var(--step-lede);
     line-height: 1.25; letter-spacing: -0.006em; color: var(--fg);
   }
-  .ispec__v :global(a:hover) { color: var(--brass); }
+  .ispec__v :global(a:hover),
+  .ispec__v :global(a:focus-visible) { color: var(--brass); }
 
   /* ── THE SPAN ─────────────────────────────────────────────────────
      The only composition on this site that is not flush-left under a
@@ -205,7 +206,7 @@ const spec = [
   .brg__list { display: contents; }
   .brg__k, .brg__list li {
     transition:
-      opacity 380ms var(--ease-out) var(--d, 0ms),
+      opacity var(--dur-hover) var(--ease-out) var(--d, 0ms),
       transform 460ms var(--ease-out) var(--d, 0ms);
   }
   .brg.is-in .brg__k, .brg.is-in .brg__list li { opacity: 1; transform: none; }

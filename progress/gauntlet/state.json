@@ -1,1 +1,48 @@
-{"started":"", "wave":0, "pieces":[]}
+{
+ "wave": 1,
+ "pieces": [
+  {
+   "name": "Nav & chrome",
+   "status": "won",
+   "round": 4,
+   "verdict": "ours",
+   "gap": "Mobile sheet: the four serif menu words have a ragged left edge. Measured box-lefts are Institute 54.02, Pilots 55.50, Forum 55.83, People 56.02 CSS px \u2014 about a 3.5px ink rag between \"Institute\" and \"People\" at 36.8px Newsreader, plainly visible at 1x. The ca"
+  },
+  {
+   "name": "Home hero & first screen",
+   "status": "judging",
+   "round": 4,
+   "verdict": "apple",
+   "gap": "The hero sentence's line breaking is left entirely to the browser's greedy wrapper \u2014 `.hero__poster` computes `text-wrap: wrap` at every width, with no `balance`, no per-breakpoint `<br>`, and the `.hero__keep` span that was written to hold \"of tomorrow\" toget"
+  },
+  {
+   "name": "Pilots index & cards",
+   "status": "won",
+   "round": 1,
+   "verdict": "ours",
+   "gap": "Between 621px and 1180px the vertical column rule is dead \u2014 the two-up grid renders with no separator between its columns at all. Cause is a specificity/property mismatch in pilots.astro's narrow block: `.pgrid__cell + .pgrid__cell::after { display: none }` ki"
+  },
+  {
+   "name": "Pilot detail blocks",
+   "status": "won",
+   "round": 2,
+   "verdict": "ours",
+   "gap": "The four photograph plates are not one grade \u2014 they are four unrelated images sitting in four identical frames. Measured over each plate's exact 537.7\u00d7358.4 box: pilot 01 (track) mean RGB 126/99/96, mean chroma 41.7, +30 red-over-blue; pilot 02 (pylons) 102/11"
+  },
+  {
+   "name": "People",
+   "status": "won",
+   "round": 3,
+   "verdict": "ours",
+   "gap": "The hero's right-hand index block (\"02 FOUNDERS / 16 PROSPECTIVE BOARD\") has no optical relationship to the headline it sits beside \u2014 it is placed by eye, not by system, and it is the first screen. Measured at 1440: the headline \"The people accountable / for t"
+  },
+  {
+   "name": "Partner & the ask",
+   "status": "won",
+   "round": 4,
+   "verdict": "ours",
+   "gap": "The three doors \u2014 the page's stated chooser \u2014 end in three byte-identical \"EMAIL US\" labels set at 11.664px/w500/ls1.4, which is the SMALLEST type in the scene and smaller even than the decorative ordinal. Measured door scale: title 33.79px \u2192 body 15.79px \u2192 or"
+  }
+ ],
+ "note": "Wave 1 complete \u2014 37 agents, 5.8M tokens, 5h20m. The pill CTA \"violation\" was an error in my brief, not a finding; the ring has been restored."
+}

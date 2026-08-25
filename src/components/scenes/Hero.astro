@@ -12,7 +12,113 @@ import { pilots } from '../../data/site.js';
      The lower half's job is proof. The four institutions that agreed to run a
      pilot are the only credential this page has, so they are set as the
      second-largest voice in the frame — not as a duration tag. Three ranked
-     sizes per cell: brass numeral, partner name, project whisper. -->
+     sizes per cell: brass numeral, partner name, project whisper.
+
+     AND THE PHOTOGRAPH HAS TO CARRY THE FRAME, which is the other half of
+     the composition. It was not. Measured on the shipped 1440×900 frame in
+     round 3: the only thing in the 258px band between the claim's baseline
+     and the ledger rule was a crouching silhouette peaking at L 103 and
+     averaging 48, while the empty river to its right averaged 87 and peaked
+     far higher. The brightest, highest-contrast area of the first screen was
+     blank water and the only human in it was the darkest hole in the frame,
+     so a reader finishing the sentence fell into the void beside the subject.
+     Two things were wrong and both are fixed here.
+
+     1 · THE CROP. `hero.jpg` is 2800×1400 and the pair — a man reaching down
+     to his dog at the water's edge — occupies source x 730–1400, y 865–1390,
+     i.e. the bottom-left sixth of the negative. Printed at focal 36%/64%,
+     zoom 1 that put them in the last 90px of the frame with the ledger over
+     their legs, and gave five sixths of the first screen to open river. The
+     frame now crops to the pair (see the Figure call), and it crops to them
+     TWICE, because a landscape frame and a portrait one do not hold the same
+     subject in the same place:
+
+       ≥ 901px   zoom 1.18 · focal 33% 92%    the pair, lower-left third
+       ≤ 900px   zoom 1.16 · focal 34% 135%   the pair, in the open band
+
+     The narrow value is the interesting one, and round 4 re-derived it from
+     a constraint the earlier rounds never wrote down. On any viewport under
+     2:1 the media box is exactly as tall as the cover-scaled photograph, so
+     vertical free space is zero and object-position cannot pan — only
+     `transform-origin` can, and it is allowed to sit outside the box. That
+     is the lever. But the same lever slides the photograph's own BOTTOM EDGE
+     up the frame, and there is a hard ceiling on it:
+
+       the media box is 1.16h tall (h + Figure's 8% parallax overscan) and
+       starts at -0.08h, so the print's foot lands at
+           -0.08h + 1.16h · (s + f(1-s))       s = 1.02 · zoom, f = focal-y
+       and covering the frame needs s + f(1-s) ≥ 1.08/1.16 = 0.931.
+
+     h cancels: ONE number governs every narrow viewport. At zoom 1.16 it caps
+     focal-y at 137.7%. The shipped 158% was over it, so the print's foot sat
+     at y 807 on a 390×844 phone and at y 980 on a 768×1024 tablet — the last
+     36px and 44px of those first screens were Figure's procedural plate, not
+     the photograph, with the manifest's own ink band the only thing hiding
+     the seam. 135% is inside the cap at every size: measured foot 848.7 on
+     the phone, 1029.7 at 768×1024, 1206.7 at 900×1200, 937 at 430×932, 744
+     at 360×740, 670 at 375×667 — every one of them clears its frame at rest,
+     which is the state the first screen is read in. Under scroll the parallax
+     lifts the media by up to 5% of the media box and the foot can run 12–40px
+     short again, but by then the hero is leaving and that band sits under the
+     manifest's 70% ink over a plate seeded to the photograph's own dark
+     water. Buying it back would cost focal-y 135 → 110, which drops the man's
+     head to y 459 and puts the manifest across the dog's face. The frame at
+     rest wins.
+
+     Figure swaps to focalSm/zoomSm at 720px but the ledger becomes the
+     one-row manifest at 900, so the 721–900 band gets its own values through
+     a :global rule further down — see THE TABLET BAND.
+
+     WHY 135 AND NOT THE CAP. Lower focal-y sets the pair LOWER, and low is
+     what the phone wanted: at 158% the man's cap broke the surface 3px under
+     the descender of "today.", so the silhouette read as growing out of the
+     word. At 135% his head lands at y 415 — 25px of open water under the
+     last line — and the dog's head and the reaching arm, which are the whole
+     of the picture, sit at 545–625, wholly inside the band. Horizontal moved
+     with it, 31% → 34%: at 31% the dog's hindquarters ran off the right edge
+     and the manifest's right column (HEALTHY ATHLETES · CLEAN DATA CENTERS ·
+     …) was set over its body. At 34% the dog is whole, the man enters at the
+     left the way he does on the desktop, and the right third of the ledger
+     band is open water.
+
+     2 · THE GRADE. `/media/hero-graded.jpg` is a dodge-and-burn print of
+     `/media/hero.jpg` — the negative stays in the repo and is the fallback in
+     the candidate list. Nothing is added to or removed from the photograph;
+     three regions get a gamma, in SOURCE coordinates so the print travels
+     with every crop, which a CSS layer cannot do:
+
+       POOL  ellipse at (1055, 1035–1075), r 700 × 300/430, γ 0.50, gated to
+             pixels already above L 44 so the silhouettes stay black. The last
+             of the light collecting on the near water, which is where the
+             pair is standing.
+       RIM   the same centre, r 430 × 210/300, γ 0.60, gated above L 74 — the
+             dog's fur edge and the seam of the water only.
+       FALL  everything more than ~1.2 pool-radii out, γ 2.55, plus a second
+             γ 1.55 ramp from x 1450 → 2350. The open river goes down. The
+             dusk sky and the treeline (y < 500) are exempt: they are the only
+             warm thing in the picture and they were never the problem.
+       FOOT  y 1130 → 1300, γ 2.30. Both crops land the ledger's first row at
+             roughly source y 1160, so the manifest's ground is in the print
+             and one number covers a 900px desktop and an 844px phone.
+
+     Measured after, 1440×900, photograph alone with the type hidden:
+
+                            before            after
+       subject  x250–700    avg 48 pk 103     avg 68 pk 196
+       river    x1000–1440  avg 87 pk 237     avg 44 pk 125
+
+     The contrast is inverted: the eye now lands on the person.
+
+     THE ZONES, after all of that:
+
+       0– 64   THE BAR      Figure's top band. A system floor, not ours.
+      64–150   THE FAR BANK the picture's own black. No ink needed.
+     150–540   THE CLAIM    .hero__veil, and only .hero__veil.
+     540–777   THE SUBJECT  NOTHING. The print carries it.
+     777–900   THE LEDGER   the print's foot + .hero__index::before.
+
+     The rule the frame is built on: the sentence gets the quiet band, the
+     photograph gets the lit one, and no zone is inked twice. -->
 <section class="hero" aria-labelledby="hero-h">
   <!-- Register 1 rides on the figure: the location credit is Figure's own
        object (.label, --fg-meta, brass dot, corner-anchored), the same one
@@ -20,7 +126,12 @@ import { pilots } from '../../data/site.js';
        .hero__place + .hero__dot, with a pulsing beacon ring nothing else on
        the site has — a second construction of a system object, and a piece of
        animated decoration on a civic institute's front door. -->
-  <Figure src="/media/hero.jpg" alt="" ratio="auto" grade={0.34} focal="36% 64%" parallax={5} loading="eager"
+  <Figure src={['/media/hero-graded.jpg', '/media/hero.jpg']} alt="" ratio="auto"
+          grade={0.34}
+          focal="33% 92%"   zoom={1.18}
+          focalSm="34% 135%" zoomSm={1.16}
+          parallax={5} loading="eager"
+          scrim="full" rise={0.19} ink={1.02}
           credit="Greenville, Mississippi" creditPos="top-right" class="hero__bg" />
   <div class="hero__veil" aria-hidden="true"></div>
 
@@ -30,7 +141,7 @@ import { pilots } from '../../data/site.js';
   <div class="hero__mid shell">
     <h1 class="hero__h" id="hero-h">
       <span class="bridge bridge--lift hero__kicker">The Lion Forum Institute exists to ensure</span>
-      <span class="display hero__poster">the technologies of tomorrow strengthen American families today.</span>
+      <span class="display hero__poster">the technologies <span class="hero__keep">of tomorrow</span> strengthen American families today.</span>
     </h1>
   </div>
 
@@ -68,28 +179,92 @@ import { pilots } from '../../data/site.js';
   }
   .hero__bg { position: absolute; inset: 0; aspect-ratio: auto; z-index: -2; }
 
-  /* Legibility scrim. Two loaded corners — upper-left under the poster,
-     lower band under the ledger — and a deliberately open middle-right so the
-     river is still a photograph and not a texture. Local to this component. */
+  /* ── THE CLAIM BAND, and nothing else ────────────────────────────────
+     This element used to paint the whole frame: a full-height linear ramp
+     (56 → 28 → 8 → 10 → 44 → 88% ink) plus an 82% radial over the top-left
+     quadrant — ON TOP OF Figure's own `auto` scrim, which already floors the
+     bar band at 90% and runs a type ramp 46% of the way up the frame. The
+     hero was paying for legibility twice, and the photograph paid for both.
+
+     Measured on the shipped frame, median L* per cell, PHOTOGRAPH ALONE vs
+     WHAT SHIPPED:
+
+                          photograph          shipped
+       y   0– 75  sky      44 → 63             4 → 5      the dusk sky, gone
+       y  75–225  treeline  1 →  3             3          (already black)
+       y 225–560  water    19 → 62            10 → 51     the claim's ground
+       y 600–750  SUBJECT  38 → 55             9 → 40     man + dog + river
+       y 750–900  foot      3 → 39             3 → 21     the ledger's ground
+
+     Two things were being thrown away. The top of the frame is a violet dusk
+     sky at L* 44–63 — the one thing in the picture that says *evening on the
+     Mississippi* — and it was being painted out to L* 4 to protect a bar that
+     only covers the first 64px. And the photograph's subject, a man reaching
+     down to his dog at the water's edge, stood in a band lit at L* 38–55 and
+     was scrimmed to L* 9–32: a silhouette needs a bright ground, and the ink
+     that was there to carry a 16px ledger 200px lower took it away.
+
+     So the ink is now placed, once, per zone, and each zone is owned by
+     exactly one layer:
+
+       the bar      Figure's top band (the system floor, 90% over the bar)
+       the far bank NOTHING. It is the picture's own black.
+       THE CLAIM    this element, and only this element
+       the subject  NOTHING. The print carries it — see the note at the top.
+       the foot     the print's own foot + Figure's ramp at rise={0.19}
+
+     `rise` came down from 0.30 to 0.19 in round 3 and the reason is the whole
+     point of that round: 0.30 is 270px of a 900px frame, which put the ramp's
+     shoulder at y630 — 147px ABOVE the ledger it exists to carry, and right
+     across the dog. The ledger's ground is in the print now (a source-space
+     foot burn, which follows the crop) plus .hero__index::before (which is
+     anchored to the ledger, not the frame), so Figure's ramp only has to seal
+     the bottom edge. Measured after: worst row on the phone 4.97 : 1, worst
+     row on the desktop 9.4 : 1, and the dog keeps its light.
+
+     Stops are in PIXELS, not percentages: the type block is anchored to the
+     top of the frame by --nav-h and a fixed shelf, so its ground has to be
+     anchored the same way or it slides off the words on a taller viewport.
+     Figure's foot is a percentage because the ledger is bottom-anchored.
+
+     WEIGHT. 0.46 is measured, not chosen: the brightest patch of river under
+     the claim renders at L* 53.5 after the house grade, and cream over it was
+     3.5:1 — under the 4.5 the legibility budget asks of large type. 0.46
+     lands that patch at L* 41 (4.8:1) and the left of the band at L* 28
+     (6.5:1), which also gives the composition its shape: a quiet band for the
+     sentence, the lit river left alone above and below it.
+
+     THE RELEASE MOVED UP, 672 → 620, and the phone's 512 → 476. The claim's
+     last descender lands at y515 on a 1440 frame and y382 on a 390 one, so
+     the old stops were holding 150px and 130px of ink under type that had
+     already finished — over the exact band the subject now stands in. The
+     stops are set 25px past the last descender and released 80px after that.
+     Worst measured contrast on the claim after the move: 5.33 : 1 desktop,
+     4.73 : 1 phone, both over the lit water, both over the 4.5 floor. */
   .hero__veil {
     position: absolute; inset: 0; z-index: -1; pointer-events: none;
-    background:
-      radial-gradient(72% 50% at 0% 2%, color-mix(in srgb, var(--ink-900) 82%, transparent) 0%, transparent 74%),
-      radial-gradient(56% 40% at 94% 84%, color-mix(in srgb, var(--brass) 10%, transparent) 0%, transparent 70%),
-      /* The band from 46% to 86% is where the figure at the water's edge
-         stands. It used to run 14 → 26 → 74% ink on top of a 0.5 navy
-         multiply, which put the subject near 8% luminance: the frame read
-         as a black gradient rather than a photograph. Lifted here, and the
-         multiply lowered to 0.34, so the figure and the far bank carry
-         information. The foot still closes to 88% because the ledger sits
-         on it. */
-      linear-gradient(180deg,
-        color-mix(in srgb, var(--ink-900) 56%, transparent) 0%,
-        color-mix(in srgb, var(--ink-900) 28%, transparent) 26%,
-        color-mix(in srgb, var(--ink-900) 8%, transparent) 46%,
-        color-mix(in srgb, var(--ink-900) 10%, transparent) 66%,
-        color-mix(in srgb, var(--ink-900) 44%, transparent) 86%,
-        color-mix(in srgb, var(--ink-900) 88%, transparent) 100%);
+    /* Stops are named so the narrow viewport can move them: the claim is
+       five lines on a phone and three on a desktop, so the band that carries
+       it is a different length, and a percentage would put its release in
+       the middle of the words. */
+    --claim-glow: 62px;   /* the far bank is handed back above this */
+    --claim-in:   96px;
+    --claim-full: 168px;  /* full weight before the first cap-height */
+    --claim-mid:  300px;
+    --claim-hold: 500px;  /* full weight past the last baseline */
+    --claim-out:  540px;  /* release begins below the last descender */
+    --claim-fade: 580px;
+    --claim-end:  620px;  /* the river is the river again from here down */
+    background: linear-gradient(180deg,
+      transparent 0px,
+      transparent var(--claim-glow),
+      color-mix(in srgb, var(--ink-900) 16%, transparent) var(--claim-in),
+      color-mix(in srgb, var(--ink-900) 44%, transparent) var(--claim-full),
+      color-mix(in srgb, var(--ink-900) 46%, transparent) var(--claim-mid),
+      color-mix(in srgb, var(--ink-900) 44%, transparent) var(--claim-hold),
+      color-mix(in srgb, var(--ink-900) 32%, transparent) var(--claim-out),
+      color-mix(in srgb, var(--ink-900) 8%, transparent) var(--claim-fade),
+      transparent var(--claim-end));
   }
 
   /* ── Register 2: the poster ───────────────────────────────────────
@@ -116,37 +291,144 @@ import { pilots } from '../../data/site.js';
        is under 2x. The ladder here is 11.7 rail → 33.8 clause → 93 claim,
        i.e. 2.9x then 2.8x. The size lives in base.css so this is not a third
        hand-rolled sans display rung. */
-    max-width: 26ch;
+    /* ONE LINE, wherever one line fits. The measure was 26ch, which is 4ch
+       short of the clause, so the front door opened on a 377px line, a 243px
+       stub, and then 969 / 1096 / 1263px of display type. A four-step block
+       whose second step is its shortest reads as a wrapping accident, which
+       is what it was. At 34ch the clause sets on one line at 629px and the
+       block becomes a single staircase — 629 / 969 / 1096 / 1263 — every
+       step longer than the one above it, opening to the right the same way
+       the light in the photograph does. It also gives the claim back the
+       44px the stub was holding, which is air over the subject. */
+    max-width: min(34ch, 100%);
     margin-bottom: clamp(0.55rem, 1.2vh, 0.95rem);
+    /* Optical inset — see the note on .hero__poster. Libre Franklin's cap T
+       carries 1.31px of left sidebearing at 33.79px; the em value is the
+       bearing over the em, so it holds at every rung of the clamp. */
+    margin-left: -0.039em;
     opacity: 0;
     animation: heroIn 720ms var(--ease-out) 220ms forwards;
   }
 
-  /* Nine words, not sixteen, and a measure fixed in em so the line breaks are
-     identical at every viewport width instead of drifting with the clamp. */
+  /* Nine words, and the measure is the frame's until 10.6em is narrower. */
   .hero__poster {
     display: block;
     /* --step-banner. The token's whole job is to be spent ONCE per site, on
        the hero, and it was being spent twice on inner pages and never here:
        the front door ran a local 5.9rem clamp and was out-shouted by 35% by
        two secondary pages. It is the banner now, at 126.2px on a 1440 frame.
-       The measure stays in em so the three line breaks are identical at
-       every width — 10.6em is the widest of the three lines ("American
-       families today.") plus its right bearing, which lands the claim
-       corner-to-corner across the frame rather than in a left column. */
+
+       THE RAG IS THE RAG. This used to claim that 10.6em fixed the line
+       breaks "identical at every viewport width" and landed the claim
+       "corner-to-corner across the frame". Measured, neither is true and
+       neither can be: the claim sets three lines above 1081px, four between
+       1081 and ~430, five below, and on a 1440 frame its longest line ends
+       at 1263px inside a 1338px measure — 75px short, because that is what
+       the words are, and nothing short of retracking a 126px serif to zero
+       would close it. So it is left as a rag and composed as one. With the
+       clause on a single line (see .hero__kicker) the block is
+
+           627 · 969 · 1093 · 1263
+
+       four steps, each longer than the one above it, opening to the right
+       the way the light on this river does. A staircase is a rag a reader
+       can see the reason for; the previous 377 / 243 / 969 / 1093 / 1263
+       was not. */
     font-size: var(--step-banner);
     line-height: 0.93;
     letter-spacing: -0.028em;
-    max-width: min(10.6em, 100%);
+    /* The 0.09em is a RIGHT BEARING, and it is there to kill one width.
+       Both terms of this constraint scale with the viewport — the shell is
+       0.942w - 19.2 and the third line is 168.1 + 0.7605w — so they cross,
+       once, at w = 1032. Without a reserved bearing the claim therefore sets
+       three lines that end 1.5px from the frame at 1035 and 4px at 1045: a
+       126px serif with no right sidebearing against the edge of the page,
+       which reads as a mistake rather than a measure. Reserving 0.09em moves
+       the crossing to 1081 and guarantees the last line at least 9px of air
+       at every width above it, opening to 75px at 1440. Below 1081 the claim
+       sets four lines and ends on "today." alone, which is the emphatic word
+       of the sentence and can carry a line. */
+    max-width: min(10.6em, calc(100% - 0.09em));
     text-wrap: initial;
     hyphens: none;
+
+    /* OPTICAL INSET. Measured on the render at deviceScaleFactor 3, first
+       column reaching half of the line's peak ink, against a layout rail of
+       51.36px:
+
+         hero rule        51.00   -0.36    the rail everything answers to
+         index "01"       52.00   +0.64
+         eyebrow "F"      52.33   +0.97
+         kicker "T"       52.67   +1.31
+         poster "A"       51.00   -0.36    line 3
+         poster "t"       53.67   +2.31    lines 1 and 2
+
+       So the largest object on the site stood 2.3px inboard of the hairline
+       drawn beneath it — and 2.3px inboard of the "A" in its own third line,
+       which is the part a reader actually sees: one left edge, ragged by
+       2.3px, at 126px. Newsreader's "t" carries that as sidebearing; "A" has
+       none, because a diagonal is meant to hang. Aligning the STEMS puts the
+       t on the rail and lets the A overhang by the same 2.3px, which is what
+       optical margin alignment is. In em, so it holds from 46px to 134px. */
+    margin-left: -0.018em;
 
     /* The claim is inked in, top down, so the hero has a hierarchy in time as
        well as in size: rail, clause, claim, ledger. A soft-edged mask rather
        than the house .lines reveal — .lines is split on fonts.ready and marked
        in-view by an observer that has already fired at the top of the page, so
        whichever wins the race decides whether the hero animates at all. This
-       is load-timed and therefore always the same. Local to this component. */
+       is load-timed and therefore always the same. Local to this component.
+
+       THE MASK BOX WAS NOT THE INK BOX, and the biggest glyph on the site
+       paid for it. A mask is clipped to `mask-clip`, which defaults to the
+       BORDER BOX: every pixel of ink outside that box is dropped before the
+       mask image is even sampled — permanently, in the finished state as
+       much as during the wipe. And the ink here does leave the box, because
+       the display line-height (0.93) is SMALLER than the font-size. The
+       half-leading is negative, so line 1's font box opens ABOVE the
+       element's own top edge. Measured on the 1440 render, Newsreader at
+       126.24px:
+
+         element border box top   166.67
+         line 1 font box top      161.67   (baseline 254.67, ascent 93)
+         line 1 INK top           160.67   (actualBoundingBoxAscent 94)
+                                  ------
+         ink outside the box        6.00px  = 0.0475em
+
+       Six pixels, on line 1 only — the line that carries "of". Its "f" lost
+       the hook: cut flat, with the teardrop terminal left floating beside
+       the stem as a detached wedge. The i-dots in "technologies" were sliced
+       to bars and the h/l/t ascender tips were shaved. Lines 2 and 3 sit
+       inside the box and were untouched, which is why the "f" of "families"
+       two lines down was always perfect — the proof it was the box and never
+       the font. line-height / font-size is a fixed 0.930 at every width, so
+       this held at 1024, 1280, 1440 and 1728 alike.
+
+       The fix is to make the border box contain the ink, NOT to enlarge the
+       mask image: `mask-clip: no-clip` reads back correctly from
+       getComputedStyle in Chrome 141 and still clips at the border box in
+       paint, and growing `mask-size` past a box the mask is clipped to buys
+       nothing. Verified by injection at 0.09 / 0.18 / 0.30 / 0.50em — the
+       cut never moved off 166.67 — and by an opaque `linear-gradient(#000,
+       #000)` at `100% 100%`, which severed the f just the same.
+
+       So the box grows instead. `padding-block` pushes the border box past
+       the ink at both ends and `margin-block` takes the same amount back:
+       the two adjoining margins here are opposite in sign, so they collapse
+       to their sum and the type does not move — verified, all three line
+       boxes land on 161.67 / 279.06 / 396.45 before and after. The mask
+       keeps its original position, size and 980ms travel; it simply now has
+       the whole letterform to wipe.
+
+       0.09em is ~1.9x the measured 6px overshoot — headroom for a taller
+       accent or a fallback face — and at the foot it covers a descender that
+       was clearing the old box by 0.39px. Horizontally nothing is needed:
+       the "A" of "American" is set to hang by the optical inset above, and
+       its ink lands ON the box edge, not outside it (checked against an
+       unmasked render at 5x). */
+    --ink-rise: 0.09em;
+    padding-block: var(--ink-rise);
+    margin-block: calc(-1 * var(--ink-rise));
     -webkit-mask-image: linear-gradient(180deg, #000 0 58%, transparent 100%);
     mask-image: linear-gradient(180deg, #000 0 58%, transparent 100%);
     -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
@@ -159,8 +441,48 @@ import { pilots } from '../../data/site.js';
   /* ── Register 3: the 2026 ledger ──────────────────────────────────
      Three ranked sizes per cell. The partner name is the loud one. */
   .hero__index {
+    position: relative;
     width: 100%;
     padding-bottom: clamp(1.75rem, 4.4vh, 3.1rem);
+  }
+  /* THE LEDGER'S OWN GROUND — the half of the foot that Figure cannot place.
+     Figure's ramp is a percentage of the FRAME, and the ledger is 14% of a
+     1440x900 desktop frame but 28% of a 390x844 phone. One percentage cannot
+     carry both: at `rise={0.30}` the desktop rows measure 4–17 L* and pass
+     comfortably, while the top two phone rows measured 34 and 35, which put
+     "Healthy Athletes" and "Clean Data Centers" at 4.0 and 4.2 : 1 — under
+     the 4.5 the meta register needs, on the two most senior partners in the
+     manifest.
+
+     Rather than raise `rise` until the phone passes — which on the desktop
+     would push the ramp back up over the man and the dog, the exact thing
+     this round is here to give back — the shortfall is made up by a band
+     anchored to the LEDGER. `top: -30%` is 30% of the ledger's own height,
+     so the lead-in is always 30%, the first row always lands at 23% of the
+     band and the last at 72%, on every viewport. One set of stops, no
+     breakpoint. It reads as nothing on the desktop, where the print's own
+     foot is already carrying the band and this only tops it up.
+
+     Round 3 raised it by roughly a sixth — 36 → 42% at the eyebrow, 50 → 55%
+     at the first row — because the crop that brought the pair up into the
+     open band also brought the lit water down into the top of the manifest.
+     On the phone the eyebrow and the first project title now sit on the
+     brightest part of the photograph. Measured after: worst row 4.97 : 1 on
+     the phone (project title, --fg-meta at 54%), 9.43 : 1 on the desktop,
+     eyebrow 5.31 : 1 and 12.95 : 1. */
+  .hero__index::before {
+    content: '';
+    position: absolute;
+    inset: -30% 0 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--ink-900) 18%, transparent) 12%,
+      color-mix(in srgb, var(--ink-900) 48%, transparent) 22%,   /* eyebrow */
+      color-mix(in srgb, var(--ink-900) 64%, transparent) 34%,   /* row 1 */
+      color-mix(in srgb, var(--ink-900) 68%, transparent) 60%,
+      color-mix(in srgb, var(--ink-900) 70%, transparent) 100%);
   }
   .hero__index-head {
     display: flex; align-items: baseline; justify-content: space-between;
@@ -221,6 +543,17 @@ import { pilots } from '../../data/site.js';
   .hcell:nth-child(2) { animation-delay: 800ms; }
   .hcell:nth-child(3) { animation-delay: 860ms; }
   .hcell:nth-child(4) { animation-delay: 920ms; }
+  /* The cue arrives LAST, and it was arriving FIRST. It shares the staged
+     group above, and it was the only member with no delay: `animation-delay`
+     defaulted to 0, so the invitation to leave the page started its 12px lift
+     before the sentence the page exists to land had begun to ink in. Its
+     parent's own opacity hid the result, which is why it was never caught by
+     eye — but the two items on that baseline, the eyebrow and the cue, were
+     lifting on different clocks for 160ms, and the order was wrong on the one
+     axis motion is allowed to carry here. The order is now the reading order:
+     clause 220 · claim 240 · ledger head 560 · rule 640 · names 740–920 ·
+     the way out 1040. */
+  .hero__scroll { animation-delay: 1040ms; }
 
   @keyframes heroIn { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
   @keyframes heroDraw { to { transform: none; } }
@@ -235,6 +568,24 @@ import { pilots } from '../../data/site.js';
     .hcell,
     .hero__scroll { opacity: 1; animation: none; }
     .hero__rule { transform: none; animation: none; }
+  }
+
+  /* THE TABLET BAND, 721–900. Figure swaps to focalSm/zoomSm at 720px, but
+     the ledger goes to its one-row-per-pilot manifest at 900 — so between the
+     two the frame is portrait, the ledger is 240px tall, and the crop is still
+     the landscape one. The pair ends up behind the manifest. Custom properties
+     inherit, and .fig resolves --zoom / --focal from --zoom-base / --focal-sm
+     etc. on itself, so the override has to land on .fig directly.
+
+     It takes the phone's focal-y (135%, inside the 137.7% foot cap derived at
+     the top of this file — the cap is height-independent, so one number holds
+     from a 667px phone to a 1200px tablet) but keeps its OWN horizontal. 31%
+     is not 34% because the frame is not the same shape: the pair renders
+     613px wide in a 768px frame and fits whole, so it is centred on 31.5%
+     rather than pushed left to clear a 390px edge. Same photograph, three
+     compositions, one per frame shape. */
+  @media (min-width: 721px) and (max-width: 900px) {
+    .hero :global(.hero__bg) { --zoom: 1.16; --focal: 31% 135%; }
   }
 
   /* Four names cannot hold one line each in four columns below this. The
@@ -274,8 +625,74 @@ import { pilots } from '../../data/site.js';
     }
   }
 
+  /* Below ~760 the clause no longer fits on one line inside the shell, and
+     the width at which it stops fitting is a knife edge — measured, it flips
+     between 455 and 465px. Cap the measure well clear of that so the break
+     is always the same two balanced lines rather than a coin toss on the
+     device. */
+  @media (max-width: 760px) {
+    .hero__kicker { max-width: 24ch; }
+    /* Five lines, not three, and they start higher: the shelf under the bar
+       is shorter and the clause is two lines. Same band, moved to the words. */
+    .hero__veil {
+      --claim-glow: 56px;
+      --claim-in:   84px;
+      --claim-full: 150px;
+      --claim-mid:  260px;
+      --claim-hold: 376px;  /* the last descender lands at 382 */
+      --claim-out:  404px;
+      --claim-fade: 440px;
+      --claim-end:  476px;  /* …and the man's head begins at 388 */
+    }
+  }
+
+  /* THE PHONE SETTING, COMPOSED.
+     At 390 the claim wraps naturally to 343 / 183 / 194 / 328 / 109 px on a
+     348px measure: the first line jammed to within 5px of the margin, then
+     two single-word lines. Five lines of 46px serif is the right amount of
+     voice on a phone; that rag is not.
+
+     Holding "of tomorrow" together moves one word up and one word down and
+     the rag becomes 295 / 230 / 194 / 328 / 109 — no line inside 20px of the
+     margin, no orphan, and the block keeps a left column instead of running
+     edge to edge. It is done with a nowrap group rather than a narrower
+     max-width on purpose: a measure that sits 7px below "the technologies of"
+     and 9px above "American families" is a knife edge that a font fallback or
+     a different rasteriser flips. The group depends only on the ORDER of the
+     word widths, which does not move. */
   @media (max-width: 620px) {
     .hero__poster { letter-spacing: -0.026em; }
+    .hero__keep { white-space: nowrap; }
+  }
+
+  /* ── THE PHONE'S PHOTOGRAPHIC BAND ───────────────────────────────
+     The phone is not a narrow desktop and this hero cannot be re-cropped
+     into one. The negative is 2800x1400 and the man-and-dog silhouette
+     occupies source y 875-1255 — 27% of the frame's HEIGHT. On a portrait
+     cover box that fraction is locked: `object-fit: cover` scales the
+     photograph to the box's height, so the pair renders at 0.27 x the box
+     height NO MATTER what focal or zoom is asked for. At 390x844 the media
+     box is 979px tall (844 + Figure's 8% parallax overscan), so the pair is
+     never smaller than ~265px and at the shipped zoom it is 315px.
+
+     The band it has to live in was 217px — headline bottom 390 to the
+     ledger's eyebrow at 607. A 315px subject does not fit in 217px, which
+     is why every crop tried in rounds 1-3 put either the headline or the
+     manifest on top of the man. The crop was never the whole problem; the
+     phone's vertical rhythm was.
+
+     So the manifest is set at the phone's own pitch rather than the
+     desktop's. Four rows at a 36px pitch instead of 43, a shorter foot, a
+     tighter eyebrow — every value still above the 11px legibility floor and
+     the rows still 36px of vertical target — and the eyebrow drops from 607
+     to 646. The photographic band goes 217 -> 256px, which is what lets the
+     crop below put the man's head 25px clear of "today." and the dog's head
+     and the reaching arm wholly in open water. Nothing about the ledger's
+     content, order or register changes; only its pitch. */
+  @media (max-width: 620px) {
+    .hero__index { padding-bottom: clamp(1.3rem, 3.1vh, 2.1rem); }
+    .hero__index-head { margin-bottom: clamp(0.6rem, 1.3vh, 0.95rem); }
+    .hcell { padding-block: clamp(0.42rem, 1.12vh, 0.62rem); }
   }
 
   /* Measured: the longest partner name and the longest project title stop
@@ -296,6 +713,13 @@ import { pilots } from '../../data/site.js';
       grid-column: 2 / -1;
       grid-row: 2;
       margin-top: 0.42rem;
+      /* …and it stops hugging the right wall when it does. The row above
+         sets `justify-self: end` so the project can sit hard right on the
+         SAME line as the partner; once it drops to a line of its own that
+         alignment has nothing to answer to, and on a 375px screen it left
+         "Special Olympics" flush left with "HEALTHY ATHLETES" flush right
+         two rows below it — one row, two rags, reading as two entries. */
+      justify-self: start;
     }
   }
 </style>

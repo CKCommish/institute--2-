@@ -17,31 +17,74 @@
 
    The anatomy, identical on all four:
 
-     rail    numeral · sector
-     who     the partner, and the qualifier that says nobody has signed
+     rail    numeral · sector ............................ status
+     who     the partner
      name    the title, one serif rung
      tag     one line
-     fields  PROBLEM · APPROACH · GOAL, one line each, in that order
+     problem one line, on its own shared row
+     approach                    "
+     goal                        "
      door    the anchor to this pilot's detail block
 
    The only variable is the numeral. Four institutions making the same kind
-   of commitment should look like four of the same thing. */
+   of commitment should look like four of the same thing.
+
+   ── WAVE 5: THE ROWS ARE THE COMPARISON ─────────────────────────────
+
+   Three things were merely fine here and are now exact.
+
+   1. THE FIELDS DID NOT SHARE ROWS. The outer six rows were subgridded and
+      locked to the pixel, but PROBLEM / APPROACH / GOAL lived inside a `dl`
+      that laid itself out per card. Measured at 1440: the four APPROACH
+      labels sat at y 558.0 / 565.6 / 565.6 / 550.4 and the four GOALs at
+      628.6 / 643.9 / 643.9 / 636.2 — a 15px spread on both. Two causes, and
+      both are gone:
+        · a three-line PROBLEM (03) pushed its own APPROACH down while a
+          two-line PROBLEM (01) did not, and
+        · the `dl` was a grid of auto rows inside a subgrid track sized to
+          the TALLEST card, so `align-content: normal` silently stretched
+          each card's rows by a different amount — which is why four
+          identical "PROBLEM" labels measured 19.3 / 23.1 / 11.5 / 15.3px
+          tall.
+      The subgrid chain now runs all the way down: page grid → cell → card →
+      field list. Every card's PROBLEM begins on one line, every card's GOAL
+      begins on one line, and a funder can read across.
+      Because a subgrid's own padding would inset its tracks and undo the
+      alignment it exists to get, the rule and the air above it are carried
+      by the first field row and by the tagline's bottom margin instead.
+
+   2. THE COLUMN WAS SHOVED LEFT. `padding-right` took 34.5px off every
+      cell, so the space between a vertical rule and the text on its left
+      was 53.2px while the space to the text on its right was 18.7px —
+      1 : 2.85 where the eye reads a table column as centred in its bay. It
+      also meant the brass hover hairline, whose whole job is to wipe along
+      this column's rule, was 34.5px shorter than the rule. Both fixed by
+      letting the column be the cell: even bearings, and the last column now
+      ends flush with the shell, on the same line as the headline above it.
+
+   3. THE STATUS WRAPPED. "· Proposed" rode the partner name, and at
+      "Secretary Miguel Cardona" it wrapped to a second line — so 04's title
+      had 42px of air above it where 01–03 had 59px. The qualifier is not
+      part of the name, it is the state of the pilot, so it now sits where a
+      compare column puts a state: the right end of the rail, opposite the
+      numeral. One line of partner in every card, identical air under it.
+      The claim is unchanged and still on every card. */
 const { pilot: p } = Astro.props;
 ---
 <article class="card">
+  <!-- numeral · sector, then the state of the pilot. Two of the four
+       partners are living, identifiable public officials, and a bare name
+       in a partner slot asserts a partnership; nobody has signed one. The
+       qualifier rides every appearance of these four on this site — here
+       it rides the card rather than the name, which is both truer (the
+       PILOT is proposed) and the only way it stops wrapping. -->
   <p class="card__rail">
     <span class="index card__i">{p.index}</span>
     <span class="label card__field">{p.field}</span>
-  </p>
-
-  <!-- WHOSE PILOT THIS IS, AND HOW FAR ALONG. Two of the four values in
-       this slot are living, identifiable public officials. A bare name in a
-       partner slot asserts a partnership; nobody has signed one. The
-       qualifier rides the name everywhere it appears on this site. -->
-  <p class="card__who">
-    <span class="eyebrow card__partner">{p.partner}</span>
     <span class="label card__q">Proposed</span>
   </p>
+
+  <p class="card__who"><span class="eyebrow card__partner">{p.partner}</span></p>
 
   <h3 class="display display--sub card__t">
     <a class="card__a" href={`#${p.id}`}>{p.title}</a>
@@ -49,9 +92,9 @@ const { pilot: p } = Astro.props;
   <p class="card__tag">{p.tagline}</p>
 
   <dl class="card__f">
-    <div><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
-    <div><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
-    <div><dt class="label label--brass">Goal</dt><dd class="card__goal">{p.goal}</dd></div>
+    <div class="card__row"><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
+    <div class="card__row"><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
+    <div class="card__row"><dt class="label label--brass">Goal</dt><dd class="card__goal">{p.goal}</dd></div>
   </dl>
 
   <p class="card__door" aria-hidden="true">
@@ -68,51 +111,85 @@ const { pilot: p } = Astro.props;
      objects again, which is the thing this layer exists to undo. */
   .card {
     position: relative;
-    /* the six rows are the PAGE's rows, inherited through the cell: every
-       card's PROBLEM sits on the same line as every other card's. The block
-       padding is therefore carried as margins on the first and last rows —
-       padding on a subgrid item would shift its rows out of the shared
-       track and undo the alignment it is here to get. */
+    /* the eight rows are the PAGE's rows, inherited through the cell: every
+       card's PROBLEM sits on the same line as every other card's, and so
+       does every card's APPROACH and GOAL. The block padding is therefore
+       carried as margins on the first and last rows — padding on a subgrid
+       item would shift its rows out of the shared track and undo the
+       alignment it is here to get. */
     grid-row: 1 / -1;
     display: grid;
     grid-template-rows: subgrid;
     row-gap: 0;
-    padding-right: clamp(1rem, 2.4vw, 2.6rem);
+    /* no trailing padding: the column IS the cell, so the bearing on each
+       side of every vertical rule is the same half-gutter, and the brass
+       hover hairline covers exactly the rule it wipes along. */
   }
 
-  /* the brass hairline that wipes along the cell's own top rule — the same
-     gesture the homepage register uses, so the two card layers rhyme */
+  /* The brass hairline that wipes along this column's stretch of the band
+     rule — the same gesture the homepage register uses, so the two card
+     layers rhyme. --bay-l / --bay-r are handed down by the grid: where the
+     band's rule is continuous the wipe runs the full bay, ending ON the
+     vertical rules either side rather than floating between them, and it
+     stops flush with the rule's own ends at the two outer columns. Default
+     0, so a card used anywhere else just lights its own width. */
   .card::before {
-    content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 1px;
+    content: ''; position: absolute; top: -1px; height: 1px;
+    left: calc(var(--bay-l, 0px) * -1);
+    right: calc(var(--bay-r, 0px) * -1);
     background: var(--brass);
     transform: scaleX(0); transform-origin: right;
     transition: transform 620ms var(--ease-out);
     pointer-events: none;
   }
 
+  /* Every row is placed by hand. Auto-placement around an explicitly-placed
+     three-row field list is correct per spec but not obvious to the next
+     reader, and the whole point of this component is that the eight rows
+     are a fixed, shared armature. */
+  .card__rail { grid-row: 1; }
+  .card__who  { grid-row: 2; }
+  .card__t    { grid-row: 3; }
+  .card__tag  { grid-row: 4; }
+  .card__f    { grid-row: 5 / 8; }
+  .card__door { grid-row: 8; }
+
   .card__rail {
     margin: clamp(1.4rem, 2.4vw, 2rem) 0 0;
-    display: flex; align-items: baseline; gap: 1ch;
-  }
-  .card__field { margin-left: auto; white-space: nowrap; }
-
-  .card__who {
-    margin: clamp(0.9rem, 1.8vw, 1.35rem) 0 0;
-    display: flex; align-items: baseline; gap: 0 0.85ch; flex-wrap: wrap;
+    display: flex; align-items: baseline; gap: 0;
     min-width: 0;
   }
-  .card__partner { transition: color 380ms var(--ease-out); }
+  .card__field { white-space: nowrap; }
+  /* a separator, not a word: --mark is the non-text register */
+  .card__field::before {
+    content: '\00b7'; margin: 0 0.9ch; color: var(--mark);
+    letter-spacing: 0; font-weight: 500;
+  }
+  .card__q {
+    margin-left: auto; padding-left: 1.2ch;
+    white-space: nowrap;
+    transition: color var(--dur-hover) var(--ease-out);
+  }
   /* No opacity on top of --fg-meta. The token IS the bottom of the
      contrast ladder (cream 54%, measured 5.3 : 1); multiplying it by a
      further 0.72 lands 38.9% effective = 3.27 : 1, under the 4.5 : 1 AA
-     floor for text this size. axe flags it; so does the site's own
-     documented budget in tokens.css. The same stack had been copied into
-     .pd__q and .pindex__q for the same word. */
-  .card__q { color: var(--fg-meta); white-space: nowrap; }
-  .card__q::before { content: '\00b7'; margin-right: 0.85ch; }
+     floor for text this size. */
+
+  /* The line box is set here, not left to the paragraph's inherited strut.
+     A <p> at body size holding an 11.7px inline span builds a 25.6px strut
+     and centres the label in it, which put ~9px of invisible leading above
+     and below the one line on this row — air nobody chose, on the row that
+     sets the distance between the numeral and the title. Own the box. */
+  .card__who {
+    margin: clamp(1.1rem, 2.1vw, 1.6rem) 0 0;
+    font-size: var(--step-micro);
+    line-height: 1;
+    min-width: 0;
+  }
+  .card__partner { transition: color var(--dur-hover) var(--ease-out); }
 
   .card__t {
-    margin: 0.5rem 0 0;
+    margin: clamp(0.95rem, 1.85vw, 1.5rem) 0 0;
     line-height: 1.06;
     letter-spacing: -0.014em;
   }
@@ -127,35 +204,56 @@ const { pilot: p } = Astro.props;
   }
   .card__a::after { content: ''; position: absolute; inset: 0; }
   .card__a:focus-visible { outline: none; }
-  .card:has(.card__a:focus-visible) { outline: 2px solid var(--brass); outline-offset: 8px; }
+  /* The ring moves from the name to the whole cell, but it stays the HOUSE
+     ring: 1.5px brass, the same weight base.css draws on every other target
+     on the site. Only the offset changes, because it is going round a cell
+     rather than round a word. */
+  .card:has(.card__a:focus-visible) { outline: 1.5px solid var(--brass); outline-offset: 8px; }
 
   .card__tag {
-    margin: 0.6rem 0 0;
-    max-width: 32ch;
+    /* the bottom margin is the air above the field rule. It lives here, on
+       an ordinary item in row 4, because the field list below is a subgrid
+       and cannot carry margin without dragging its tracks with it. */
+    margin: 0.6rem 0 clamp(1.15rem, 2.2vw, 1.7rem);
+    max-width: 34ch;
     color: var(--fg-mute);
     font-size: var(--step-body);
     line-height: 1.5;
-    text-wrap: pretty;
+    /* balance, not pretty: at a quarter of the page these are two-line
+       sentences, and `pretty` only guards the last line — it let 01 break
+       inside "follow-up", mid-hyphen, which is a legal break point and an
+       ugly one. Balancing splits them at the sense instead. */
+    text-wrap: balance;
   }
 
-  /* PROBLEM · APPROACH · GOAL, stacked, one line each, on their own rule.
-     Stacked and not columned: at a quarter of the page's width a two-up
-     setup wraps every field to three lines and the "one line each" the
-     brief asks for stops being visible as a discipline. */
+  /* PROBLEM · APPROACH · GOAL, stacked, one line each, and — the point of
+     the layer — one shared row each across all four cards. Stacked and not
+     columned: at a quarter of the page's width a two-up setup wraps every
+     field to three lines and the "one line each" the brief asks for stops
+     being visible as a discipline. */
   .card__f {
-    margin: clamp(1.15rem, 2.2vw, 1.7rem) 0 0;
-    padding-top: clamp(1rem, 1.8vw, 1.4rem);
-    border-top: 1px solid var(--rule-soft);
+    margin: 0;
     display: grid;
-    row-gap: clamp(0.7rem, 1.3vw, 1rem);
+    grid-template-rows: subgrid;
+    row-gap: 0;
   }
-  .card__f > div { display: grid; gap: 0.3rem; }
+  /* start, never stretch: a row track is sized by the tallest card in it,
+     and a stretched auto row is exactly how the labels drifted before */
+  .card__row {
+    align-self: start;
+    display: grid; gap: 0.3rem;
+  }
+  .card__row:first-child {
+    border-top: 1px solid var(--rule-soft);
+    padding-top: clamp(1rem, 1.8vw, 1.4rem);
+  }
+  .card__row + .card__row { margin-top: clamp(0.7rem, 1.3vw, 1rem); }
   .card__f dd {
     margin: 0;
     color: var(--fg-mute);
     font-size: var(--step-body);
     line-height: 1.45;
-    max-width: 36ch;
+    max-width: 38ch;
     text-wrap: pretty;
   }
   /* the outcome is the one line a funder is being asked to believe */
@@ -169,26 +267,23 @@ const { pilot: p } = Astro.props;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--fg-meta);
-    transition: color 380ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
   }
+  /* The arrow is always drawn. It used to fade in on hover, which meant a
+     touch screen — where there is no hover — got a card whose only mark of
+     being a door never appeared, and a desktop reader got four cards that
+     looked like dead ends until the pointer arrived. The state that changes
+     on hover is the advance and the brightening, not the existence. */
   .card__arrow {
-    width: 20px; color: var(--brass);
-    opacity: 0; transform: translateX(-8px);
-    transition: opacity 380ms var(--ease-out), transform 520ms var(--ease-out);
-  }
-
-  /* On a touch screen there is no hover, so the arrow — the only mark that
-     says the whole cell is a door — never appeared at all: the door read as
-     a static block of text. Where there is no hover it is simply drawn, and
-     the hover choreography below never applies. Same rule as .link's
-     underline, which is already handled this way in base.css. */
-  @media (hover: none) {
-    .card__arrow { opacity: 1; transform: none; }
+    width: 1.7em; color: var(--brass);
+    opacity: 0.55; transform: translateX(-5px);
+    transition: opacity var(--dur-hover) var(--ease-out), transform 520ms var(--ease-out);
   }
 
   @media (hover: hover) {
     .card:hover::before { transform: scaleX(1); transform-origin: left; }
     .card:hover .card__partner { color: var(--brass); }
+    .card:hover .card__q { color: var(--fg-mute); }
     .card:hover .card__door { color: var(--fg); }
     .card:hover .card__arrow { opacity: 1; transform: none; }
   }
@@ -196,11 +291,19 @@ const { pilot: p } = Astro.props;
   .card:focus-within .card__arrow { opacity: 1; transform: none; }
 
   @media (prefers-reduced-motion: reduce) {
-    .card::before, .card__arrow, .card__door, .card__partner { transition-duration: 1ms; }
+    .card::before, .card__arrow, .card__door,
+    .card__partner, .card__q { transition-duration: 1ms; }
+    /* The door lights, the arrow does not slide. */
+    .card__arrow { transform: none; }
   }
 
   @media (max-width: 620px) {
-    .card { padding-right: 0; }
     .card__tag, .card__f dd { max-width: 44ch; }
+    /* One card at a time, so there is no row to read across and the three
+       fields have to separate themselves. The fluid gap bottoms out at
+       11px here, which packs label / line / label / line into one grey
+       block; the field is the unit, so the gap between fields has to be
+       clearly larger than the gap inside one. */
+    .card__row + .card__row { margin-top: 1.05rem; }
   }
 </style>

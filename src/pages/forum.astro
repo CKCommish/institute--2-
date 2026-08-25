@@ -630,14 +630,17 @@ const claim = forum.line
     background: var(--brass);
     transition: width 520ms var(--ease-out);
   }
-  .frole__cta:hover .frole__ctaRule { width: clamp(54px, 9vw, 132px); }
-  .frole__cta:hover :global(.arrow) { transform: translateX(4px); }
+  .frole__cta:hover .frole__ctaRule,
+  .frole__cta:focus-visible .frole__ctaRule { width: clamp(54px, 9vw, 132px); }
+  .frole__cta:hover :global(.arrow),
+  .frole__cta:focus-visible :global(.arrow) { transform: translateX(4px); }
   .frole__ctaText::after {
     content: ''; position: absolute; left: 0; right: 0; bottom: -0.24em; height: 1px;
     background: currentColor; transform: scaleX(0); transform-origin: right;
     transition: transform 520ms var(--ease-out);
   }
-  .frole__cta:hover .frole__ctaText::after { transform: scaleX(1); transform-origin: left; }
+  .frole__cta:hover .frole__ctaText::after,
+  .frole__cta:focus-visible .frole__ctaText::after { transform: scaleX(1); transform-origin: left; }
 
   /* THE DUPLICATE ASK. The footer's secondary door is "Inquire about the Lion
      Forum" → /forum/. On this route that is a link to the page you are on,
@@ -699,5 +702,13 @@ const claim = forum.line
     .fsay__p :global(em) { opacity: 1; transform: none; }
     .fsay__p :global(em), .fsay__p :global(em:last-of-type) { --hinge: 1; }
     .frole__cut { display: none; }
+    /* The ask lights, it does not travel: the rule fills at its rest length
+       and the arrow arrives where it sits. */
+    .frole__ctaRule, .frole__ctaText::after,
+    .frole__ctaText :global(.arrow) { transition-duration: 1ms; }
+    .frole__cta:hover .frole__ctaRule,
+    .frole__cta:focus-visible .frole__ctaRule { width: clamp(34px, 5vw, 72px); }
+    .frole__cta:hover :global(.arrow),
+    .frole__cta:focus-visible :global(.arrow) { transform: none; }
   }
 </style>

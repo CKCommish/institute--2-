@@ -227,6 +227,8 @@ const cohorts = cohortsOf(board);
   @media (hover: hover) {
     .people__more:hover { color: var(--brass); }
   }
+  /* Keyboard parity, outside the hover query — a keyboard exists on touch. */
+  .people__more:focus-visible { color: var(--brass); }
   /* If the script never runs, nothing may stay under its mask. */
   :global(html:not(.js)) .people__cohorts li,
   :global(html:not(.js)) .people__board .rule { clip-path: none; }

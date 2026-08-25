@@ -225,32 +225,66 @@ const grades = {
   .pgrid__head { margin-bottom: clamp(1.75rem, 3.4vw, 3rem); display: grid; gap: var(--stack-1); }
   .pgrid__h { margin: 0; max-width: 30ch; line-height: 1.15; }
 
-  /* ONE GRID, NOT FOUR STACKS. The cards carry six named rows — rail, who,
-     name, tag, fields, door — and every one of them is shared across all
-     four cells by `subgrid`. Without it a partner name that wraps to two
-     lines (04 does) pushes that card's PROBLEM 14px below its neighbours'
-     and its GOAL 35px below, and the one thing this layer exists for —
-     reading four arguments against each other — is gone. */
+  /* ONE GRID, NOT FOUR STACKS. The cards carry EIGHT named rows — rail,
+     who, name, tag, problem, approach, goal, door — and every one of them
+     is shared across all four cells by `subgrid`. It used to be six, with
+     the three fields folded into a single "fields" row, and that one
+     shortcut cost the layer its reason to exist: inside that row each card
+     laid its own fields out, so a three-line PROBLEM (03) pushed its
+     APPROACH 15px below its neighbours' and the four GOALs landed on four
+     different lines. A comparison grid whose rows do not line up is four
+     stacks wearing a table's clothes. The three fields are now three
+     tracks of this grid, carried down through .pgrid__cell → .card →
+     .card__f, and a reader can run an eye across PROBLEM, then APPROACH,
+     then GOAL, which is the only thing this band is for. */
   .pgrid__grid {
+    /* the gutter, stated once. It was written out as the same clamp in four
+       places — the gap and three rule offsets — which is three chances for
+       the rules to stop sitting on the centre line of the bay. */
+    --gutter-col: clamp(1.25rem, 2.6vw, 2.5rem);
+    --bay: calc(var(--gutter-col) / 2);
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: repeat(6, auto);
-    column-gap: clamp(1.25rem, 2.6vw, 2.5rem);
+    grid-template-rows: repeat(8, auto);
+    column-gap: var(--gutter-col);
     row-gap: 0;
-  }
-  /* the hairlines are the grid, not the cells: one rule across the top of
-     the row, one between each pair of columns */
-  .pgrid__cell {
+    /* ONE rule across the whole band, not four segments with gaps in them.
+       Four columns under four separate rules read as four objects; one rule
+       with four columns hanging off it reads as one table, which is what
+       this is — and it rhymes with the full-width masthead rule above. */
     border-top: 1px solid var(--rule);
+  }
+  /* the hairlines are the grid, not the cells: the band's own top rule,
+     and one between each pair of columns */
+  .pgrid__cell {
     position: relative;
-    grid-row: span 6;
+    grid-row: span 8;
     display: grid;
     grid-template-rows: subgrid;
+    /* how far this column's hover hairline may run past its own edge before
+       it meets the vertical rule. Only the four-up band has a continuous
+       top rule to run along, so everywhere else this stays 0 and the wipe
+       is exactly the column. */
+    --bay-l: 0px;
+    --bay-r: 0px;
   }
+  @media (min-width: 1181px) {
+    .pgrid__cell { --bay-l: var(--bay); --bay-r: var(--bay); }
+    .pgrid__cell:first-child { --bay-l: 0px; }
+    .pgrid__cell:last-child  { --bay-r: 0px; }
+  }
+  /* The verticals hang from the band's rule and are released at the foot of
+     it. They used to stop dead in open ground under the last row, which
+     reads as a rule that ran out rather than one that ended; a closing
+     horizontal would have boxed the band and put a second full-width rule
+     next to the cream turn below. So they are masked out over their last
+     eighth — the stop is designed, and the eye leaves the table downward. */
   .pgrid__cell + .pgrid__cell::after {
     content: ''; position: absolute; top: 0; bottom: 0;
-    left: calc(clamp(1.25rem, 2.6vw, 2.5rem) / -2);
+    left: calc(var(--bay) * -1);
     width: 1px; background: var(--rule-soft);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 87%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 87%, transparent 100%);
   }
 
   /* ── The turn into the detail layer ────────────────────────────── */
@@ -270,13 +304,20 @@ const grades = {
   /* ── Narrow ───────────────────────────────────────────────────────── */
   @media (max-width: 1180px) {
     .pgrid__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 0; }
-    /* on a two-up grid the vertical rule belongs between the columns only,
-       and every cell needs its own top rule */
+    /* Once the band wraps, the pairs still share their eight tracks — 01/02
+       against one armature, 03/04 against the next — but the second pair
+       sits below a rule the container cannot draw. So the rule goes back
+       onto the cells, where there is one per row of cards. */
+    .pgrid__grid { border-top: 0; }
+    .pgrid__cell { border-top: 1px solid var(--rule); }
+    /* on a two-up grid the vertical rule belongs between the columns only */
     .pgrid__cell + .pgrid__cell::after { display: none; }
     .pgrid__cell:nth-child(even)::after {
       content: ''; position: absolute; top: 0; bottom: 0;
-      left: calc(clamp(1.25rem, 2.6vw, 2.5rem) / -2);
+      left: calc(var(--bay) * -1);
       width: 1px; background: var(--rule-soft);
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 87%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 87%, transparent 100%);
     }
   }
 

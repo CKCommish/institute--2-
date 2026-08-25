@@ -146,9 +146,10 @@ import { whyNow, whyNowLead } from '../../data/site.js';
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    transition: color 420ms var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
   }
-  .why__note:hover { color: var(--fg); }
+  .why__note:hover,
+  .why__note:focus-visible { color: var(--fg); }
   .why__note[data-reveal] { transition-duration: 520ms, 640ms; }
   .why__note-ast { font-family: var(--serif); font-size: 1.3em; color: var(--brass); line-height: 1; }
 
@@ -159,10 +160,17 @@ import { whyNow, whyNowLead } from '../../data/site.js';
     color: var(--brass);
     margin-left: 0.15rem;
   }
-  .why__note:hover .why__note-arrow { transform: rotate(90deg) translateX(3px); }
+  .why__note:hover .why__note-arrow,
+  .why__note:focus-visible .why__note-arrow { transform: rotate(90deg) translateX(3px); }
 
   .why__eyebrow[data-reveal],
   .why__bridge[data-reveal] { transition-duration: 560ms, 700ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* The arrow lights, it does not slide. It keeps its quarter-turn. */
+    .why__note:hover .why__note-arrow,
+    .why__note:focus-visible .why__note-arrow { transform: rotate(90deg); }
+  }
 
   /* If the script never runs, nothing may stay under its mask. */
   :global(html:not(.js)) .why__rule { clip-path: none; }
