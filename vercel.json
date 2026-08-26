@@ -2,30 +2,56 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "headers": [
     {
-      "comment": "Preview deploys (*.vercel.app) are not for search engines. public/robots.txt says Allow: / because it is written for the real domain, so the exclusion has to come from a header keyed on the host. The production domain is unaffected and stays fully indexable.",
+      "comment": "Not a public website. It is shared by link with funders, partners and prospective board members, and carries sixteen portraits of named people who have not agreed to serve. Noindex everywhere, on every host, not just on preview deploys.",
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": ".*\\.vercel\\.app" }],
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive, noimageindex"
+        }
+      ]
     },
     {
       "comment": "Vercel sets none of these for a static build. No HSTS here on purpose: Vercel enables it for custom domains itself, and a max-age a browser has already cached is not something you can take back in an afternoon.",
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
       ]
     },
     {
       "comment": "Astro content-hashes everything under /_astro, so a changed file is a changed URL and immutable is safe.",
       "source": "/_astro/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
-      "comment": "public/ assets keep stable filenames, so they get a long cache but NOT immutable — replacing a photograph or a font file has to be able to reach people who already visited.",
+      "comment": "public/ assets keep stable filenames, so they get a long cache but NOT immutable \u2014 replacing a photograph or a font file has to be able to reach people who already visited.",
       "source": "/(fonts|media)/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
     }
   ]
 }

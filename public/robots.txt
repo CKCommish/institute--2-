@@ -1,4 +1,4 @@
+# This site is shared by link with funders, partners and prospective board
+# members. It is not a public website and is not meant to be indexed.
 User-agent: *
-Allow: /
-
-Sitemap: https://lionforuminstitute.org/sitemap.xml
+Disallow: /

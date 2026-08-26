@@ -19,6 +19,11 @@ const ogImage = new URL('/og.jpg', Astro.site).href;
     <title>{full}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#050D16" />
+    {/* Not a public website: shared by link with funders, partners and
+        prospective board members. The header in vercel.json is the real
+        control; this is the belt to its braces, and it travels with the
+        HTML if the site is ever served from somewhere else. */}
+    <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
     <meta property="og:title" content={full} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />

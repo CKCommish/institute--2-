@@ -339,6 +339,20 @@ Also unresolved, and only you can settle them:
   them. A Lion Forum stage photograph would replace the Block Island frame the
   Forum page currently uses as an evocative stand-in.
 
+## Not a public website
+
+This is shared by link with funders, partners and prospective board members —
+closer in kind to the prospectus than to a public site. `robots.txt` disallows
+everything, `vercel.json` sends `X-Robots-Tag: noindex, nofollow, noarchive,
+noimageindex` on every host, and the same directive is in the HTML so it
+travels if the site is served from somewhere else. There is no sitemap.
+
+**That is obscurity, not access control.** Anyone with the link can open it, and
+a link forwarded once is a link in the wild. If the contents warrant it —
+sixteen portraits of people who have not agreed to serve is the obvious case —
+put Vercel's password protection in front of the deployment. That is a project
+setting, not something this repo can do.
+
 ## Board portraits — provenance and the permission gap
 
 Sixteen headshots were supplied by the client (`Prospectus_document_review.zip`,
@@ -348,12 +362,12 @@ are processed to a single monochrome treatment at 480×480 and live in
 
 Two things are unresolved and only the client can resolve them:
 
-1. **Permission per person.** These are photographs of sixteen real, named,
-   living people, several of them serving or recently-serving public officials.
-   Supplying a headshot for a prospectus is not the same as agreeing to appear
-   on a public website. Confirm publication rights for each likeness before
-   launch, and confirm the photographer credit each image requires — official
-   portraits of federal and state officials usually carry one.
+1. **Permission per person.** Lower stakes than they would be on a public
+   site — a link-shared page is much closer to the prospectus these portraits
+   came from. Still worth a check on two points: several are official portraits
+   of federal and state officials, which usually carry a required photographer
+   credit, and a link that gets forwarded stops being private. Not a blocker;
+   a thing to know.
 
 2. **They have not agreed to serve.** The board is *prospective*. Sixteen
    portraits in a grid is the strongest possible visual assertion that a board
