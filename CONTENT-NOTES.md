@@ -338,3 +338,26 @@ Also unresolved, and only you can settle them:
   deliberately absent; drop them into `public/media/` and the People page uses
   them. A Lion Forum stage photograph would replace the Block Island frame the
   Forum page currently uses as an evocative stand-in.
+
+## Board portraits — provenance and the permission gap
+
+Sixteen headshots were supplied by the client (`Prospectus_document_review.zip`,
+`uploads/Headshots/thumbs/`), one for every name on the prospective board. They
+are processed to a single monochrome treatment at 480×480 and live in
+`public/media/board/`, keyed by surname.
+
+Two things are unresolved and only the client can resolve them:
+
+1. **Permission per person.** These are photographs of sixteen real, named,
+   living people, several of them serving or recently-serving public officials.
+   Supplying a headshot for a prospectus is not the same as agreeing to appear
+   on a public website. Confirm publication rights for each likeness before
+   launch, and confirm the photographer credit each image requires — official
+   portraits of federal and state officials usually carry one.
+
+2. **They have not agreed to serve.** The board is *prospective*. Sixteen
+   portraits in a grid is the strongest possible visual assertion that a board
+   exists, and it will be read that way regardless of the label above it. The
+   page has to carry that qualification structurally. If any of these people
+   has not been asked, showing their face here is a materially bigger claim
+   than showing their name.

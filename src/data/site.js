@@ -273,23 +273,30 @@ export const founders = [
 
 /* Prospective board — names and one short line only.
    NOTE: titles are pending client confirmation. See CONTENT-NOTES.md */
+/* Prospective board. The sixteen portraits were supplied by the client from
+   the prospectus and are processed to one monochrome treatment so sixteen
+   rooms, backgrounds and lighting setups read as one board rather than as a
+   search-results page. NONE OF THESE PEOPLE HAS AGREED TO SERVE — the word
+   "prospective" has to survive every layout decision made here, structurally
+   and not only in a label. Per-person permission to publish a likeness is
+   still to be confirmed: see CONTENT-NOTES.md. */
 export const board = [
-  { name: 'John Bailey', line: 'Senior Fellow, American Enterprise Institute' },
-  { name: 'Roy Bahat', line: 'Head, Bloomberg Beta' },
-  { name: 'Aneesh Chopra', line: 'First Chief Technology Officer of the United States' },
-  { name: 'Guy Filippelli', line: 'Founder, RedOwl Analytics' },
-  { name: 'Michael Hole', line: 'Pediatrician; Professor, UT Austin' },
-  { name: 'Galym Imanbayev', line: 'Partner, Lightspeed Venture Partners' },
-  { name: 'Governor Jay Inslee', line: 'Governor of Washington, 2013–2025' },
-  { name: 'Tess deBlanc-Knowles', line: 'Former Special Advisor for AI, White House OSTP' },
-  { name: 'Robin McIntosh', line: 'Co-founder and Co-CEO, Workit Health' },
-  { name: 'Nate Mitchell', line: 'Co-founder, Oculus' },
-  { name: 'Gina Raimondo', line: 'U.S. Secretary of Commerce, 2021–2025' },
-  { name: 'Kyla Scanlon', line: 'Writer on the economy' },
-  { name: 'Jake Sullivan', line: 'U.S. National Security Advisor, 2021–2025' },
-  { name: 'Bradley Tusk', line: 'Founder, Tusk Ventures' },
-  { name: 'Julie Yoo', line: 'General Partner, Andreessen Horowitz' },
-  { name: 'Helen Zhang', line: 'Investor' },
+  { name: 'John Bailey', line: 'Senior Fellow, American Enterprise Institute' , portrait: '/media/board/bailey.jpg' },
+  { name: 'Roy Bahat', line: 'Head, Bloomberg Beta' , portrait: '/media/board/bahat.jpg' },
+  { name: 'Aneesh Chopra', line: 'First Chief Technology Officer of the United States' , portrait: '/media/board/chopra.jpg' },
+  { name: 'Guy Filippelli', line: 'Founder, RedOwl Analytics' , portrait: '/media/board/filippelli.jpg' },
+  { name: 'Michael Hole', line: 'Pediatrician; Professor, UT Austin' , portrait: '/media/board/hole.jpg' },
+  { name: 'Galym Imanbayev', line: 'Partner, Lightspeed Venture Partners' , portrait: '/media/board/imanbayev.jpg' },
+  { name: 'Governor Jay Inslee', line: 'Governor of Washington, 2013–2025' , portrait: '/media/board/inslee.jpg' },
+  { name: 'Tess deBlanc-Knowles', line: 'Former Special Advisor for AI, White House OSTP' , portrait: '/media/board/deblanc-knowles.jpg' },
+  { name: 'Robin McIntosh', line: 'Co-founder and Co-CEO, Workit Health' , portrait: '/media/board/mcintosh.jpg' },
+  { name: 'Nate Mitchell', line: 'Co-founder, Oculus' , portrait: '/media/board/mitchell.jpg' },
+  { name: 'Gina Raimondo', line: 'U.S. Secretary of Commerce, 2021–2025' , portrait: '/media/board/raimondo.jpg' },
+  { name: 'Kyla Scanlon', line: 'Writer on the economy' , portrait: '/media/board/scanlon.jpg' },
+  { name: 'Jake Sullivan', line: 'U.S. National Security Advisor, 2021–2025' , portrait: '/media/board/sullivan.jpg' },
+  { name: 'Bradley Tusk', line: 'Founder, Tusk Ventures' , portrait: '/media/board/tusk.jpg' },
+  { name: 'Julie Yoo', line: 'General Partner, Andreessen Horowitz' , portrait: '/media/board/yoo.jpg' },
+  { name: 'Helen Zhang', line: 'Investor' , portrait: '/media/board/zhang.jpg' },
 ];
 
 export const forum = {
