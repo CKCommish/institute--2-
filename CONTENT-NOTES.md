@@ -375,3 +375,22 @@ Two things are unresolved and only the client can resolve them:
    page has to carry that qualification structurally. If any of these people
    has not been asked, showing their face here is a materially bigger claim
    than showing their name.
+
+## Lion Forum photographs — owned, no credit
+
+The Institute owns the Lion Forum photography. No photographer attribution is
+required or wanted on any of it.
+
+Five frames have been shown but have not reached the repository: two on stage
+against the branded backdrop, Governor Inslee speaking, a speaker with a
+notebook, Aneesh Chopra at a reception, and the lawn at dusk with the flagpole
+and the harbour behind it.
+
+**Pasted images do not reach the filesystem — a zip does.** The sixteen board
+headshots arrived because they were zipped. Send these the same way and they
+can be wired in immediately.
+
+Still to decide when they arrive: whether attendees at a private,
+invitation-only convening may be shown by name and face. Governor Inslee on
+stage is plainly fine. The reception and crowd frames put identifiable guests
+in shot, which is a different question from the stage.

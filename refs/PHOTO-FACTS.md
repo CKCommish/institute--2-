@@ -124,6 +124,29 @@ against this photograph as though it described it.
 If the Institute ever obtains a released photograph of the actual venue, that
 tension disappears and this frame should be swapped out.
 
+
+## Client-owned photography
+
+The Lion Forum photographs are owned by the Institute. **They carry no
+attribution credit.** That is settled — do not add a photographer line to them.
+
+This splits what the corner label has been doing into its two separate jobs:
+
+- **Attribution** — required for the Library of Congress frames, not for these.
+- **Location** — an editorial fact that stops a place-name headline reading as
+  a caption for a photograph taken somewhere else. That is why the label exists
+  at all: the Forum scene once set "Kennedy Compound, Hyannis Port" over a
+  Rhode Island harbour.
+
+So an owned photograph may still carry a corner label, and should where it
+disambiguates a place. A Lion Forum stage frame needs none — the branded
+backdrop says where it is. A Hyannis Port lawn at dusk earns one, because that
+is the claim the page has been unable to make with a stand-in.
+
+**When the real Forum photographs land, `forum.jpg` (Old Harbor, Block Island)
+stops being needed.** It was an honest stand-in for a place we had no picture
+of. Remove it rather than keeping it as decoration.
+
 ## Portraits
 
 `founder-mckelvy.jpg` and `founder-olanoff.jpg` deliberately do not exist. There
