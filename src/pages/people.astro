@@ -279,8 +279,10 @@ const founderCount = String(founders.length).padStart(2, '0');
                       complete without it — which is also why the founders can
                       stand here with no portrait at all. */}
                   <Portrait class="ent__p" src={p.portrait} alt="" />
-                  <span class="ent__n">{p.name}</span>
-                  <span class="ent__t">{p.line}</span>
+                  <span class="ent__b">
+                    <span class="ent__n">{p.name}</span>
+                    <span class="ent__t">{p.line}</span>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -808,15 +810,17 @@ const founderCount = String(founders.length).padStart(2, '0');
     position: relative;
     display: grid;
     grid-template-columns: var(--pw) minmax(0, 1fr);
-    grid-template-rows: auto auto;
     column-gap: var(--pgap);
-    row-gap: 0.12em;
     align-content: start;
     padding-left: var(--tick);
   }
-  .ent__p { grid-column: 1; grid-row: 1 / span 2; align-self: start; }
-  .ent__n { grid-column: 2; grid-row: 1; }
-  .ent__t { grid-column: 2; grid-row: 2; }
+  /* The name and its title are ONE object beside the picture, not two rows of
+     a grid the picture also sits in. Written as two cells of .ent they were
+     spaced by a track the 86px portrait was setting, which put 30px of air
+     between a name and the title that belongs to it — the two marks a reader
+     has to read as one. They stack in their own box, on their own leading. */
+  .ent__p { align-self: start; }
+  .ent__b { display: grid; align-content: start; row-gap: 0.12em; min-width: 0; }
   /* The rule itself: not a border, because a border sits inside the padding
      and would push every name 1px off the track origin the band head is
      already ranged on. An absolutely positioned hairline on the entry's own
