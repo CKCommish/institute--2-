@@ -181,8 +181,27 @@ against. **This photograph is Rhode Island, not Cape Cod** — see `CONTENT-NOTE
 
 ---
 
+## 10. `stake.jpg` / `.webp` / `@1200.*`
+
+| field | value |
+|---|---|
+| **Slot** | Homepage — the Stake scene (full-bleed, 108svh, `src/components/scroll-Stake-alt.astro`). Its own file: no other page references it. |
+| **Title** | *Similarly designed small bungalow homes on one of several brick streets in a neighborhood of Huntington, West Virginia. There are so many brick streets remaining there that the entire neighborhood is referred to locally as the "Southside Bricks"* |
+| **Creator** | Carol M. Highsmith |
+| **Date** | 2015-05-07 |
+| **Collection** | West Virginia Collection within the Carol M. Highsmith Archive, Library of Congress Prints and Photographs Division |
+| **Call number** | LC-DIG-highsm-31738 |
+| **License / rights** | Public Domain — LOC rights advisory: "No known restrictions on publication." `PD-US` / `NoC-US` |
+| **Source page** | https://www.loc.gov/item/2015631813/ |
+| **Direct file URL** | https://tile.loc.gov/image-services/iiif/service:pnp:highsm:31700:31738/full/pct:100/0/default.jpg |
+| **Original size** | 7360 × 4912 |
+| **Processing** | **Full frame, no crop** — lanczos resize to 2400 × 1600, `@1200` to 1200 × 800. **No contrast adjustment and no colour grade baked in**, unlike entries 1–9: the site's own `grade`/`scrim` treatment is the only tone applied, and this frame needed nothing under it. mozjpeg q82 / webp q78 (q84 / q80 at 1200). All four files under 700 KB. |
+| **Why it exists** | The Stake sets *"The test is ordinary life."* at 86px over this frame. It previously shared pilot 03's file and so ended up setting that line over an aerial of downtown Indianapolis. This is a residential street with lawns, a picket fence and a porch — and **no person in the frame at any offset of the scene**, which matters because it is the largest photograph on the homepage. See `refs/PHOTO-FACTS.md`. |
+
+---
+
 ## Optional courtesy credit line
 
 If the design ever wants one line of credit in a footer or a `/credits` page:
 
-> Photography: Carol M. Highsmith Archive, Library of Congress; U.S. Army; U.S. Department of Agriculture; Bureau of Land Management. All images public domain.
+> Photography: Carol M. Highsmith Archive, Library of Congress; U.S. Army; Bureau of Land Management. All images public domain.

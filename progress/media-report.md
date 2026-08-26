@@ -282,7 +282,94 @@ judged on an indexed contact sheet raw and again under the grade.
 - Anything with a baby, a small child, a clinical set or a face was excluded before the
   sheet was built.
 
-## One thing left open, and it is not optional
+## Closed: the Stake now has its own photograph
+
+**This was the open item, and it is done.** `pilot-maternal.jpg` was used twice — pilot 03's
+plate and the full-bleed Stake scene on the homepage — so the wave-9 replacement changed the
+picture in both places and left the Stake setting *"The test is ordinary life."* at 86px over
+an aerial of downtown Indianapolis. A line about domestic, everyday American life over a
+business district is a semantic mismatch, and it was the largest photograph on the homepage.
+
+The two are decoupled (`stake.image = '/media/stake.jpg'`) and the Stake has a new frame.
+
+### What ships
+
+`public/media/stake.jpg` / `.webp` / `stake@1200.*` — **Carol M. Highsmith,
+LC-DIG-highsm-31738, 2015-05-07**, *"Similarly designed small bungalow homes on one of
+several brick streets in a neighborhood of Huntington, West Virginia"*; the neighbourhood is
+known locally as the **Southside Bricks**. Public domain, Library of Congress, "No known
+restrictions on publication." https://www.loc.gov/item/2015631813/
+
+Full frame, 2400 × 1600, **neutral — no contrast adjustment and no colour grade baked in**;
+the site's own `grade`/`scrim` is the only tone applied. 697 KB jpg / 658 KB webp, and
+188 / 180 KB at `@1200`. It is the **fifth Highsmith frame** in the set.
+
+### Why this one
+
+- **It means what the line means.** Modest brick and clapboard houses, mown grass, a picket
+  fence, a porch with coats hanging on it, a brick street. Unglamorous, warm, not affluent,
+  not a landmark.
+- **Nobody is in it.** Not at distance, not out of focus — nobody, at any offset of the
+  scene. The porch implies a household without exposing one. Six critics have flagged real
+  individuals used on this site without their agreement; this frame gives them nothing to
+  flag.
+- **The bottom-right is quiet.** The scene ranges three lines of 86px serif RIGHT at the
+  FOOT of a 108svh frame, so the region that has to stay calm is the bottom-right, not the
+  right half. Here it is lawn, hedge and kerb — one tone — and the mirrored bottom scrim
+  (`align="right"`, `reach 0.44`, `rise 0.44`, `ink 0.98`) lands exactly there.
+
+### How it was chosen
+
+~550 Highsmith records harvested from the LOC Pictures API across 55 queries for ordinary
+domestic America (porches, laundromats, diners, residential streets, general stores, bus
+stops, back yards). 32 built an indexed contact sheet; 7 survived it and were pulled at full
+resolution. The shortlist was then **re-rendered inside the real page** at the scene's actual
+`grade 0.34 / zoom 1.22 / focal 68% 42%` with the real 86px line over it — not simulated —
+because the failure mode here is a photograph that is beautiful raw and useless under type.
+Rejected on those composites:
+
+- **Huntington, brick street (2015631814)** — near-twin of the winner, but a white pickup
+  sits directly under *"The test is"* and fights the cream.
+- **Third Street Residential District (2015632601)** — the line lands on porch posts and a
+  dark chair; the foreground is a large empty lawn that says lawn, not neighbourhood.
+- **Marks, Mississippi street scene (2017879226)** — reads as a depopulated downtown; the
+  vacancy is the subject, which is not the claim.
+- **Baltimore row houses (2010630965)** — boarded doors and windows; blight, not ordinary
+  life.
+- **Porch chairs (2015645999)** — the most intimate frame in the pool, but the sentence
+  lands on wicker and railing and goes illegible.
+- **Pottstown PA and Hamtramck MI street scenes** — both strong on the sheet; the Library
+  publishes them only as 1024px service JPEGs (masters are 400–800 MB TIFFs), below the
+  2400px floor. Dropped on resolution, not on merit.
+- Three tighter crops of the winning negative were rendered too. All of them lose the brick
+  street and the sweep of the kerb, which is what makes the frame read as a street somebody
+  lives on rather than a row of house fronts. **The full frame ships.**
+
+### Strings changed with it
+
+- `src/data/site.js` → `stake.credit` is now **`Huntington, West Virginia`** — a fact about
+  the photograph, not about the Institute's work. `stake` is the only object touched.
+- `scroll-Stake-alt.astro`'s preamble no longer describes a USDA photograph; its long design
+  note is kept and flagged as history, since it still explains the line, the measure and the
+  mirrored scrim. `alt` stays `''` — there is no subject to describe.
+- `refs/PHOTO-FACTS.md` and `public/media/ATTRIBUTIONS.md` (entry 10) updated.
+
+### Verified
+
+Rendered from `astro dev` at **1440 × 900** and **390 × 844**, at the head and the foot of
+the scene, under the real grade. Desktop: the three lines sit on hedge, lawn and kerb, clear
+of the picket fence, cream holding against the ramp. Phone: the scene's 46svh band keeps the
+whole street and the sentence in one screen, ranged right over the mirrored phone ramp. The
+`focal` / `focalSm` values were **not** retuned; they were re-checked unchanged against the
+new negative.
+
+Second-order, still open: pilot 03's `plate` trim (`sat 1.5, tint 2.7, lift 2.0`) was metered
+against a warm dim interior and reads acceptably on the aerial, but a re-meter against that
+file would be the tidy follow-up. That is a /pilots/ item, not a Stake one.
+
+## Superseded: the item above as it was first flagged
+
+
 
 **`pilot-maternal.jpg` is used twice.** Besides pilot 03's plate it is the full-bleed
 photograph in the homepage Stake scene (`src/components/scroll-Stake-alt.astro`, fed by

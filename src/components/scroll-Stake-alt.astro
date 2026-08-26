@@ -2,22 +2,36 @@
 import Figure from './Figure.astro';
 import { stake } from '../data/site.js';
 
-/* A credit says what the PHOTOGRAPH is, and this frame carries a private
-   individual at full bleed, so it also ships real alt text rather than being
-   declared decorative. `stake.credit` in site.js is the rights-holder
-   ("U.S. Department of Agriculture") — that tells a reader who owns the
-   picture and nothing about what it shows, and under "The test is ordinary
-   life." the only line attached to an identifiable woman was an agency name.
-   /pilots/ already ships the correct two strings for the identical file
-   (src/pages/pilots.astro:41-47); site.js belongs to another piece, so the
-   correction is named here, the same way /pilots/ names it there. Both files
-   must caption this woman the same way. */
+/* A credit says what the PHOTOGRAPH is, and nothing else. This scene no longer
+   shares pilot 03's file: it has its own `stake.image`, and the photograph is
+   Carol M. Highsmith's row of small bungalow homes on a brick street in the
+   Southside Bricks neighbourhood of Huntington, West Virginia
+   (LC-DIG-highsm-31738, public domain). So the credit is a location, like the
+   other Highsmith frames on this site — `Huntington, West Virginia`, held in
+   `src/data/site.js` so the picture and the string can never drift apart
+   again. There is no person in the frame, which is why the figure is
+   decorative below rather than carrying a described subject. */
 const stakeCredit = stake.credit;
 /* Decorative: the scene's meaning is carried by the line, and the
    photograph's own subject is named in the corner credit. */
 const stakeAlt = '';
 ---
 {/*
+  READ THIS FIRST — THE PHOTOGRAPH IN THIS SCENE HAS BEEN REPLACED. Everything
+  below about a mother and an infant, a USDA WIC photograph, a warm wall and a
+  child's hair is the HISTORY of this scene and is kept because it explains why
+  the line, the measure and the mirrored scrim are what they are. It no longer
+  describes what is on screen. The file is now `/media/stake.jpg`: Carol M.
+  Highsmith's brick street of small bungalow homes in the Southside Bricks
+  neighbourhood of Huntington, West Virginia — a residential street with NO
+  PERSON IN IT AT ALL. The `focal`, `zoom` and `focalSm` values below were tuned
+  against the old negative and were re-rendered unchanged against this one at
+  1440x900 and 390x844; the three lines land on lawn, hedge and kerb, which is
+  the quiet region this frame offers. The exposure the last paragraph of this
+  note flags — an identifiable infant — is closed: it was answered with a
+  different photograph, which is what that paragraph asked for.
+  Provenance and limits: refs/PHOTO-FACTS.md.
+
   THE STAKE, VERSION (b) — THIS IS THE ONE THAT SHIPS. `src/pages/index.astro`
   imports this file; `scroll-Stake.astro` is version (a) and is now the
   unrouted one, kept intact so the two can still be compared. Screenshots of
@@ -86,7 +100,12 @@ const stakeAlt = '';
 */}
 <section class="stake" aria-labelledby="stake-alt-h">
   <Figure src={stake.image} alt={stakeAlt} ratio="auto"
-          grade={0.34} zoom={1.22} focal="68% 42%"
+          {/* 0.48, not the 0.34 this scene carried over its previous
+              photograph. A May lawn in full sun is the most saturated thing
+              on a navy-and-cream site; at 0.34 the grass was the loudest
+              colour anywhere, including the brass. 0.58 pulls it into the
+              ground and the street stops reading as a photograph. */}
+          grade={0.48} zoom={1.22} focal="68% 42%"
           zoomSm={1} focalSm="62% 48%"
           parallax={3} enter="wipe" loading="lazy"
           scrim="bottom" align="right" reach={0.44} rise={0.44} ink={0.98} vig={0.24}

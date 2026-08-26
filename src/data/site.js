@@ -362,8 +362,17 @@ export const whyNow =
    strings describing a picture that no longer existed — a USDA family child
    care home credited over a downtown skyline. It has its own image now, and
    its own credit, so the two can never drift again. */
+/* THE PICTURE, and the credit is a fact about the PICTURE only.
+   `stake.jpg` is Carol M. Highsmith's 2015 photograph of small bungalow homes
+   on one of the brick streets of the Southside Bricks neighbourhood in
+   Huntington, West Virginia (LC-DIG-highsm-31738). It is a residential street
+   in one named town, and that is the entire claim: it is not the Institute's
+   work, not a pilot site, not Indiana, and nobody in it is a subject — there
+   is no person in the frame at all. The credit says where the photograph was
+   taken and nothing else. If this file is ever swapped, this string changes
+   with it in the same commit. */
 export const stake = {
   image: '/media/stake.jpg',
   line: 'The test is ordinary life.',
-  credit: 'Indianapolis, Indiana',
+  credit: 'Huntington, West Virginia',
 };

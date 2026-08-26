@@ -21,6 +21,7 @@ problem, and this is exactly the kind of site where someone will check.
 | `pilot-energy.jpg` | A high-voltage transmission tower under heavy overcast, **Muskingum County, Ohio** | that this is the Pacific Northwest, Washington, or BPA |
 | `pilot-maternal.jpg` | Downtown **Indianapolis, Indiana** from the air on a hazy afternoon — the Chase Tower and the towers around Monument Circle, low-rise blocks in the near ground, tree canopy out to a flat horizon. **No identifiable person in the frame.** | that it shows a hospital, a clinic, a health system, a neighbourhood the pilot has selected, or anything about the people who live there |
 | `pilot-education.jpg` | Two students welding in an Oregon public high-school shop class | — |
+| `stake.jpg` | A row of small bungalow and brick houses on a brick street in the **Southside Bricks** neighbourhood of **Huntington, West Virginia**, May 2015. Lawns, a picket fence, a front porch with coats on it, no person anywhere in the frame. | that this is Indianapolis or any pilot's location, that it is a place the Institute works in, that it is anyone's home in particular, or that the porch implies a named family |
 
 `pilot-health-track.jpg` is also a **crop, and the crop is the point.**
 The Army original is a girl of about seven at a Unified track meet in South
@@ -129,22 +130,63 @@ tension disappears and this frame should be swapped out.
 is no rights-cleared portrait of either founder and synthetic likenesses of real
 people are out of the question. People must be strong without portraits.
 
-## Outstanding: the homepage Stake scene shares this file
+## Resolved: the homepage Stake no longer shares pilot 03's file
 
-`pilot-maternal.jpg` is used in two places — pilot 03's plate on `/pilots/` and
-the full-bleed Stake scene on the homepage (`src/components/scroll-Stake-alt.astro`,
-fed by `stake` in `src/data/site.js`). The wave-9 replacement changed the picture
-under **both**. The pilot's own strings were updated with it; the Stake scene's
-were **not**, and they are now wrong:
+`pilot-maternal.jpg` used to be used in two places — pilot 03's plate on
+`/pilots/` and the full-bleed Stake scene on the homepage. That is why the
+wave-9 replacement changed the picture under both and left the Stake's strings
+describing a photograph that was no longer on disk.
 
-- `src/components/scroll-Stake-alt.astro` hard-codes `stakeCredit =
-  'Family child care home · USDA'` and a `stakeAlt` describing a mother and infant.
-- `src/data/site.js` → `stake.credit` is `'U.S. Department of Agriculture'`, and the
-  long comment on `stake.altLine` explains itself in terms of "an identifiable woman
-  in a U.S. Department of Agriculture photograph".
+That is closed. The Stake has its own `image`, its own credit, and its own
+photograph; `pilot-maternal.jpg` is referenced by /pilots/ alone. The Stake's
+credit is `Huntington, West Virginia` and its `alt` is `''`. See the section at
+the foot of this file for what the new frame is and what may be said about it.
 
-Those three strings describe a photograph that is no longer on disk. They must be
-corrected — credit to `Indianapolis, Indiana`, `alt` to `''` (the scene's sentence
-is the content; there is no longer a person to describe) — before the site ships.
-The wave-9 media pass was scoped to pilot 03 only and deliberately did not touch
-another component's copy.
+
+## The Stake scene has its own photograph now (added after wave 9)
+
+The homepage Stake — `src/components/scroll-Stake-alt.astro`, fed by `stake` in
+`src/data/site.js` — used to SHARE pilot 03's file. That is why replacing pilot
+03's picture silently changed the homepage, and why the Stake was left setting
+*"The test is ordinary life."* at 86px over an aerial photograph of downtown
+Indianapolis: a business district under a line about domestic, everyday life.
+The two are decoupled: the Stake reads `/media/stake.jpg`, which is its own
+file and is not referenced by any other page.
+
+What ships is Carol M. Highsmith's **LC-DIG-highsm-31738** (2015-05-07):
+*"Similarly designed small bungalow homes on one of several brick streets in a
+neighborhood of Huntington, West Virginia…"* — the neighbourhood is known
+locally as the **Southside Bricks**. Public domain, Highsmith Archive, "No
+known restrictions on publication." It is the **fifth Highsmith frame** in the
+set, which is what keeps seven photographs from seven places reading as one
+commission.
+
+Three things make it the right frame for this scene specifically, and they are
+the things to preserve if it is ever recut:
+
+1. **It means what the line means.** Modest houses, mown grass, a picket fence,
+   a porch with coats hanging on it, a brick street. Nothing aspirational,
+   nothing affluent, no landmark, no skyline.
+2. **There is no person in it.** Not a person at distance, not a person out of
+   focus — nobody. The porch implies a household without exposing one, which
+   is the strongest form this frame can take on a site where six critics have
+   already flagged real individuals being used without their agreement. Any
+   replacement crop must keep that true across the WHOLE scroll of the scene,
+   not just at one offset.
+3. **The bottom-right is quiet.** The scene sets three lines of 86px serif
+   ranged RIGHT at the FOOT of a 108svh frame, so the region that has to stay
+   calm is the bottom-right, not the right half generally. Here that region is
+   lawn, hedge and kerb — one tone, no detail, and the bottom-left-scrim
+   mirrored to the right (`align="right"`) lands its ink exactly there.
+
+The file on disk is the **full frame** at 2400 × 1600, neutral, with no colour
+grade baked in — the site applies its own. Tighter crops of the same negative
+were rendered under the real treatment and all of them lose the brick street
+and the sweep of the kerb, which is what makes the frame read as a street
+somebody lives on rather than a row of house fronts.
+
+The credit is a location, like the other Highsmith frames:
+**`Huntington, West Virginia`**. It says where the photograph was taken. It is
+not a claim that the Institute works there. `alt` stays `''`: the scene's
+sentence is the content and there is no subject an assistive reader is owed a
+description of.

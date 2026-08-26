@@ -86,6 +86,7 @@ export function standingOf(board) {
     putLabel: 'Put forward',
     accepted: '00',
     acceptedLabel: 'Accepted',
+    none: 'None has accepted.',
     line: `${word} put forward. None has accepted.`,
   };
 }

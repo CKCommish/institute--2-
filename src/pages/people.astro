@@ -570,11 +570,13 @@ const founderCount = String(founders.length).padStart(2, '0');
     isolation: isolate;
     background: var(--ink-900);
   }
-  .seam {
-    /* It carries the page's #board anchor now: the masthead index lands on
-       the room and the sentence, not past them onto the roster. */
-    scroll-margin-top: 0;
-  }
+  /* THE ANCHOR MOVED. #board used to sit on the cream field, so the
+     masthead's "16 PROSPECTIVE BOARD" jumped a reader straight into sixteen
+     photographs and past the only place the page says nobody has accepted.
+     It is on this section now: the link lands on the empty room with the
+     sentence set into it, and the roster is what comes after. A full-bleed
+     frame takes no stop — the bar is meant to sit over its top edge. */
+  .seam { scroll-margin-top: 0; }
   .seam__in {
     position: relative;
     z-index: 3;
@@ -602,10 +604,10 @@ const founderCount = String(founders.length).padStart(2, '0');
     /* The photograph above is the break; the cream field does not need to
        open on 10rem of nothing as well. */
     padding-block: clamp(3rem, 1.5rem + 4.5vw, 6rem) clamp(3rem, 5vw, 5.5rem);
-    /* nav-h alone lands the section flush against the bottom of the bar,
-       with nothing between them. Match the global stop. */
-    scroll-margin-top: calc(var(--nav-h) + 1rem);
   }
+  /* #board moved up to the seam, so this field no longer takes a scroll
+     stop: the roster is reached THROUGH the photograph and its sentence, not
+     past them. That is the point of moving the anchor. */
   .bd__head {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -711,7 +713,6 @@ const founderCount = String(founders.length).padStart(2, '0');
   .co:last-child { border-bottom-color: var(--mark); }
   /* If the script never runs, nothing may stay under its mask. */
   :global(html:not(.js)) .co,
-  :global(html:not(.js)) .wall__state,
   :global(html:not(.js)) .fr,
   :global(html:not(.js)) .fs__rule,
   :global(html:not(.js)) .wall { clip-path: none; }
@@ -794,10 +795,10 @@ const founderCount = String(founders.length).padStart(2, '0');
      same three x-values, so the rules still stack into three edges; the only
      thing that changes is that an edge now ends with its last name. */
   /* Name over office, top-aligned in the track: a person is a name and one
-     title line, and the two share a left edge with the rule that opens the
-     column. Rows are as tall as their tallest entry and every entry starts
-     at the top of its row, so the name baselines range across a row even
-     when one office takes two lines. */
+     title line — the brief's whole allowance, and the photograph does not
+     buy a third mark. Rows are as tall as their tallest entry and every
+     entry starts at the top of its row, so the pictures range across a row
+     even when one office takes two lines and its neighbour takes one. */
   /* TWO COLUMNS, NOT A CARD. The picture is the record's left column and the
      name and title are its right one; the column rule that opens the record
      runs down the outside of the picture, so a reader sees a ruled file with
@@ -827,6 +828,20 @@ const founderCount = String(founders.length).padStart(2, '0');
      left edge, floor to ceiling of its row box — the entry is stretched to
      its row, so the three rules of a row open and close on the same two
      y-values and the plate still reads as one ruled sheet. */
+  /* AND IT IS DASHED, WHICH IS THE ONLY THING ON THIS PAGE DRAWN THAT WAY.
+     Every other hairline the site owns is solid: the founders' spine, the
+     band separators, the plate's own top and bottom edge. Sixteen records
+     open on a broken line instead. It is not decoration and it is not a
+     texture — it is the difference between a record that is closed and a
+     record that is not, drawn in the one vocabulary this page already has,
+     and it works at a glance and without a word being read. A reader who
+     never reaches the sentence on the photograph and never parses the 00 on
+     the rail still sees that these sixteen files are open and the two above
+     them are not.
+
+     Dash and gap are set in absolute px, not in a fraction of the row: the
+     entries are different heights, and a dash scaled to its own row would
+     make sixteen different rules. */
   .ent::before {
     content: '';
     position: absolute;
@@ -834,7 +849,9 @@ const founderCount = String(founders.length).padStart(2, '0');
     top: 0;
     bottom: 0;
     width: 1px;
-    background: var(--rule);
+    background-image: linear-gradient(to bottom, var(--rule) 0 5px, transparent 5px 10px);
+    background-size: 1px 10px;
+    background-repeat: repeat-y;
   }
   .ent__n {
     font-family: var(--serif);
@@ -925,9 +942,16 @@ const founderCount = String(founders.length).padStart(2, '0');
     /* A 34vw band is 130px on a phone: the room stops being a room. The
        seam keeps a readable frame instead of a stripe. */
     .seam { min-height: min(92vh, 42rem); }
-    /* At 390 the sentence is two lines of ~19 characters; the measure is cut
-       to the shorter clause so the break can only land at the full stop. */
-    .seam__h { max-width: 13ch; }
+    /* At 390 the line needs two lines and the break has to land on the full
+       stop. 13ch put "forward." on the second line and made three; the
+       measure has to be wider than the LONGER clause (20 characters), not
+       narrower than it, and `text-wrap: balance` then has exactly one place
+       to break. */
+    .seam__h { max-width: 21ch; }
+    /* The frame's credit sits in the bottom-right corner and the sentence's
+       second line now reaches into it at this width. The type gives way, not
+       the credit: refs/PHOTO-FACTS.md is why the credit is there at all. */
+    .seam__in { padding-bottom: clamp(2.9rem, 9vw, 3.6rem); }
     /* ONE TRACK. Two 163px columns at 390 put "Tess deBlanc-Knowles" on two
        lines and "First Chief Technology Officer of the United States" on
        four, which is not a denser roster, it is a narrower one. The plate
