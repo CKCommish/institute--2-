@@ -58,6 +58,38 @@ export const mastheadBridge =
 export const homeBridge =
   'A cabinet secretary. A governor. The country’s first chief technology officer.';
 
+/* ── THE STANDING OF THE ROSTER ──────────────────────────────────────
+   Sixteen names was a list a reader could take or leave. Sixteen faces is a
+   claim, and the claim it makes — "these people are with us" — is one this
+   institute has no right to make: nobody on this roster has agreed to serve.
+   A reader does not read the eyebrow before they read the faces, so the
+   qualification cannot live in an 11px label riding each entry. It has to be
+   a fact with a number in it, stated once at the size of a headline and once
+   more as a standing mark on the roster itself.
+
+   Both come from here. `line` is the sentence, `put` and `accepted` are the
+   two counts — and `accepted` is 00 by definition, not by data: it is the
+   only number on this page that will change when the situation does, and it
+   is written as a zero rather than as an absence so that a reader meets it
+   the way they meet 06 POLICY. The verb is "put forward", which is what
+   CONTENT-NOTES.md says is true, and not "asked", which nobody has
+   confirmed. */
+const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight',
+  'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+  'Seventeen', 'Eighteen', 'Nineteen', 'Twenty'];
+
+export function standingOf(board) {
+  const n = board.length;
+  const word = WORDS[n] || String(n);
+  return {
+    put: String(n).padStart(2, '0'),
+    putLabel: 'Put forward',
+    accepted: '00',
+    acceptedLabel: 'Accepted',
+    line: `${word} put forward. None has accepted.`,
+  };
+}
+
 /* Returns [{ label, def, id, count, people }] — people in the editorial
    order above. Anyone added to site.js but not named here still reaches the
    page: they join the last cohort rather than vanishing from the roster. */

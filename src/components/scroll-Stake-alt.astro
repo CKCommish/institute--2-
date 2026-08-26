@@ -12,9 +12,10 @@ import { stake } from '../data/site.js';
    (src/pages/pilots.astro:41-47); site.js belongs to another piece, so the
    correction is named here, the same way /pilots/ names it there. Both files
    must caption this woman the same way. */
-const stakeCredit = 'Family child care home · USDA';
-const stakeAlt =
-  'A mother holds her infant against her shoulder in the doorway of a family child care home.';
+const stakeCredit = stake.credit;
+/* Decorative: the scene's meaning is carried by the line, and the
+   photograph's own subject is named in the corner credit. */
+const stakeAlt = '';
 ---
 {/*
   THE STAKE, VERSION (b) — THIS IS THE ONE THAT SHIPS. `src/pages/index.astro`
@@ -97,7 +98,7 @@ const stakeAlt =
           class="stake__bg" />
 
   <div class="shell stake__in">
-    <h2 class="display display--poster stake__h lines" id="stake-alt-h">{stake.altLine}</h2>
+    <h2 class="display display--poster stake__h lines" id="stake-alt-h">{stake.line}</h2>
   </div>
 </section>
 

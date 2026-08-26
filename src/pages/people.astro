@@ -1,8 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
+import Portrait from '../components/people-portrait.astro';
 import { founders, board } from '../data/site.js';
-import { cohortsOf, boardBridge, mastheadBridge } from '../components/people-cohorts.js';
+import { cohortsOf, standingOf, boardBridge, mastheadBridge } from '../components/people-cohorts.js';
 
 /* We hold no rights-cleared portraits of either founder, and the page is
    built to be complete without them: a record here is a typographic entry,
@@ -29,6 +30,9 @@ const beforeLabel = 'Before the institute';
 
 /* Grouping, order and the two head clauses live in people-cohorts.js. */
 const cohorts = cohortsOf(board);
+
+/* The one fact that has to survive sixteen photographs. */
+const standing = standingOf(board);
 
 const boardCount = board.length;
 const founderCount = String(founders.length).padStart(2, '0');
@@ -119,36 +123,53 @@ const founderCount = String(founders.length).padStart(2, '0');
       tracks, bounded top and bottom by a rule, two rows deep per band
       instead of sixteen. Each band wipes down as a territory, so the section
       arrives in three moves rather than in sixteen identical blinks. */}
-  {/* THE SEAM. The page's one photograph, and the only place on it a picture
-      can arrive without interrupting a reading: the turn from navy to cream.
-      It is an empty meeting room — the room this roster is being assembled
-      to fill — and the section's own head is set into its lower-left rather
-      than printed above it. The room is not the Institute's; the credit says
-      whose it is, per refs/PHOTO-FACTS.md. */}
-  <section class="seam" aria-hidden="false">
+  {/* THE SEAM, AND THE PAGE'S ONE LOUD SENTENCE.
+
+      The photograph is an empty meeting room — the room this roster is being
+      assembled to fill — and it is the only place on the page a picture can
+      arrive without interrupting a reading: the turn from navy to cream. The
+      room is not the Institute's; the credit says whose it is, per
+      refs/PHOTO-FACTS.md.
+
+      What is set into it is the qualification, ONCE, at the size of a
+      headline. This is the whole answer to sixteen faces. A reader meets the
+      roster through this screen — the masthead's index now lands here, not on
+      the cream field — so the last thing they read before the first face is
+      an empty room and the sentence "None has accepted." An empty room is not
+      an illustration of that sentence, it is the evidence for it, which is
+      why the sentence goes HERE and not above the grid.
+
+      It takes --step-feature, the series-breaker, and it is the only thing on
+      the page at that rung: the claim below ("Advising the pilots we run…")
+      was there and has been dropped to --step-head, because on a page that
+      now shows sixteen photographs, the loudest line cannot be the one
+      describing what these people would do. Both clauses are within two
+      characters of each other, which per the note on .bd__h below is the
+      condition under which `text-wrap: balance` breaks a two-line display at
+      the full stop instead of mid-clause.
+
+      There used to be a 245px "16" set here instead. It is not coming back:
+      it was twice --step-banner, so the loudest object on the whole site sat
+      on an inner page; it repeated a number the masthead already states; and
+      a display numeral centred on sixteen chairs in a room the Institute does
+      not own is exactly the reading refs/PHOTO-FACTS.md exists to prevent. A
+      sentence with a number in it does the same work and can be argued with,
+      which a numeral cannot. */}
+  <section class="seam" id="board" aria-labelledby="board-h">
     <Figure
       src="/media/institute.jpg" alt="An empty committee room: sixteen chairs set around a long table beneath a flag."
       ratio="auto" ratioSm="3 / 4" grade={0.45} lift={1.1}
       zoom={1.02} focal="50% 52%" zoomSm={1.28} focalSm="50% 56%"
-      scrim="bottom" rise={0.52} reach={1} ink={0.9} vig={0.3} enter="wipe"
+      scrim="bottom" rise={0.62} reach={1} ink={1} vig={0.3} enter="wipe"
       credit="Library of Congress" creditPos="bottom-right" />
 
-    {/* There used to be a 16 set here, centred on the room's axis at 245px —
-        "a size that exists nowhere else in the ladder", which was the case
-        for removing it rather than the case for keeping it. It was twice
-        --step-banner, so the loudest object on the whole site sat on an
-        inner page rather than on the front door; it repeated a number this
-        page already states in its masthead; and a display numeral centred on
-        sixteen chairs in a room the Institute does not own is exactly the
-        reading refs/PHOTO-FACTS.md exists to prevent. The photograph is the
-        turn from navy to cream and does not need a caption burned into it. */}
     <div class="shell seam__in">
       <p class="eyebrow" data-reveal>Prospective board</p>
-      <p class="label seam__l" data-reveal="120">Names put forward</p>
+      <h2 class="display display--feature seam__h lines" id="board-h">{standing.line}</h2>
     </div>
   </section>
 
-  <section class="scene on-cream bd" id="board" aria-labelledby="board-h">
+  <section class="scene on-cream bd" aria-labelledby="board-h">
     <div class="shell">
       <header class="bd__head">
         {/* The scene opens on a ruled line rather than on a label — the label
@@ -174,7 +195,7 @@ const founderCount = String(founders.length).padStart(2, '0');
             display at the punctuation instead of in the middle of a
             clause. */}
         <div class="bd__claim">
-          <h2 class="display display--feature bd__h lines" id="board-h">Advising the pilots we run. Opening the doors they need.</h2>
+          <p class="display display--head bd__h lines">Advising the pilots we run. Opening the doors they need.</p>
         </div>
       </header>
 
@@ -203,6 +224,36 @@ const founderCount = String(founders.length).padStart(2, '0');
           stated in the head above each band, in words, which is where a
           difference belongs. */}
       <div class="wall">
+        {/* THE STANDING RAIL — the plate's own column head, and the second of
+            the page's two answers to sixteen faces.
+
+            The sentence on the photograph is read once, on the way in. The
+            roster is eight rows deep on a desktop and sixteen on a phone, so
+            a reader is inside it long after that screen has gone, and a
+            reader who arrives from a search result or a shared anchor may
+            never have seen it at all. This row is what stands with them: two
+            counts in the register the page already uses for counts (06
+            POLICY, 02 FOUNDERS), spread to the two ends of the plate so the
+            pair reads as a tally and not as a caption. 00 is written as a
+            zero rather than as the word "none" for the same reason 06 is not
+            written "six" — a numeral is read before it is parsed, and this
+            is the number the page most needs read.
+
+            It is inside the plate, under its top rule and above the first
+            band, so it belongs to the roster as a piece of its structure. A
+            marker riding each of sixteen entries would be sixteen times
+            quieter and would rank nobody; a marker on the sheet ranks the
+            sheet. */}
+        <p class="wall__state" data-reveal>
+          <span class="wall__st">
+            <span class="index tnum">{standing.put}</span>
+            <span class="label label--lit">{standing.putLabel}</span>
+          </span>
+          <span class="wall__st">
+            <span class="index tnum">{standing.accepted}</span>
+            <span class="label label--lit">{standing.acceptedLabel}</span>
+          </span>
+        </p>
         {cohorts.map((c, ci) => (
           <section class="co" data-wipe="top" data-delay={String(140 + ci * 130)} aria-labelledby={c.id}>
             <h3 class="co__head" id={c.id}>
@@ -220,6 +271,14 @@ const founderCount = String(founders.length).padStart(2, '0');
             <ul class="co__field" style={`--rows-3:${Math.ceil(c.people.length / 3)};--rows-2:${Math.ceil(c.people.length / 2)};--rows-1:${c.people.length}`}>
               {c.people.map((p) => (
                 <li class="ent">
+                  {/* alt="" ON PURPOSE. The name and the title sit as text
+                      one gap to the right of this picture; an alt repeating
+                      them makes a screen reader say "Gina Raimondo" twice and
+                      tells it nothing the record does not already carry. The
+                      photograph is an identification mark on a record that is
+                      complete without it — which is also why the founders can
+                      stand here with no portrait at all. */}
+                  <Portrait class="ent__p" src={p.portrait} alt="" />
                   <span class="ent__n">{p.name}</span>
                   <span class="ent__t">{p.line}</span>
                 </li>
@@ -229,11 +288,13 @@ const founderCount = String(founders.length).padStart(2, '0');
         ))}
       </div>
 
-      {/* The point is bound to the clause it closes. Left to break freely it
-          wrapped onto the second line on a phone and the footnote opened
-          with a separator — "· TITLES FOR IDENTIFICATION" — which is a
-          hanging mark, not a rule. */}
-      <p class="label bd__foot" data-reveal="140">Membership is prospective&nbsp;· Titles for identification</p>
+      {/* "Membership is prospective" used to be half of this line, at 11px,
+          at the bottom of the page, which is where a qualification goes when
+          nobody has decided where it belongs. It is now the sentence on the
+          photograph and the zero on the rail. What is left here is the one
+          thing that genuinely is a footnote: these titles identify the person
+          and are not offices held on the institute's behalf. */}
+      <p class="label bd__foot" data-reveal="140">Titles for identification only</p>
     </div>
   </section>
 </Base>
@@ -507,24 +568,32 @@ const founderCount = String(founders.length).padStart(2, '0');
     isolation: isolate;
     background: var(--ink-900);
   }
+  .seam {
+    /* It carries the page's #board anchor now: the masthead index lands on
+       the room and the sentence, not past them onto the roster. */
+    scroll-margin-top: 0;
+  }
   .seam__in {
     position: relative;
     z-index: 3;
     padding-block: clamp(1.6rem, 3vw, 2.6rem);
     display: grid;
     justify-items: start;
-    row-gap: clamp(0.35rem, 0.7vw, 0.6rem);
+    row-gap: clamp(0.9rem, 1.8vw, 1.5rem);
   }
-  /* .label at its own level — see PilotsScene. This one sits in the scrim's
-     deep zone at the foot of the frame, which is where the legibility budget
-     in tokens.css puts a meta-register mark over photography. */
-
-  /* The count, on the room's axis. Off the type ladder by design: the
-     largest rung on the site is 86px and this is ~245px, because a rung is a
-     rank and this is not competing with anything — it is the picture's own
-     caption, set in the one part of the frame the photograph left empty
-     (the foreground under the table, measured at L* 4). Cream on near-black,
-     comfortably inside the large-text legibility budget. */
+  /* THE SENTENCE. Flush left in the scrim's deep zone at the foot of the
+     frame — the align='left' ramp in Figure.astro is heavy exactly here,
+     which is why the type is here and not centred on the room's axis. The
+     measure is cut so the two clauses stack one per line at every width the
+     line needs two: a break at the full stop is the whole point of it. */
+  .seam__h {
+    max-width: 19ch;
+    text-wrap: balance;
+    --settle-shift: 2.4vh;
+    --settle-origin: 0% 100%;
+    --dur-3: 1400ms;
+  }
+  .seam__h :global(.line) { padding-bottom: 0.09em; margin-bottom: -0.09em; }
 
   /* ── Prospective board ──────────────────────────────────────────── */
   .bd {
@@ -564,14 +633,19 @@ const founderCount = String(founders.length).padStart(2, '0');
        as a decision. The page gets one grid break and the photograph has it. */
     margin-left: 0;
   }
+  /* DROPPED ONE RUNG, ON PURPOSE. It held --step-feature when the roster was
+     sixteen names and the loudest thing on the page could safely be what the
+     board would do. With sixteen faces under it that line is the page's
+     biggest unearned claim, so the series-breaker moved to the sentence on
+     the photograph and this took --step-head. The two-clause balance the
+     copy was cut for still holds — the clauses are the same length, so it
+     breaks at the full stop at whatever rung it is set. */
   .bd__h {
     max-width: none;
     text-wrap: balance;
     --settle-shift: 2.2vh;
     --settle-origin: 0% 100%;
-    /* The one display line in this scene gets the slowest, latest ramp on
-       the page — motion sorts the hierarchy instead of dimming it evenly. */
-    --dur-3: 1400ms;
+    --dur-3: 1250ms;
   }
   .bd__head { align-items: baseline; }
   .bd__h :global(.line) { padding-bottom: 0.09em; margin-bottom: -0.09em; }
@@ -597,7 +671,37 @@ const founderCount = String(founders.length).padStart(2, '0');
        start on one x and the whole roster reads as a ruled sheet rather than
        as text with lines near it. */
     --tick: clamp(0.8rem, 1.15vw, 1.15rem);
+    /* THE PORTRAIT IS A COLUMN INSIDE THE RECORD, and its width is declared
+       here with the rest of the plate's geometry so every one of the sixteen
+       is the same object. 69px at 1440 makes an 86px plate at 4:5 — about the
+       height of a name and its title line, which is the size at which a face
+       is a face and sixteen of them are still a list. Bigger and the section
+       becomes a wall of headshots; smaller and it is an avatar. */
+    --pw: clamp(3.5rem, 4.8vw, 4.9rem);
+    --pgap: clamp(0.7rem, 1.05vw, 1.1rem);
+    /* How far back the whole set is held off the page. See people-portrait
+       .astro: cream over the picture, doing two jobs at once — sixteen source
+       backgrounds brought into one band, and the band kept a step under the
+       ink of the names it belongs to. */
+    --pp-veil: 0.2;
   }
+  /* The plate's column head. Same two-part mark as a band head — an index
+     numeral and a micro label — but spread to the plate's two edges instead
+     of hung on the second rail, so it reads as a tally across the sheet and
+     never as a fourth constituency. It indents by --tick like everything
+     else inside the plate; its right mark closes on the plate's right edge. */
+  .wall__state {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.9rem clamp(1.5rem, 4vw, 4rem);
+    padding: clamp(0.85rem, 1.5vw, 1.25rem) 0 clamp(0.95rem, 1.6vw, 1.35rem);
+    padding-left: var(--tick);
+    border-bottom: 1px solid var(--rule);
+  }
+  .wall__st { display: flex; align-items: baseline; gap: 0.85rem; }
+
   .co {
     padding-block: clamp(1.9rem, 3.6vw, 3.1rem);
     border-bottom: 1px solid var(--rule);
@@ -605,6 +709,7 @@ const founderCount = String(founders.length).padStart(2, '0');
   .co:last-child { border-bottom-color: var(--mark); }
   /* If the script never runs, nothing may stay under its mask. */
   :global(html:not(.js)) .co,
+  :global(html:not(.js)) .wall__state,
   :global(html:not(.js)) .fr,
   :global(html:not(.js)) .fs__rule,
   :global(html:not(.js)) .wall { clip-path: none; }
@@ -691,13 +796,27 @@ const founderCount = String(founders.length).padStart(2, '0');
      column. Rows are as tall as their tallest entry and every entry starts
      at the top of its row, so the name baselines range across a row even
      when one office takes two lines. */
+  /* TWO COLUMNS, NOT A CARD. The picture is the record's left column and the
+     name and title are its right one; the column rule that opens the record
+     runs down the outside of the picture, so a reader sees a ruled file with
+     a photograph attached to it rather than a tile with a caption. That is
+     the whole difference between a docket and a board page, and it is the
+     difference the page has to make: nobody on this sheet has agreed to
+     serve. The picture is top-aligned in the row, so all three (or two, or
+     one) portraits in a row open on the same line whatever their names do. */
   .ent {
     position: relative;
     display: grid;
-    align-content: start;
+    grid-template-columns: var(--pw) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: var(--pgap);
     row-gap: 0.12em;
+    align-content: start;
     padding-left: var(--tick);
   }
+  .ent__p { grid-column: 1; grid-row: 1 / span 2; align-self: start; }
+  .ent__n { grid-column: 2; grid-row: 1; }
+  .ent__t { grid-column: 2; grid-row: 2; }
   /* The rule itself: not a border, because a border sits inside the padding
      and would push every name 1px off the track origin the band head is
      already ranged on. An absolutely positioned hairline on the entry's own
@@ -749,8 +868,11 @@ const founderCount = String(founders.length).padStart(2, '0');
      980 a track is 284px and a two-line office is the worst case; below it
      three tracks start breaking names, so the plate goes to two, then to
      one at 620. */
-  @media (max-width: 980px) { .wall { --cols: 2; } .co__field { --rows: var(--rows-2); } }
-  @media (max-width: 620px) { .wall { --cols: 1; } .co__field { --rows: var(--rows-1); } }
+  /* The folds moved out from 980/620 to 1140/680: a record is ~85px wider
+     than it was, because it now opens with a picture. Same rule as before —
+     three tracks hold while a two-line office still fits beside a face. */
+  @media (max-width: 1140px) { .wall { --cols: 2; } .co__field { --rows: var(--rows-2); } }
+  @media (max-width: 680px) { .wall { --cols: 1; } .co__field { --rows: var(--rows-1); } }
 
   @media (max-width: 1180px) {
     .bd__bridge { max-width: 52ch; }
@@ -798,7 +920,10 @@ const founderCount = String(founders.length).padStart(2, '0');
   @media (max-width: 620px) {
     /* A 34vw band is 130px on a phone: the room stops being a room. The
        seam keeps a readable frame instead of a stripe. */
-    .seam { min-height: min(88vh, 40rem); }
+    .seam { min-height: min(92vh, 42rem); }
+    /* At 390 the sentence is two lines of ~19 characters; the measure is cut
+       to the shorter clause so the break can only land at the full stop. */
+    .seam__h { max-width: 13ch; }
     /* ONE TRACK. Two 163px columns at 390 put "Tess deBlanc-Knowles" on two
        lines and "First Chief Technology Officer of the United States" on
        four, which is not a denser roster, it is a narrower one. The plate
@@ -814,17 +939,10 @@ const founderCount = String(founders.length).padStart(2, '0');
     .pm__idx-i { column-gap: 1rem; }
   }
 
-  /* THE LAST WIDTH AT WHICH THE CLAIM IS STILL TWO SENTENCES. Under about
-     440px the second clause is wider than the column, so the series-breaker
-     rung buys a third line and a break in the middle of "we run. Opening".
-     tokens.css already says what to do: below ~700px the display range has
-     compressed and --step-feature has stopped reading as a break anyway
-     (31.7 against --step-head's 28.0 at 390), so the claim takes the rung
-     that fits and keeps the thing that is actually doing the work — one
-     sentence, one line. */
-  @media (max-width: 440px) {
-    .bd__h { font-size: var(--step-head); }
-  }
+  /* The claim used to need a rung rescue here — at --step-feature its second
+     clause outran a 440px column and broke mid-sentence. It sits at
+     --step-head at every width now, so the rescue is the default and the
+     override is gone. */
 
   @media (prefers-reduced-motion: reduce) {
     .bd__h :global(.line > span) { transition-delay: 0ms; }

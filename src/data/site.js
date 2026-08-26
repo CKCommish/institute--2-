@@ -160,20 +160,21 @@ export const pilots = [
     approach: 'Maternal health data read for early risk.',
     goal: 'Risk identified early enough to act on.',
     horizon: '3–12 months',
-    /* The re-cut master, which ends before the second adult in the USDA
-       original. `pilot-maternal-crop.jpg` was the wave-4 workaround and is
-       obsolete; /pilots/ carried the correction as a component override
-       until now. See refs/PHOTO-FACTS.md. */
+    /* Wave 9: the file behind this path is now Carol M. Highsmith's aerial
+       of downtown Indianapolis (LC-DIG-highsm-40936). The USDA photograph of
+       a mother and infant that used to sit here was rejected by the client
+       and is off disk. See refs/PHOTO-FACTS.md. */
     image: '/media/pilot-maternal.jpg',
     /* the warm interior. See pilot 01. */
     plate: { grade: 0.5, sat: 1.5, tint: 2.7, warm: 0, lift: 2.0 },
-    /* What the PHOTOGRAPH is, not who owns it. This one frame's subject is a
-       private individual at full scale, so the credit names the room she is
-       standing in rather than the federal agency that holds the rights. */
-    credit: 'Family child care home · USDA',
-    /* The one pilot frame that ships real alt text: the other three are
-       places and events the copy already describes, this one is a person. */
-    alt: 'A mother holds her infant against her shoulder in the doorway of a family child care home.',
+    /* What the PHOTOGRAPH is, not what the pilot is. A place-name, like the
+       other Highsmith frames — and here it is also the place the pilot is
+       proposed for, which is why this frame was chosen. It says nothing
+       about a hospital, a neighbourhood or anyone who lives there. */
+    credit: 'Indianapolis, Indiana',
+    /* Decorative, like the other three, now that the subject is a city and
+       not a person: the copy set beside it already names Indianapolis. */
+    alt: '',
     detail: {
       what: 'Maternal health data read early, and acted on.',
       who: 'Mothers on Medicaid.',
@@ -356,16 +357,13 @@ export const whyNow =
    says what the institute exists to ensure; this says who it is for. It is
    also the whole of the scene's copy — the sentence has to be short enough
    to set in a narrow column beside the subject rather than across her. */
+/* The homepage Stake scene. This used to point at pilot 03's file, so
+   replacing that photograph silently changed the homepage too and left three
+   strings describing a picture that no longer existed — a USDA family child
+   care home credited over a downtown skyline. It has its own image now, and
+   its own credit, so the two can never drift again. */
 export const stake = {
-  image: '/media/pilot-maternal.jpg',
-  line: 'For the median family.',
-  /* THE ALTERNATE LINE — see components/scroll-Stake-alt.astro.
-     `line` above prints a statistician's abstraction over an identifiable
-     woman in a U.S. Department of Agriculture photograph who has no
-     relationship to this institute. `altLine` states the same standard as
-     the Institute's own test rather than as a label for the person in the
-     frame: the subject of the sentence is what we judge technology by, not
-     who she is. Same length, same three-line break in the same measure. */
-  altLine: 'The test is ordinary life.',
-  credit: 'U.S. Department of Agriculture',
+  image: '/media/stake.jpg',
+  line: 'The test is ordinary life.',
+  credit: 'Indianapolis, Indiana',
 };

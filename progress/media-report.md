@@ -211,3 +211,92 @@ three-stop navy multiply scrim, the same vignette, the same bottom ink ramp, the
 `object-fit: cover` focal behaviour and parallax overscan — and judged in that state, with
 simulated display type over the Forum candidates. Several frames that looked fine raw died
 under the grade; the ones that shipped were chosen in it.
+
+---
+
+# Wave 9 — pilot 03's photograph replaced (client rejection)
+
+**Scope: one image.** No other frame, pilot, page or layout was touched.
+
+## What happened
+
+The client rejected the picture in pilot 03 (*Infant Mortality*, Butler University):
+"I don't like the photo of the mother with the kid." Taken at face value — the image is
+out, not re-cropped. The USDA Team Nutrition photograph is off disk, and so are the
+obsolete `pilot-maternal-crop.*` files (all four variants, including the `@1200` pair the
+earlier cleanup missed).
+
+## What ships
+
+`public/media/pilot-maternal.{jpg,webp}` + `@1200` variants —
+**Carol M. Highsmith, *Aerial view of Indianapolis, Indiana*, 2016-09-19.**
+LC-DIG-highsm-40936 · https://www.loc.gov/item/2016631754/ ·
+Library of Congress Carol M. Highsmith Archive, "No known restrictions on publication."
+
+Downtown Indianapolis from a plane on a hazy September afternoon: the Chase Tower and the
+towers around Monument Circle, low-rise blocks and a convention hall in the near ground,
+tree canopy running out to a flat horizon. **No identifiable person in the frame.**
+Original 8406 × 5604; cropped 3:2 from the top (full width, y 0–5268) to drop a band of
+surface parking and interstate ramps; 2400 × 1600, contrast +4.5%, mild sharpen,
+mozjpeg q78 / webp q74. 574 KB / 481 KB; `@1200` 162 KB / 148 KB. No colour grade baked in.
+
+## Why this frame
+
+1. **It is the honest one.** The pilot is proposed for Indianapolis. This is Indianapolis.
+   Nothing has to be implied, and the credit (`Indianapolis, Indiana`) is the same kind of
+   plain location string the other Highsmith frames carry.
+2. **It has no subject to exploit.** Six critics have now flagged real people used on this
+   site in ways they never agreed to, and a page headed *Infant Mortality* is the worst
+   place on the site to print a stranger's face. A city cannot be misrepresented by being
+   photographed.
+3. **It makes the set read as one system.** Five of the shipped frames are now Highsmith /
+   Library of Congress.
+4. **It survives the grade.** Under pilot 03's actual plate (grade .5, sat ×1.5, tint ×2.7,
+   lift 2.0) the haze goes cool blue-grey, the towers keep their tonal separation, and the
+   horizon holds the frame. Checked at 3:2 (the `/pilots/` plate), 4:3 (`ratioSm`), 16:7,
+   1:1, the homepage Stake full-bleed band at `zoom 1.22 / focal 68% 42%`, and a 390 × 700
+   phone frame. It works in all of them; the close Stake crop is the best of them.
+
+## Rejected
+
+~20 candidates from the LOC Highsmith Indianapolis holdings (three pages of results),
+judged on an indexed contact sheet raw and again under the grade.
+
+- **Butler University campus aerials** (2016631670 / 671) — factually the most on-point
+  frame available, and the weakest picture: flat midday green that turns to grey-green mush
+  under the grade and reads as a real-estate listing.
+- **Larue D. Carter psychiatric hospital aerial** (2016631663 / 665) — the only hospital in
+  the Highsmith Indianapolis set, and a psychiatric hospital is the wrong association for
+  an infant-mortality pilot. There is no LOC Highsmith frame of a general hospital, clinic
+  corridor or neonatal unit in Indianapolis; that idea has no public-domain source here.
+- **Close downtown aerial** (2016631769) and **near-downtown grid** (2016631777) — good
+  texture, no subject; both collapse into grey noise under the veil.
+- **Monuments and civic set pieces** — Soldiers' and Sailors' Monument, the Obelisk, the
+  War Memorial, the State House at dusk. Handsome, but they caption the pilot as government
+  or memorial rather than as a city.
+- **Suburban and reservoir aerials** (Fishers, Geist, Somerset Lakes) — affluent
+  subdivisions, the opposite of the pilot's population.
+- **Artsgarden at sunset** (2016631745) — the liveliest photograph in the pool and the one
+  that grades best, but it is a street of parked cars and retail signage; it reads as
+  downtown lifestyle, not as a civic frame.
+- Anything with a baby, a small child, a clinical set or a face was excluded before the
+  sheet was built.
+
+## One thing left open, and it is not optional
+
+**`pilot-maternal.jpg` is used twice.** Besides pilot 03's plate it is the full-bleed
+photograph in the homepage Stake scene (`src/components/scroll-Stake-alt.astro`, fed by
+`stake` in `src/data/site.js`). Replacing the file changed the picture in both places. This
+pass was scoped to pilot 03, so the Stake scene's copy was left alone — and it now describes
+a photograph that does not exist:
+
+- `scroll-Stake-alt.astro` hard-codes `stakeCredit = 'Family child care home · USDA'` and a
+  `stakeAlt` describing a mother holding her infant.
+- `site.js` → `stake.credit` is `'U.S. Department of Agriculture'`, and the comment on
+  `stake.altLine` argues from "an identifiable woman in a USDA photograph".
+
+Those must become `Indianapolis, Indiana` and an empty `alt` before the site ships. Flagged
+in `refs/PHOTO-FACTS.md` as well. Second-order: pilot 03's `plate` trim
+(`sat 1.5, tint 2.7, lift 2.0`) was metered against a warm dim interior. It reads acceptably
+on the aerial — that is what the shape tests above were checked under — but a re-meter
+against the new file would be the tidy follow-up.
