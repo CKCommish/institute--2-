@@ -12,3 +12,8 @@ progress/blind*/
 *-tmp.mjs
 tmp-*.mjs
 /verify-*/
+
+# scratch analysis scripts — keep the named harness tools only
+tools/[a-z].mjs
+tools/[a-z][0-9].mjs
+tools/z*.mjs
