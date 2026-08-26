@@ -164,10 +164,12 @@ import { pilots } from '../../data/site.js';
 
     <ul class="hero__cells">
       {pilots.map((p) => (
-        <li class="hcell">
-          <span class="index hcell__i">{p.index}</span>
-          <span class="hcell__name">{p.partner}</span>
-          <span class="label hcell__sub">{p.title}</span>
+        <li class="hcell__row">
+          <a class="hcell" href={`/pilots/#${p.id}`}>
+            <span class="index hcell__i">{p.index}</span>
+            <span class="hcell__name"><span class="hcell__ink">{p.partner}</span></span>
+            <span class="label hcell__sub">{p.title}</span>
+          </a>
         </li>
       ))}
     </ul>
@@ -577,12 +579,61 @@ import { pilots } from '../../data/site.js';
     row-gap: 1.1rem;
     padding-top: clamp(0.85rem, 1.9vh, 1.3rem);
   }
+  /* The <li> is transparent to the grid: `display: contents` promotes the
+     anchor to the grid item, so the WHOLE cell — numeral, name, whisper and
+     the space between them — is the target, not the words. */
+  .hcell__row { display: contents; }
   .hcell {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     column-gap: 0.7rem;
     align-items: baseline;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 2px;
   }
+  /* The ring is drawn OUTSIDE the border box and takes no layout, so the
+     ledger's measured geometry is untouched. The hero clips
+     (overflow: hidden), so the offset is 2px rather than base.css's 3:
+     measured (ring = box + 2px offset + 1.5px stroke), the outermost edges
+     land at x 47.9-1392.1 / y 863.9 in a 1440x900 frame, 28.4-739.6 / 982.5
+     at 768x1024, 17.4-372.6 / 821.3 at 390x844 and 16.5-343.5 / 622.7 at
+     360x640 — inside the clip on all four cells at every width. */
+  .hcell:focus-visible {
+    outline: 1.5px solid var(--brass);
+    /* base.css's 3px, not a private 2px. The old comment justified the
+       deviation on the hero's overflow:hidden; re-measured, 3px clears the
+       clip on every cell at 1440x900, 768x1024, 390x844 and 360x640, so
+       the clip never required it and tabbing from the Scroll cue to the
+       first name changed ring geometry for no reason. */
+    outline-offset: 3px;
+  }
+  /* The two states, and they are the cell's own two objects moving:
+     the brass numeral lifts a rung, and the hairline under the partner
+     name draws itself left to right. Nothing changes size, nothing
+     changes colour — the register is unchanged, it is simply lit. */
+  .hcell__i {
+    transition: transform 380ms var(--ease-out), opacity 380ms var(--ease-out);
+  }
+  .hcell:hover .hcell__i,
+  .hcell:focus-visible .hcell__i { transform: translate3d(0, -2px, 0); }
+  /* The hairline is painted on the WORDS, not on the cell. .hcell__name is a
+     stretched grid item in an `auto minmax(0,1fr)` track, so its box is the
+     width of the COLUMN (~275px at 1440) while the name inside is 121–189px:
+     a gradient sized to that box ran up to 153px past the last glyph into
+     empty navy, and under focus sat beside the ring as a second, unrelated
+     brass horizontal. The gradient now lives on an INLINE inner span, whose
+     box is the glyphs — so 100% is the width of the words and the state
+     reads as an underline. */
+  .hcell__ink {
+    background-image: linear-gradient(var(--brass), var(--brass));
+    background-repeat: no-repeat;
+    background-position: 0 calc(100% - 0.06em);
+    background-size: 0% 1px;
+    transition: background-size 460ms var(--ease-out);
+  }
+  .hcell:hover .hcell__ink,
+  .hcell:focus-visible .hcell__ink { background-size: 100% 1px; }
   /* Three house registers per cell, not three invented ones:
      .index (brass numeral) · --fg name at --step-body · .label whisper. */
   .hcell__i { grid-row: 1; }
@@ -597,7 +648,18 @@ import { pilots } from '../../data/site.js';
   .hcell__sub {
     grid-column: 2;
     margin-top: 0.5rem;
+    transition: color 380ms var(--ease-out);
   }
+  /* BOTH ENDS OF THE CELL ANSWER, or the lit row is one lit half and one
+     dead half. The whisper is the pilot TITLE — the thing the link
+     actually points at — and it was the only object inside a lit cell with
+     no state: identical 54% cream at rest and on hover. On the stacked
+     layout the name is flush left and the whisper flush right, so a
+     focused row had ~180px of navy at 390 (and 266px at 820) between a lit
+     word and a dead one. PilotsScene.astro answers this same problem for
+     these same four names one scene below, by lifting both ends. */
+  .hcell:hover .hcell__sub,
+  .hcell:focus-visible .hcell__sub { color: var(--fg-mute); }
 
   /* Geometry only — the cue itself is the shared .cue primitive. */
   /* The ledger sits low in the first screen, where an IntersectionObserver
@@ -609,10 +671,10 @@ import { pilots } from '../../data/site.js';
     animation: heroIn 720ms var(--ease-out) forwards;
   }
   .hero__index-head { animation-delay: 560ms; }
-  .hcell:nth-child(1) { animation-delay: 740ms; }
-  .hcell:nth-child(2) { animation-delay: 800ms; }
-  .hcell:nth-child(3) { animation-delay: 860ms; }
-  .hcell:nth-child(4) { animation-delay: 920ms; }
+  .hcell__row:nth-child(1) .hcell { animation-delay: 740ms; }
+  .hcell__row:nth-child(2) .hcell { animation-delay: 800ms; }
+  .hcell__row:nth-child(3) .hcell { animation-delay: 860ms; }
+  .hcell__row:nth-child(4) .hcell { animation-delay: 920ms; }
   /* The cue arrives LAST, and it was arriving FIRST. It shares the staged
      group above, and it was the only member with no delay: `animation-delay`
      defaulted to 0, so the invitation to leave the page started its 12px lift
@@ -637,6 +699,7 @@ import { pilots } from '../../data/site.js';
     .hero__index-head,
     .hcell,
     .hero__scroll { opacity: 1; animation: none; }
+    .hcell__i, .hcell__ink, .hcell__sub { transition: none; }
     .hero__rule { transform: none; animation: none; }
   }
 
@@ -679,7 +742,17 @@ import { pilots } from '../../data/site.js';
       align-items: baseline;
       padding-block: clamp(0.55rem, 1.5vh, 0.85rem);
     }
-    .hcell + .hcell { border-top: 1px solid var(--rule); }
+    .hcell__row + .hcell__row .hcell { border-top: 1px solid var(--rule); }
+    /* The ring turns INWARD once the ledger stacks. Here the cells are
+       directly adjacent — measured gap between border boxes is 0.0px — and
+       the divider IS each cell's own border-top, so any outset ring is
+       drawn over the neighbour and lands 1px off the rule it sits beside:
+       focusing a row made the ledger's hairlines read as doubled, then
+       swallowed two of the three dividers outright. There is no ground
+       outside the box to give it, and manufacturing some would change the
+       ledger's measured pitch. Inside, the row's own 9.5-13.6px of padding
+       is ground the ring can have for nothing. */
+    .hcell:focus-visible { outline-offset: -3px; }
     .hcell__name {
       grid-column: 2;
       white-space: nowrap;

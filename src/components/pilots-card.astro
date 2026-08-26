@@ -84,7 +84,26 @@ const { pilot: p } = Astro.props;
     <span class="label card__q">Proposed</span>
   </p>
 
-  <p class="card__who"><span class="eyebrow card__partner">{p.partner}</span></p>
+  <!-- THE PARTNER NAME IS A LABEL, NOT AN EYEBROW.
+       base.css owns the three micro registers and the rule is one line long:
+       .eyebrow is ONE PER SCENE and it NAMES the scene; .label is "the only
+       one you may use many times per page" and it labels a thing that is
+       already visible. Four cards inside .pgrid each carried an .eyebrow, so
+       that one band served a reader FIVE marks in the brightest micro
+       register — the scene's own name plus four partner names competing with
+       it — while the two marks beside this one on the same card (.card__field
+       and .card__q) were already .label. One card, two registers, three
+       brightnesses.
+
+       It is also the same datum the homepage sets, and PilotsScene.astro's
+       own comment claims it uses "the same nameplate grammar as /pilots/" —
+       it does not: there the partner is a .label. So the one fact a reader
+       meets on both routes arrived in two weights.
+
+       .label--lit is exactly this case: a label at --fg because the thing it
+       names is the card's identity. Colour is unchanged; only the weight and
+       tracking come back to the register the rest of the card is in. -->
+  <p class="card__who"><span class="label label--lit card__partner">{p.partner}</span></p>
 
   <h3 class="display display--sub card__t">
     <a class="card__a" href={`#${p.id}`}>{p.title}</a>

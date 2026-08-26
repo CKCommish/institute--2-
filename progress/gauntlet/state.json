@@ -1,48 +1,48 @@
 {
- "wave": 2,
+ "wave": 3,
  "pieces": [
   {
-   "name": "Home hero & first screen",
+   "name": "Home hero ledger \u2014 make the names live",
    "status": "won",
    "round": 2,
    "verdict": "ours",
-   "gap": "The four named partners in the ledger \u2014 set as the second-largest voice in the frame and the page's only credential \u2014 are inert `<li>` elements. Zero `:hover` / `:focus-visible` rules exist on `.hcell` (grep count 0 in Hero.astro), no anchor wraps th"
+   "gap": "The whisper (.hcell__sub \u2014 the pilot title, i.e. the thing the link actually points at) is the only object inside the lit cell with no state. I measured it in rest and in hover at 1440: color(srgb .949 .929 .890 / 0.54) in BOTH; grep confirms zero ru"
   },
   {
-   "name": "Pilots index & cards",
+   "name": "Pilots row seam",
    "status": "won",
    "round": 1,
    "verdict": "ours",
-   "gap": "The row seam in the two-up band (621\u20131180px) is a four-way junction where nothing meets anything. Two separate faults stack at the same crossing: (a) the band's structural horizontal is no longer continuous \u2014 at \u22641180 `.pgrid__grid { border-top: 0 }`"
+   "gap": "The hover/active rule now stops 15.34px short of the crossing it is supposed to complete. At \u22641180 the cell's brass wipe still spans only the cell (--bay-l/--bay-r are pinned to 0 below 1181), while the static horizontal it replaces now runs half a g"
   },
   {
-   "name": "Pilot detail photograph grade",
+   "name": "Pilot plates \u2014 one grade, one source of truth",
    "status": "won",
    "round": 1,
    "verdict": "ours",
-   "gap": "The set now matches on frame-mean chroma but not on the one colour a reader actually audits \u2014 skin. Sampled inside the same plates: plate 01 runner's calf 113/109/121 (R\u2212B \u22128, lavender), plate 03 mother's face 142/133/132 (R\u2212B +10), plate 04 welder's"
+   "gap": "Plate 01's ground has crossed the neutral axis and is now the only warm surface in the set. `warm: 19` on healthy-athletes over-rotates: the track region measures b* +2.93 / R-B +14.6, while every other measured ground in the set sits at b* -1.29 to "
   },
   {
-   "name": "People masthead lockup",
-   "status": "won",
-   "round": 1,
-   "verdict": "ours",
-   "gap": "The index's declared entrance is dead, so on frame 1 of every load the \"lockup\" is asserted before the thing it locks to exists. `.pm__idx-i` carries `transition: border-color var(--dur-hover) var(--ease-out)` \u2014 a shorthand that overwrites the reveal"
+   "name": "Forum \u2014 never gauntleted",
+   "status": "judging",
+   "round": 3,
+   "verdict": "apple",
+   "gap": "Beat 4 (.fplate) is a scene-sized hole, and its source file physically cannot hold the frame it was given. Measured at 1440: .fplate__frame is 512x512 at x=51.4 inside a 1338px measure, leaving 877x900px of empty navy beside it and NO display type an"
   },
   {
-   "name": "Partner \u2014 the three doors",
-   "status": "won",
-   "round": 1,
-   "verdict": "ours",
-   "gap": "All three action lines still open with a byte-identical 4-word head \u2014 \"Email us about \u2026\" \u2014 so the only differentiating token is the LAST word, 89\u2013100px into each line (measured text-box lefts at 1440: 88.45 / 550.53 / 1012.60; widths 194.09 / 224.80 "
+   "name": "Institute \u2014 never gauntleted",
+   "status": "judging",
+   "round": 3,
+   "verdict": "apple",
+   "gap": "The bridge has no shared cross-axis register, so it reads as two lists standing near a box rather than one diagram. Measured at 1440 (settled, JS on): the two field labels sit 28.1px apart (.brg__k--a y=1125.9, .brg__k--b y=1097.8), and the left item"
   },
   {
-   "name": "Nav \u2014 sheet rag & restored ring",
-   "status": "won",
-   "round": 2,
-   "verdict": "ours",
-   "gap": "Mobile bar: the burger label's baseline prints exactly 1.00 CSS px BELOW the wordmark's at every width from 768 down to 320 \u2014 including 390. Ink-measured at dpr 4 on /pilots/: \"LION FORUM INSTITUTE\" cap bottom y=32.00, \"MENU\" cap bottom y=33.00 (bl2."
+   "name": "Footer, 404 and the edge states",
+   "status": "judging",
+   "round": 3,
+   "verdict": "apple",
+   "gap": "The footer's secondary door has NO rest affordance on desktop. This round replaced `.foot__second-t`'s permanent `border-bottom: 1px solid var(--rule)` with the house `.link` primitive, whose underline is `scaleX(0)` at rest on fine pointers. Measure"
   }
  ],
- "note": "Wave 2 complete \u2014 6/6 pieces winning, 6/6 named gaps closed. 17 agents, 2.1M tokens. Six regressions the critics flagged were then fixed by hand and re-measured; gates green at 84/84 overflow checks and 12/12 axe routes."
+ "note": "Wave 3 complete \u2014 27 agents, 3.5M tokens. Covered the three residual gaps plus /forum/, /institute/ and the footer+404, which had never been gauntleted. One hard-gate break (a new serious contrast failure in the footer) and two focus-ring regressions were caught by my own verification and fixed by hand."
 }

@@ -598,10 +598,59 @@ const style = [
        little ink. The tight ring is what buys the glyph its edge back; the
        wide one still carries the field. Both are the page's own ground, so
        nothing is added to the palette and a dark corner sees no change at
-       all — on navy this paints ink onto ink. */
+       all — on navy this paints ink onto ink.
+
+       ── AND THE TWO CORNERS THAT TABLE NEVER MEASURED ────────────────
+       The table above is three FULL-BLEED figures. The component is also
+       used as a PLATE — the four pilot frames on /pilots/, the stake frame
+       on / — and a plate's scrim is placed for the type the SCENE sets,
+       which on those layouts is outside the frame entirely. So the credit
+       corner of a plate carries no placed ink at all, and the pictures
+       there are the brightest on the site. Measured the same way, backdrop
+       only, with the shadow above already applied:
+
+         /pilots/  plate 01  bottom-right   L* 44.1 → 3.03 : 1   (1440)
+         /pilots/  plate 03  bottom-right   L* 43.0 → 3.14 : 1   (1440)
+         /pilots/  plate 01  bottom-right   L* 54.0 → 2.26 : 1   ( 390)
+         /pilots/  plate 03  bottom-right   L* 50.1 → 2.53 : 1   ( 390)
+         /         stake     bottom-left    L* 38.6 → 3.61 : 1   ( 390)
+
+       Five marks under a 4.5 floor, and the same mark passing at 1440 and
+       failing at 390 — the shadow was tuned for L* 33 and is being asked to
+       hold L* 54, twenty-one points past its brief. A halo cannot close
+       that: there is no more perimeter to spend.
+
+       So the component does at the MARK what Figure already does at the
+       FRAME — it places ink where its own type sits, and nowhere else. The
+       pad is the page's ground, feathered to nothing at its edge, sized to
+       the mark rather than to the picture. It is not a surface: it has no
+       edge to point at, it is the same ink as the shadow, and over a dark
+       corner it is invisible because it is navy on navy. Verify with
+       `node tools/credit-meter.mjs`, which walks every credit on every
+       route at both viewports and scrolls to each one first — the reason
+       these five were never caught is that photo-meter measures only what
+       is in the first viewport, and every one of them is below the fold. */
     text-shadow:
       0 0 3px rgba(3, 9, 16, 0.86),
       0 1px 14px rgba(3, 9, 16, 0.78);
+    isolation: isolate;
+  }
+  /* The placed pad, and it is FEATHERED BY BLUR, not by a gradient.
+     A percentage gradient is sized to the element, so its falloff depends on
+     how long the credit string is — "Adrian, Oregon" and "Unified track
+     event · U.S. Army" would get different edges, and at any length the last
+     stop lands ON the box, which is a rectangle a reader can see. A blurred
+     solid has no stops to land: the radius is absolute, so all eleven credits
+     get the SAME 22px falloff, and there is no edge at any length. Rounded
+     first so the corners feather like the sides. */
+  .fig__credit::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -0.45em -0.9em;
+    border-radius: 999px;
+    background: rgba(3, 9, 16, 0.72);
+    filter: blur(11px);
   }
   .fig__credit[data-pos^='top']    { top: var(--ci); }
   .fig__credit[data-pos^='bottom'] { bottom: var(--ci); }

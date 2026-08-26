@@ -90,10 +90,36 @@ export const pilots = [
        One `grade` could not close that, because `grade` is one number and
        the four sources differ in saturation, not in exposure. So each frame
        now carries its own trim on the two colour halves of the house grade
-       (`sat`, `tint`) plus a small hue correction (`warm`), chosen against
-       the meter, not by eye. Held target: chroma 15 +/- 1.5, |R-B| <= 6.
-       Re-measure before changing any of these; they are a SET, and a number
-       moved on one frame is only correct if the other three still hold.
+       (`sat`, `tint`) plus a hue correction (`warm`), chosen against the
+       meter, not by eye. Re-measure before changing any of these; they are
+       a SET, and a number moved on one frame is only correct if the other
+       three still hold.
+
+       ── AND THE ONE COLOUR A READER ACTUALLY AUDITS: SKIN ──────────
+       Frame-mean chroma was matched and skin was not, which is the half of
+       the match nobody sees and the half everybody does. Sampled inside the
+       rendered plates at 1440 (the runner's calf, the mother's cheek, the
+       welder's forearm), the set read 113/109/121, 167/157/156 and
+       135/120/119 — R-B -8.4 / +11.4 / +16.6, a 25-point swing in human
+       skin, with 01 alone sitting on the blue side of neutral. A frame-mean
+       cannot see that: a lavender calf inside a plate whose track is
+       terracotta averages out to the same number as a warm cheek in a grey
+       room.
+
+       So the trims are now set against SKIN, in Lab, where lightness is
+       divided out and three faces at L* 17, 52 and 65 can be compared at
+       all. Held target: skin b* 0 +/- 1.5 and a* 3-7 on the three frames
+       that carry a person; frame chroma 4.5-6.5 on all four. Measured after:
+       skin R-B +4.2 / +6.0 / +8.7 (span 4.5, was 25.0) and skin b*
+       -1.2 / -0.4 / -1.0 (span 0.8, was 10.3). `warm` carries most of the
+       correction because hue-rotate runs BEFORE the desaturate and the navy
+       blend, so it steers what colour survives rather than adding one.
+
+       01 pays for this at the frame: its ground is a red track, and any
+       setting that puts its calf on the same side of neutral as the other
+       two skins also warms the track (frame R-B -9.0 -> +0.9). That is the
+       right trade. The track is scenery a reader never audits; the calf is
+       the one surface she reads as a person.
 
        01 is also the only frame with a CROP problem. It is a privacy crop
        (PHOTO-FACTS: the master is an identifiable seven-year-old and the
@@ -103,7 +129,7 @@ export const pilots = [
        closes on the stride itself: legs, shoes, two lane lines. Same
        privacy, an actual subject, and a third less open track. */
     plate: {
-      grade: 0.5, sat: 3.3, tint: 3.3, warm: 0, lift: 1.2,
+      grade: 0.5, sat: 2.8, tint: 2.55, warm: 19, lift: 1.2,
       zoom: 1.3, focal: '28% 70%',
       zoomSm: 1.18, focalSm: '26% 70%',
     },
@@ -134,7 +160,15 @@ export const pilots = [
     horizon: '3–12 months',
     image: '/media/pilot-energy.jpg',
     /* the cool outlier: +22 blue-over-red before the trim. See pilot 01. */
-    plate: { grade: 0.5, sat: 4.6, tint: 0, warm: 35, lift: 0.1 },
+    /* 02 IS IN THE TINT LAYER LIKE THE OTHER THREE. It used to carry
+       `tint: 0` — unified by desaturation alone, so it was the one frame
+       that would not have followed the set if --fig-tint were ever retuned,
+       and at frame chroma 4.1 (against 6.7 on 01) it was already the
+       flattest of the four, its tree line drained to grey. It is a neutral
+       overcast sky over most of its area, so it takes the smallest dose in
+       the set rather than none: chroma 4.1 -> 5.2 and the foliage comes
+       back, at a cost of 2.8 points of frame R-B. It has no skin in it. */
+    plate: { grade: 0.5, sat: 4.6, tint: 0.9, warm: 35, lift: 0.1 },
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Muskingum County, Ohio',
@@ -166,7 +200,7 @@ export const pilots = [
        until now. See refs/PHOTO-FACTS.md. */
     image: '/media/pilot-maternal.jpg',
     /* the warm interior. See pilot 01. */
-    plate: { grade: 0.5, sat: 1.5, tint: 2.7, warm: 0, lift: 2.0 },
+    plate: { grade: 0.5, sat: 1.5, tint: 2.98, warm: -7, lift: 2.0 },
     /* What the PHOTOGRAPH is, not who owns it. This one frame's subject is a
        private individual at full scale, so the credit names the room she is
        standing in rather than the federal agency that holds the rights. */
@@ -199,7 +233,7 @@ export const pilots = [
     image: '/media/pilot-education.jpg',
     /* already close to the target; it is the frame the other three were
        brought toward. See pilot 01. */
-    plate: { grade: 0.5, sat: 1.1, tint: 2.3, warm: 0, lift: 0.8 },
+    plate: { grade: 0.5, sat: 1.1, tint: 2.95, warm: -10, lift: 0.8 },
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Adrian, Oregon',
@@ -296,35 +330,29 @@ export const forum = {
   name: 'The Lion Forum',
   place: 'Kennedy Compound, Hyannis Port',
   access: 'By invitation',
-  /* The bridge rung under the eyebrow: who is in the room, plainly, so the
-     display line above can be a claim rather than a list. */
-  who: 'Founders, investors, elected officials.',
   line: 'The people who build sit with the people who decide.',
   /* THE CLOSE, set on cream at the series-breaker rung. One sentence that
      states the relationship, one that says what the Institute does with it.
      No third line — the brief's supporting-line budget is spent here. */
   role: 'The Institute is a lead sponsor of the Lion Forum.',
   roleNote: 'Pilots find their partners in this room, and come back to it to report what happened.',
-  /* The substance beat. A foundation officer or a policy lead has to leave
-     this page knowing what the convening is, who is in it, and why the
-     Institute is there. Three entries, one sentence each — the brief's
-     three-supporting-lines limit, spent on the page's one job. */
+  /* The substance beat. A foundation officer has to leave this page knowing
+     what the convening is, who is in it, and why the Institute is there.
+
+     THREE ENTRIES IS NOT THE SAME AS THREE LINES, and refs/BRIEF.md caps the
+     LINES: "any section: at most 3 short lines of supporting text". These
+     rows used to run 68 / 114 / 121 characters, which set two lines each at
+     1440 — six rendered lines for a three-line budget, and ten on a phone.
+     Each row is now one rendered line at BOTH widths (≤ 34 characters, the
+     narrowest sentence measure the mobile ledger offers), so the beat spends
+     exactly three. `who` in §2 carried the same words as `The room` and came
+     off the page rather than being said twice. */
   brief: {
     eyebrow: 'What it is',
-    lede: 'A closed room, and a reason for the Institute to be standing in it.',
     rows: [
-      {
-        term: 'Format',
-        text: 'By invitation only, convened at the Kennedy Compound in Hyannis Port.',
-      },
-      {
-        term: 'The room',
-        text: 'Founders and investors who build these technologies, alongside the elected officials who decide how they are used.',
-      },
-      {
-        term: 'Why it matters',
-        text: 'Those two groups settle what a technology becomes, and they are seldom in one room while there is still time to shape it.',
-      },
+      { term: 'Format', text: 'By invitation, at the Compound.' },
+      { term: 'The room', text: 'Founders, investors, officials.' },
+      { term: 'Why it matters', text: 'They rarely meet this early.' },
     ],
   },
   cta: 'Inquire about the Forum',

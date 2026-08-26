@@ -15,7 +15,7 @@ body {
   background: var(--ink-900);
   color: var(--cream);
   font-family: var(--sans);
-  font-size: var(--step-s);
+  font-size: var(--step-lede);
   font-weight: 370;
   line-height: 1.55;
   letter-spacing: 0.002em;
@@ -314,7 +314,7 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
   position: fixed; top: 0; left: 0; z-index: 200;
   transform: translateY(-110%);
   background: var(--cream); color: var(--ink-900);
-  padding: 0.75rem 1.25rem; font-size: var(--step-label);
+  padding: 0.75rem 1.25rem; font-size: var(--step-micro);
   letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;
 }
 .skip-link:focus { transform: translateY(0); }

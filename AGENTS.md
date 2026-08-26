@@ -10,7 +10,14 @@ npx astro dev --port <yourPort> --host 127.0.0.1     # live, no dist
 node tools/preview.mjs <yourId> <yourPort>           # isolated build + static serve
 BASE=http://127.0.0.1:<port> node tools/shoot.mjs <label> --pages=/,/pilots/
 node tools/blind.mjs progress/shots/<label>/home desktop /tmp/blind-<you>
+BASE=http://127.0.0.1:<port> node tools/credit-meter.mjs   # type over photography
 ```
+
+`photo-meter.mjs` measures only the type it finds in the FIRST viewport, so
+six of the site's eleven photo credits were never checked by it and five were
+failing. `credit-meter.mjs` scrolls to each one and measures the backdrop the
+reader actually meets, at both viewports. Run it after touching `Figure.astro`,
+a `creditPos`, or any photograph.
 
 Use **your own port**. Never `npx astro build` into the shared `dist/`.
 

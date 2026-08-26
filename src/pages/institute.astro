@@ -39,42 +39,51 @@ const spec = [
 
     <div class="shell ihero__in">
       <p class="eyebrow ihero__k">How we work</p>
-      <p class="bridge ihero__bridge">A pilot needs money, a technology, and a real place to run.</p>
+      <p class="bridge ihero__bridge">A pilot needs money, a technology, and a real place to run.</p>
       <h1 class="display display--poster ihero__h">We sit between the builders and the institutions.</h1>
     </div>
   </section>
 
   <!-- The spec, as a rail across the page rather than a card beside it. -->
   <section class="ispec">
-    <dl class="shell ispec__in" data-wipe="left" data-delay="120">
-      {spec.map((s) => (
-        <div class="ispec__c">
-          <dt class="label ispec__k">{s.k}</dt>
-          <dd class="ispec__v">{s.href ? <a class="link tap" href={s.href}>{s.v}</a> : s.v}</dd>
-        </div>
-      ))}
-    </dl>
+    <!-- The wipe lives on a wrapper, not on the <dl>. Its finished state is a
+         permanent clip-path on whatever carries it, and .link's underline hangs
+         below the anchor's content box — on the <dl> the clip ate it. -->
+    <div class="shell ispec__wrap" data-wipe="left" data-delay="120">
+      <dl class="ispec__in">
+        {spec.map((s) => (
+          <div class="ispec__c">
+            <dt class="label ispec__k">{s.k}</dt>
+            <dd class="ispec__v">{s.href ? <a class="link tap" href={s.href}>{s.v}</a> : s.v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   </section>
 
   <!-- ── The one idea on the page ────────────────────────────────────
-       One shared five-row baseline grid: both arms sit on the same rows,
-       both rails run the same length, and the connectors are the last
-       thing to arrive — left arm, right arm, rails, connectors. -->
+       Two field labels on one register, two arms centred on the hub's
+       axis, two rails of identical length, and the connectors last:
+       left arm, right arm, rails, hub, connectors. -->
   <section class="on-panel ibridge" id="bridge">
     <div class="shell ibridge__in">
       <p class="eyebrow ibridge__k" data-reveal>The bridge</p>
       <div class="brg" data-reveal>
-        <span class="brg__rail brg__rail--a" aria-hidden="true"><i></i></span>
-        <p class="label label--brass brg__k brg__k--a" style="--d:0ms">Who builds it</p>
-        <ul class="brg__list brg__list--a" role="list">
-          {builds.map((b, i) => <li class="bridge bridge--fg bridge--lift" style={`--d:${80 + i * 80}ms`}>{b}</li>)}
-        </ul>
+        <div class="brg__arm brg__arm--a">
+          <span class="brg__rail brg__rail--a" aria-hidden="true"><i></i></span>
+          <p class="label label--brass brg__k brg__k--a" style="--d:0ms">Who builds it</p>
+          <ul class="brg__list brg__list--a" role="list">
+            {builds.map((b, i) => <li class="bridge bridge--fg bridge--lift" style={`--d:${90 + i * 70}ms`}>{b}</li>)}
+          </ul>
+        </div>
 
-        <span class="brg__rail brg__rail--b" aria-hidden="true"><i></i></span>
-        <p class="label label--brass brg__k brg__k--b" style="--d:260ms">Who runs it</p>
-        <ul class="brg__list brg__list--b" role="list">
-          {runs.map((r, i) => <li class="bridge bridge--fg bridge--lift" style={`--d:${340 + i * 80}ms`}>{r}</li>)}
-        </ul>
+        <div class="brg__arm brg__arm--b">
+          <span class="brg__rail brg__rail--b" aria-hidden="true"><i></i></span>
+          <p class="label label--brass brg__k brg__k--b" style="--d:230ms">Who runs it</p>
+          <ul class="brg__list brg__list--b" role="list">
+            {runs.map((r, i) => <li class="bridge bridge--fg bridge--lift" style={`--d:${320 + i * 70}ms`}>{r}</li>)}
+          </ul>
+        </div>
 
         <span class="brg__hub on-plate">
           <span class="brg__dot" aria-hidden="true"></span>
@@ -133,7 +142,10 @@ const spec = [
   .ihero__in { width: 100%; display: grid; justify-items: start; }
   .ihero__k { opacity: 0; animation: iheroIn 640ms var(--ease-out) 140ms forwards; }
   .ihero__bridge {
-    max-width: 32ch;
+    /* 32ch broke the line after "money, a", hanging an article off the end
+       of line 1 at every width balance would still pick. The article is
+       bound to its noun in the markup (nbsp), and so is the last word. */
+    max-width: 30ch;
     margin-block: clamp(0.5rem, 1.2vh, 0.9rem) clamp(0.8rem, 1.8vh, 1.4rem);
     opacity: 0; animation: iheroIn 720ms var(--ease-out) 240ms forwards;
   }
@@ -157,20 +169,27 @@ const spec = [
      Four cells across the full measure under one rule. Horizontal, so the
      page's second register is not a second column. */
   .ispec { padding-block: clamp(1.4rem, 2.4vw, 2.4rem) clamp(2.5rem, 4vw, 4rem); }
+  /* 6px of room under the rail so the clip-path the wipe leaves behind
+     clears the underline the anchor hangs below its content box. */
+  .ispec__wrap { padding-bottom: 6px; }
   .ispec__in {
     margin: 0;
     display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
     column-gap: clamp(1rem, 2.4vw, 2.6rem);
     border-top: 1px solid var(--rule);
   }
-  .ispec__c { padding-top: clamp(0.7rem, 1.2vw, 1.1rem); display: grid; gap: 0.45rem; align-content: start; }
+  /* gap clears a.tap's 8px block padding, so the focus ring on the one
+     link in the rail cannot cut through the label above it. */
+  .ispec__c { padding-top: clamp(0.7rem, 1.2vw, 1.1rem); display: grid; gap: 0.7rem; align-content: start; }
   .ispec__k { white-space: nowrap; }
   .ispec__v {
     margin: 0; font-size: var(--step-lede);
     line-height: 1.25; letter-spacing: -0.006em; color: var(--fg);
   }
-  .ispec__v :global(a:hover),
-  .ispec__v :global(a:focus-visible) { color: var(--brass); }
+  /* One cell of the four is a link. At rest it is brass — the only lit
+     value in the rail — so it is findable before a pointer ever arrives;
+     hover and focus draw the underline. */
+  .ispec__v :global(a) { color: var(--brass); }
 
   /* ── THE SPAN ─────────────────────────────────────────────────────
      The only composition on this site that is not flush-left under a
@@ -184,26 +203,55 @@ const spec = [
     border-block: 1px solid var(--rule);
     padding-block: clamp(3.5rem, 1rem + 5vw, 7rem);
   }
+  /* No forced screen height. A fixed 80svh held a 704px room around a 250px
+     object; the room now follows the object, and the eyebrow sits on the
+     composition's own axis, one short measure above it, so the label titles
+     the diagram instead of pointing at it from the far left. */
   .ibridge__in {
-    display: grid; align-content: center; justify-items: center;
-    gap: clamp(2.4rem, 4.5vw, 4.5rem);
-    min-height: min(80svh, 44rem);
+    display: grid; justify-items: center;
+    gap: clamp(1.4rem, 2.4vw, 2.2rem);
   }
-  .ibridge__k { justify-self: start; }
+  .ibridge__k { justify-self: center; text-align: center; }
   .brg { width: 100%; }
   .brg {
     --brg-gap: clamp(1.6rem, 3.2vw, 3.4rem);
     --hub-w: clamp(13rem, 26vw, 24rem);
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--hub-w) minmax(0, 1fr);
-    grid-template-rows: auto repeat(4, auto);
+    /* min-content floor on the hub track: the plate is never narrower than
+       the word it holds, at any width, so the serif can take the rung above
+       the arms without a band where it breaks out of its own border. */
+    grid-template-columns: minmax(0, 1fr) minmax(min-content, var(--hub-w)) minmax(0, 1fr);
+    /* One row. Each arm is a single box — its own label stacked on its own
+       list — so the arm's height IS its content and the rail drawn inside it
+       is a stated length: top at the label's cap, bottom at the last item's
+       baseline. Both arms are centred on the hub's axis, so the two rails
+       differ only by the count of items they carry. */
+    align-items: center;
     column-gap: var(--brg-gap);
     row-gap: clamp(0.5rem, 1.4vw, 1.1rem);
   }
+  .brg__arm {
+    position: relative;
+    display: flex; flex-direction: column;
+    /* the rail's two end insets: half-leading off the label's box at the top,
+       descender off the last line's box at the bottom, so the drawn line
+       begins on a cap and ends on a baseline. */
+    --rail-cap: 0.24em;
+    --rail-base: 0.26em;
+  }
+  .brg__arm { grid-row: 1; }
+  .brg__arm--a { grid-column: 1; align-items: flex-end; }
+  .brg__arm--b { grid-column: 3; align-items: flex-start; }
   .brg[data-reveal] { opacity: 1; transform: none; transition: none; }
 
-  .brg__list { display: contents; }
+  .brg__list {
+    margin: 0; padding: 0; width: 100%;
+    display: flex; flex-direction: column;
+    gap: clamp(0.5rem, 1.4vw, 1.1rem);
+  }
+  .brg__list--a { align-items: flex-end; }
+  .brg__list--b { align-items: flex-start; }
   .brg__k, .brg__list li {
     transition:
       opacity var(--dur-hover) var(--ease-out) var(--d, 0ms),
@@ -211,9 +259,9 @@ const spec = [
   }
   .brg.is-in .brg__k, .brg.is-in .brg__list li { opacity: 1; transform: none; }
 
-  .brg__k { grid-row: 1; margin-bottom: clamp(0.5rem, 1.1vw, 0.9rem); }
-  .brg__k--a { grid-column: 1; text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
-  .brg__k--b { grid-column: 3; padding-left: clamp(1rem, 2vw, 1.8rem); }
+  .brg__k { margin-bottom: clamp(0.5rem, 1.1vw, 0.9rem); }
+  .brg__k--a { text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
+  .brg__k--b { padding-left: clamp(1rem, 2vw, 1.8rem); }
 
   /* The two arms are the page's body, not its caption — but they are still a
      DIAGRAM, and they were set in hand-rolled Libre Franklin Light at
@@ -227,17 +275,18 @@ const spec = [
     line-height: 1.14;
     max-width: none;
   }
-  .brg__list--a li { grid-column: 1; text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
-  .brg__list--b li { grid-column: 3; padding-left: clamp(1rem, 2vw, 1.8rem); }
-  .brg__list--a li:nth-child(1), .brg__list--b li:nth-child(1) { grid-row: 2; }
-  .brg__list--a li:nth-child(2), .brg__list--b li:nth-child(2) { grid-row: 3; }
-  .brg__list--a li:nth-child(3), .brg__list--b li:nth-child(3) { grid-row: 4; }
-  .brg__list--a li:nth-child(4), .brg__list--b li:nth-child(4) { grid-row: 5; }
+  .brg__list--a li { text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
+  .brg__list--b li { padding-left: clamp(1rem, 2vw, 1.8rem); }
 
-  /* Rails: identical length, drawn top-down, after both arms have landed. */
-  .brg__rail { grid-row: 1 / -1; display: block; width: 1px; }
-  .brg__rail--a { grid-column: 1; justify-self: end; }
-  .brg__rail--b { grid-column: 3; justify-self: start; }
+  /* Rails: a measured length inside each arm — cap of that arm's label to the
+     baseline of that arm's last item — drawn top-down after both arms land. */
+  .brg__rail {
+    position: absolute;
+    top: var(--rail-cap); bottom: var(--rail-base);
+    display: block; width: 1px;
+  }
+  .brg__rail--a { right: 0; }
+  .brg__rail--b { left: 0; }
   .brg__rail i {
     display: block; width: 1px; height: 100%;
     background: var(--rule);
@@ -246,22 +295,25 @@ const spec = [
        the reveal engine, so with JS off the rails must start drawn. */
     transition: transform 460ms var(--ease-out) var(--d, 0ms);
   }
-  .brg__rail--a i { --d: 540ms; }
-  .brg__rail--b i { --d: 590ms; }
+  .brg__rail--a i { --d: 660ms; }
+  .brg__rail--b i { --d: 720ms; }
   .brg.is-in .brg__rail i { transform: none; }
 
   /* The hub is an OBJECT: plate ground, edges you could point at, its name in
      the serif at the poster rung. The two connectors run from each rail and
      TOUCH it — a half-connected diagram reads as timidity. */
   .brg__hub {
-    grid-column: 2; grid-row: 1 / -1; align-self: center;
+    /* The plate's midline is the arms' midline, which is now also the rails'
+       midline: both arms are single centred boxes, so the connectors leave
+       the plate level with the middle of both drawn lines. */
+    grid-column: 2; grid-row: 1; align-self: center;
     position: relative;
     display: grid; justify-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem);
     padding: clamp(1.8rem, 3.2vw, 3rem) clamp(1rem, 2vw, 1.8rem);
     border: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
-    transition: opacity 460ms var(--ease-out) 640ms;
+    transition: opacity 520ms var(--ease-out) 860ms, transform 520ms var(--ease-out) 860ms;
   }
-  .brg.is-in .brg__hub { opacity: 1; }
+  .brg.is-in .brg__hub { opacity: 1; transform: none; }
 
   /* ── The one place the diagram's hidden state is declared ──────────
      Every part of the bridge arrives on `.brg.is-in`, and only the reveal
@@ -270,21 +322,24 @@ const spec = [
      rather than three invisible columns. */
   html.js .brg__k,
   html.js .brg__list li { opacity: 0; transform: translate3d(0, 8px, 0); }
-  html.js .brg__hub { opacity: 0; }
+  html.js .brg__hub { opacity: 0; transform: translate3d(0, 6px, 0); }
   html.js .brg__rail i { transform: scaleY(0); }
   .brg__hub::before, .brg__hub::after {
     content: ''; position: absolute; top: 50%;
     width: calc(var(--brg-gap) + 1px); height: 1px;
     background: var(--brass);
-    transition: transform 420ms var(--ease-out) 720ms;
+    transition: transform 460ms var(--ease-out) 1080ms;
   }
   .brg__hub::before { right: 100%; transform: scaleX(0); transform-origin: left; }
   .brg__hub::after { left: 100%; transform: scaleX(0); transform-origin: right; }
   .brg.is-in .brg__hub::before, .brg.is-in .brg__hub::after { transform: none; }
 
   .brg__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brass); }
+  /* The hub was set at --step-sub, the SAME rung as the arms it is meant to
+     be the answer to: eleven cream words at 33.8px around one serif phrase
+     at 33.8px reads as a list with a box in it. One rung up. */
   .brg__hub-t {
-    font-size: var(--step-sub);
+    font-size: var(--step-head);
     white-space: nowrap; line-height: 1; color: var(--fg); text-align: center;
   }
 
@@ -321,10 +376,27 @@ const spec = [
   .ledger__t { font-weight: 320; }
   .ledger__p { color: var(--fg-mute); font-size: var(--step-body); max-width: 34ch; }
 
+  /* Between the breakpoint and ~1180px the arms at --step-sub no longer fit
+     their column and "Technology companies" / "Community organizations" broke
+     to two lines. They step down one rung — to the default .bridge size the
+     lift class is measured against — and the diagram stays four single lines
+     against three. */
+  @media (min-width: 861px) and (max-width: 1400px) {
+    .brg { --brg-gap: clamp(1rem, 2.4vw, 3.4rem); }
+    .brg__list li { font-size: var(--step-bridge); }
+  }
+  /* Below ~1000px even the min-content plate eats the arms' column. The hub
+     takes the rung below — still a size, a family, a plate and a dot above
+     the arms, and now nothing on the diagram breaks to two lines. */
+  @media (min-width: 861px) and (max-width: 1000px) {
+    .brg__hub-t { font-size: var(--step-sub); }
+    /* and the plate stops reserving 26vw it does not need */
+    .brg { --hub-w: min-content; }
+  }
+
   @media (max-width: 900px) {
     .ispec__in { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(1rem, 3vw, 1.4rem); }
     .ispec__c { border-top: none; }
-    .ispec__v :global(a) { display: inline-block; padding-block: 0.5rem; }
   }
 
   @media (max-width: 860px) {
@@ -337,7 +409,8 @@ const spec = [
     .ibridge { padding-block: clamp(2.75rem, 10vw, 4rem) clamp(3.5rem, 12vw, 5rem); }
     /* No forced screen height on a phone: the diagram is the tallest object
        on the route once it runs vertically. */
-    .ibridge__in { min-height: 0; justify-items: stretch; gap: clamp(1.8rem, 7vw, 2.6rem); }
+    .ibridge__in { justify-items: stretch; gap: clamp(1.8rem, 7vw, 2.6rem); }
+    .ibridge__k { justify-self: start; text-align: left; }
     /* The diagram survives the breakpoint. One brass rail runs the full
        height of the left gutter, both arms hang off it, and the hub is
        notched onto it — two sides meeting at one point, drawn vertically. */
@@ -348,9 +421,14 @@ const spec = [
       row-gap: clamp(0.2rem, 1.2vw, 0.5rem);
       padding-left: var(--brg-gut);
     }
+    /* The arms stop being boxes here: label, list, hub and list run as one
+       vertical column and the single rail is measured against .brg. */
+    .brg__arm {
+      position: static; display: contents;
+    }
+    .brg__hub { grid-row: auto; }
     .brg__rail {
-      position: absolute; left: 0; top: 0; bottom: 0;
-      grid-row: auto; grid-column: auto;
+      position: absolute; left: 0; right: auto; top: 0; bottom: 0;
       justify-self: start;
     }
     .brg__rail--b { display: none; }
@@ -358,21 +436,22 @@ const spec = [
       background: color-mix(in srgb, var(--brass) 58%, transparent);
       --d: 120ms;
     }
-    .brg__k, .brg__list li { grid-column: 1; grid-row: auto; text-align: left; }
-    .brg__k--a, .brg__k--b { padding-left: 0; padding-right: 0; }
-    .brg__list--a li:nth-child(n), .brg__list--b li:nth-child(n) {
-      padding-left: 0; padding-right: 0;
-      grid-row: auto; grid-column: 1; text-align: left;
+    .brg__k, .brg__list { grid-column: 1; }
+    .brg__list { align-items: stretch; gap: clamp(0.2rem, 1.2vw, 0.5rem); }
+    .brg__list li { text-align: left; }
+    .brg__k--a, .brg__k--b { padding-left: 0; padding-right: 0; text-align: left; }
+    .brg__list--a li, .brg__list--b li {
+      padding-left: 0; padding-right: 0; text-align: left;
       text-wrap: initial;
     }
     .brg__k--a { order: 1; }
-    .brg__list--a li { order: 2; }
+    .brg__list--a { order: 2; }
     .brg__hub { order: 3; }
     .brg__k--b { order: 4; }
-    .brg__list--b li { order: 5; }
+    .brg__list--b { order: 5; }
 
     .brg__hub {
-      grid-column: 1; grid-row: auto;
+      grid-column: 1;
       justify-self: start; align-self: auto;
       margin-block: clamp(1.4rem, 6vw, 2rem);
       display: inline-flex; align-items: center; justify-content: flex-start; gap: 0.8rem;
@@ -392,6 +471,7 @@ const spec = [
     .ihero__k, .ihero__bridge { opacity: 1 !important; animation: none !important; }
     .ihero__h { -webkit-mask-image: none; mask-image: none; animation: none !important; }
     .brg__k, .brg__list li, .brg__hub { opacity: 1 !important; transform: none !important; transition-duration: 1ms !important; }
+    .brg__list { justify-content: center; }
     .brg__rail i, .brg__hub::before, .brg__hub::after { transform: none !important; transition-duration: 1ms !important; }
   }
 </style>

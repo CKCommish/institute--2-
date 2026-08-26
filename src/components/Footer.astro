@@ -29,12 +29,22 @@ const scene = {
 };
 
 /* The one quieter door the brief allows, set two ranks below the ask so it
-   can never read as a second focal point. */
-const second = { k: forum.access, t: 'Inquire about the Lion Forum', href: '/forum/' };
+   can never read as a second focal point.
+
+   It is suppressed on /forum/, because there it is a link to the page you are
+   already standing on, 330px under an ask with the same words. That rule used
+   to be enforced from forum.astro, which reached in with
+   `:global(.foot .foot__second) { display: none !important }` — a route
+   deciding what one of the footer's two ranks does, from outside the footer,
+   with the only !important in the piece. The footer already knows which page
+   it is on (isHere drives the coda and the base row); it now answers this
+   question with the same test, so the door does not exist rather than
+   existing and being painted out. The page's own rule is left harmless. */
+const second = isHere('/forum/') ? null : { k: forum.access, t: 'Inquire about the Lion Forum', href: '/forum/' };
 
 /* The base row is a close, not a second header: two destinations, chosen so
    they never repeat the page you are on or either door above them. */
-const skip = coda ? [coda.href] : [cta.href, second.href];
+const skip = coda ? [coda.href] : [cta.href, ...(second ? [second.href] : [])];
 const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).slice(0, 2);
 ---
 <footer class:list={['foot', { 'foot--coda': !!coda }]}>
@@ -65,10 +75,12 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
         </span>
       </a>
 
-      <a class="foot__second" href={second.href} data-reveal="380">
-        <span class="label foot__second-k">{second.k}</span>
-        <span class="foot__second-t">{second.t}</span>
-      </a>
+      {second && (
+        <a class="foot__second" href={second.href} data-reveal="380">
+          <span class="label foot__second-k">{second.k}</span>
+          <span class="link foot__second-t">{second.t}</span>
+        </a>
+      )}
     </div>
   )}
 
@@ -80,7 +92,7 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
       <Mark tone="quiet" class="foot__id tap" />
       <nav class="foot__nav" aria-label="Footer">
         {footNav.map((n) => (
-          <a href={n.href} class="label foot__nav-a">{n.label}</a>
+          <a href={n.href} class="label link tap foot__nav-a">{n.label}</a>
         ))}
       </nav>
       <span class="label foot__fine">Hyannis Port · Washington, D.C.</span>
@@ -124,14 +136,25 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
     margin-top: clamp(0.6rem, 1.4vw, 1.4rem);
     display: grid; gap: clamp(1.1rem, 2vw, 1.9rem);
     align-content: start; justify-items: start;
+    /* The box is the ask, not the column. Stretched to the 8fr track it put
+       500px of empty navy under cursor:pointer and drew the site's one
+       primary focus ring around it. Hugs its ink, like .coda__a does. */
+    justify-self: start; width: max-content; max-width: 100%;
   }
+  /* Poster-rung type does not squash (base.css). The anchor is the pressable
+     element and the line is the .display, so the ask was taking BOTH the
+     0.985 scale and the 0.62 dim on one mousedown. The dim is the correct
+     one here; the scale is cancelled. */
+  .foot__cta:active { transform: none; }
   .foot__line { max-width: 11ch; }
   /* .lines masks each line; give descenders room inside the mask. */
   .foot__line :global(.line) { padding-bottom: 0.1em; margin-bottom: -0.1em; }
 
   /* The house arrow, at the house size. No second arrow construction. */
   .foot__go { display: inline-flex; align-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem); }
-  .foot__arrow { width: clamp(26px, 2.6vw, 34px); color: var(--brass); }
+  /* No width override: the house arrow is sized in em so it follows the
+     type it sits beside (base.css). */
+  .foot__arrow { color: var(--brass); }
   .foot__go-t { transition: color var(--dur-hover) var(--ease-out); }
   .foot__cta:hover .foot__arrow,
   .foot__cta:focus-visible .foot__arrow { transform: translateX(9px); }
@@ -146,14 +169,16 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
     display: grid; gap: 0.6rem; justify-items: end; text-align: right;
     padding-bottom: 0.3rem;
   }
+  /* The house text-link primitive (.link in base.css) draws the underline and
+     wipes it in from the left on hover. This used to hand-roll a second one —
+     a permanent rule that swapped to brass — so the footer's quiet door and
+     every body link on the site answered a pointer differently. */
   .foot__second-t {
     font-size: var(--step-body); line-height: 1.35; color: var(--fg-mute);
-    padding-bottom: 0.3rem;
-    border-bottom: 1px solid var(--rule);
-    transition: color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out);
+    transition: color var(--dur-hover) var(--ease-out);
   }
   .foot__second:hover .foot__second-t,
-  .foot__second:focus-visible .foot__second-t { color: var(--fg); border-bottom-color: var(--brass); }
+  .foot__second:focus-visible .foot__second-t { color: var(--fg); }
 
   /* ── Mode B: the coda ───────────────────────────────────────────────
      A page whose hero already holds the address ends on a note, not on a
@@ -179,6 +204,13 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
   .coda__a:hover .coda__arrow,
   .coda__a:focus-visible .coda__arrow { transform: translateX(9px); }
 
+  /* /pilots/ ends on a cream plate, not on display type, so the close needs
+     less ground above it than the 10.5rem the scene wants. That rule used to
+     live in pilots.astro, reaching in from outside to set the footer's
+     geometry — the same pattern the notes above route out of forum.astro.
+     The footer owns its own shelf. */
+  :global(main:has(.pd)) + .foot { padding-top: clamp(3.25rem, 1.6rem + 4vw, 6rem); }
+
   /* ── Base: lockup, two routes, fine print ───────────────────────── */
   .foot__base { display: grid; gap: clamp(0.9rem, 1.6vw, 1.4rem); }
   .foot__rule { display: block; height: 1px; background: var(--rule-soft); }
@@ -192,8 +224,28 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
      Everything else on this row is the house .label register — the footer
      used to invent its own micro scale down here at its own tracking. */
   .foot__nav { display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(1rem, 2.2vw, 1.8rem); }
+  /* Colophon, not navigation. Set a register under the routes beside it so the
+     row reads "two controls, then a colophon" rather than four identical
+     words: lighter ink, lighter weight, tighter tracking. */
+  .foot__fine {
+    /* --fg-meta, not a fourth tint. This was set to cream 34% to put the
+       colophon a register under the routes beside it. The instinct is
+       right and the weight and tracking below still carry it; the ink is
+       not available for it. tokens.css allows exactly three text levels —
+       100 / 70 / 54 — and says of the 30% --mark: "NOT TEXT ... if it
+       carries a word, the word is wrong." These carry words: an address
+       and a copyright line. At 34% on /partner/'s coda ground axe scored
+       them a serious contrast failure, the first hard-gate break in three
+       waves. */
+    color: var(--fg-meta);
+    font-weight: 400; letter-spacing: 0.08em;
+  }
+  /* The two base-row routes carry the house .link primitive, so they answer a
+     pointer with the same underline wipe as every other text link on the site
+     — and, crucially, keep that 1px rule at rest on touch, where there is no
+     hover to discover. Without it these read byte-identical to the fine print
+     beside them. .tap supplies the hit box the old hand-rolled padding did. */
   .foot__nav-a {
-    padding-block: 0.55rem; margin-block: -0.55rem;
     transition: color var(--dur-hover) var(--ease-out);
   }
   .foot__nav-a:hover,
@@ -210,6 +262,12 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
     }
     .foot__row { gap: 0.6rem 1.4rem; }
     .foot__row > :nth-child(3) { margin-left: 0; }
+    /* The nav used to land 16px short of the shell's right edge — not flush,
+       not deliberately inset, just where flex flow happened to leave two
+       words of a set that changes per route. Pushed to the edge, it is the
+       same corner-anchored lockup the desktop row is, and the rule, both
+       fine-print lines and the last nav item now end on one line. */
+    .foot__nav { margin-left: auto; }
     .foot__fine { flex: 1 0 100%; }
     .foot--coda { gap: clamp(4rem, 14vw, 6rem); padding-block-start: clamp(3.5rem, 13vw, 5rem); }
   }

@@ -1,6 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import { nav } from '../data/site.js';
+
+/* Home first, then the bar's own order. The primary CTA is deliberately not
+   here: the footer under this page carries the ask at full size, and a lost
+   visitor is owed the way back before he is owed a pitch. */
+const routes = [{ href: '/', label: 'Home' }, ...nav];
 ---
 <Base title="Page not found" description="That page does not exist.">
   <section class="nf">
@@ -8,9 +13,25 @@ import { nav } from '../data/site.js';
       <p class="eyebrow" data-reveal>404</p>
       <h1 class="display display--poster lines">That page isn’t here.</h1>
       <p class="bridge" data-reveal="220">It may have moved, or it may never have existed. Everything the Institute publishes is below.</p>
+
+      <!-- The recovery list is the only working control on this page, so it is
+           built as a control, not as a caption. Five ruled rows, each one a
+           whole-row target, carrying the footer's action grammar exactly:
+           label rests at the header's quiet register, lights to --fg on
+           hover, and the house arrow travels 9px into brass. It used to be
+           five 11px words floated in a wrap row — flush-left, unruled, and
+           at 768 it left 470px of unexplained void under it. -->
       <ul class="nf__list" data-seq="90">
-        <li data-reveal><a class="link tap label label--lit" href="/">Home</a></li>
-        {nav.map((n) => <li data-reveal><a class="link tap label label--lit" href={n.href}>{n.label}</a></li>)}
+        {routes.map((n) => (
+          <li data-reveal>
+            <a class="nf__row" href={n.href}>
+              <span class="label nf__w">{n.label}</span>
+              <svg class="arrow nf__arrow" viewBox="0 0 22 10" aria-hidden="true">
+                <path d="M16 1l5 4-5 4M21 5H0"/>
+              </svg>
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   </section>
@@ -18,36 +39,62 @@ import { nav } from '../data/site.js';
 
 <style>
   .nf {
-    min-height: 78svh;
-    display: grid;
     /* The house shelf, like every other inner page: --head-pad under the bar,
        content starting on it. This page hand-rolled its own top pad and then
        vertically centred inside 78svh on top of it, which opened it 64px
        below /pilots/ and /people/ — the one route a reader arrives at when
        something has already gone wrong was also the one that did not look
-       like the rest of the site. */
+       like the rest of the site.
+
+       The floor came down from 78svh to 58svh at the same time as the list
+       became a ruled stack: the stack is 220px of real content, so 78svh was
+       now a floor holding open a room the page had already furnished. */
+    min-height: 58svh;
+    display: grid;
     align-content: start;
     padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(4rem, 9vw, 8rem);
   }
   .nf__in { display: grid; gap: clamp(1rem, 2.2vw, 1.75rem); }
   .nf h1 { max-width: 14ch; }
-  /* The rows are .label .label--lit — the house micro register at link
-     brightness, the same object the footer's nav row is. This block used to
-     restate size, tracking, transform and weight by hand, which is a fourth
-     copy of a register base.css already owns. */
+
+  /* One measure for the whole page: the poster sets ~14ch, the bridge sets
+     its own, and the stack sits inside both rather than ruling the full
+     1337px shell for the sake of five words. */
   .nf__list {
-    list-style: none; margin: 0; padding: clamp(1.5rem, 3vw, 2.5rem) 0 0;
-    display: flex; flex-wrap: wrap; gap: clamp(1rem, 2.6vw, 2.4rem);
+    list-style: none; margin: clamp(1.5rem, 3vw, 2.5rem) 0 0; padding: 0;
+    width: 100%; max-width: 32rem;
     border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
   }
-  /* Five 18px destinations wrapped into rows 16px apart is a coin-toss for
-     a thumb — and this is the page you land on when something has already
-     gone wrong. Stack them one per row, and give the row enough pitch that
-     the boxes a.tap grows on a touch screen do not overlap: the links keep
-     an 18px layout height (the tap padding is cancelled by a negative
-     margin), so the pitch IS the row-gap plus 18, and it has to clear the
-     ~50px box. 2.3rem leaves a few pixels of daylight. */
-  @media (max-width: 620px) {
-    .nf__list { flex-direction: column; row-gap: 2.3rem; }
+  .nf__list > li + li { border-top: 1px solid var(--rule-soft); }
+
+  /* The row IS the target — no .tap needed, because the padding is real
+     layout here rather than a hit box hung off an 11px word. 44px at every
+     width, so the coarse-pointer floor is met without a second rule. */
+  .nf__row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.05rem;
+  }
+  .nf__w {
+    color: var(--fg-meta);
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+  /* House arrow, house size: em, so it follows the row's type (base.css).
+     It used to be pinned at 22px and held at opacity 0.45 at rest — a fourth
+     brightness of brass no token names, and five of them stacked read as
+     scratches until hovered. */
+  .nf__arrow { color: var(--brass); }
+  .nf__row:hover .nf__w,
+  .nf__row:focus-visible .nf__w { color: var(--fg); }
+  .nf__row:hover .nf__arrow,
+  .nf__row:focus-visible .nf__arrow { transform: translateX(9px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* The ink still lights; the arrow does not travel. Same rule the footer
+       and /partner/ hold. */
+    .nf__arrow { transition-duration: 1ms; }
+    .nf__row:hover .nf__arrow,
+    .nf__row:focus-visible .nf__arrow { transform: none; }
   }
 </style>

@@ -22,12 +22,14 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     </a>
 
     <!-- The burger's HIT BOX and the burger's OBJECT are two different
-         boxes. The button is the target — transparent, 44px tall where the
-         pointer is a thumb. The span is the object — a star and a word, in
-         the same register the desktop bar sets everything else in. It used
-         to be a drawn capsule, which made the only control on a phone the
-         loudest thing in the bar and gave the chrome a filled-button
-         vocabulary the pages underneath do not have. -->
+         boxes. The button is the target — transparent, 44px tall, so a thumb
+         gets a real 44px even though the object inside is 27. The span is
+         the object: the same hairline brass capsule the desktop CTA carries,
+         with the same star, because on a phone this IS the CTA's slot in the
+         bar and the two viewports must not hand a reader two different
+         vocabularies for the one lit control. (A wave-1 note here argued the
+         opposite and described the capsule as removed; it was restored — see
+         "The one lit object in the bar" in the stylesheet below.) -->
     <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
       <span class="label burger__o">
         <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
@@ -61,11 +63,12 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
 </div>
 
 <style>
-  /* The bar has no chrome of its own: no panel, no border, no blur, and — as
-     of this round — no drawn control either. A wordmark, four whisper-quiet
-     labels, and one lit label carrying a star and a rule. On scroll an
-     edgeless scrim keeps type legible; over a cream scene the whole bar
-     inverts to ink. --nav-scrim / --nav-fg are local to this file. */
+  /* The bar has no chrome of its own: no panel, no border, no blur. A
+     wordmark, four whisper-quiet labels, and ONE drawn control — the
+     hairline brass capsule, which is the exception the bar is built around
+     rather than an oversight. On scroll an edgeless scrim keeps type
+     legible; over a cream scene the whole bar inverts to ink.
+     --nav-scrim / --nav-fg are local to this file. */
   .nav {
     position: fixed; inset: 0 0 auto 0; z-index: 100;
     height: var(--nav-h);
@@ -262,42 +265,44 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   }
 
   /* ── The one lit object in the bar ───────────────────────────────
-     It is a LABEL, not a button. It used to be a hairline capsule that
-     filled solid brass on hover — a control from a different design
-     system than every page under it: nothing else on this site is a
-     filled shape, and a capsule is the one CTA form the brief rules out.
-     Dropped whole: the radius, the ring, the fill, and the padding the
-     ring needed. What is left is the house's sanctioned .label--lit
-     register carrying two marks — the brass star, which is the site's
-     action glyph, and a rule under the words.
+     THE CAPSULE IS THE DESIGN. Do not remove it, and do not file it as an
+     Apple idiom — it is neither, and the argument is settled.
 
-     One rule system runs the whole bar, and at rest exactly one rule is
-     drawn on any page — the one that says where you are:
+     This block used to be TWO blocks under the same heading, making
+     opposite arguments, and the code followed the second. Wave 1 removed
+     the ring ("nothing fills and nothing rounds") on the strength of a
+     brief that listed "pill CTA buttons" among the Apple idioms to avoid;
+     that was an error in the brief, not a finding about this site, and
+     wave 2 restored the ring and said so in a block appended underneath.
+     Leaving both standing meant the first thing a reader of this file met
+     was a long, persuasive case for deleting the thing the site depends
+     on. They are one block now, and it says what is true.
+
+     What the capsule is: a 1px brass ring on a dark ground, 999px radius,
+     transparent at rest, filling brass only under a pointer. It is not
+     Apple's blue Buy pill in another colour — that is a solid shape at
+     rest; this is a hairline that is empty until you reach for it. The
+     critic that judged the removal named the cost in its own words: Apple's
+     CTA "is an unmissable object where ours is a label among labels."
+
+     One rule system runs the rest of the bar, and at rest exactly one rule
+     is drawn on any page — the one that says where you are:
 
        rest        no rule                       somewhere you can go
        hover       38% cream, wiped in           the pointer
        current     BRASS, full, already there    where you are
 
-     The CTA takes those three states unchanged; what makes it the
-     primary object is not a box but the two things nothing else in the
-     bar has — full brightness at rest, and the brass star. Brass is
-     spent twice in the whole bar and both spends are meaningful: the
-     action's glyph, and the reader's position. Nothing fills and nothing
-     rounds; every control answers a pointer with exactly one move. */
-  /* ── The one lit object in the bar ──
-     RESTORED. Wave 1's brief listed "pill CTA buttons" among the Apple
-     idioms to avoid; that was an error in the brief, not a finding about
-     this site. The hairline brass capsule is this bar's own pre-existing
-     design — "the one lit object", spent once per page — and it is not
-     Apple's blue Buy pill in another colour: it is a 1px brass ring on a
-     dark ground that fills only on hover.
-     The critic that judged this piece named the cost of removing it in
-     its own words: Apple's CTA "is an unmissable object where ours is a
-     label among labels". It could not fix that, because the brief forbade
-     the fix. The ring is back.
-     Everything else wave 1 did to this control is kept: the -0.12em
-     optical pull so the final glyph lands on the wordmark's gutter, and
-     the inversion tokens. */
+     The CTA sits outside that system on purpose: it is the door out of the
+     bar rather than a door within it, so it carries the ring instead of a
+     rule, plus the two things nothing else in the bar has — full brightness
+     at rest, and the brass star. Brass is spent three times here and every
+     spend is meaningful: the action's glyph, the action's ring, and the
+     reader's position. When the CTA IS the current page the ring goes
+     transparent (.cta.is-active, below) and the brass rule under the words
+     takes over, so the bar never marks a location twice.
+
+     Kept from wave 1 and still correct: the -0.12em optical pull so the
+     final glyph lands on the wordmark's gutter, and the inversion tokens. */
   .cta {
     display: inline-flex; align-items: center; gap: 0.7ch;
     /* Interior air, measured to the INK and not to the box: the label

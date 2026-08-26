@@ -22,9 +22,9 @@ const claim = forum.line
     2  the claim   type only, flush left, nothing beside it
     3  the ledger  the reading size, and the page's first change of axis:
                    three terms hanging right-aligned against three sentences
-    4  the plate   the SAME photograph seen CLOSE — the moored hull, the
-                   buoys, the water — a band shorter than a viewport,
-                   carrying no type at all
+    4  the plate   the one picture on the site with an edge on all four
+                   sides: a bounded square hung at the rail, cut below the
+                   waterline, carrying no type at all
     5  the close   THE PAGE TURNED OVER
 
   THE FRAME HAD AN EMPTY HALF AND THE PAGE WAS NOT USING IT. The sloop, its
@@ -41,8 +41,8 @@ const claim = forum.line
   and light at the upper right, one rule running between them.
 
   THE EXCEPTION, AND THERE IS ONLY ONE ON THE PAGE GROUND. Everything between
-  §2 and §4 is cream type on navy opening flush at x=51. §5 is full-bleed cream arriving directly off the
-  dark plate: L* 15 → L* 92, the largest tonal step the system owns, spent
+  §2 and §4 is cream type on navy opening flush at x=51. §5 is full-bleed
+  cream arriving directly off the navy ground: L* 15 → L* 92, the largest tonal step the system owns, spent
   once, on the only thing a foundation officer came to this page to find out —
   what the Institute's relationship to this convening actually is. It is also
   the one beat that does not begin at the rail: the eyebrow holds a narrow
@@ -50,27 +50,30 @@ const claim = forum.line
   used ONCE on this page, here) and runs into the right-hand column the rest
   of the page leaves empty. Restraint plus one exception is composition.
 
-  GROUND BUDGET: hero photograph · plate photograph · cream. Three, the
-  ceiling. Which is why the ledger's .on-panel band came off — a 13-point step
-  on a 255 scale was spending a ground event and reading as nothing.
+  GROUND BUDGET: hero photograph · cream. The plate no longer spends a ground
+  event — bounded, it is an object on the navy rather than a surface. The
+  ledger's .on-panel band came off for the same accounting: a 13-point step on
+  a 255 scale was spending a ground event and reading as nothing.
 
-  THE PLATE WAS THE PAGE'S BEST IDEA AND ITS WORST EXECUTION. "One photograph,
-  seen twice — wide, then close" was right; zoom 4.2 at focal 21%/92% was not.
-  That point lands on open water, so the close half held less structure than
-  the flat panel above it and was past the source file's pixel budget besides.
-  It is now zoom 3.6 on 28%/77%: the moored hull itself, its reflection, the
-  dinghies and the near water — the horizon, the sky, the breakwater and the
-  lattice tower all out of frame, so the close is a DIFFERENT SUBJECT rather
-  than the same furniture at a longer lens. At 2.6 the crop still held sky,
-  horizon and tower and read as a second photograph. It carries no type — the bridge line that used to sit on
-  the water was a fourth slogan on a page already being sold with slogans.
-  Its one mark is the photograph's own credit, in Figure's corner voice, in
-  the deep zone of a bottom-left ramp, which is the only place on a photograph
-  the meta register is legal.
+  THE PLATE IS NOT THE MASTHEAD AGAIN. "One photograph, seen twice — wide,
+  then close" was the right idea and the wrong execution twice over: first by
+  browser zoom, then by a cut file that was still a ~1.75x centre crop of the
+  same rectangle run FULL-BLEED, which kept the sky, the horizon, the
+  breakwater, the tower, the runabout and the sloop in the same arrangement.
+  The master cannot yield a genuine close at full bleed (hull + reflection is
+  ~520x340 native), so beat 4 stopped being full-bleed. It is a 32rem square
+  hung at the shell's left rail, cut at x 655 / y 832 of the master, 405
+  square: transom, mast reflection, two buoys, water. Nothing above the
+  waterline. A different KIND of frame carrying a different subject, which is
+  the premise of the page. It carries no type — the bridge line that used to
+  sit on the water was a fourth slogan on a page already being sold with
+  slogans. Its one mark is the photograph's own credit, in Figure's corner
+  voice, in the deep zone of a bottom-left ramp.
 
-  THE ASK IS SINGULAR. It used to be made twice within 330px — here, and again
-  in the footer's secondary door, which on this route is a link to this page.
-  The footer's is suppressed on /forum/ only.
+  THE ASK IS SINGULAR. It is made once, at the close. The footer's secondary
+  door points at this page too, and Footer.astro drops it on this route by its
+  own test — this file used to force that from outside with !important, which
+  is a shared component rule rewritten from a route, and it is gone.
 
   TWO LOCATION STRINGS, TWO JOBS, and they no longer share a viewport.
   "Kennedy Compound, Hyannis Port" describes the CONVENING and stays in the
@@ -103,8 +106,15 @@ const claim = forum.line
         Island, 200 miles from Hyannis Port. Credit top-right, opposite the
         event line in the foot band: two location strings, two corners, two
         registers, so a reader cannot collapse them. refs/PHOTO-FACTS.md. */}
-    <Figure src={forum.image} alt="" ratio="auto" grade={0.6}
-            focal="40% 50%" focalSm="26% 50%"
+    {/* NOT forum.image. The shared @1200 sibling of the wide frame is
+        1200x536, and this box on a phone is 398x1016 CSS — 796x2032 device
+        pixels at DPR2, a 3.79x vertical upscale of a landscape file. This
+        route carries its OWN pair: forum-mast.jpg is the same wide frame for
+        the desktop box, and forum-mast@1200.jpg is a PORTRAIT cut at native
+        resolution (490x1250, the tallest the source holds) so the phone is
+        served a picture shaped like the hole it goes in. */}
+    <Figure src="/media/forum-mast.jpg" alt="" ratio="auto" grade={0.6}
+            focal="40% 50%" focalSm="50% 50%"
             parallax={6} scrim="bottom" align="right" reach={0.60} rise={0.62}
             loading="eager"
             credit={forum.credit} creditPos="top-right"
@@ -146,8 +156,6 @@ const claim = forum.line
         <p class="eyebrow">The convening</p>
       </div>
 
-      <p class="bridge fsay__who" data-reveal="120">{forum.who}</p>
-
       <div class="fsay__claim" data-reveal>
         <h2 class="display display--poster fsay__p" id="fsay-h" data-settle="0.52" set:html={claim}></h2>
       </div>
@@ -162,8 +170,9 @@ const claim = forum.line
        This beat is the reading size, and it is the only thing on the page
        that does not begin at the left rail.
 
-       Three entries, one sentence each — the brief's supporting-line limit
-       spent, once, on the page's actual job. The terms hang right-aligned in
+       Three entries, one sentence each — the brief's three-supporting-line
+       limit spent, once, on the page's actual job, and nothing else in this
+       beat is allowed to spend it. The terms hang right-aligned in
        the left column against the sentences, so the block reads as a ledger
        and its axis sits near 38% of the measure. Every other beat here opens
        flush at the rail; this one does not, which is the whole point.
@@ -181,9 +190,12 @@ const claim = forum.line
         <span class="index fnum" data-reveal="220">02</span>
       </div>
 
+      {/* The lede came out. refs/BRIEF.md caps a section at three short
+          lines of supporting text; the three rows below ARE those three, and
+          the lede was a fourth string set as a sentence in .lede — two more
+          lines at 1440, four on a phone. The eyebrow names the beat. */}
       <div class="fdef fbrief__top" data-reveal>
-        <p class="eyebrow fdef__t">{forum.brief.eyebrow}</p>
-        <p class="lede fbrief__lede" id="fbrief-h">{forum.brief.lede}</p>
+        <p class="eyebrow fdef__t" id="fbrief-h">{forum.brief.eyebrow}</p>
       </div>
 
       <dl class="fdefs" data-seq="120" data-seq-from="40">
@@ -197,22 +209,44 @@ const claim = forum.line
     </div>
   </section>
 
-  <!-- 4 ── the plate. The same harbour seen CLOSE — the moored hull, the
-       buoys, the near water, the sky taken off — so the page carries two
-       photographic weights rather than one frame drawn twice. Shorter than a
-       viewport on purpose: the pause is bounded by the ledger above and the
-       cream below, never by a screen edge. It carries no type; its one mark
-       is the photograph's own credit. It opens on both axes, then closes the
-       last five percent of its scale as you scroll it. -->
-  <div class="fplate" data-wipe="center-y">
-    <div class="fplate__frame" data-settle="0.42">
-      <Figure src={forum.image} alt="A harbour at dusk: a moored hull, its mast foot, and the near end of the stone breakwater."
-              ratio="auto" grade={0.52} grain={0.85}
-              focal="28% 77%" zoom={3.6}
-              focalSm="28% 76%" zoomSm={4.2}
-              scrim="bottom-left" ink={0.7} vig={0.25}
-              credit={forum.credit} creditPos="bottom-left"
-              parallax={5} sizes="100vw" />
+  <!-- 4 ── THE PLATE, AND IT IS NOT A SECOND PHOTOGRAPH OF THE SAME THING.
+
+       It was. The plate was a ~1.75x centre crop of the masthead run
+       full-bleed, which meant it still carried the sky, the cloud bank, the
+       horizon, the full-width breakwater, the lattice tower, the runabout,
+       the sloop, the buoy and the pilings — the same objects in the same
+       arrangement, at nearly the same sky-to-water ratio. A reader scrolling
+       past y≈2050 met the y=0 photograph a second time; on a phone the
+       portrait sibling centred the same sloop 1300px below the masthead.
+
+       The 2800x1250 master cannot yield a genuine close at full bleed — the
+       hull and its reflection are ~520x340 native, a 2.8x upscale across
+       1440 — so the fix is structural rather than another crop of the same
+       rectangle: THE PLATE IS NO LONGER FULL-BLEED. It is a bounded square
+       hung at the shell's left rail, 405px native rendered into a 32rem box,
+       and the crop is taken below the waterline (x 655, y 832 of the master,
+       405 square, the top 4% of it eaten by Figure's overscan): the transom, the mast's reflection running the full height
+       of the frame, two buoys, and water. No sky, no cloud, no horizon, no
+       breakwater, no tower, no second boat. Beat 4 is now a different KIND of
+       frame carrying a different subject — a plate, not a screen — which is
+       what "five beats, and no two of them are drawn the same way" asked for.
+
+       It carries no type; its one mark is the photograph's own credit. It
+       opens on both axes, then closes the last five percent of its scale as
+       you scroll it. -->
+  <div class="fplate">
+    <div class="shell">
+      <div class="fplate__frame" data-wipe="center-y">
+        <div class="fplate__in" data-settle="0.42">
+          <Figure src="/media/forum-plate.jpg"
+                  alt="A moored hull below the waterline: the transom, the mast's reflection, and two buoys on still water."
+                  ratio="auto" grade={0.44} grain={0.85}
+                  focal="50% 50%" focalSm="50% 50%"
+                  scrim="none" vig={0.14} lift={1.08}
+                  credit={forum.credit} creditPos="bottom-left"
+                  parallax={0} sizes="(max-width: 860px) 100vw, 32rem" />
+        </div>
+      </div>
     </div>
   </div>
 
@@ -231,8 +265,9 @@ const claim = forum.line
        set at --step-feature (the series-breaker, used ONCE, here), and it runs
        into the 460px of right-hand column the rest of the page left empty.
 
-       The footer's quieter "Inquire about the Lion Forum" door is suppressed
-       on this route — it points at this page, and this page has just asked. -->
+       The footer's quieter "Inquire about the Lion Forum" door points at this
+       page, so Footer.astro does not render it on this route. That test lives
+       in the footer; this file no longer reaches in to hide it. -->
   <section class="on-cream frole" aria-labelledby="frole-h" data-settle="0.86">
     <span class="frole__cut" aria-hidden="true"></span>
     <div class="shell frole__shell">
@@ -263,16 +298,17 @@ const claim = forum.line
 </Base>
 
 <style>
-  /* The bar is not this page's to edit, but the hero display and the §2 claim
-     both pass directly under it. Local hardening of the scrim the nav owns. */
-  :global(.nav.is-scrolled)::before {
-    height: calc(var(--nav-h) + 4.4rem);
-    background: linear-gradient(to bottom,
-      var(--nav-scrim, #050D16) 0%,
-      var(--nav-scrim, #050D16) 44%,
-      color-mix(in srgb, var(--nav-scrim, #050D16) 58%, transparent) 72%,
-      transparent 100%);
-  }
+  /* THE BAR IS NOT THIS PAGE'S TO EDIT. This file used to reach into
+     :global(.nav.is-scrolled)::before and replace both the Nav's --nav-tail
+     (3.5rem, deliberately reduced there) and its two-stop --nav-a/--nav-b/
+     --nav-cut gradient with a single ramp. That is a shared component rule
+     rewritten from a route file, and it is gone. If the hero display needs a
+     deeper scrim under the bar, it is a change to Nav.astro, reported — not
+     taken here. The same went for the footer's secondary door: this route
+     used to hide .foot__second with the piece's only !important. That
+     question belongs to Footer.astro, which now answers it with its own
+     isHere('/forum/') test — the door is not rendered rather than rendered
+     and painted out. */
 
   /* ── 1. The masthead ─────────────────────────────────────────────── */
   .fh {
@@ -309,14 +345,6 @@ const claim = forum.line
     width: fit-content;
     max-width: min(100%, 42ch);
     text-align: left;
-  }
-
-  /* brass tick — a graphic anchor above the stack, no words spent */
-  .fh__tick {
-    display: block;
-    width: 1px; height: clamp(30px, 4.4vw, 54px);
-    background: linear-gradient(to bottom, transparent, var(--brass));
-    margin-bottom: clamp(0.9rem, 1.6vw, 1.6rem);
   }
 
   /* THE BRIDGE. The event's location, in the display stack with the name and
@@ -359,11 +387,10 @@ const claim = forum.line
     transform: scaleX(0); transform-origin: left;
     animation: fhDraw 1150ms var(--ease-io) 460ms forwards;
   }
-  .fh__tick, .fh__brow, .fh__place, .fh__cue {
+  .fh__brow, .fh__place, .fh__cue {
     opacity: 0;
     animation: fhIn var(--dur-2) var(--ease-out) forwards;
   }
-  .fh__tick  { animation-delay: 140ms; }
   .fh__brow  { animation-delay: 260ms; }
   .fh__place { animation-delay: 380ms; }
   .fh__cue   { animation-delay: 760ms; }
@@ -392,11 +419,18 @@ const claim = forum.line
      vertical slice of a glyph rather than as a numeral, and (b) the row kept
      `clip-path: inset(0)` at rest, which permanently shaved the numeral's
      optical overhang off. Territory wipes; the mark arrives. */
+  /* THE GAP WAS A GUTTER, NOT A BREATH. The row inherited the page's
+     column gutter — 52px at 1440 — so the hairline stopped 52px short of the
+     numeral it is supposed to be measured by. On a 1267px span that reads as
+     a rule that failed to arrive, not as a measure with a mark at each end.
+     The gutter is a layout interval; this is an optical one, and it is set
+     by eye at ~14px: enough that the 1px rule does not touch the numeral's
+     stem, close enough that the two are one object. */
   .frow {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
-    column-gap: clamp(1.25rem, 4vw, 3.25rem);
+    column-gap: clamp(0.55rem, 1vw, 0.92rem);
   }
   .frow__rule {
     display: block; height: 1px; width: 100%;
@@ -422,7 +456,10 @@ const claim = forum.line
   /* head + bridge are ONE object — the kicker — so the beat is two marks in
      a column, not three scattered ones. The interval that matters is the one
      under them, before the claim. */
-  .fsay__who { margin-top: clamp(0.85rem, 1.5vw, 1.35rem); }
+  /* .fsay__who is gone: the bridge line under this eyebrow read "Founders,
+     investors, elected officials." — the same fact, in the same words, as the
+     ledger's "The room" row 900px below. Said once, in the beat whose job it
+     is. */
   /* The wrapper carries the reveal so the two italic verbs can hang off its
      .is-in; the h2 itself carries the settle. Two elements, two transforms,
      no fight. */
@@ -475,7 +512,7 @@ const claim = forum.line
      rule and its numeral end instead of stopping 394px short of them. */
   .fdef {
     display: grid;
-    grid-template-columns: minmax(0, 0.24fr) minmax(0, 0.76fr);
+    grid-template-columns: minmax(0, 0.31fr) minmax(0, 0.69fr);
     column-gap: clamp(1.25rem, 3vw, 2.6rem);
     align-items: baseline;
   }
@@ -487,14 +524,36 @@ const claim = forum.line
     transform: translateY(0.12em);
   }
   .fbrief__top { padding-top: clamp(1.1rem, 2vw, 1.7rem); }
-  .fbrief__lede { max-width: 34ch; margin: 0; color: var(--fg); }
 
   /* THE RULES ARE EARNED OR THEY ARE PULLED BACK. They used to span the full
      1338px measure while every sentence in the list ended by x≈968 — 419px of
      hairline with nothing under it, four times. The list now measures itself:
      the block is capped so the rules end where the sentences do. The full-
      width span belongs to .frow, whose rule has a mark at its far end. */
-  .fdefs { margin: clamp(1.9rem, 3.6vw, 3.2rem) 0 0; }
+  /* AND HERE IS WHERE THE CAP ACTUALLY GOES. The paragraph above described
+     a block that measures itself; no block did. .fdef__d carried a 62ch cap
+     and the GRID did not, so every row box still ran the full 1337px measure
+     while the sentence inside it stopped at 1075 — 313px of hairline with
+     nothing under it, four times over. The cap is on the grid now, and the
+     column split is retuned (0.24→0.31) so the definition column lands on
+     exactly the measure the sentences were already setting: 397.5→1075.4.
+     Not one line reflows; the rules simply stop where the reading stops.
+     The lead row shares the cap so the ledger keeps ONE axis and ONE right
+     edge — which is the thing the split was for. The full-width span still
+     belongs to .frow, whose rule has a mark at its far end. */
+  /* AND THE CAP MOVES AGAIN WHEN THE COPY DOES. 64rem was measured against
+     three two-line sentences; the rows are one short line each now (the
+     brief caps a section at three LINES, not three entries), so the longest
+     sentence ends at 229px and a 64rem rule ran 445px past it — the same
+     unearned hairline the cap was introduced to remove, at a new width. The
+     cap is 32rem, which is also the plate's width one beat below: the
+     ledger's right edge and the photograph's right edge are the same x. */
+  .fbrief__top,
+  .fdefs { max-width: 32rem; }
+  /* Was clamp(1.9rem,3.6vw,3.2rem): the interval was measured under a
+     two-line lede that no longer exists, and with the eyebrow alone above it
+     the beat opened with a hole. */
+  .fdefs { margin: clamp(1.1rem, 2.1vw, 1.7rem) 0 0; }
   .fdef--row {
     border-top: 1px solid var(--rule);
     padding-block: clamp(1rem, 2vw, 1.6rem);
@@ -506,38 +565,54 @@ const claim = forum.line
     font-size: var(--step-body);
     line-height: 1.58;
     color: var(--fg-mute);
-    max-width: 62ch;
     text-wrap: pretty;
   }
 
   /* ── 4. The plate ────────────────────────────────────────────────── */
-  /* A BAND, not a screen. Roughly 16:5.5 at 1440 and always shorter than the
-     viewport, so the pause is bounded by the claim above and the ask below
-     rather than by two screen edges — which was the same held-space failure
-     the rest of the site was fixing, relocated to a photograph. The crop is
-     hard (zoom 2.0 on the masts) so this is a different photographic weight
-     from the wide masthead, not the same frame drawn twice. */
-  .fplate {
+  /* A BOUNDED PLATE, NOT A BAND. Full-bleed made this beat the masthead
+     again: same furniture, longer lens. Hung in the shell at 30rem square it
+     is a different kind of object on the page — the only picture on the site
+     with an edge on all four sides — and the crop it can then afford is 2.5x
+     tighter than the masthead's (the masthead shows 2800 source px across
+     1440 CSS, 1.94 px per CSS px; this shows 405 across 512, 0.79) while
+     still rendering below 1:1 on a phone and at 1.26x on desktop. The pause
+     is held by the navy around it, not by a screen edge.
+
+     NO PARALLAX, NO SCRIM, AND THE FILE IS CUT FOR THE OVERSCAN. A bounded
+     frame cannot afford the first two. At parallax 5 the transom — the only
+     structure in the crop — was pushed clean off the top edge; and the placed
+     scrim's top band, which exists to protect type under the fixed bar on a
+     FULL-BLEED frame, landed here directly on the transom. On a hung plate
+     there is no bar to protect against, so scrim="none" and the credit sits
+     on the water in its own dim register.
+
+     Figure keeps a 4% media overscan even at parallax 0 (`over` has a floor),
+     so ~15 source rows are clipped off the top of any figure it draws. The
+     crop is therefore cut at y 832 rather than 845: the fifteen rows the
+     overscan eats are the last of the breakwater, and what the frame actually
+     shows begins at the waterline. The approach below is this beat's whole
+     gesture. */
+  .fplate { padding-block: clamp(3.4rem, 2rem + 5.4vw, 7.5rem); }
+  .fplate__frame {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    height: clamp(400px, 62svh, 600px);
+    width: min(100%, 32rem);
+    aspect-ratio: 1 / 1;
   }
-  /* THE APPROACH. Scroll-linked, reversible: the band sits 5.5% large while
+  /* THE APPROACH. Scroll-linked, reversible: the plate sits 5.5% large while
      it is arriving and closes to 1.000 at reading position, so the duration
      of the pause is something the reader is doing rather than watching. */
-  .fplate__frame {
+  .fplate__in {
     position: absolute;
     inset: 0;
     --settle-scale: 1.055;
     --settle-shift: 0vh;
     --settle-origin: 50% 50%;
   }
-  /* The band carries NO type. Its one mark is the photograph's own credit —
+  /* The plate carries NO type. Its one mark is the photograph's own credit —
      Figure's corner voice, in the deep zone of a bottom-left ramp, which is
-     the only place on a photograph the meta register is legal. The bridge
-     line that used to sit on the water was a fourth slogan on a page that
-     was already being sold with slogans; the plate's job is the picture. */
+     the only place on a photograph the meta register is legal. */
 
   /* ── 5. The close, on cream ─────────────────────────────────────── */
   /* THE PAGE TURNED OVER. Full-bleed .on-cream, arriving directly off the
@@ -642,11 +717,6 @@ const claim = forum.line
   .frole__cta:hover .frole__ctaText::after,
   .frole__cta:focus-visible .frole__ctaText::after { transform: scaleX(1); transform-origin: left; }
 
-  /* THE DUPLICATE ASK. The footer's secondary door is "Inquire about the Lion
-     Forum" → /forum/. On this route that is a link to the page you are on,
-     330px under an ask with the same words, so the page had two endings and
-     one of them was a self-reference. Suppressed here only. */
-  :global(.foot .foot__second) { display: none !important; }
 
   /* ── Mobile ──────────────────────────────────────────────────────── */
   @media (max-width: 860px) {
@@ -655,6 +725,30 @@ const claim = forum.line
     .fh__lock { width: auto; justify-self: stretch; max-width: 100%; }
     .fh__bar { grid-template-columns: minmax(0, 1fr) auto; row-gap: 1.1rem; }
     .fh__meta { grid-column: 1 / -1; }
+
+    /* THE LADDER HAD NO TOP RUNG ON THE FORMAT MOST READERS SEE. The
+       masthead and the §2 claim are both display--poster, which on desktop
+       is 86px against an 18.7px ledger — a 4.6x drop, and the composition
+       (name in the water at the right, claim at the rail) tells the two
+       apart anyway. On a phone --step-poster bottoms out at 36.8px, the
+       claim's own size, and the two beats have neither a size difference
+       nor a compositional one: the page's title arrived at 2.2x its body
+       copy, 146px wide inside an 844px frame.
+
+       --step-banner is the rung this page's own ladder note declares at the
+       top and nothing on the page was spending. It cannot go on the desktop
+       masthead — 126px sets "The Lion" 481px wide, which walks the name back
+       across the buoy and the lattice tower the right-hand crop exists to
+       stay clear of — but at 390 the name is at the rail over open water
+       with nothing to collide with, so the rung is spent exactly where the
+       ladder had collapsed. 36.8 → 46.4px; the claim stays at 36.8. */
+    .fh__h { font-size: var(--step-banner); }
+
+    /* One place-name, one line. The credit's 26ch cap broke "Block Island,
+       Rhode Island" after "Rhode" — a state name split across a line break
+       in the register whose entire job is to be unmistakably a place. It is
+       one line here; it fits the measure with 128px to spare. */
+    :global(.fh__bg .fig__credit) { max-width: none; white-space: nowrap; }
 
     .fsay { padding-block: clamp(2.5rem, 8vw, 3.5rem) clamp(2.75rem, 10vw, 4.5rem); }
     .fsay__p { max-width: 13ch; }
@@ -671,11 +765,12 @@ const claim = forum.line
     .fdef__t { text-align: right; transform: translateY(0.14em); }
     .fbrief__top { grid-template-columns: minmax(0, 1fr); row-gap: 0.7rem; }
     .fbrief__top .fdef__t { text-align: left; transform: none; }
-    .fbrief__lede { max-width: 26ch; }
-    .fdefs { max-width: 100%; }
-    .fdef__d { max-width: none; }
+    .fbrief__top, .fdefs { max-width: 100%; }
 
-    .fplate { height: clamp(340px, 52svh, 460px); }
+    /* At 390 the shell measure is 342px, so the square renders at 0.71x of
+       its 405 native pixels — below 1:1 even at DPR2's 684. One file serves
+       both formats; the portrait @1200 sibling is gone with the band. */
+    .fplate { padding-block: clamp(2.6rem, 9vw, 3.8rem); }
 
     .frole { padding-block: clamp(2.8rem, 9vw, 4rem) clamp(2.2rem, 7vw, 3.2rem); }
     /* THE EXCEPTION SURVIVES THE PHONE. This used to stack flush at x=24,
@@ -698,7 +793,7 @@ const claim = forum.line
 
   @media (prefers-reduced-motion: reduce) {
     .fh__rule { animation: none; transform: scaleX(1); }
-    .fh__tick, .fh__brow, .fh__place, .fh__cue { animation: none; opacity: 1; }
+    .fh__brow, .fh__place, .fh__cue { animation: none; opacity: 1; }
     .fsay__p :global(em) { opacity: 1; transform: none; }
     .fsay__p :global(em), .fsay__p :global(em:last-of-type) { --hinge: 1; }
     .frole__cut { display: none; }

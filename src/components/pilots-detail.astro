@@ -437,9 +437,24 @@ const needs = [
     transition: transform 620ms var(--ease-out);
     pointer-events: none;
   }
+  /* THE HOUSE ARROW, AT THE HOUSE REST STATE AND THE HOUSE SIZE.
+     It carried `width: 22px` and `opacity: 0.62`, and both were the second
+     answer to a question this page had already answered 700px above it: the
+     card layer's own arrow is 1.7em at 0.55. So /pilots/ served a reader two
+     brass arrows, at two sizes and two brightnesses, in one scroll — and
+     0.62 is a brass value no token names, which is the exact fault /404/'s
+     .nf__arrow comment records being fixed there and nowhere else.
+     em, so it follows the ask's type down to a phone instead of holding
+     22px (base.css, .arrow). 1.4em is the size it renders today at
+     --step-body, so nothing moves at 1440; only the small end changes.
+     0.55 is the rest brightness the card and /partner/'s .pindex__arrow
+     already share — the LATENT state, for an arrow that is the affordance
+     of a whole target and lights when the target does. An arrow that stands
+     beside a link a reader can already see stays at full brass (.nf__arrow,
+     .ask__arrow, .door__arrow, .coda__arrow). Two states, not four. */
   .pd__arrow {
-    width: 22px; color: var(--brass);
-    opacity: 0.62; transform: translateX(-4px);
+    width: 1.4em; color: var(--brass);
+    opacity: 0.55; transform: translateX(-4px);
     transition: opacity var(--dur-hover) var(--ease-out), transform 520ms var(--ease-out);
   }
   @media (hover: hover) {

@@ -47,26 +47,20 @@ import { pilots, pilotTerms } from '../data/site.js';
 
    5. THE NAV. See the guard at the top of the stylesheet. */
 
-/* Per-frame crops. Three of the four masters are 3:2 and the plate is 3:2,
-   so they are shown whole and the focal is the centre. Pilot 01's master is
-   the 3:1 band cut from the foot of the Army frame (see PHOTO-FACTS), so it
-   is the one that needs a horizontal anchor: 38% keeps the stride in the
-   plate and leaves the open track under the credit. */
-const focals = {
-  'healthy-athletes': '38% 50%',
-  'clean-data-centers': '50% 50%',
-  'infant-mortality': '50% 50%',
-  'career-pathways': '50% 50%',
-};
-const focalsSm = {
-  'healthy-athletes': '34% 50%',
-};
-const grades = {
-  'healthy-athletes': 0.34,
-  'clean-data-centers': 0.5,
-  'infant-mortality': 0.42,
-  'career-pathways': 0.56,
-};
+/* THE PLATE NUMBERS ARE NOT HERE. They used to be: this page carried
+   `focals`, `focalsSm` and `grades` maps and passed all three down, and
+   every one of them was dead — each pilot has carried its own `plate` in
+   site.js since the per-source grade was measured, and pilots-detail.astro
+   resolves `pl.grade ?? grade`, `pl.focal ?? focal` and so on, so the
+   page-level value could never apply. Two sources of truth for the same
+   four numbers, and the losing one still looked live: editing
+   grades['healthy-athletes'] here changed nothing on the page.
+
+   A crop and a grade are facts about a FILE, not about this layout — a
+   page cannot know what the meter said about a photograph — so they live
+   with the photograph in site.js and nowhere else. The component's own
+   defaults (grade 0.5, focal 50% 50%) remain as the fallback for a pilot
+   that ships without a plate. */
 ---
 <Base title="Pilots" description="Four pilots proposed for 2026: what each one is, who it is for, and what it still needs.">
   <section class="phead">
@@ -140,13 +134,7 @@ const grades = {
   </section>
 
   {pilots.map((p, i) => (
-    <PilotDetail
-      pilot={p}
-      focal={focals[p.id] || '50% 50%'}
-      focalSm={focalsSm[p.id]}
-      grade={grades[p.id] ?? 0.5}
-      loading={i === 0 ? 'eager' : 'lazy'}
-    />
+    <PilotDetail pilot={p} loading={i === 0 ? 'eager' : 'lazy'} />
   ))}
 </Base>
 
@@ -295,11 +283,9 @@ const grades = {
   /* the first dossier lands off a cream edge: it needs its own shelf */
   .pturn + :global(.pd) { padding-top: clamp(2.25rem, 4.5vw, 4rem); }
 
-  /* the footer opens with 10.5rem of ground, which is right after a scene
-     that ends on display type and wrong after a plate. Page-scoped. */
-  :global(main:has(.pd) + footer.foot) {
-    padding-top: clamp(3.25rem, 1.6rem + 4vw, 6rem);
-  }
+  /* (The footer's shelf after a cream plate is the footer's own decision and
+     now lives in Footer.astro — a route must not set another component's
+     geometry from outside it.) */
 
   /* ── Narrow ───────────────────────────────────────────────────────── */
   @media (max-width: 1180px) {
@@ -309,7 +295,23 @@ const grades = {
        sits below a rule the container cannot draw. So the rule goes back
        onto the cells, where there is one per row of cards. */
     .pgrid__grid { border-top: 0; }
-    .pgrid__cell { border-top: 1px solid var(--rule); }
+    /* ...and it must still read as ONE horizontal. A border on the cell
+       stops at the cell's own edge, so the band's structural rule broke for
+       the full gutter (30.7px at 1180 down to 20px at 621) exactly where
+       the vertical crosses it — a four-way junction with a hole in it. The
+       rule is drawn instead as a pseudo-element that runs half a gutter
+       past each inner edge, so the two halves meet ON the vertical's centre
+       line and the crossing is closed. --rule-l/--rule-r are kept separate
+       from --bay-l/--bay-r so the card's hover wipe is untouched. */
+    .pgrid__cell { --rule-l: 0px; --rule-r: var(--bay); }
+    .pgrid__cell:nth-child(even) { --rule-l: var(--bay); --rule-r: 0px; }
+    .pgrid__cell::before {
+      content: ''; position: absolute; top: 0; height: 1px;
+      left: calc(var(--rule-l) * -1);
+      right: calc(var(--rule-r) * -1);
+      background: var(--rule);
+      pointer-events: none;
+    }
     /* On a two-up grid the vertical rule belongs between the columns only:
        cell 3 opens a new row, so its rule would hang in open ground at the
        left edge of the band. So the base rule is hidden and restored on the
@@ -320,6 +322,17 @@ const grades = {
        sibling, so the '+' costs nothing and buys the specificity. */
     .pgrid__cell + .pgrid__cell::after { display: none; }
     .pgrid__cell + .pgrid__cell:nth-child(even)::after { display: block; }
+    /* The fade at 87% is the FOOT of the band — the designed release that
+       lets the eye leave the table downward. On an internal row division it
+       is just a rule that dies ~35px short of the horizontal below it and
+       restarts under it. So only the vertical in the last row keeps it. */
+    .pgrid__cell + .pgrid__cell:nth-child(even)::after {
+      -webkit-mask-image: none; mask-image: none;
+    }
+    .pgrid__cell + .pgrid__cell:nth-child(even):last-child::after {
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 87%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 87%, transparent 100%);
+    }
   }
 
   @media (max-width: 860px) {
@@ -334,6 +347,8 @@ const grades = {
 
   @media (max-width: 620px) {
     .pgrid__grid { grid-template-columns: minmax(0, 1fr); }
+    /* one column: there is no gutter to close, so the rule is the cell */
+    .pgrid__cell, .pgrid__cell:nth-child(even) { --rule-l: 0px; --rule-r: 0px; }
     .pgrid__cell + .pgrid__cell:nth-child(even)::after { display: none; }
     .terms__i { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
   }
