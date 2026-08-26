@@ -19,7 +19,7 @@ problem, and this is exactly the kind of site where someone will check.
 | `pilot-health-portrait.jpg` | The same photograph, cropped to 4:5 | (as above) |
 | `pilot-health-track.jpg` | The same photograph, cropped to the 3:1 band at the foot of the frame: a stride, a lane, a track. **This is the file /pilots/ ships.** | (as above) |
 | `pilot-energy.jpg` | A high-voltage transmission tower under heavy overcast, **Muskingum County, Ohio** | that this is the Pacific Northwest, Washington, or BPA |
-| `pilot-maternal.jpg` | A mother holding her infant at home in the doorway of a **family child care home**, alone in frame | that it is Indianapolis, that it is clinical, or that she is a pilot participant |
+| `pilot-maternal.jpg` | Downtown **Indianapolis, Indiana** from the air on a hazy afternoon — the Chase Tower and the towers around Monument Circle, low-rise blocks in the near ground, tree canopy out to a flat horizon. **No identifiable person in the frame.** | that it shows a hospital, a clinic, a health system, a neighbourhood the pilot has selected, or anything about the people who live there |
 | `pilot-education.jpg` | Two students welding in an Oregon public high-school shop class | — |
 
 `pilot-health-track.jpg` is also a **crop, and the crop is the point.**
@@ -38,23 +38,30 @@ source of the crop and is no longer referenced by any page. If this file is
 ever re-cut, cut it from `pilot-health.jpg` and keep the top edge below
 y = 800 of 1600 — above that line the shirt graphic starts.
 
-`pilot-maternal.jpg` is a **crop**, and the crop is the point. The USDA original
-is a two-person photograph: the mother, and a child care provider she is handing
-a bottle of breastmilk to. The provider is a real, identifiable woman with no
-relationship to this institute or this pilot, and the earlier crop left her at the
-right edge, cut mid-face, beside the words *Infant Mortality*. The shipped file
-ends before her at every variant and in every shape the site renders it in. If
-this image is ever re-cut, cut it from the original and keep the right edge inside
-x = 3860 of 7360.
+`pilot-maternal.jpg` was **replaced in wave 9** and the file is no longer a
+photograph of a person. The client rejected the previous frame — the USDA
+picture of a mother holding her infant in the doorway of a family child care
+home — and it is gone from disk, along with the obsolete `pilot-maternal-crop.*`
+workaround. Nothing on the site should be written as though that photograph is
+still there.
 
-Its credit follows the rule below like the other three, and it names the frame,
-not the rights-holder: **`Family child care home · USDA`**. It used to read
-"U.S. Department of Agriculture", which told a reader who owns the picture and
-nothing about what it shows — so under a 55px *Infant Mortality* headline the
-only line attached to an identifiable private individual was an agency name.
-For the same reason this is the one pilot frame that ships real `alt` text
-rather than `alt=""`: the others are places and events described by the copy
-set on them, this one is a person.
+What ships now is Carol M. Highsmith's *Aerial view of Indianapolis, Indiana*
+(LC-DIG-highsm-40936, 2016), cropped to 3:2 from the top of the frame. It is a
+**place, not a person**, and it is the actual place: pilot 03 is proposed for
+Indianapolis. That makes it the fourth Highsmith frame in the set, which is what
+holds the photography together as one system.
+
+The credit is therefore a location like the other Highsmith frames —
+**`Indianapolis, Indiana`** — and this pilot no longer needs real `alt` text.
+It ships `alt=""` like the other three: the frame is a place the surrounding copy
+already names, and there is no longer a subject an assistive reader is owed a
+description of.
+
+The limits on this frame are limits on what it may be said to depict. It is
+downtown, seen from a plane, in September. It is **not** a hospital, a clinic, a
+health system, a neighbourhood the pilot has chosen, or a picture of anybody who
+lives there. The pilot's *where* line is `Indianapolis.` and the credit says
+`Indianapolis, Indiana`; that is the whole of the claim and it happens to be true.
 
 ## The second rule, added in wave 8: SCALE IS PART OF THE CLAIM
 
@@ -121,3 +128,23 @@ tension disappears and this frame should be swapped out.
 `founder-mckelvy.jpg` and `founder-olanoff.jpg` deliberately do not exist. There
 is no rights-cleared portrait of either founder and synthetic likenesses of real
 people are out of the question. People must be strong without portraits.
+
+## Outstanding: the homepage Stake scene shares this file
+
+`pilot-maternal.jpg` is used in two places — pilot 03's plate on `/pilots/` and
+the full-bleed Stake scene on the homepage (`src/components/scroll-Stake-alt.astro`,
+fed by `stake` in `src/data/site.js`). The wave-9 replacement changed the picture
+under **both**. The pilot's own strings were updated with it; the Stake scene's
+were **not**, and they are now wrong:
+
+- `src/components/scroll-Stake-alt.astro` hard-codes `stakeCredit =
+  'Family child care home · USDA'` and a `stakeAlt` describing a mother and infant.
+- `src/data/site.js` → `stake.credit` is `'U.S. Department of Agriculture'`, and the
+  long comment on `stake.altLine` explains itself in terms of "an identifiable woman
+  in a U.S. Department of Agriculture photograph".
+
+Those three strings describe a photograph that is no longer on disk. They must be
+corrected — credit to `Indianapolis, Indiana`, `alt` to `''` (the scene's sentence
+is the content; there is no longer a person to describe) — before the site ships.
+The wave-9 media pass was scoped to pilot 03 only and deliberately did not touch
+another component's copy.

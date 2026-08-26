@@ -1,0 +1,106 @@
+---
+/* people-portrait — the identification photograph on a prospective-board
+   record, and nothing else on the site uses it.
+
+   WHY IT IS SMALL, AND WHY IT IS NOT A TILE.
+   Sixteen faces set as equal squares in a grid is a board page: the genre
+   says "these people serve here" before a single word is read, and none of
+   these sixteen has agreed to serve. So the picture is not the object — the
+   RECORD is. This renders a narrow 4:5 plate that hangs on the record's own
+   column rule beside the name, at roughly the height of the name plus its
+   title line. That is the register of a docket, an identification photograph
+   attached to a file, and it is the one genre in which a photograph of a
+   person does not assert that the person is with you.
+
+   THE TREATMENT IS THE HOUSE GRADE, HELD BACK.
+   The client's sixteen files arrive at one monochrome treatment but sixteen
+   background densities — a white studio sweep behind Kyla Scanlon, near-black
+   behind Aneesh Chopra. Left alone on cream that is sixteen different objects.
+   Two moves fix it and both are already in tokens.css: the navy `color`
+   blend that every photograph on this site takes (--fig-tint), and a cream
+   veil over the top. The veil is doing double duty — it brings sixteen
+   densities into one band AND it holds the whole set a step back from the
+   ink of the names, so the pictures read as attached to the page rather than
+   printed on it. Nothing here is decoration; --pp-veil is the knob and it is
+   set once, on the roster.
+
+   NO SCRIPT. The image is opaque on arrival and carries no data-state: the
+   figure grade's load/ready handshake is right for a full-bleed plate and
+   wrong for sixteen thumbnails, and a photograph that needs JavaScript to
+   become visible is the bug this site already shipped once. Motion, if any,
+   belongs to the band this sits in. */
+import fs from 'node:fs';
+
+const { src, alt = '', class: klass = '' } = Astro.props;
+
+const onDisk = (p) => {
+  if (typeof p !== 'string' || !p.startsWith('/')) return false;
+  try { if (fs.existsSync(new URL(`../../public${p}`, import.meta.url))) return true; } catch { /* build */ }
+  try { return fs.existsSync(`${process.cwd()}/public${p}`); } catch { return true; }
+};
+
+const file = onDisk(src) ? src : null;
+const webp = file && /\.(jpe?g|png)$/i.test(file) ? file.replace(/\.(jpe?g|png)$/i, '.webp') : null;
+const webpFile = webp && onDisk(webp) ? webp : null;
+---
+{file && (
+  <span class:list={['pp', klass]}>
+    <picture>
+      {webpFile && <source type="image/webp" srcset={webpFile} />}
+      <img src={file} alt={alt} width="480" height="480" loading="lazy" decoding="async" />
+    </picture>
+    <span class="pp__tint" aria-hidden="true"></span>
+    <span class="pp__veil" aria-hidden="true"></span>
+  </span>
+)}
+
+<style>
+  .pp {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    isolation: isolate;
+    /* The plate under the picture is the page's own ink at the density the
+       veil will land on, so a slow image and a loaded one occupy the same
+       value and the row never flashes. */
+    background: color-mix(in srgb, var(--fg) 12%, transparent);
+  }
+  .pp img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* 4:5 out of a 480² source crops the SIDES, so the head keeps its full
+       top-to-shoulder run in every one of the sixteen. */
+    object-position: 50% 46%;
+    /* grayscale first — several files still carry a cool cast of their own,
+       and the tint below has to be the only hue in the set. Contrast is
+       pulled slightly because the veil will lift the blacks anyway. */
+    filter: grayscale(1) contrast(0.93) brightness(1.03);
+  }
+  /* The house tint: the same navy `color` blend Figure.astro puts on every
+     photograph, at the same strength, so these belong to the same commission
+     as the committee room above them. */
+  .pp__tint {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #0C2440;
+    mix-blend-mode: color;
+    opacity: var(--fig-tint);
+    pointer-events: none;
+  }
+  /* The held-back half. Cream over the picture: sixteen densities become one
+     band, and the band sits a measurable step under the ink of the names.
+     --pp-veil is declared by the roster, once. */
+  .pp__veil {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: var(--bg);
+    opacity: var(--pp-veil, 0.2);
+    pointer-events: none;
+  }
+</style>

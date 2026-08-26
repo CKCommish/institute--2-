@@ -73,18 +73,29 @@ rights — bright midday sky with cumulus, which read cheerful against the rest 
 | field | value |
 |---|---|
 | **Slot** | Pilot — Butler University: Infant Mortality in Indianapolis |
-| **Title** | *Infant Nutrition (Team Nutrition) (20210805-FNS-UNC-0006)* |
-| **Creator** | U.S. Department of Agriculture (USDAgov), Food and Nutrition Service — Team Nutrition |
-| **Date** | 2017-12-20 (released 2021-08-05) |
-| **Description** | Mother holding her baby and handing a bottle of breastmilk to a child care provider in the kitchen of a family child care home setting. |
-| **License / rights** | Public Domain — work of the U.S. federal government, 17 U.S.C. § 105. USDA note: "All photos are property of USDA with unlimited rights to the use and reproduction." SPDX-ish: `PD-USGov-USDA` |
-| **Source page** | https://commons.wikimedia.org/wiki/File:Infant_Nutrition_(Team_Nutrition)_(20210805-FNS-UNC-0006).jpg |
-| **Direct file URL** | https://upload.wikimedia.org/wikipedia/commons/1/15/Infant_Nutrition_%28Team_Nutrition%29_%2820210805-FNS-UNC-0006%29.jpg |
-| **Original size** | 7360 × 4912 |
-| **Processing** | **Re-cropped (third pass, wave 5)** to 3:2 from the top-left of the frame — x 0–52.4% (0–3860 px), y 0–52.4% (0–2573 px) — resized to 2400 × 1600; contrast +4.5%; mild downscale sharpen. mozjpeg q82 / webp q78. No colour grade is baked in; the site applies its own. |
-| **What the shipped crop shows** | **The mother and her infant, alone in frame.** The child care provider — a second real, identifiable woman — is outside the right edge at every variant and every rendered shape. Her leftmost pixel in the original is x ≈ 3950; the crop closes at 3860. |
-| **Site credit** | `Family child care home · USDA` — what the frame shows, not the rights-holder. Ships with real `alt` text; it is the one pilot frame whose subject is a private individual. |
-| **Crop history** | Pass 1 used x 5–77% and kept the provider in frame. Pass 2 recorded an intent to drop her that was never applied to the shipped files; the workaround `pilot-maternal-crop.*` (2060 × 1600, a right-trim of the pass-1 output) was made instead and is now obsolete. Pass 3 is this entry, cut from the original. |
+| **Title** | *Aerial view of Indianapolis, Indiana* |
+| **Creator** | Carol M. Highsmith |
+| **Date** | 2016-09-19 |
+| **Collection** | Carol M. Highsmith Archive, Library of Congress Prints and Photographs Division |
+| **Call number** | LC-DIG-highsm-40936 |
+| **License / rights** | Public Domain — LOC rights advisory: "No known restrictions on publication." SPDX-ish: `PD-US` / `NoC-US` |
+| **Source page** | https://www.loc.gov/item/2016631754/ |
+| **Direct file URL** | https://tile.loc.gov/image-services/iiif/service:pnp:highsm:40900:40936/full/pct:100/0/default.jpg |
+| **Original size** | 8406 × 5604 |
+| **Processing** | Cropped to 3:2 from the top of the frame — full width, y 0–94% (0–5268 px) — which drops a band of surface parking and interstate ramps at the foot and lets the skyline sit on the lower third. Resized to 2400 × 1600 (lanczos); contrast +4.5%; mild downscale sharpen. mozjpeg q78 / webp q74. No colour grade is baked in; the site applies its own. |
+| **What the shipped crop shows** | Downtown Indianapolis from the air on a hazy afternoon: the Chase Tower and the cluster of towers around Monument Circle, low-rise blocks and a convention hall in the near ground, the tree canopy of the surrounding neighbourhoods running out to a flat horizon. **No identifiable person is in the frame.** |
+| **Site credit** | `Indianapolis, Indiana` — what the frame shows. `alt=""` (decorative); the copy beside it names the place. |
+
+**Replaced (wave 9):** the previous file in this slot was *Infant Nutrition (Team Nutrition)
+(20210805-FNS-UNC-0006)*, USDA / Food and Nutrition Service,
+https://commons.wikimedia.org/wiki/File:Infant_Nutrition_(Team_Nutrition)_(20210805-FNS-UNC-0006).jpg
+— a mother holding her infant in the kitchen doorway of a family child care home, cropped to
+exclude the child care provider beside her. It was public domain and correctly credited; it was
+**rejected by the client** and is not on disk. It is not replaced for rights reasons. The
+replacement also settles a standing editorial problem: an identifiable private individual is no
+longer printed under the words *Infant Mortality*, and the frame is now the city the pilot would
+actually run in. The obsolete `pilot-maternal-crop.*` workaround files were deleted in the same
+pass.
 
 ## 5. `pilot-education.jpg` / `.webp` / `@1200.*`
 
