@@ -3,6 +3,12 @@ export const site = {
   short: 'Lion Forum Institute',
   mission:
     'The Lion Forum Institute exists to ensure the technologies of tomorrow strengthen American families today.',
+  /* ⚠ INVENTED — NOT FROM THE BRIEF. This address and the domain in
+     astro.config.mjs were both authored during the first commit and never
+     confirmed. This is the site's ONLY call to action, on all six pages, and
+     the canonical/og:url on every page points at that domain. If the mailbox
+     does not exist, every conversion path on the site is dead. See
+     CONTENT-NOTES.md — client must confirm or replace. */
   email: 'partners@lionforuminstitute.org',
 };
 

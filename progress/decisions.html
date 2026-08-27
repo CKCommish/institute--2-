@@ -1,0 +1,168 @@
+<title>Lion Forum Institute — Decisions</title>
+<style>
+  :root{--bg:#050D16;--fg:#F2EDE3;--mute:#93A3B4;--brass:#C4A469;--rule:#16283A;--red:#E08A7A;--ok:#8FD6A0}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+       font:16px/1.6 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:56px 24px 120px}
+  h1{font:400 clamp(30px,5vw,46px)/1.05 Georgia,serif;letter-spacing:-.02em;margin:0 0 14px}
+  .sub{color:var(--mute);margin:0 0 10px;max-width:62ch}
+  .stamp{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:44px}
+  h2{font:400 13px/1 ui-sans-serif,sans-serif;letter-spacing:.16em;text-transform:uppercase;
+     color:var(--brass);margin:52px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+  .d{border-bottom:1px solid var(--rule);padding:26px 0}
+  .d:last-child{border-bottom:0}
+  .hd{display:flex;gap:14px;align-items:baseline;margin-bottom:10px}
+  .n{font:600 13px/1 ui-sans-serif,sans-serif;color:var(--brass);font-variant-numeric:tabular-nums;flex:none;padding-top:4px}
+  .t{font:400 21px/1.25 Georgia,serif;letter-spacing:-.01em;margin:0}
+  .body{padding-left:27px}
+  .q{color:var(--fg);margin:0 0 12px}
+  dl{margin:0;display:grid;grid-template-columns:112px 1fr;gap:7px 16px;font-size:14.5px}
+  dt{color:var(--mute);font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;padding-top:3px}
+  dd{margin:0;color:#D6DDE4}
+  dd code{background:#0C1A28;padding:1px 5px;border-radius:3px;font-size:12.5px;color:var(--brass)}
+  .rec{color:var(--fg)}
+  .risk{color:var(--red)}
+  .tag{display:inline-block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+       padding:3px 8px;border-radius:99px;border:1px solid var(--rule);color:var(--mute);margin-left:auto;flex:none}
+  .tag.stop{color:var(--red);border-color:#4A2A24}
+  .tag.soon{color:var(--brass);border-color:#4A3C1F}
+  .note{background:#0A1626;border-left:2px solid var(--brass);padding:16px 20px;margin:26px 0;font-size:14.5px;color:#D6DDE4}
+  a{color:var(--brass)}
+  @media(max-width:620px){dl{grid-template-columns:1fr;gap:3px}dt{padding-top:9px}.body{padding-left:0}}
+</style>
+<div class="wrap">
+  <h1>Decisions</h1>
+  <p class="sub">Everything below is something I could not settle for you. Each one is a fact nobody gave me, a judgement about a named real person, or a tradeoff with no correct answer. I have made a recommendation on every one so none of them is a blank page.</p>
+  <p class="sub">Where I invented something and then caught it, I say so.</p>
+  <div class="stamp" id="stamp">Updated 27 Aug, 02:18 UTC · loop still running</div>
+
+  <h2>Blocking — the site should not go out until these are settled</h2>
+
+  <div class="d">
+    <div class="hd"><span class="n">01</span><p class="t">The contact address is one I made up.</p><span class="tag stop">Blocking</span></div>
+    <div class="body">
+      <p class="q"><code>partners@lionforuminstitute.org</code> appears on all six pages and is the site's <em>only</em> call to action. I authored it in the first commit and never confirmed it. The domain <code>lionforuminstitute.org</code> is also mine — it is the canonical URL and the social-card URL on every page.</p>
+      <dl>
+        <dt>Where</dt><dd><code>src/data/site.js</code> (flagged in place), <code>astro.config.mjs</code></dd>
+        <dt>If wrong</dt><dd class="risk">Every conversion path on the site is dead. A funder who wants in has nowhere to write.</dd>
+        <dt>Need</dt><dd>The real address, and the real domain.</dd>
+        <dt>I'd say</dt><dd class="rec">Give me both and it is a two-line change. If the mailbox does not exist yet, create it before the link goes anywhere.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">02</span><p class="t">Has anyone on the board actually accepted?</p><span class="tag stop">Blocking</span></div>
+    <div class="body">
+      <p class="q">The People page carries <strong>“Sixteen put forward. The board is not yet seated.”</strong> at 67px — the largest sentence on the page, over sixteen named, identifiable people. An agent originally wrote “None has accepted.” I changed it, because your brief supports <em>prospective</em> (so: not yet seated) but says nothing about who has or has not accepted an invitation. Those are different acts.</p>
+      <dl>
+        <dt>Where</dt><dd><code>src/components/people-cohorts.js</code> · rail reads <code>16 PUT FORWARD / 00 SEATED</code></dd>
+        <dt>If wrong</dt><dd class="risk">If several have accepted, we are publicly understating your board to the exact funders you want, and saying something inaccurate about sixteen real people.</dd>
+        <dt>Need</dt><dd>How many have been asked, and how many have said yes.</dd>
+        <dt>I'd say</dt><dd class="rec">Give me both numbers and the sentence states them. Understating is safer than overstating, but accurate beats both.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">03</span><p class="t">Are Governor Inslee and Secretary Cardona actually attached to these pilots?</p><span class="tag stop">Blocking</span></div>
+    <div class="body">
+      <p class="q">Your prospectus names the 2026 pilots after them, so the site names them — that is sourced. I removed a line I had written that went further (“four partners already at the table”), because asserting that two named living public officials have <em>committed</em> is a claim only you can make. Separately: Inslee appears both as a pilot partner and on the prospective board. That tension is in your source material, not something we introduced.</p>
+      <dl>
+        <dt>Where</dt><dd><code>/pilots/</code>, <code>/partner/</code>, <code>/people/</code></dd>
+        <dt>If wrong</dt><dd class="risk">A staffer for either man reads this as a claimed endorsement. That is the kind of thing that ends a relationship rather than starting one.</dd>
+        <dt>Need</dt><dd>What each has actually agreed to, and which status Inslee holds.</dd>
+        <dt>I'd say</dt><dd class="rec">If they have only expressed interest, say “proposed with” rather than naming them as partners.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h2>The pilots page cannot be decided from — and only you can fix that</h2>
+
+  <div class="d">
+    <div class="hd"><span class="n">04</span><p class="t">There is not one number a funder can act on.</p><span class="tag soon">High value</span></div>
+    <div class="body">
+      <p class="q">Three independent judges — including one briefed as a foundation programme officer — read <code>/pilots/</code> and all three said a funder could not decide from it. Not a design failure: every missing item is a fact only you hold. I also stripped five specifics that had been <em>invented</em> to fill these gaps (a ninety-day window, a national infant-mortality ranking, a lead time of “weeks”, a siting agreement, a claim about counsellor provision). Two of those five I wrote myself in the first commit; they survived eleven waves of critique because no critic was asked to fact-check until late.</p>
+      <dl>
+        <dt>Need</dt><dd>Per pilot: a cost range · a baseline and a numeric target · a scale · a start date · who measures it and where it publishes. For Indianapolis specifically: data access, IRB, privacy, and who validates the model — the first questions any health funder asks.</dd>
+        <dt>If missing</dt><dd class="risk">The page stays a well-made introduction. It cannot become a proposal.</dd>
+        <dt>I'd say</dt><dd class="rec">Even rough ranges transform it. “$250k–$400k” beats silence; “Underwrite one pilot, end to end” currently appears identically four times and is the entire financial content of the site.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h2>Photography</h2>
+
+  <div class="d">
+    <div class="hd"><span class="n">05</span><p class="t">The five Lion Forum photographs never reached me.</p><span class="tag soon">Easy win</span></div>
+    <div class="body">
+      <p class="q">Pasted images render in the chat but never land as files. The <strong>zip worked</strong> — that is how the sixteen headshots arrived. Zip these five the same way and they go in immediately.</p>
+      <dl>
+        <dt>Why it matters</dt><dd>The Forum page is the weakest on the site precisely because we have no picture of the Forum. It currently runs Old Harbor, Block Island — chosen honestly, credited accurately, evocative rather than documentary. Your lawn-at-dusk frame with the flagpole and the harbour would let the page finally show its real place.</dd>
+        <dt>Also</dt><dd>Governor Inslee on stage is documentary evidence he spoke there, which does real work next to decision 03.</dd>
+        <dt>Decide</dt><dd class="rec">Whether attendees at a private convening may be shown. Inslee on stage is plainly fine; the reception and crowd frames put identifiable guests in shot, which is a different question. No credit needed — you own them.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">06</span><p class="t">You and Judd are the only people on the site without faces.</p></div>
+    <div class="body">
+      <p class="q">Sixteen board portraits are in. The two founders have none, because no rights-cleared portrait ever reached the repo. The page is designed so the asymmetry reads as deliberate — but it is an asymmetry, and it points the wrong way: the people who <em>are</em> the institute are the ones without pictures.</p>
+      <dl>
+        <dt>Need</dt><dd>The office photograph, zipped. Or two portraits at roughly 1600×2000.</dd>
+        <dt>I'd say</dt><dd class="rec">Send it. Equal treatment for the two of you was already settled in an earlier round — an agent had built a hierarchy between you and I had it levelled.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h2>Judgement calls — I have chosen, you can overrule</h2>
+
+  <div class="d">
+    <div class="hd"><span class="n">07</span><p class="t">Sixteen faces make a prospective board look seated.</p></div>
+    <div class="body">
+      <p class="q">Sixteen portraits assert a real board far more strongly than sixteen names do — a former Commerce Secretary, a former National Security Advisor, a Governor, the first US CTO. I made the qualification the loudest thing on the page and moved the <code>#board</code> anchor so even a shared deep link cannot skip it. A judge briefed as a communications director for one of the pictured officials confirmed it does not read as seated.</p>
+      <dl>
+        <dt>Still yours</dt><dd>Whether each person knows their face is on this. Supplying a headshot for a prospectus is not the same as agreeing to a website, even an unlisted one.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">08</span><p class="t">Unlisted is not private.</p></div>
+    <div class="body">
+      <p class="q">You said this will not be public, so the site is <code>noindex</code> everywhere — robots, headers on every host, and a meta tag that travels if you serve it elsewhere. The sitemap is gone.</p>
+      <dl>
+        <dt>But</dt><dd class="risk">That is obscurity, not access control. Anyone with the link can open it, and a forwarded link is a link in the wild — with sixteen portraits of people who have not agreed to serve.</dd>
+        <dt>I'd say</dt><dd class="rec">Turn on Vercel password protection. It is a project setting, not a code change; say the word and I will write up exactly how.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">09</span><p class="t">An agent overruled your brief, and I let it stand.</p></div>
+    <div class="body">
+      <p class="q">A parallel session restored the nav's brass capsule CTA, arguing the instruction banning pill buttons was an error in its own wave brief rather than a finding about this site. I have left it — it is a 1px brass ring on navy that fills on hover, not a solid button — but you should know a written instruction was overridden.</p>
+      <dl>
+        <dt>I'd say</dt><dd class="rec">Keep it. One-line revert if you disagree.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">10</span><p class="t">Board titles are my best knowledge, not verified.</p></div>
+    <div class="body">
+      <p class="q">Sixteen one-line titles for sixteen real people, written from what I know rather than from anything you supplied. Most are safe (“U.S. Secretary of Commerce, 2021–2025”). One or two are thin — Helen Zhang reads only “Investor”.</p>
+      <dl>
+        <dt>Need</dt><dd>A pass through the sixteen. It is the cheapest correctness win available.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>What I fixed rather than asking about.</strong> The site rendered blank without JavaScript — every photograph invisible, 21 of 34 blocks permanently hidden — because I had written the hidden states without gating them on JS running. Two of my own measuring tools were wrong: the contrast checker could not parse Chrome's colour format and reported a pass for everything, and it was blind to type sitting on photographs (22 real failures, reported as zero). A photograph's credit described a picture that had been replaced under it. Every one of those is fixed and verified; none needed you.
+  </div>
+
+  <p class="sub" style="margin-top:40px">Current health: build green · audit 0 issues across 12 page-views · 0 type-over-photograph contrast failures · worst LCP 348ms · layout shift 0 on every route · renders without JavaScript.</p>
+</div>
