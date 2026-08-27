@@ -24,9 +24,9 @@
    order, unaltered: it is neither ranked nor re-sorted by us, because both
    of those would be decisions we have no basis for.
 
-   What is left in this file is arithmetic (`standingOf`, `rowsFor`) and two
-   clauses of quoted offices (`boardBridge` / `homeBridge`). Nothing here
-   characterises anybody.
+   What is left in this file is arithmetic (`standingOf`) and two clauses of
+   quoted offices (`boardBridge` / `homeBridge`). Nothing here characterises
+   anybody.
 
    The filename is now a fossil — there are no cohorts. It is kept because
    both pages that show the board import from it and a stable path is worth
@@ -133,10 +133,9 @@ export function standingOf(board) {
    calibre of the room, stated as fact instead of as three headings we
    wrote ourselves.
 
-   `rowsFor` returns the row count per column count so the fill stays
-   column-major at every width: a reader takes the left column top to
-   bottom, then the right one, the way a printed roster is read. */
-export function rowsFor(board) {
-  const n = board.length;
-  return { two: Math.ceil(n / 2), one: n };
-}
+   `rowsFor` used to live here: it returned a row count per column count so
+   the plate could be filled column-major, left column top to bottom and
+   then the right, the way a printed roster is read. The plate is filled
+   row-major now — see the field rule in people.astro for the argument —
+   and a row-major grid needs no row count, so the export is gone rather
+   than left exported and unused. */

@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
 import Portrait from '../components/people-portrait.astro';
 import { founders, board } from '../data/site.js';
-import { rowsFor, standingOf, boardBridge, mastheadBridge } from '../components/people-cohorts.js';
+import { standingOf, boardBridge, mastheadBridge } from '../components/people-cohorts.js';
 
 /* We hold no rights-cleared portraits of either founder, and the page is
    built to be complete without them: a record here is a typographic entry,
@@ -31,9 +31,8 @@ const beforeLabel = 'Before the institute';
 /* Order is site.js's order, which is the prospectus's order. Nothing on
    this page re-sorts, ranks or groups the sixteen — see the header of
    people-cohorts.js for why the three cohorts that used to live there are
-   gone. The only thing derived here is how many rows the plate needs at
-   each column count. */
-const rows = rowsFor(board);
+   gone. Nothing is derived from the list here at all: the plate lays out in
+   source order and the CSS does the rest. */
 
 /* The one fact that has to survive sixteen photographs. */
 const standing = standingOf(board);
@@ -226,10 +225,10 @@ const founderCount = String(founders.length).padStart(2, '0');
 
       {/* THE PLATE.
 
-          Two tracks, one gutter, filled column-major: a reader takes the
-          left column top to bottom and then the right one, the way a
-          printed roster is read. The column rule is the left edge of a
-          RECORD — drawn on the entry, exactly as tall as the entry box — so
+          Two tracks, one gutter, filled ROW-MAJOR: the sequence runs across
+          the pair and then down. See the field rule in the CSS for why the
+          printed-roster fill was given up. The column rule is the left edge
+          of a RECORD — drawn on the entry, exactly as tall as the entry box — so
           a rule can only ever exist beside a name. Sixteen fills two tracks
           exactly, which 6 / 5 / 5 could never do on three: the plate is a
           closed rectangle at both column counts the site ships, and every
@@ -268,12 +267,10 @@ const founderCount = String(founders.length).padStart(2, '0');
             <span class="label label--lit">{standing.acceptedLabel}</span>
           </span>
         </p>
-        {/* Column-major fill needs a row count, and the row count is a
-            function of how many tracks are showing. Both are declared here
-            and the stylesheet picks one per breakpoint, so the fill order
-            survives the fold instead of silently becoming row-major. */}
-        <ul class="roster" data-wipe="left" data-delay="140"
-            style={`--rows-2:${rows.two};--rows-1:${rows.one}`}>
+        {/* Row-major needs no row count and no per-breakpoint arithmetic:
+            the order is source order at one track and at two, so the fold
+            cannot change it. */}
+        <ul class="roster" data-wipe="left" data-delay="140">
           {board.map((p) => (
             <li class="ent">
               {/* alt="" ON PURPOSE. The name and the title sit as text
@@ -717,26 +714,44 @@ const founderCount = String(founders.length).padStart(2, '0');
   }
   .wall__st { display: flex; align-items: baseline; gap: 0.85rem; }
 
-  /* THE FIELD. Two tracks, one gutter, filled column-major — the left
-     column runs 01 to 08 top to bottom and the right one carries the rest,
-     which is how a printed roster is read and what keeps the near-alphabetic
-     run of the client's own order vertical.
+  /* THE FIELD. Two tracks, one gutter, filled ROW-MAJOR — the pair of
+     records on a row is consecutive, and the sequence runs across and then
+     down.
+
+     WHY THE FILL MOVED RATHER THAN GAINING A CUE. The client's order runs
+     near-alphabetically by surname, and that run is the only property of the
+     sequence a reader can see. Filled column-major it was invisible: row one
+     read Bailey / McIntosh, row two Bahat / Mitchell, and a two-column plate
+     of wide records — picture, then name over office, left to right — is
+     scanned across its rows. A reader taking the rows saw no order at all,
+     and there was nothing on the sheet saying "read down first". The
+     alternative was to put that instruction on the sheet, and every form of
+     it costs a mark this page has already decided against: an ordinal is a
+     rank on sixteen people whose only known attribute is a title, a brass
+     A–Z or a "read down" label is a second brass object on a sheet whose one
+     brass object is the standing rail, and a column head that says nothing
+     about the people under it is what the three cohort headings were.
+
+     Row-major needs no cue at all. The order a reader uses becomes the order
+     the sequence is in, and the run states itself across the first row —
+     Bailey, Bahat — with nothing added to the sheet. It costs nothing
+     structurally: sixteen still fills two tracks exactly, no cell is empty,
+     and one track on a phone is the same run either way. What is given up is
+     the printed-roster gesture of a column read top to bottom, which was a
+     convention the plate never told anyone it was using.
 
      ONE TERRITORY, ONE MOVE. The three bands each wiped down as their own
      place, which was right when there were three places. There is one now,
      and it takes one mask travelling left — at two tracks that reads as the
      left column uncovering and then the right, which is also the order the
-     sheet is read in. Sixteen individually revealing records would be
-     sixteen identical blinks, which is the failure this page fixed once
-     already. */
+     sheet is read in — one sweep across a sheet that is now also read
+     across. Sixteen individually revealing records would be sixteen
+     identical blinks, which is the failure this page fixed once already. */
   .roster {
-    --rows: var(--rows-2);
     list-style: none; margin: 0;
     padding: clamp(1.9rem, 3.4vw, 3rem) 0 clamp(1.9rem, 3.4vw, 3rem);
     display: grid;
-    grid-auto-flow: column;
     grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-    grid-template-rows: repeat(var(--rows), auto);
     column-gap: var(--gut);
     row-gap: clamp(1.5rem, 2.5vw, 2.4rem);
   }
@@ -846,8 +861,8 @@ const founderCount = String(founders.length).padStart(2, '0');
   }
 
   /* ── Narrow ─────────────────────────────────────────────────────── */
-  /* THE ONLY THING A BREAKPOINT CHANGES ABOUT THE ROSTER. Column count and
-     the row count that keeps the fill column-major; the gutter, the rules,
+  /* THE ONLY THING A BREAKPOINT CHANGES ABOUT THE ROSTER. The column count;
+     the fill order is source order at every width now. The gutter, the rules,
      the indent and both registers are the same object at every width.
      There is exactly one fold now instead of two, because there are two
      column counts instead of three — and both of them divide sixteen
@@ -857,7 +872,7 @@ const founderCount = String(founders.length).padStart(2, '0');
      two 40px apart. Below it a track cannot hold a name at --step-sub and
      an office beside a face without both of them ragging, so the plate is
      one column and the records take the whole measure. */
-  @media (max-width: 860px) { .wall { --cols: 1; } .roster { --rows: var(--rows-1); } }
+  @media (max-width: 860px) { .wall { --cols: 1; } }
 
   @media (max-width: 1180px) {
     .bd__bridge { max-width: 52ch; }

@@ -109,12 +109,32 @@ for (let k = 0; k <= N; k++) {
   }, MIN_OP);
 
   if (!geo.length) { console.log(`hp ${hp}   (nothing live)`); continue; }
-  /* hide the type and re-shoot: we want the picture UNDER it */
-  await page.evaluate(() => document.querySelectorAll('[data-hold] *').forEach((e) => e.style.setProperty('visibility', 'hidden', 'important')));
-  await page.waitForTimeout(110);
+  /* HIDE THE TYPE, NOT THE SCENE. This used to be `[data-hold] *`, which hid
+     every descendant of the track — the <img>, the grade stack, the ink, the
+     cap — so the re-shot 'backdrop' was flat page ground (L* 3.4) at every
+     sample and every ratio it printed was the ratio against navy. It reported
+     0 failures because it was measuring nothing. Only the TEXT tags come out,
+     the way photo-meter does it, so the photograph and every wash over it
+     stay in the frame. `display:none` rather than `visibility:hidden`, because
+     visibility leaves ::before/::after painted — the bug credit-sweep had.
+     Chrome text (the fixed bar) is hidden too, since it is type in front of
+     the picture; the bar's own scrim is not, since it is backdrop. */
+  const hid = await page.evaluate(() => {
+    const els = [...document.querySelectorAll(TEXT_SEL)];
+    els.forEach((e) => { e.dataset.hmPrev = e.style.display; e.style.setProperty('display', 'none', 'important'); });
+    return els.length;
+  });
+  await page.waitForTimeout(140);
   const shot = await page.screenshot();
   const raw = await sharp(shot).removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  await page.evaluate(() => document.querySelectorAll('[data-hold] [style]').forEach((e) => e.style.removeProperty('visibility')));
+  await page.evaluate(() => {
+    document.querySelectorAll('[data-hm-prev]').forEach((e) => {
+      e.style.removeProperty('display');
+      if (e.dataset.hmPrev) e.style.display = e.dataset.hmPrev;
+      delete e.dataset.hmPrev;
+    });
+  });
+  void hid;
 
   console.log(`hp ${hp}`);
   for (const t of geo) {

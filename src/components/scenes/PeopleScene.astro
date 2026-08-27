@@ -251,7 +251,10 @@ const standing = standingOf(board);
      masthead sets a run of names — and the "16" in the qualifier above is
      left as the only brass in the scene, which is the same thing the
      standing rail is on the roster at /people/. */
-  .people__more { justify-self: start; }
+  /* One line, always. It is a rule-closing tick — a two-line 11px label is
+     not a tick, it is a scrap. See the 480 fold below for where the row
+     gives up the corner rather than the label giving up its register. */
+  .people__more { justify-self: start; white-space: nowrap; }
   @media (hover: hover) {
     .people__more:hover { color: var(--brass); }
   }
@@ -277,5 +280,21 @@ const standing = standingOf(board);
     .fd--portrait .fd__role { grid-column: 2; }
     .fd__role { text-align: left; }
     /* The separator rule is unconditional now — see the base rule above. */
+  }
+
+  /* THE ROW GIVES UP THE CORNER; THE LABEL DOES NOT GIVE UP ITS REGISTER.
+     The head is a spread — count and qualifier at the left rule, "All
+     people" closing on the right. Under 480 the qualifier needs two lines
+     of serif and the link has 67px left, so it set as "ALL" over "PEOPLE":
+     a stacked 11px scrap where the row's right-hand mark should be, hung
+     off the first baseline of a two-line sentence. The register cannot go
+     smaller — 11px is the site's floor and these are the words that qualify
+     sixteen named people — so the spread is what is spent. Below 480 the
+     head stacks: the qualifier takes the whole measure, and the link sits
+     under it on the rail as one line, opening the rule it precedes. The
+     same move the scene's own head makes at 860. */
+  @media (max-width: 480px) {
+    .people__wall-head { display: block; }
+    .people__more { display: inline-block; margin-top: 0.9rem; }
   }
 </style>
