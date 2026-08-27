@@ -603,6 +603,63 @@ const style = [
       0 0 3px rgba(3, 9, 16, 0.86),
       0 1px 14px rgba(3, 9, 16, 0.78);
   }
+
+  /* …and a shadow is not enough, because a shadow is not measurable.
+     tools/credit-sweep.mjs samples each credit's backdrop at every scroll
+     position it is on screen for, rather than once: on a HELD scene the
+     picture moves under a credit that does not, so a single sample is a coin
+     toss. Swept, the homepage Forum credit fell to 3.38:1 over bright dusk
+     water at scrollY 5243 — under the 4.5:1 floor — while a static check of
+     the same label read 11.47:1.
+
+     This label is not decoration. It is the one thing on the homepage
+     preventing a reader from taking a Rhode Island harbour for the Kennedy
+     Compound (refs/PHOTO-FACTS.md). A safeguard that is legible only at some
+     scroll positions is not a safeguard.
+
+     So: an actual painted wash, sized to the glyph box and feathered well past
+     it. It is the page's own ground, so on a dark corner it is ink on ink and
+     changes nothing; over bright water it buys the register its floor back. */
+  /* A credit ALWAYS sits on a photograph, so it must never inherit the
+     surrounding section's ground. Scoped to `.on-cream`, `--fg` and
+     `--fg-meta` both resolve to dark ink — which is correct for the page and
+     wrong for a label lying on a dark picture inside it. Measured: the
+     Muskingum County credit on /pilots/ rendered at 1.12:1, dark on dark,
+     effectively invisible. Pin it to the palette's cream rather than to
+     whatever the section happens to be. */
+  .fig__credit { color: var(--cream); }
+
+  /* Over a full-bleed photograph the credit uses the register ABOVE its own.
+     tokens.css caps --fg-meta at a backdrop of L* 20; a held or parallaxed
+     frame cannot promise that at every scroll position, and this label is a
+     factual safeguard rather than a caption. When the rule cannot be met, take
+     the next rung up rather than quietly failing the floor. On a dark corner
+     the difference is barely visible; over bright water it is the difference
+     between legible and not. */
+  .fig--fill .fig__credit { color: var(--cream); }
+
+  .fig__credit::before {
+    content: '';
+    position: absolute;
+    inset: -1.15em -2.1em -1.2em -2.2em;
+    z-index: -1;
+    border-radius: 50%;
+    /* A radial wash under a wide, short label leaves its two ends thin, which
+       is where the sweep kept finding the failure. A backdrop filter darkens
+       whatever is actually behind the glyphs, so it holds at the ends too and
+       adapts to the picture instead of guessing at it. The gradient below
+       stays as the fallback where backdrop-filter is unsupported. */
+    -webkit-backdrop-filter: brightness(0.34) saturate(0.85);
+    backdrop-filter: brightness(0.34) saturate(0.85);
+    background: radial-gradient(
+      ellipse at center,
+      rgba(3, 9, 16, 0.95) 0%,
+      rgba(3, 9, 16, 0.89) 38%,
+      rgba(3, 9, 16, 0.52) 64%,
+      rgba(3, 9, 16, 0.18) 84%,
+      rgba(3, 9, 16, 0) 100%
+    );
+  }
   .fig__credit[data-pos^='top']    { top: var(--ci); }
   .fig__credit[data-pos^='bottom'] { bottom: var(--ci); }
   .fig__credit[data-pos$='right']  { right: var(--ci); }

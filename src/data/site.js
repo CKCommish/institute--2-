@@ -1,5 +1,8 @@
 export const site = {
   name: 'Lion Forum Institute',
+  /* Confirmed by the client, 27 Aug. */
+  legal: '501(c)(3)',
+  founded: '2026',
   short: 'Lion Forum Institute',
   mission:
     'The Lion Forum Institute exists to ensure the technologies of tomorrow strengthen American families today.',
@@ -18,6 +21,24 @@ export const nav = [
   { label: 'Forum', href: '/forum/' },
   { label: 'People', href: '/people/' },
 ];
+
+/* THE MODEL — from the prospectus, verbatim in substance.
+   This is what four reviewers said the site did not have: a number a funder
+   can act on. Do not round it, dress it up, or add a figure beside it that
+   the prospectus does not carry. */
+export const model = {
+  label: 'Core Partnership',
+  amount: '$2 million',
+  cadence: 'a year',
+  lead: 'Core Partners make multi-year commitments that both build the Institute and fund the pilots they choose to support.',
+  split: [
+    { amount: '$1M', name: 'Core support',
+      text: 'The team, technology and infrastructure that develops the pipeline of pilots.' },
+    { amount: '$1M', name: 'Dedicated pilot funding',
+      text: 'Deployed across the pilot opportunities the partner selects.' },
+  ],
+  scale: 'Partnership levels scale with the size of the annual commitment. The largest Core Partners get first look across the full pipeline.',
+};
 
 export const cta = { label: 'Partner on a pilot', href: '/partner/' };
 
@@ -74,11 +95,11 @@ export const pilots = [
     id: 'healthy-athletes',
     index: '01',
     partner: 'Special Olympics',
-    title: 'Healthy Athletes',
-    tagline: 'A free screening becomes real follow-up care.',
+    title: 'Global Health Data',
+    tagline: 'The largest dataset on IDD health, opened to everyone.',
     field: 'Health',
-    problem: 'Screenings find the problem. Care rarely follows.',
-    approach: 'An app that carries the result home.',
+    problem: 'Two million free screenings since 1997, and no shared record of what they found.',
+    approach: 'Gather Healthy Athletes data worldwide into an open-source dataset.',
     goal: 'Care completed, not just recommended.',
     horizon: '3–12 months',
     /* The 3:1 band cut from the foot of the Army frame. The full frame is
@@ -122,7 +143,7 @@ export const pilots = [
       where: 'Special Olympics screening events.',
       needs: {
         fund: 'One pilot, end to end.',
-        build: 'A team to build the app.',
+        build: 'A partner to build and host the open dataset.',
         run: 'A programme, and follow-up care.',
       },
     },
@@ -171,8 +192,8 @@ export const pilots = [
        PEOPLE the intervention is for, not where the mortality falls — that is
        `detail.who`. Same category as the national ranking already stripped. */
     problem: 'Infant mortality in Indianapolis.',
-    approach: 'Maternal health data read for early risk.',
-    goal: 'Risk identified early enough to act on.',
+    approach: 'AI across the city’s maternal health data, plus a targeted intervention.',
+    goal: 'Fewer infant deaths, and a model other cities can replicate.',
     horizon: '3–12 months',
     /* Wave 9: the file behind this path is now Carol M. Highsmith's aerial
        of downtown Indianapolis (LC-DIG-highsm-40936). The USDA photograph of
@@ -298,22 +319,22 @@ export const founders = [
    and not only in a label. Per-person permission to publish a likeness is
    still to be confirmed: see CONTENT-NOTES.md. */
 export const board = [
-  { name: 'John Bailey', line: 'Senior Fellow, American Enterprise Institute' , portrait: '/media/board/bailey.jpg' },
+  { name: 'John Bailey', line: 'Nonresident Senior Fellow, American Enterprise Institute' , portrait: '/media/board/bailey.jpg' },
   { name: 'Roy Bahat', line: 'Head, Bloomberg Beta' , portrait: '/media/board/bahat.jpg' },
-  { name: 'Aneesh Chopra', line: 'First Chief Technology Officer of the United States' , portrait: '/media/board/chopra.jpg' },
-  { name: 'Guy Filippelli', line: 'Founder, RedOwl Analytics' , portrait: '/media/board/filippelli.jpg' },
-  { name: 'Michael Hole', line: 'Pediatrician; Professor, UT Austin' , portrait: '/media/board/hole.jpg' },
+  { name: 'Aneesh Chopra', line: 'First U.S. Chief Technology Officer; Chair, Arcadia Institute' , portrait: '/media/board/chopra.jpg' },
+  { name: 'Guy Filippelli', line: 'Founder and Managing Partner, Squadra Ventures' , portrait: '/media/board/filippelli.jpg' },
+  { name: 'Michael Hole', line: 'Executive Vice President and Provost, Butler University' , portrait: '/media/board/hole.jpg' },
   { name: 'Galym Imanbayev', line: 'Partner, Lightspeed Venture Partners' , portrait: '/media/board/imanbayev.jpg' },
-  { name: 'Governor Jay Inslee', line: 'Governor of Washington, 2013–2025' , portrait: '/media/board/inslee.jpg' },
-  { name: 'Tess deBlanc-Knowles', line: 'Former Special Advisor for AI, White House OSTP' , portrait: '/media/board/deblanc-knowles.jpg' },
-  { name: 'Robin McIntosh', line: 'Co-founder and Co-CEO, Workit Health' , portrait: '/media/board/mcintosh.jpg' },
+  { name: 'Governor Jay Inslee', line: 'Former Governor of Washington' , portrait: '/media/board/inslee.jpg' },
+  { name: 'Tess deBlanc-Knowles', line: 'AI and national security policy' , portrait: '/media/board/deblanc-knowles.jpg' },
+  { name: 'Robin McIntosh', line: 'Co-founder and Board Chair, Workit Health' , portrait: '/media/board/mcintosh.jpg' },
   { name: 'Nate Mitchell', line: 'Co-founder, Oculus' , portrait: '/media/board/mitchell.jpg' },
-  { name: 'Gina Raimondo', line: 'U.S. Secretary of Commerce, 2021–2025' , portrait: '/media/board/raimondo.jpg' },
-  { name: 'Kyla Scanlon', line: 'Writer on the economy' , portrait: '/media/board/scanlon.jpg' },
-  { name: 'Jake Sullivan', line: 'U.S. National Security Advisor, 2021–2025' , portrait: '/media/board/sullivan.jpg' },
-  { name: 'Bradley Tusk', line: 'Founder, Tusk Ventures' , portrait: '/media/board/tusk.jpg' },
+  { name: 'Gina Raimondo', line: 'Former U.S. Secretary of Commerce' , portrait: '/media/board/raimondo.jpg' },
+  { name: 'Kyla Scanlon', line: 'Economic commentator, author and creator' , portrait: '/media/board/scanlon.jpg' },
+  { name: 'Jake Sullivan', line: 'Former U.S. National Security Advisor' , portrait: '/media/board/sullivan.jpg' },
+  { name: 'Bradley Tusk', line: 'Co-founder and Managing Partner, Tusk Venture Partners' , portrait: '/media/board/tusk.jpg' },
   { name: 'Julie Yoo', line: 'General Partner, Andreessen Horowitz' , portrait: '/media/board/yoo.jpg' },
-  { name: 'Helen Zhang', line: 'Investor' , portrait: '/media/board/zhang.jpg' },
+  { name: 'Helen Zhang', line: 'Schmidt Futures' , portrait: '/media/board/zhang.jpg' },
 ];
 
 export const forum = {

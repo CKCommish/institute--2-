@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site, pilots } from '../data/site.js';
+import { site, pilots, model } from '../data/site.js';
 
 /* THE THREE WAYS IN ARE DOORS, NOT DESCRIPTIONS.
    This is the conversion page and, until now, its one chooser was three
@@ -203,6 +203,40 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
 
   {/* The one hard cut in the scroll: the ground changes and the three
        doors arrive. Numeral is the index, the verb is the content. */}
+  {/* ── The model ────────────────────────────────────────────────────
+       Four independent reviewers — a fact-checker, a foundation programme
+       officer, the craft critic and a sceptical journalist — all said the
+       same thing: there is no number anywhere on this site a funder can act
+       on. "Underwrite one pilot, end to end" appeared four times and was the
+       entire financial content. The prospectus had the answer all along; the
+       site did not. It goes above the three doors, because the size of the
+       commitment is what decides whether someone reads the doors at all. */}
+  <section class="model" id="model">
+    <div class="shell model__in">
+      <div class="model__head">
+        <p class="eyebrow" data-reveal>{model.label}</p>
+        <p class="bridge model__lead" data-reveal="90">{model.lead}</p>
+      </div>
+
+      <div class="model__figure" data-reveal="150">
+        <span class="display display--feature model__amount">{model.amount}</span>
+        <span class="model__cadence">{model.cadence}</span>
+      </div>
+
+      <ol class="model__split" data-seq="110" data-seq-from="60">
+        {model.split.map((part) => (
+          <li class="model__part" data-reveal>
+            <span class="index model__part-n tnum">{part.amount}</span>
+            <h3 class="model__part-t">{part.name}</h3>
+            <p class="model__part-p">{part.text}</p>
+          </li>
+        ))}
+      </ol>
+
+      <p class="model__scale" data-reveal="240">{model.scale}</p>
+    </div>
+  </section>
+
   <section class="on-cream proles" id="ways">
     <div class="shell proles__in">
       <div class="proles__head">
@@ -858,6 +892,33 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
     .pindex__a:hover .pindex__arrow,
     .pindex__a:focus-visible .pindex__arrow { transform: none; }
   }
+
+  /* ── The model ──────────────────────────────────────────────────── */
+  .model { padding-block: clamp(3.5rem, 7vw, 6.5rem); border-top: 1px solid var(--rule); }
+  .model__in { display: grid; gap: clamp(1.75rem, 3.5vw, 3rem); }
+  .model__head { display: grid; gap: clamp(0.9rem, 1.8vw, 1.4rem); }
+  .model__lead { max-width: 46ch; }
+  .model__figure { display: flex; align-items: baseline; gap: 0.6ch; }
+  .model__amount { line-height: 0.92; letter-spacing: -0.028em; }
+  .model__cadence {
+    font-size: var(--step-lede, 1.19rem);
+    color: var(--fg-mute);
+  }
+  .model__split {
+    list-style: none; margin: 0; padding: clamp(1.25rem, 2.4vw, 1.9rem) 0 0;
+    border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+  }
+  .model__part { display: grid; gap: 0.55rem; align-content: start; }
+  .model__part-n { font-size: var(--step-lede, 1.19rem); letter-spacing: 0.02em; }
+  .model__part-t {
+    font-family: var(--sans); font-size: var(--step-body, 1rem);
+    font-weight: 500; letter-spacing: -0.004em; margin: 0;
+  }
+  .model__part-p { color: var(--fg-mute); font-size: var(--step-body, 1rem); max-width: 34ch; }
+  .model__scale { color: var(--fg-meta); font-size: var(--step-body, 1rem); max-width: 52ch; }
+  @media (max-width: 720px) { .model__split { grid-template-columns: 1fr; } }
 </style>
 
 <script>
