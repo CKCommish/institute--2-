@@ -53,11 +53,24 @@ bar, which is deliberately a different object without a script; that band is
 `nojs-meter`'s, in contrast. **Run both.**
 
 **Two numbers to quote correctly.** The site's tightest type-over-photograph is
-the 11px "By invitation" eyebrow on the homepage Forum figure: **4.70:1 on
-mobile**, 0.20 above AA, at the bottom of the parallax travel. It was long
-reported as 9.38:1 — photo-meter measured one viewport at one scroll position
-and overstated it by 58%. The next thinnest is **4.79:1**, the 13px brass
-section indices. Quote 4.70, not 9.38.
+the 11px "By invitation" eyebrow on the homepage Forum figure: **4.563:1 on
+mobile**, 0.06 above AA, at t≈0.275 of the held scene's pinned range. It has
+now been misquoted twice, each time by a meter that did not sample densely
+enough. It was 9.38 while photo-meter measured one viewport at one scroll
+position — 58% too generous. It was then 4.70 on a 16-sample sweep; at 40
+samples the same curve floors at 4.563. The next thinnest is **4.79:1**, the
+13px brass section indices.
+
+Two things follow. **Quote 4.563, not 4.70 and not 9.38.** And note what the
+correction means: the margin on the site's tightest type is 0.06, not 0.20,
+and it always was — wave 12's `floor` change did not move it (the minimum
+sits where `--open` is 1 and `floor` contributes nothing by construction;
+verified by re-sweeping the pre-change build). No gate is positioned to catch
+this number moving: photo-meter samples one position and steps past the
+shoulder, hold-meter's 17 positions step past the minimum, and during wave 12
+the two instruments read the same string as 4.17:1 and 7.19:1. Anyone
+touching `--k`, the ink knee, or the cap in `HeldScene.astro` must sweep it
+densely by hand.
 
 **A trap worth knowing.** `base.css` sets `html { scroll-behavior: smooth }`,
 so `window.scrollTo` starts an animation. Any meter that scrolls and then waits

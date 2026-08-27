@@ -414,7 +414,12 @@ export const forum = {
      WHEN THE CLIENT'S OWN KENNEDY COMPOUND FRAMES LAND: this string does
      not need to change. It is true of the event either way, and 'Held at'
      is not a hedge against the stand-in — it is what the line means. */
-  place: 'Held at the Kennedy Compound, Hyannis Port',
+  /* NBSP between 'Kennedy' and 'Compound': at 390px, and in the stacked
+     (no-JS / reduced-motion) held scene at 26ch, the line broke the proper
+     noun across two lines — 'Held at the Kennedy / Compound, Hyannis Port'.
+     forum.astro widens the desktop lock to 46ch for exactly this reason; the
+     narrow surfaces need the glue instead. Measured: no overflow at 390. */
+  place: 'Held at the Kennedy\u00A0Compound, Hyannis Port',
   access: 'By invitation',
   line: 'The people who build sit with the people who decide.',
   /* THE CLOSE, set on cream at the series-breaker rung. One sentence that
