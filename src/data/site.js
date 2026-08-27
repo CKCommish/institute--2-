@@ -30,10 +30,10 @@ export const model = {
   label: 'Core Partnership',
   amount: '$2 million',
   cadence: 'a year',
-  lead: 'Core Partners make multi-year commitments that both build the Institute and fund the pilots they choose to support.',
+  lead: 'Core Partners make multi-year commitments that both build the Institute and fund the pilots they choose to support. A typical annual Core Partnership:',
   split: [
     { amount: '$1M', name: 'Core support',
-      text: 'The team, technology and infrastructure that develops the pipeline of pilots.' },
+      text: 'The team, technology and infrastructure that develops the pipeline of high-impact pilots.' },
     { amount: '$1M', name: 'Dedicated pilot funding',
       text: 'Deployed across the pilot opportunities the partner selects.' },
   ],
@@ -55,8 +55,8 @@ export const cta = { label: 'Partner on a pilot', href: '/partner/' };
      THE DETAIL  `detail`, below. What a programme officer has to leave
                  with: what the pilot actually does, who it is for, the
                  kind of place it would run in, and — set apart, because
-                 it is half the truth about a proposed pilot — what it
-                 still needs. SIX FIELDS, ONE SHORT LINE EACH — the same
+                 it is half the truth about any pilot still open to
+                 partners. SIX FIELDS, ONE SHORT LINE EACH — the same
                  cap the brief puts on a card field, because that is the
                  only reading of "at most 3 short lines of supporting
                  text" a dedicated detail block can honour: prose is
@@ -65,31 +65,38 @@ export const cta = { label: 'Partner on a pilot', href: '/partner/' };
                  `who` names the PEOPLE and `where` names the PLACE — if a
                  value repeats the other's noun, one of them is wrong.
 
-   EVERY STRING IN `detail` IS A RESTATEMENT OF refs/BRIEF.md, nothing
-   more. The brief gives each pilot one sentence; those sentences carry
-   facts the old page threw away (adherence / reminders / navigation;
-   clean power, jobs, affordability, community benefit; Medicaid mothers
-   in Indianapolis; low-income students, school to work). They are here.
-   What the brief does NOT give — a named state, a named district, a
-   named health system, a budget, a start date, a technology partner —
-   is ABSENT, and its absence is the `needs` block. See CONTENT-NOTES.md
-   for the list of slots deliberately left empty.
+   EVERY STRING IN `detail` IS A RESTATEMENT OF refs/PROSPECTUS.txt, which
+   is canonical and supersedes refs/BRIEF.md wherever the two differ. The
+   prospectus gives each pilot a Problem, an Approach and a Goal in its own
+   words; those are the source for `problem` / `approach` / `goal` and for
+   the three `detail` rows. What the prospectus does NOT give — a named
+   state, a named school, a named health system, a budget, a start date, a
+   technology partner — is ABSENT, and its absence is the `needs` block.
+   See CONTENT-NOTES.md for the list of slots deliberately left empty.
 
-   `needs.run` is the only slot that names a KIND of institution the
-   brief does not name for that pilot individually; the brief's own list
-   of implementation partners ("health systems, universities, community
-   orgs, and government") is the source, and the mood is conditional
-   throughout. Nothing here says a pilot is running, funded or sited. */
+   `needs.run` names a KIND of institution the prospectus does not name for
+   that pilot individually; the prospectus's own list of implementation
+   partners ("health systems, hospitals and providers, universities,
+   community partners, government") is the source. */
 /* FACTUAL DISCIPLINE — read before editing any string below.
-   Every claim here must be traceable to refs/BRIEF.md. These pilots are
-   PROPOSED: no partner is signed, no budget is set, no target is agreed.
-   Three independent fact-checkers found that this file's most quotable
-   specifics had been authored rather than sourced — a ninety-day window, a
-   national infant-mortality ranking, a lead time of "weeks", a siting
-   agreement as the legal instrument. All are now removed. Do not reintroduce
-   a number, an interval, a ranking or a named instrument unless the brief
-   supplies it; a missing fact is recoverable, a fabricated one attributed to a
-   real partner is not. Facts still needed from the client: CONTENT-NOTES.md. */
+   Every claim here must be traceable to refs/PROSPECTUS.txt, or to
+   refs/BRIEF.md where the prospectus is silent. Six independent
+   fact-checkers have now found authored specifics in this file — a
+   ninety-day window, a lead time of "weeks", a siting agreement as the
+   legal instrument, a head office, a sponsorship tier, a chair count. Do
+   not reintroduce a number, an interval, a ranking or a named instrument
+   unless a source supplies it; a missing fact is recoverable, a fabricated
+   one attributed to a real partner is not.
+
+   STATUS. The prospectus heads this list "CURRENT PILOT PIPELINE — FOUR
+   ACTIVE PILOTS — 2026" and says the Institute "is working with" Special
+   Olympics, Governor Inslee and Butler University. The site used to say the
+   opposite — "proposed", "none is signed" — which was an authored negative
+   no source ever carried and which the canonical document contradicts.
+   `status` is the prospectus's own word per pilot: Active for 01-03, and
+   Exploring for 04, whose approach line says the Institute "is exploring"
+   it. Do not upgrade 04, and do not write that any partner has SIGNED —
+   no source says that either. Facts still needed: CONTENT-NOTES.md. */
 export const pilots = [
   {
     id: 'healthy-athletes',
@@ -98,10 +105,11 @@ export const pilots = [
     title: 'Global Health Data',
     tagline: 'The largest dataset on IDD health, opened to everyone.',
     field: 'Health',
-    problem: 'Two million free screenings since 1997, and no shared record of what they found.',
+    problem: 'More than 2 million free screenings since 1997. The next step is follow-up care.',
     approach: 'Gather Healthy Athletes data worldwide into an open-source dataset.',
-    goal: 'Care completed, not just recommended.',
+    goal: 'Better IDD healthcare worldwide, the dataset open to all.',
     horizon: '3–12 months',
+    status: 'Active',
     /* The 3:1 band cut from the foot of the Army frame. The full frame is
        a seven-year-old girl at a Unified track meet in South Korea, face
        and school name legible, and at 1440 wide it filled the screen under
@@ -138,13 +146,13 @@ export const pilots = [
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Unified track event · Camp Humphreys, Korea',
     detail: {
-      what: 'Reminders, adherence and navigation.',
-      who: 'Athletes who take a free screening.',
-      where: 'Special Olympics screening events.',
+      what: 'An open dataset researchers and health systems can build on.',
+      who: 'People with intellectual and developmental disabilities.',
+      where: 'Healthy Athletes screenings across the world.',
       needs: {
         fund: 'One pilot, end to end.',
         build: 'A partner to build and host the open dataset.',
-        run: 'A programme, and follow-up care.',
+        run: 'Follow-up care after a screening.',
       },
     },
   },
@@ -155,10 +163,11 @@ export const pilots = [
     title: 'Clean Data Centers',
     tagline: 'States negotiate the buildout instead of absorbing it.',
     field: 'Energy',
-    problem: 'Data centers arrive before states set terms.',
+    problem: 'States need better tools to negotiate data center projects.',
     approach: 'A playbook for the negotiating table.',
-    goal: 'Those terms adopted by one state.',
+    goal: 'Clean energy expanded, good jobs, lower energy costs.',
     horizon: '3–12 months',
+    status: 'Active',
     image: '/media/pilot-energy.jpg',
     /* the cool outlier: +22 blue-over-red before the trim. See pilot 01. */
     plate: { grade: 0.5, sat: 4.6, tint: 0, warm: 35, lift: 0.1 },
@@ -166,9 +175,9 @@ export const pilots = [
        a pilot's name set over a full-bleed frame reads as a caption for it. */
     credit: 'Muskingum County, Ohio',
     detail: {
-      what: 'Clean power, jobs, affordability, community benefit.',
+      what: 'Clean power, affordability, workforce, permitting, community benefit.',
       who: 'State governments, and affected communities.',
-      where: 'One state, at the point of siting.',
+      where: 'States negotiating with data center developers.',
       needs: {
         fund: 'One pilot, end to end.',
         build: 'A partner to build the playbook.',
@@ -184,17 +193,22 @@ export const pilots = [
     /* "in the weeks that decide outcomes" was an asserted clinical window —
        the same claim as the "ninety-day window" this file's header records as
        already removed, rewritten as prose so it no longer looked like a
-       number. BRIEF.md gives data plus intervention, and nothing else. */
+       number. No source gives a window. */
     tagline: 'Risk found in the data, and acted on.',
     field: 'Health',
-    /* "concentrated among Medicaid mothers" was an epidemiological claim about
-       a named city's health data that no source carries. BRIEF.md names the
-       PEOPLE the intervention is for, not where the mortality falls — that is
-       `detail.who`. Same category as the national ranking already stripped. */
-    problem: 'Infant mortality in Indianapolis.',
+    /* THE RANKING IS REAL AND IS BACK. An earlier fact-check stripped it as
+       invented, because BRIEF.md does not carry it. refs/PROSPECTUS.txt does,
+       in its own words: "Indianapolis has one of the highest infant mortality
+       rates among major American cities, and mothers on Medicaid too often
+       miss the prenatal care and early warnings that save infant lives."
+       Both halves of that sentence are now on the page — the ranking here,
+       the Medicaid clause in `detail.who`. Do not sharpen "one of the
+       highest" into a rank number; the prospectus does not give one. */
+    problem: 'Indianapolis has one of the highest infant mortality rates among major American cities.',
     approach: 'AI across the city’s maternal health data, plus a targeted intervention.',
     goal: 'Fewer infant deaths, and a model other cities can replicate.',
     horizon: '3–12 months',
+    status: 'Active',
     /* Wave 9: the file behind this path is now Carol M. Highsmith's aerial
        of downtown Indianapolis (LC-DIG-highsm-40936). The USDA photograph of
        a mother and infant that used to sit here was rejected by the client
@@ -211,8 +225,8 @@ export const pilots = [
        not a person: the copy set beside it already names Indianapolis. */
     alt: '',
     detail: {
-      what: 'Maternal health data read early, and acted on.',
-      who: 'Mothers on Medicaid.',
+      what: 'Risk factors found in city data; care at the right time.',
+      who: 'Mothers on Medicaid, who too often miss prenatal care.',
       where: 'Indianapolis.',
       needs: {
         fund: 'One pilot, end to end.',
@@ -224,16 +238,17 @@ export const pilots = [
   {
     id: 'career-pathways',
     index: '04',
-    partner: 'Secretary Miguel Cardona',
+    partner: 'Secretary Cardona',
     title: 'Career Pathways',
     tagline: 'Guidance that follows a student from school to work.',
     field: 'Education',
-    problem: 'The largest choices, with the least guidance.',
-    approach: 'Built with districts, school to work.',
+    problem: 'Low-income students lack clear guidance on careers and credentials.',
+    approach: 'AI guidance on careers, skills and training routes.',
     /* "More students" is a comparison, and there is no baseline to compare
        to: no pilot has run. The goal without the comparative is the same goal. */
-    goal: 'Students land in a defined pathway.',
+    goal: 'Personal guidance, and awareness of high-opportunity jobs.',
     horizon: '3–12 months',
+    status: 'Exploring',
     image: '/media/pilot-education.jpg',
     /* already close to the target; it is the frame the other three were
        brought toward. See pilot 01. */
@@ -244,45 +259,48 @@ export const pilots = [
     detail: {
       what: 'Personalised guidance, school through to work.',
       who: 'Low-income students.',
-      where: 'Public school districts.',
+      where: 'Schools and workforce partners.',
       needs: {
         fund: 'One pilot, end to end.',
         build: 'A partner to build the guidance.',
-        run: 'A district willing to run it.',
+        run: 'A school or workforce partner.',
       },
     },
   },
 ];
 
 /* The terms every one of the four is offered on, stated once at the top of
-   /pilots/ instead of four times down it. Every value is refs/BRIEF.md or
-   copy already shipped elsewhere on this site:
-     · 3–12 months, measurable outcome, publish the lesson  → BRIEF
-     · "None is signed."                                    → /partner/
-     · "money, a technology, or somewhere real to run it"   → /partner/ */
+   /pilots/ instead of four times down it. Every value is refs/PROSPECTUS.txt:
+     · "designed to show measurable results in 3 to 12 months"
+     · "FOUR ACTIVE PILOTS — 2026", and 04 "is exploring"
+     · "We then share those lessons with the world."
+   The third row used to promise publication "whatever it says" / "either
+   way". No source carries that commitment — the prospectus says the lessons
+   are shared, not that a null result is reported. The promise is now the
+   sourced one. */
 export const pilotTerms = [
   {
     key: '3–12',
     term: 'Months',
-    text: 'From the first week to a published result.',
+    text: 'Designed to show measurable results in that window.',
   },
   {
-    key: 'Proposed',
+    key: 'Active',
     term: 'Status',
-    text: 'Named partners are sought for 2026. None is signed.',
+    text: 'Four active pilots for 2026. The fourth is still in exploration.',
   },
   {
-    key: 'Either way',
-    term: 'Published',
-    text: 'One measurable outcome each, reported whatever it says.',
+    key: 'Shared',
+    term: 'Lessons',
+    text: 'One measurable outcome each, and the lesson goes to the world.',
   },
 ];
 
 /* ── How the institute works ──────────────────────────────────────── */
 export const method = [
-  { index: '01', title: 'Find the problem', text: 'One an institution already owns.' },
+  { index: '01', title: 'Find the problem', text: 'Health, education, workforce, energy.' },
   { index: '02', title: 'Match the partners', text: 'Who builds it. Who runs it.' },
-  { index: '03', title: 'Measure, then publish', text: 'Whatever the result.' },
+  { index: '03', title: 'Measure, then publish', text: 'The lesson goes to the world.' },
 ];
 
 /* ── People ───────────────────────────────────────────────────────── */
@@ -294,7 +312,7 @@ export const founders = [
       'Founding Partner, K. Ventures',
       'Founding Partner, The Lion Forum',
     ],
-    detail: 'Army Ranger. Oculus and Meta. MPA, Harvard.',
+    detail: 'Army Ranger, Afghanistan. Oculus VR and Meta. MPA, Harvard. BS, Syracuse.',
     portrait: '/media/founder-mckelvy.jpg',
   },
   {
@@ -304,7 +322,7 @@ export const founders = [
       'Founding Partner, K. Ventures',
       'Founding Partner, The Lion Forum',
     ],
-    detail: 'MBA, Stanford. MPA, Harvard. BA, Amherst.',
+    detail: 'Finance and politics. MBA, Stanford. MPA, Harvard. BA, Amherst.',
     portrait: '/media/founder-olanoff.jpg',
   },
 ];
@@ -353,11 +371,9 @@ export const forum = {
      synonym. Nothing in any source ranks the Institute among the Forum's
      sponsors. */
   role: 'The Institute is a major sponsor of the Lion Forum.',
-  /* BRIEF.md states this as intent — the Institute "uses it to recruit
-     partners and share results." This line used to be in the present tense
-     ("Pilots find their partners in this room, and come back to it to report
-     what happened"), which is recurring practice for something no pilot has
-     done once: none is signed. Purpose, not history. */
+  /* The prospectus states this as purpose — the Institute "uses it as a key
+     platform to recruit partners and share its results with the world."
+     Purpose, not history: no result has come back to the room yet. */
   roleNote: 'The Institute is there to find pilot partners, and to bring results back to the room.',
   /* The substance beat. A foundation officer or a policy lead has to leave
      this page knowing what the convening is, who is in it, and why the
@@ -369,15 +385,15 @@ export const forum = {
     rows: [
       {
         term: 'Format',
-        text: 'By invitation only, convened at the Kennedy Compound in Hyannis Port.',
+        text: 'By invitation only, convened each year at the historic Kennedy Compound in Hyannis Port.',
       },
       {
         term: 'The room',
-        text: 'Founders and investors who build these technologies, alongside the elected officials who decide how they are used.',
+        text: 'Members of Congress, senior administration officials and the leadership of the top AI labs, alongside founders and investors.',
       },
       {
-        term: 'Why it matters',
-        text: 'Those two groups settle what a technology becomes, and they are seldom in one room while there is still time to shape it.',
+        term: 'The subject',
+        text: 'Technology’s role in strengthening the pillars of life for American families, and in revitalizing the American Dream.',
       },
     ],
   },
@@ -388,13 +404,14 @@ export const forum = {
      third, and until now NOTHING answered the fourth — the page ended on a
      mailto and left the reader to guess whether it was an application.
 
-     What the brief actually supports is small, and this says only that:
-     the convening is invitation-only (brief), and the Institute is a lead
-     sponsor of it (brief). It therefore states the ONE useful negative — you
-     cannot apply — and names the one thing a reader can actually do. It does
-     NOT say who writes the guest list, what a sponsor's say over it is, how
-     often the Forum meets, or what happens after you write. None of that is
-     known. Do not add a line here that implies a process. */
+     What the sources support is small, and this says only that: the
+     convening is invitation-only, and the Institute is a major sponsor of
+     it. It therefore states the ONE useful negative — you cannot apply — and
+     names the one thing a reader can actually do. It does NOT say who writes
+     the guest list, what a sponsor's say over it is, or what happens after
+     you write. None of that is known. (How often it meets IS known — the
+     prospectus says "Each year", and the ledger's Format row now says so.)
+     Do not add a line here that implies a process. */
   invite: {
     term: 'Being invited',
     lines: [

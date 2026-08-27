@@ -26,7 +26,7 @@ import { pilots, pilotTerms } from '../data/site.js';
    2. THE TERMS, ONCE. Duration, status and the ask are true of all four,
       so they are stated once under the masthead rule instead of four times
       down the page. That is also where the page's most important sentence
-      now lives, at reading size: none of these is signed.
+      now lives, at reading size: what stage these four are actually at.
 
    3. THE TWELVE-MONTH AXIS IS CUT. It was the best-drawn object on the
       site and it encoded exactly one fact — ninety days is a quarter of
@@ -68,14 +68,14 @@ const grades = {
   'career-pathways': 0.56,
 };
 ---
-<Base title="Pilots" description="Four pilots proposed for 2026: what each one is, who it is for, and what it still needs.">
+<Base title="Pilots" description="Four active pilots for 2026: what each one is, who it is for, and where a partner comes in.">
   <section class="phead">
     <div class="shell phead__in">
-      <p class="eyebrow phead__eyebrow" data-reveal>Four pilots, proposed · 2026</p>
+      <p class="eyebrow phead__eyebrow" data-reveal>Four active pilots · 2026</p>
       {/* the rung between an 11px label and the poster line: without it the
            display type reads as merely large */}
       <p class="bridge phead__bridge" data-reveal="90">
-        One measurable outcome each. The result is published either way.
+        One measurable outcome each. The lesson goes to the world.
       </p>
       <h1 class="display display--poster phead__h lines">Proof, one problem at a time.</h1>
 
@@ -86,7 +86,9 @@ const grades = {
            choice — repeat the duration on four rails and say the status in
            an 11px word — cost four times the ink and told a reader less.
            Three keys at one serif rung, hung off the masthead rule. The
-           middle one is the sentence a funder must not be able to miss. */}
+           middle one is the sentence a funder must not be able to miss, and
+           it is now the prospectus's own: FOUR ACTIVE PILOTS for 2026, with
+           the fourth still in exploration. */}
       <dl class="terms" data-seq="110" data-seq-from="380">
         {pilotTerms.map((t) => (
           <div class="terms__i" data-reveal>
@@ -134,7 +136,7 @@ const grades = {
     <div class="shell pturn__in">
       <p class="eyebrow" data-reveal>In detail</p>
       <p class="display display--sub pturn__b" data-settle="0.62">
-        What each one is, who it is for, and what it still needs.
+        What each one is, who it is for, and where a partner comes in.
       </p>
     </div>
   </section>

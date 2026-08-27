@@ -48,17 +48,34 @@ const mast = onDisk(P.lawn.src)
       focal: '40% 50%', focalSm: '26% 50%',
       align: 'right', reach: 0.60, rise: 0.62 };
 
-/* SLOT 2 — THE PLATE. The stand-in's plate is a hard 3.6x crop because it is
-   the SAME photograph as the masthead and has to arrive as a different
-   subject rather than the same furniture at a longer lens. The stage frame
-   is a different photograph already, so it is shown whole. */
+/* SLOT 2 — THE PLATE, AND IT IS EMPTY TODAY. Like the room band below it.
+
+   THE CROP DID NOT WORK AND THE MEASUREMENT SAYS SO. The plate used to run
+   the masthead's own photograph at zoom 3.6 on the argument that a hard crop
+   makes it "arrive as a different subject". It does not: at 3.6 the band
+   still holds the sloop, the breakwater, the light tower and the horizon —
+   every object in the wide frame — so a reader 2,000px down the page meets
+   the same harbour a second time and reads it as the same harbour. The
+   Forum's ONE photograph was running three times across the site, twice on
+   the page about the Forum. A crop is not a second photograph.
+
+   And there is no crop of this negative that would be one. It is a harbour:
+   boats, breakwater, tower, water, sky. Cut tighter and the plate becomes an
+   abstract of water, which is decoration, which is worse. refs/BRIEF.md sizes
+   this page at "One photograph, one paragraph, sponsor relationship" — one is
+   the number, and until a SECOND frame exists the page runs one.
+
+   So the plate is now a slot on exactly the same terms as the room: it
+   renders when `forum.photos.stage` is on disk and it does not exist in the
+   built HTML until then. The stage frame is a different photograph of a
+   different thing, shown whole, and it is the picture this beat was always
+   asking for. The ledger runs straight into the cream close meanwhile — the
+   L* 15 → L* 92 step is unchanged, and it lands on flat navy, which is a
+   harder edge than a photograph's own dark foot ever was. */
 const plate = onDisk(P.stage.src)
   ? { ...P.stage, grade: 0.5, grain: 0.85,
       zoom: 1, focal: '50% 48%', zoomSm: 1.5, focalSm: '50% 48%' }
-  : { src: forum.image, grade: 0.52, grain: 0.85,
-      alt: 'A harbour at dusk: a moored hull, its mast foot, and the near end of the stone breakwater.',
-      credit: forum.credit,
-      zoom: 3.6, focal: '28% 77%', zoomSm: 4.2, focalSm: '28% 76%' };
+  : null;
 
 /* SLOT 3 — THE ROOM. Column-wide plates, no page type on them, no names
    under them. refs/PHOTO-FACTS.md: scale is part of the claim, and these are
@@ -80,21 +97,25 @@ const claim = forum.line
   .replace(/\bdecide\b/, '<em>decide</em>');
 ---
 {/*
-  FIVE BEATS, AND NO TWO OF THEM ARE DRAWN THE SAME WAY.
+  FOUR BEATS IN THE BUILD, AND NO TWO OF THEM ARE DRAWN THE SAME WAY. Two
+  more are wired and empty. The page has ONE photograph today because there
+  IS one photograph today.
 
     1  masthead   the photograph wide. Slot: forum.photos.lawn, standing in
                    today with the Block Island frame, whose empty right half
                    is why the name hangs off the right rail
-    2  the claim   type only, flush left, nothing beside it
-   (—) the room    THE SIXTH BEAT, AND IT IS NOT IN THE BUILD. One to three
-                   column-wide Lion Forum plates showing the claim above.
-                   Renders only when a file is on disk; there is none
-    3  the ledger  the reading size, and the page's first change of axis:
+   01  the claim   type only, flush left, nothing beside it
+   (—) the room    NOT IN THE BUILD. One to three column-wide Lion Forum
+                   plates showing the claim above. Renders only when a file
+                   is on disk; there is none
+   02  the ledger  the reading size, and the page's first change of axis:
                    three terms hanging right-aligned against three sentences
-    4  the plate   slot: forum.photos.stage. Standing in today with the SAME
-                   photograph as the masthead seen CLOSE — a band shorter
-                   than a viewport, carrying no type at all
-    5  the close   THE PAGE TURNED OVER — the role on the right, and in the
+   (—) the plate   NOT IN THE BUILD EITHER, AND THAT IS THE CHANGE. Slot:
+                   forum.photos.stage — the Lion Forum stage, whole, in a
+                   band shorter than a viewport carrying no type. It used to
+                   stand in with a 3.6x crop of the MASTHEAD'S OWN frame; see
+                   below
+   03  the close   THE PAGE TURNED OVER — the role on the right, and in the
                    rail beside it the fourth question answered
 
   EVERY PHOTOGRAPH HERE IS A STAND-IN AND THE PAGE KNOWS IT. We have no
@@ -108,15 +129,24 @@ const claim = forum.line
   real frames land, refs/PHOTO-FACTS.md says the Block Island stand-in comes
   OFF the site rather than staying on as decoration.
 
+  THE STAND-IN GETS ONE APPEARANCE PER PAGE. It is the only Forum photograph
+  that exists, so it is going to be on /forum/ and it is going to be on the
+  homepage's held scene. What it cannot be is on /forum/ TWICE — which it was,
+  as the masthead and again as the plate, which is how one picture came to run
+  three times across a six-page site. The plate now waits for a picture of its
+  own. refs/BRIEF.md sizes this page at "One photograph, one paragraph,
+  sponsor relationship"; one is the number.
+
   THE FOURTH QUESTION. A programme officer arrives wanting to know what this
   convening is, who is in it, what the Institute's relationship to it is, and
-  how one might be invited. §3 answers the first two, §5's sentence answers
+  how one might be invited. §02 answers the first two, §03's sentence answers
   the third, and the fourth was never answered at all: the page ended on a
   mailto whose label did not say whether it was an application. It is
-  answered in §5's rail, in the smallest voice on the section — and it says
+  answered in §03's rail, in the smallest voice on the section — and it says
   only what the brief supports, which is that the room is invited and the
-  Institute is in it. Not who writes the list, not how often the Forum sits,
-  not what happens after you write. None of that is known here.
+  Institute is in it. Not who writes the list, not what happens after you
+  write. Neither of those is known here. How often it sits IS known — the
+  prospectus says "Each year" — and the ledger's Format row says so.
 
   THE FRAME HAD AN EMPTY HALF AND THE PAGE WAS NOT USING IT. The sloop, its
   two masts and the breakwater all live in the left 62% of the masthead; the
@@ -132,52 +162,67 @@ const claim = forum.line
   and light at the upper right, one rule running between them.
 
   THE EXCEPTION, AND THERE IS ONLY ONE ON THE PAGE GROUND. Everything between
-  §2 and §4 is cream type on navy opening flush at x=51. §5 is full-bleed cream arriving directly off the
-  dark plate: L* 15 → L* 92, the largest tonal step the system owns, spent
-  once, on the only thing a foundation officer came to this page to find out —
-  what the Institute's relationship to this convening actually is. It is also
-  the one beat that does not begin at the rail: the eyebrow holds a narrow
-  left rail, the sentence starts at ~34% at --step-feature (the series-breaker,
-  used ONCE on this page, here) and runs into the right-hand column the rest
-  of the page leaves empty. Restraint plus one exception is composition.
+  the claim and the close is cream type on navy opening flush at x=51. The
+  close is full-bleed cream arriving directly off that navy: L* 15 → L* 92,
+  the largest tonal step the system owns, spent once, on the only thing a
+  foundation officer came to this page to find out — what the Institute's
+  relationship to this convening actually is. It is also the one beat that
+  does not begin at the rail: the eyebrow holds a narrow left rail, the
+  sentence starts at ~34% at --step-feature and runs into the right-hand
+  column the rest of the page leaves empty. Restraint plus one exception is
+  composition. (The step used to be measured off the plate's dark foot. With
+  the plate empty it is measured off flat page navy instead, which is the same
+  L* and a harder edge — the curtain retracting off a flat ground is a
+  cleaner event than one retracting off a photograph.)
 
-  GROUND BUDGET: hero photograph · plate photograph · cream. Three, the
-  ceiling. Which is why the ledger's .on-panel band came off — a 13-point step
-  on a 255 scale was spending a ground event and reading as nothing.
+  GROUND BUDGET: hero photograph · cream. Two today, three the ceiling — the
+  third is the plate, and it is held open for the picture that earns it, not
+  spent on a second pass over the picture above. Which is also why the
+  ledger's .on-panel band came off: a 13-point step on a 255 scale was
+  spending a ground event and reading as nothing.
 
-  THE PLATE WAS THE PAGE'S BEST IDEA AND ITS WORST EXECUTION. "One photograph,
-  seen twice — wide, then close" was right; zoom 4.2 at focal 21%/92% was not.
-  That point lands on open water, so the close half held less structure than
-  the flat panel above it and was past the source file's pixel budget besides.
-  It is now zoom 3.6 on 28%/77%: the moored hull itself, its reflection, the
-  dinghies and the near water — the horizon, the sky, the breakwater and the
-  lattice tower all out of frame, so the close is a DIFFERENT SUBJECT rather
-  than the same furniture at a longer lens. At 2.6 the crop still held sky,
-  horizon and tower and read as a second photograph. It carries no type — the bridge line that used to sit on
-  the water was a fourth slogan on a page already being sold with slogans.
-  Its one mark is the photograph's own credit, in Figure's corner voice, in
-  the deep zone of a bottom-left ramp, which is the only place on a photograph
-  the meta register is legal.
+  THE PLATE WAS THE PAGE'S BEST IDEA AND IT WAS NOT TRUE. "One photograph,
+  seen twice — wide, then close" is a good line and it does not survive being
+  looked at. The band ran at zoom 3.6 on 28%/77% of the masthead's own frame
+  and the claim in this comment was that the horizon, the sky, the breakwater
+  and the tower were all out of it. They are not: a reviewer measured the
+  render and found the same sloop, the same breakwater and the same tower on
+  the same water, two thousand pixels below where the reader last saw them.
+  It read as the masthead at a longer lens, because that is what it was.
+  There is no crop of a harbour that is a second photograph of a convening.
+  The beat is now a slot and it is empty; the frontmatter carries the rest.
 
   THE ASK IS SINGULAR. It used to be made twice within 330px — here, and again
   in the footer's secondary door, which on this route is a link to this page.
   The footer's is suppressed on /forum/ only.
 
-  TWO LOCATION STRINGS, TWO JOBS, and they no longer share a viewport.
-  "Kennedy Compound, Hyannis Port" describes the CONVENING and stays in the
-  masthead's display stack at the bridge rung. "Block Island, Rhode Island"
-  describes the PHOTOGRAPH and has moved to the plate, 2000px down the page,
-  in the dim credit register. See refs/PHOTO-FACTS.md.
+  TWO LOCATION STRINGS, TWO JOBS, TWO CORNERS. "Kennedy Compound, Hyannis
+  Port" describes the CONVENING: it sits in the masthead's foot band at the
+  bridge rung, lower left, plain sentence case. "Block Island, Rhode Island"
+  describes the PHOTOGRAPH: it sits in the opposite corner, upper right, in
+  the dim tracked credit register every full-bleed frame on this site uses.
+  Diagonally opposite, in two different voices, so a reader cannot collapse
+  one into the other. That separation is load-bearing while the picture is a
+  harbour 200 miles from the place the page names. See refs/PHOTO-FACTS.md.
 
   Motion ranks the page by KIND, not only by delay: the masthead lifts its
   lines on load, the claim SETTLES under scroll and its two italic verbs
   arrive behind the roman so the hinge of the sentence is its own event, the
-  plate WIPES open on both axes and then APPROACHES (1.055 → 1.000,
-  scroll-linked), the ledger and the close reveal.
+  cream close CUTS OVER (a navy curtain retracting off the ground itself),
+  the ledger reveals. The plate's wipe-and-approach is written and waits with
+  the plate.
 
-  Ladder, top to bottom: 126 banner · 86 poster · 67 feature · 26.6 bridge ·
-  19 lede · 16 body · 13.1 index · 11.7 micro.
-*/}<Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
+  THIS PAGE'S DISPLAY LADDER, top to bottom: 86 poster (the name) · 53 head
+  (the claim) · 67 feature (the close, on cream). Three lines, three rungs.
+  It used to be 86 · 86 · 67 — two poster blocks two screens apart with
+  nothing between them, which is a size repeated, not a ladder, and which no
+  other page on this site does. Every other route here opens at poster and
+  never returns to it.
+
+  The site ladder those rungs are drawn from: 126 banner · 86 poster · 67
+  feature · 53 head · 34 sub · 26.6 bridge · 19 lede · 16 body · 13.1 index ·
+  11.7 micro.
+*/}<Base title="Forum" description="The Lion Forum: an annual invitation-only convening at the Kennedy Compound, Hyannis Port.">
   {/* 1 ── the masthead. Kicker, dateline, name: the ladder the hero was
        missing, so 11.7px never stands directly against 126px again.
 
@@ -229,8 +274,22 @@ const claim = forum.line
     </div>
   </section>
 
-  {/* 2 ── the claim. Flush left, nothing in a margin beside it, and the
-       only thing on the page that moves with the scroll rather than at it. */}
+  {/* §01 ── the claim. Flush left, nothing in a margin beside it, and the
+       only thing on the page that moves with the scroll rather than at it.
+
+       IT IS NOT AT THE MASTHEAD'S SIZE ANY MORE, and that is the ladder.
+       This page used to set two blocks at --step-poster — 86px here and 86px
+       on the masthead, two screens apart with nothing between them — which no
+       other page on this site does, and which left /forum/ as the one route
+       with three display lines and only two rungs. The name is the page's
+       largest voice because it is the page's subject; the claim is a beat
+       INSIDE a section, which is --step-head everywhere else on the site; and
+       the close on cream keeps --step-feature. 86 · 53 · 67, in that order:
+       the page opens loud, drops into its own substance, and lifts back on
+       the turn to cream. The sentence loses nothing it was carrying — the
+       hinge, the measure and the settle are all still here, and at this size
+       the two italic verbs actually read as italics rather than as two large
+       shapes. */}
   <section class="fsay" id="fsay" aria-labelledby="fsay-h">
     <div class="shell">
       <div class="frow">
@@ -245,7 +304,7 @@ const claim = forum.line
       <p class="bridge fsay__who" data-reveal="120">{forum.who}</p>
 
       <div class="fsay__claim" data-reveal>
-        <h2 class="display display--poster fsay__p" id="fsay-h" data-settle="0.52" set:html={claim}></h2>
+        <h2 class="display display--head fsay__p" id="fsay-h" data-settle="0.52" set:html={claim}></h2>
       </div>
     </div>
   </section>
@@ -284,7 +343,7 @@ const claim = forum.line
     </section>
   )}
 
-  {/* 3 ── THE LEDGER, and the page's one change of axis.
+  {/* §02 ── THE LEDGER, and the page's one change of axis.
 
        This page sold the Forum with four slogans and a mailto. A programme
        officer who wanted to know what the convening actually IS had nothing
@@ -301,7 +360,7 @@ const claim = forum.line
        It sits on the page ground. It used to be an .on-panel band, but a
        13-point step on a 255 scale is not a tonal event and it was costing
        one of the page's three ground changes; the rules do the ranking and
-       the change of value is spent on §5 instead. The hairlines are pulled
+       the change of value is spent on §03 instead. The hairlines are pulled
        back to the text measure — they used to over-span the sentences under
        them by 419px in all four rows. */}
   <section class="fbrief" aria-labelledby="fbrief-h">
@@ -327,39 +386,53 @@ const claim = forum.line
     </div>
   </section>
 
-  {/* 4 ── the plate. The same harbour seen CLOSE — the moored hull, the
-       buoys, the near water, the sky taken off — so the page carries two
-       photographic weights rather than one frame drawn twice. Shorter than a
-       viewport on purpose: the pause is bounded by the ledger above and the
-       cream below, never by a screen edge. It carries no type; its one mark
-       is the photograph's own credit. It opens on both axes, then closes the
-       last five percent of its scale as you scroll it. */}
-  <div class="fplate" data-wipe="center-y">
-    <div class="fplate__frame" data-settle="0.42">
-      <Figure src={plate.src} alt={plate.alt}
-              ratio="auto" grade={plate.grade} grain={plate.grain}
-              focal={plate.focal} zoom={plate.zoom}
-              focalSm={plate.focalSm} zoomSm={plate.zoomSm}
-              scrim="bottom-left" ink={0.7} vig={0.25}
-              credit={plate.credit} creditPos="bottom-left"
-              parallax={5} sizes="100vw" />
-    </div>
-  </div>
+  {/* ── THE PLATE. A SECOND SLOT THAT IS EMPTY TODAY AND RENDERS NOTHING.
 
-  {/* 5 ── THE CLOSE, and the page's one exception.
+       The Lion Forum stage frame, whole: a band shorter than a viewport,
+       carrying no type at all, bounded by the ledger above and the cream
+       below so the pause is never bounded by a screen edge. It opens on both
+       axes, then closes the last five percent of its scale as you scroll it.
+
+       It used to run the MASTHEAD'S OWN photograph at a 3.6x crop, on the
+       argument that the crop made it arrive as a different subject. Measured,
+       it did not — the band still held the sloop, the breakwater, the tower
+       and the horizon, so the Forum's one picture ran twice on the page about
+       the Forum and a third time on the homepage. A crop is not a second
+       photograph, and this negative has no crop that would be one. The beat
+       waits for a real second frame rather than faking one; see the
+       frontmatter. */}
+  {plate && (
+    <div class="fplate" data-wipe="center-y">
+      <div class="fplate__frame" data-settle="0.42">
+        <Figure src={plate.src} alt={plate.alt}
+                ratio="auto" grade={plate.grade} grain={plate.grain}
+                focal={plate.focal} zoom={plate.zoom}
+                focalSm={plate.focalSm} zoomSm={plate.zoomSm}
+                scrim="bottom-left" ink={0.7} vig={0.25}
+                credit={plate.credit} creditPos="bottom-left"
+                parallax={5} sizes="100vw" />
+      </div>
+    </div>
+  )}
+
+  {/* §03 ── THE CLOSE, and the page's one exception.
 
        Everything above this line is cream type on navy, opening flush at the
        left rail. This is the page turned over: full-bleed cream, arriving
-       directly off the dark plate, so the largest tonal step available on the
+       directly off that navy, so the largest tonal step available on the
        site — L* 15 to L* 92 — lands on the one thing a programme officer came
        here to find out, which is what the Institute's relationship to this
-       convening actually is.
+       convening actually is. (It used to arrive off the plate's dark foot.
+       Same L*, and off flat ground the curtain below has a cleaner edge to
+       retract from.)
 
        It is also the one beat that does not begin at x=51. The rule and the
        numeral quote the page's own row construction so the break is a return
        and not a stray; below it the composition shifts right, the sentence is
-       set at --step-feature (the series-breaker, used ONCE, here), and it runs
-       into the 460px of right-hand column the rest of the page left empty.
+       set at --step-feature — the top of this page's three-rung ladder below
+       the masthead, 86 · 53 · 67, and the only place either the cream or this
+       rung is spent — and it runs into the 460px of right-hand column the
+       rest of the page left empty.
 
        The footer's quieter "Inquire about the Lion Forum" door is suppressed
        on this route — it points at this page, and this page has just asked. */}
@@ -424,7 +497,7 @@ const claim = forum.line
 </Base>
 
 <style>
-  /* The bar is not this page's to edit, but the hero display and the §2 claim
+  /* The bar is not this page's to edit, but the hero display and the §01 claim
      both pass directly under it. Local hardening of the scrim the nav owns. */
   :global(.nav.is-scrolled)::before {
     height: calc(var(--nav-h) + 4.4rem);
@@ -541,8 +614,11 @@ const claim = forum.line
 
   /* ── 2. The claim ────────────────────────────────────────────────── */
   /* The pause at the foot of this beat is bounded on both sides — the claim
-     above it, the plate below it — which is the only way held space reads as
-     confidence instead of as a hole. */
+     above it, the ledger's rule and numeral below it — which is the only way
+     held space reads as confidence instead of as a hole. It used to be
+     bounded by the plate; the bound is what matters, not which beat supplies
+     it, and a rule with a numeral on its end is a harder stop than a
+     photograph's top edge. */
   .fsay { padding-block: clamp(3rem, 2rem + 4.4vw, 6.5rem) var(--pause); }
   /* THE MEASURED ROW. The page's width was carrying nothing: 14 of 29 marks
      began at the same x and a 460px column on the right was empty for the
@@ -614,9 +690,16 @@ const claim = forum.line
     --hinge: clamp(0, calc((var(--settle, 1) - 0.60) / 0.34), 1);
   }
 
+  /* THE MEASURE FOLLOWS THE SIZE DOWN. 17ch was the shape of this sentence
+     at 86px — three ranged lines about 570px wide. At --step-head the same
+     17ch would be a 450px block half as tall, which is what a demotion looks
+     like. 24ch sets it in two long, level lines instead: a smaller voice
+     saying a longer thing, which is a different shape rather than a shrunken
+     one, and it holds the same left-ranged column the rule and the numeral
+     above it measure. */
   .fsay__p {
-    max-width: 17ch;
-    margin-top: clamp(2rem, 4.2vw, 3.6rem);
+    max-width: 24ch;
+    margin-top: clamp(1.6rem, 3.2vw, 2.8rem);
     /* the settle grows from the baseline the reader is already on */
     --settle-origin: 0% 100%;
     --settle-scale: 0.945;
@@ -695,13 +778,21 @@ const claim = forum.line
     text-wrap: pretty;
   }
 
-  /* ── 4. The plate ────────────────────────────────────────────────── */
-  /* A BAND, not a screen. Roughly 16:5.5 at 1440 and always shorter than the
-     viewport, so the pause is bounded by the claim above and the ask below
+  /* ── The plate ───────────────────────────────────────────────────── */
+  /* NOT IN THE BUILD TODAY — the slot is empty and none of this matches the
+     rendered page. It is kept whole, and tuned, because the day a Lion Forum
+     stage frame lands in /media/ this is the band it arrives in.
+
+     A BAND, not a screen. Roughly 16:5.5 at 1440 and always shorter than the
+     viewport, so the pause is bounded by the ledger above and the cream below
      rather than by two screen edges — which was the same held-space failure
-     the rest of the site was fixing, relocated to a photograph. The crop is
-     hard (zoom 2.0 on the masts) so this is a different photographic weight
-     from the wide masthead, not the same frame drawn twice. */
+     the rest of the site was fixing, relocated to a photograph.
+
+     The frame it takes must be a DIFFERENT PHOTOGRAPH, not a crop of the
+     masthead's. That was the old arrangement and it failed the only test that
+     matters: a reviewer looked at the render and saw the same harbour twice.
+     If the stage frame ever turns out to be the same scene as the masthead's,
+     leave this slot empty rather than filling it. */
   .fplate {
     position: relative;
     isolation: isolate;
@@ -721,17 +812,20 @@ const claim = forum.line
   /* The band carries NO type. Its one mark is the photograph's own credit —
      Figure's corner voice, in the deep zone of a bottom-left ramp, which is
      the only place on a photograph the meta register is legal. The bridge
-     line that used to sit on the water was a fourth slogan on a page that
-     was already being sold with slogans; the plate's job is the picture. */
+     line that once sat on the water was a fourth slogan on a page that was
+     already being sold with slogans; the plate's job is the picture. */
 
-  /* ── 5. The close, on cream ─────────────────────────────────────── */
+  /* ── The close, on cream ─────────────────────────────────────────── */
   /* THE PAGE TURNED OVER. Full-bleed .on-cream, arriving directly off the
-     dark plate: L* 15 → L* 92, the largest step the system owns, spent once,
-     on the page's actual job. .on-cream retunes the ink levels, the rules and
-     --brass (to --brass-deep) for the light ground — never paint it by hand.
-     Ground budget: hero photograph, plate photograph, this. Three, the
-     ceiling, which is why the ledger's .on-panel band came off — a 13-point
-     step on a 255 scale was costing a ground event and reading as nothing. */
+     page's own navy: L* 15 → L* 92, the largest step the system owns, spent
+     once, on the page's actual job. .on-cream retunes the ink levels, the
+     rules and --brass (to --brass-deep) for the light ground — never paint it
+     by hand. Ground budget: hero photograph, this, and the plate when it has
+     a picture. Three, the ceiling, which is why the ledger's .on-panel band
+     came off — a 13-point step on a 255 scale was costing a ground event and
+     reading as nothing. The step used to be measured off the plate's dark
+     foot; with the plate empty it is measured off flat navy, which is the
+     same L* and a cleaner edge for the curtain below to retract from. */
   .frole {
     position: relative;
     isolation: isolate;
@@ -740,10 +834,10 @@ const claim = forum.line
   }
   .frole__shell { position: relative; z-index: 0; }
 
-  /* THE CUT, ANIMATED. This edge — L* 15 off the plate to L* 92 — is the
+  /* THE CUT, ANIMATED. This edge — L* 15 navy to L* 92 cream — is the
      largest tonal event on the site, and it was the only one the page did
-     not move: the hero parallaxes, the claim settles, the plate approaches,
-     and then the page's biggest moment simply appeared.
+     not move: the hero parallaxes, the claim settles, and then the page's
+     biggest moment simply appeared.
 
      A navy curtain sits over the cream and retracts to the left as the
      reader scrolls into the section, so the ground itself turns over rather
@@ -762,9 +856,9 @@ const claim = forum.line
     transform-origin: 100% 50%;
   }
   /* THE ONE BEAT THAT DOES NOT BEGIN AT THE RAIL. Above it the page opens
-     flush left five times; here the eyebrow holds a narrow rail and the
+     flush left four times; here the eyebrow holds a narrow rail and the
      sentence starts at ~34% and runs into the right-hand column the rest of
-     the page left empty for 3151px. */
+     the page leaves empty. */
   /* Two rows now: the rail's eyebrow at the top, its invitation note at the
      foot, and the sentence spanning both on the right. The indent is
      unchanged — the display still starts at 34% — but the column beside it
@@ -893,7 +987,9 @@ const claim = forum.line
     .fh__meta { grid-column: 1 / -1; }
 
     .fsay { padding-block: clamp(2.5rem, 8vw, 3.5rem) clamp(2.75rem, 10vw, 4.5rem); }
-    .fsay__p { max-width: 13ch; }
+    /* Same move as the desktop measure: 13ch was the block at --step-poster,
+       17ch is the same block at --step-head. */
+    .fsay__p { max-width: 17ch; }
 
     .fbrief { padding-block: clamp(2.2rem, 8vw, 3.2rem) clamp(2.6rem, 9vw, 3.8rem); }
     /* THE SECOND AXIS SURVIVES THE PHONE. The ledger used to stack flush left

@@ -1,5 +1,15 @@
 # Content notes — imagery
 
+> **SUPERSEDED IN PART — 27 Aug 2026.** `refs/PROSPECTUS.txt` is now the canonical
+> source and beats `refs/BRIEF.md` on every conflict. Entries below that describe the
+> four pilots as *proposed*, *sought*, or *"none is signed"* are OUT OF DATE: the
+> prospectus heads them "FOUR ACTIVE PILOTS — 2026" and says the Institute *is working
+> with* Special Olympics, Governor Inslee and Butler University; pilot 04 it describes
+> as being *explored*. Also out of date here: the Indianapolis infant-mortality ranking
+> was stripped as invented and is REAL — it is in the prospectus and is back on the
+> site; and pilot 01 is Global Health Data (an open-source dataset), not a Healthy
+> Athletes app. Do not restore any of the old wording from the change log below.
+
 Companion to `public/media/ATTRIBUTIONS.md` (the full legal record). This file is the
 editorial note: what each picture actually is, how it should be used, and what is
 deliberately missing.
@@ -630,3 +640,33 @@ mailbox, it is the first thing a partner will discover is untrue.
   no pilot has run. It reads as a statement of method rather than of history,
   the method is BRIEF.md's, and the eyebrow two rungs above it says
   "Four pilots, proposed". Watch it; do not let it acquire an object.
+
+## Adding the photographs when they arrive
+
+One command does the whole job — extract, match, resize, convert, place:
+
+```bash
+node tools/add-photos.mjs ~/Downloads/lion-forum-photos.zip
+```
+
+It accepts a zip, a folder, or loose files. It matches on filename, refuses
+anything under 1400px wide, and will not assign a picture to a slot by
+position unless you pass `--accept-guesses` — a photograph in the wrong slot
+makes a claim nobody checked. To be explicit:
+
+```bash
+node tools/add-photos.mjs lawn=lawn.jpg stage=stage.jpg podium=inslee.jpg \
+  notebook=speaker.jpg reception=chopra.jpg founders=office.jpg
+```
+
+Slots: `lawn` (Forum masthead and the homepage held scene), `stage`,
+`podium`, `notebook`, `reception`, `founders`.
+
+Then, and this part is not optional:
+
+1. **Look at each one.** The `alt` strings in `src/data/site.js` were written
+   from a description of pictures nobody here has seen. An alt text is a claim
+   about a photograph like any other.
+2. **Confirm the lawn frame is the Kennedy Compound.** If it cannot be
+   confirmed, set its credit to `''` and the picture makes no claim on its own.
+3. Re-run `tools/photo-meter.mjs` and `tools/credit-sweep.mjs`.

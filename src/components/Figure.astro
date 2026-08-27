@@ -638,27 +638,176 @@ const style = [
      between legible and not. */
   .fig--fill .fig__credit { color: var(--cream); }
 
+  /* THE SHAPE OF THE WASH IS THE WHOLE PROBLEM.
+
+     A photo credit is a WIDE, SHORT run of glyphs — "Unified track event ·
+     Camp Humphreys, Korea" is 375px long and 12px tall, an aspect ratio near
+     30:1. Every previous attempt washed it with a radial gradient and a
+     `border-radius: 50%`, which is an ELLIPSE inscribed in that box. An
+     ellipse is the wrong solid for this: its height collapses to nothing at
+     the two ends, so the first and last words sit outside it while the middle
+     of the label sits under the dense core. The `backdrop-filter` was clipped
+     by the same border-radius, so it too stopped short of the ends.
+
+     Measured on the built site, per-third of the glyph box, backdrop only:
+
+       mobile /pilots/ "Unified track event…"   left 3.48 : 1   middle 12.47 : 1
+       mobile /institute/ "Dallas, Texas"       right 3.43 : 1  middle 11.47 : 1
+
+     Nine points of contrast between the middle of a label and its ends. That
+     is not a strength problem to be solved by pouring in more ink — pouring in
+     more ink only darkens the middle, which is already at 12:1, and turns the
+     wash into the visible plate this component is not allowed to be.
+
+     So: give the wash the label's own geometry. A rectangle the length of the
+     glyph run, feathered on all four sides. Two linear feathers — one across,
+     one down — intersected as a MASK: the horizontal one holds full strength
+     from end to end and only lets go outside the glyphs; the vertical one does
+     the same top to bottom; multiplying them rounds the four corners for free,
+     so the result is a soft lozenge that is uniform along the label rather
+     than a lens that is dense in one spot. Same footprint as the ellipse it
+     replaces (~2.4em of feather beyond each end), no new shape on the page.
+
+     AND THE BACKDROP-FILTER HAD TO GO, which was the surprise. It was here
+     because it is multiplicative and therefore self-levelling — ink on ink on
+     a navy corner, real protection over bright water. But Chromium clips a
+     backdrop-filter to the element's BORDER BOX and does not apply the
+     element's mask to it. Masked ink plus an unmasked filter renders as a
+     hard-edged black rectangle with a soft lozenge inside it: measurably
+     perfect, and the exact visible plate the brief forbids. Screenshot before
+     you believe a number.
+
+     `mix-blend-mode: multiply` would give the same self-levelling behaviour
+     through a paint the mask does reach — but the credit is a stacking
+     context, so a blend inside it has nothing beneath it to blend with, and
+     un-isolating it would drop the wash below the photograph.
+
+     So the wash is one flat ink, feathered, and the weight is chosen against
+     the worst backdrop that could ever exist rather than the worst one on
+     disk: 0.66 of the page's own ground puts pure white at 5.65 : 1 and the
+     brightest real credit backdrop on this site near 10 : 1. It is a heavier
+     number than the old ellipse's rim and a much lighter one than its 0.95
+     core, which is the trade uniform coverage always makes — the ellipse
+     could be that black because only its middle ever was.
+
+     What it costs on a dark corner is less than the filter cost: over the
+     hero's L* 9 top-right, ink at 0.66 lands L* 4.7 where brightness(0.31)
+     landed L* 2.7. Nothing is added to the palette; this is --ink-900. */
   .fig__credit::before {
     content: '';
     position: absolute;
-    inset: -1.15em -2.1em -1.2em -2.2em;
+    inset: -2.35em -3.9em -2.4em -4em;
     z-index: -1;
-    border-radius: 50%;
-    /* A radial wash under a wide, short label leaves its two ends thin, which
-       is where the sweep kept finding the failure. A backdrop filter darkens
-       whatever is actually behind the glyphs, so it holds at the ends too and
-       adapts to the picture instead of guessing at it. The gradient below
-       stays as the fallback where backdrop-filter is unsupported. */
-    -webkit-backdrop-filter: brightness(0.34) saturate(0.85);
-    backdrop-filter: brightness(0.34) saturate(0.85);
-    background: radial-gradient(
-      ellipse at center,
-      rgba(3, 9, 16, 0.95) 0%,
-      rgba(3, 9, 16, 0.89) 38%,
-      rgba(3, 9, 16, 0.52) 64%,
-      rgba(3, 9, 16, 0.18) 84%,
-      rgba(3, 9, 16, 0) 100%
-    );
+    /* Feather distances, measured in from each edge of the wash. They are
+       long on purpose: the plateau has to cover the glyph run end to end, so
+       the ONLY place the falloff can live is outside it, and a short falloff
+       on a value this dark is a chip. Half the label's own length of feather
+       across, twice its cap height down. */
+    --fx: 3.4em;
+    --fy: 1.95em;
+    background: rgba(3, 9, 16, 0.66);
+    -webkit-mask-image:
+      linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0.03) calc(var(--fx) * 0.16),
+        rgba(0, 0, 0, 0.11) calc(var(--fx) * 0.32),
+        rgba(0, 0, 0, 0.26) calc(var(--fx) * 0.48),
+        rgba(0, 0, 0, 0.46) calc(var(--fx) * 0.64),
+        rgba(0, 0, 0, 0.66) calc(var(--fx) * 0.78),
+        rgba(0, 0, 0, 0.85) calc(var(--fx) * 0.9),
+        rgba(0, 0, 0, 1.0) calc(var(--fx) * 1.0),
+        rgba(0, 0, 0, 1) calc(100% - var(--fx)),
+        rgba(0, 0, 0, 0.85) calc(100% - var(--fx) * 0.9),
+        rgba(0, 0, 0, 0.66) calc(100% - var(--fx) * 0.78),
+        rgba(0, 0, 0, 0.46) calc(100% - var(--fx) * 0.64),
+        rgba(0, 0, 0, 0.26) calc(100% - var(--fx) * 0.48),
+        rgba(0, 0, 0, 0.11) calc(100% - var(--fx) * 0.32),
+        rgba(0, 0, 0, 0.03) calc(100% - var(--fx) * 0.16),
+        rgba(0, 0, 0, 0) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0.03) calc(var(--fy) * 0.16),
+        rgba(0, 0, 0, 0.11) calc(var(--fy) * 0.32),
+        rgba(0, 0, 0, 0.26) calc(var(--fy) * 0.48),
+        rgba(0, 0, 0, 0.46) calc(var(--fy) * 0.64),
+        rgba(0, 0, 0, 0.66) calc(var(--fy) * 0.78),
+        rgba(0, 0, 0, 0.85) calc(var(--fy) * 0.9),
+        rgba(0, 0, 0, 1.0) calc(var(--fy) * 1.0),
+        rgba(0, 0, 0, 1) calc(100% - var(--fy)),
+        rgba(0, 0, 0, 0.85) calc(100% - var(--fy) * 0.9),
+        rgba(0, 0, 0, 0.66) calc(100% - var(--fy) * 0.78),
+        rgba(0, 0, 0, 0.46) calc(100% - var(--fy) * 0.64),
+        rgba(0, 0, 0, 0.26) calc(100% - var(--fy) * 0.48),
+        rgba(0, 0, 0, 0.11) calc(100% - var(--fy) * 0.32),
+        rgba(0, 0, 0, 0.03) calc(100% - var(--fy) * 0.16),
+        rgba(0, 0, 0, 0) 100%
+      );
+    mask-image:
+      linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0.03) calc(var(--fx) * 0.16),
+        rgba(0, 0, 0, 0.11) calc(var(--fx) * 0.32),
+        rgba(0, 0, 0, 0.26) calc(var(--fx) * 0.48),
+        rgba(0, 0, 0, 0.46) calc(var(--fx) * 0.64),
+        rgba(0, 0, 0, 0.66) calc(var(--fx) * 0.78),
+        rgba(0, 0, 0, 0.85) calc(var(--fx) * 0.9),
+        rgba(0, 0, 0, 1.0) calc(var(--fx) * 1.0),
+        rgba(0, 0, 0, 1) calc(100% - var(--fx)),
+        rgba(0, 0, 0, 0.85) calc(100% - var(--fx) * 0.9),
+        rgba(0, 0, 0, 0.66) calc(100% - var(--fx) * 0.78),
+        rgba(0, 0, 0, 0.46) calc(100% - var(--fx) * 0.64),
+        rgba(0, 0, 0, 0.26) calc(100% - var(--fx) * 0.48),
+        rgba(0, 0, 0, 0.11) calc(100% - var(--fx) * 0.32),
+        rgba(0, 0, 0, 0.03) calc(100% - var(--fx) * 0.16),
+        rgba(0, 0, 0, 0) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0.03) calc(var(--fy) * 0.16),
+        rgba(0, 0, 0, 0.11) calc(var(--fy) * 0.32),
+        rgba(0, 0, 0, 0.26) calc(var(--fy) * 0.48),
+        rgba(0, 0, 0, 0.46) calc(var(--fy) * 0.64),
+        rgba(0, 0, 0, 0.66) calc(var(--fy) * 0.78),
+        rgba(0, 0, 0, 0.85) calc(var(--fy) * 0.9),
+        rgba(0, 0, 0, 1.0) calc(var(--fy) * 1.0),
+        rgba(0, 0, 0, 1) calc(100% - var(--fy)),
+        rgba(0, 0, 0, 0.85) calc(100% - var(--fy) * 0.9),
+        rgba(0, 0, 0, 0.66) calc(100% - var(--fy) * 0.78),
+        rgba(0, 0, 0, 0.46) calc(100% - var(--fy) * 0.64),
+        rgba(0, 0, 0, 0.26) calc(100% - var(--fy) * 0.48),
+        rgba(0, 0, 0, 0.11) calc(100% - var(--fy) * 0.32),
+        rgba(0, 0, 0, 0.03) calc(100% - var(--fy) * 0.16),
+        rgba(0, 0, 0, 0) 100%
+      );
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  /* Without mask-composite the two feathers UNION instead of intersecting,
+     which paints a cross rather than a lozenge. Where that is the case, fall
+     back to the soft radial this replaced: thin at the ends, but soft, and a
+     credit that is thin at the ends is a great deal better than one wearing a
+     black cross. */
+  @supports not ((mask-composite: intersect) or (-webkit-mask-composite: intersect)) {
+    .fig__credit::before {
+      -webkit-mask-image: none;
+      mask-image: none;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(3, 9, 16, 0.9) 0%,
+        rgba(3, 9, 16, 0.82) 42%,
+        rgba(3, 9, 16, 0.44) 68%,
+        rgba(3, 9, 16, 0.14) 86%,
+        rgba(3, 9, 16, 0) 100%
+      );
+    }
   }
   .fig__credit[data-pos^='top']    { top: var(--ci); }
   .fig__credit[data-pos^='bottom'] { bottom: var(--ci); }

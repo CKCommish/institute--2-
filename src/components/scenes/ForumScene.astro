@@ -15,7 +15,7 @@ import { forum } from '../../data/site.js';
    The lawn frame is the one that belongs here: the same establishing weight,
    at the actual place, and it carries the location label the stand-in needs
    precisely because it is somewhere else. Retune `focal` against the real
-   picture — this hold runs the frame slowly across 1.9 viewports and the
+   picture — this hold runs the frame slowly across two viewports and the
    value below is a guess at a photograph nobody here has seen. */
 const onDisk = (p) => {
   if (typeof p !== 'string' || !p.startsWith('/')) return false;
@@ -77,8 +77,31 @@ const shot = onDisk(lawn.src)
   and is now that beat's note; `forum.line` was the body line under the rule
   and is the second beat; `forum.cta` was the link and is the coda. The name
   steps down from --step-poster to --step-head, which is what a beat is — the
-  scene buys 2,400px of held photograph and a navy → lit → navy arc for 33px
+  scene buys 1,890px of held photograph and a navy → lit → navy arc for 33px
   of type, and the ladder still has the hero at 126 and six posters at 86.
+
+  HOW LONG THE HOLD IS, AND WHY IT IS SHORTER THAN IT WAS. It ran at
+  hold = 1.9, which is a 1.9-viewport pinned range under a 1-viewport stage:
+  2,610px at 1440×900, or 30% of an 8,563px homepage and 2.9 screens of
+  scrolling, carrying 27 words. Measured with tools/hold-meter.mjs the profile
+  was worse than the total: motion.js gives the beats `lead 0.09` and, with a
+  coda present, `tail 0.24`, so the last quarter of that range — over 400px —
+  held no display line at all while the lift arc closed the ground back to
+  navy behind it. A held scene is the site's one moment that stops; it is not
+  a place to keep the reader after the scene has finished happening.
+
+  hold = 1.1 keeps every part of the grammar and cuts the padding: the stage
+  still pins, the push still runs the whole range, the arc still opens and
+  closes, each of the two beats still gets a third of the range to itself
+  (~330px of scroll, more than any reveal on the site), and the tail that
+  carries the coda link is 238px instead of 410. The scene is 1,890px — 2.1
+  screens — and the homepage loses 720px of nothing. holdSm = 1.0 does the
+  same on the phone, where the beats were already tighter.
+
+  DO NOT FIX THIS BY ADDING BEATS. 27 words is the right number; the homepage
+  copy budget is 80–120 words for the whole page (AGENTS.md) and HeldScene's
+  own note says two beats is usually right. The complaint was pixels per word,
+  and pixels are the side of it we own.
 
   arc="lift". The scene arrives out of the Pilots ledger — this page's one
   remaining event-free run — opens to the lit harbour, and closes back into
@@ -102,8 +125,8 @@ const shot = onDisk(lawn.src)
   alt={shot.alt}
   eyebrow={forum.access}
   headingId="forum-h"
-  hold={1.9}
-  holdSm={1.6}
+  hold={1.1}
+  holdSm={1.0}
   focal={shot.focal}
   focalSm={shot.focalSm}
   credit={shot.credit}

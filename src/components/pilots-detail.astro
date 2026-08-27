@@ -39,16 +39,21 @@
      MEASURED BY     the one outcome, which is also the card's GOAL
      WHAT IT NEEDS   money, a technology, somewhere to run it
 
-   …and above all, THE STAGE. These pilots are proposed. Nothing is signed.
-   That is not a 12px label on a rail here; it is half the block. The right
-   column is a plate — an object you can point at — headed "What it still
-   needs", and it is as long as the left one. A reader who takes nothing
-   else from this page takes the shape: this much is designed, this much is
-   open. That shape is the ask.
+   …and above all, THE ASK. refs/PROSPECTUS.txt calls these FOUR ACTIVE
+   PILOTS and says the Institute is working with three of the four named
+   partners, so the right-hand plate can no longer be headed "What it still
+   needs" — that asserted a deficiency in an active pilot, which no source
+   carries. It is headed "Where a partner comes in", which is what the
+   prospectus's own model describes: the Institute matches each pilot with a
+   technology partner and recruits implementation partners, and a Core
+   Partner's dedicated pilot funding is "deployed across pilot opportunities
+   the partner selects to support". The plate is still as long as the left
+   column, and the shape is still the ask: this much is designed, this is
+   the seat that is open.
 
    THE PHOTOGRAPH IS A PLATE, NOT A SCREEN. One column wide — about 530px
    at 1440, a third of the width and a third of the height the old card
-   spent — sitting in the header row above the "what it still needs" plate,
+   spent — sitting in the header row above the partner plate,
    so the right of every block is picture-then-object and the left is words
    the whole way down. Nothing is set on any frame except its corner credit.
 
@@ -88,7 +93,7 @@
       one fact a funder is asked to believe should have been all along.
 
    2. THE TWO COLUMNS BELOW THE RULE DID NOT MEET. "The proposal" sat at
-      y=2370 and "What it still needs" at y=2403 — 33px apart, because the
+      y=2370 and "Where a partner comes in" at y=2403 — 33px apart, because the
       right-hand head was INSIDE the plate and wearing its padding. Worse,
       the left column's FIRST DATA ROW landed on exactly the right column's
       HEAD line, which asserts a relationship that is false. And the two
@@ -167,7 +172,7 @@ const needs = [
       <span class="eyebrow pd__partner">{p.partner}</span>
       {/* the rail's break, declared. Inert above 700px. */}
       <span class="pd__brk" aria-hidden="true"></span>
-      <span class="label pd__q">Proposed</span>
+      <span class="label pd__q">{p.status}</span>
       <span class="label pd__field">{p.field}</span>
     </p>
 
@@ -218,7 +223,7 @@ const needs = [
       {/* THE OUTCOME, OUT OF THE TABLE. It was row five of a dossier,
            set at 16px between "where it would run" and nothing. It is
            the single fact a funder is being asked to believe, and the
-           one the Institute promises to publish either way — so it is set
+           one the Institute promises to measure and share — so it is set
            at the rung above the tagline, hung at the foot of the column,
            and its last line lands on the photograph's bottom edge. */}
       <div class="pd__goal" data-reveal="180">
@@ -246,7 +251,7 @@ const needs = [
            the reader gets the block's whole argument without reading a
            word: this much is designed, this much is still open. */}
       <div class="pd__col">
-        <p class="label label--brass pd__gl" data-reveal="60">What it still needs</p>
+        <p class="label label--brass pd__gl" data-reveal="60">Where a partner comes in</p>
         <div class="pd__open on-plate" data-reveal="80">
           <dl class="pd__dl pd__dl--open">
             {needs.map((r) => (
@@ -486,7 +491,7 @@ const needs = [
 
     /* The two lists are now stacked one above the other rather than side by
        side, so the gap between them is no longer a gutter — it is the only
-       thing telling a reader that "What it still needs" heads a new list and
+       thing telling a reader that "Where a partner comes in" heads a new list and
        is not a fifth row of the last one. The gutter's 30px could not do
        that; it was smaller than the space under either head. */
     .pd__cols { row-gap: clamp(2.5rem, 5.5vw, 3.5rem); }

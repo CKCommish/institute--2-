@@ -3,22 +3,27 @@ import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
 import { method } from '../data/site.js';
 
-const builds = ['Technology companies', 'Founders', 'Research labs'];
+const builds = ['Technology companies', 'Founders', 'AI labs'];
 const runs = ['Health systems', 'Universities', 'Community organizations', 'Government'];
 
 /* The spec used to be a card pinned to the right of the statement. It is now
    a rail: four hairline cells across the full width, directly under the
    photograph, so the first screen is a picture and the second thing you read
-   is a horizontal register rather than a second column. */
+   is a horizontal register rather than a second column.
+
+   FOCUS is the prospectus's own list and the site had never carried it: "We
+   work on the critical issues at the center of American life – healthcare,
+   education, workforce, and energy." It replaces "One problem, one owner",
+   which was authored. Workforce appears nowhere else on the site. */
 const spec = [
   { k: 'Horizon', v: '3–12 months' },
-  { k: 'Scope', v: 'One problem, one owner' },
+  { k: 'Focus', v: 'Health, education, workforce, energy' },
   { k: 'Partners', v: 'Two sides, one table' },
-  /* Was "Active now — Four pilots, 2026". One click away, /pilots/ labels all
-     four of those pilots "Proposed"; active now and proposed cannot both be
-     true of the same four things. The cell now says what is actually true:
-     the pilots are open for partners, and none of them has been signed. */
-  { k: 'Open for 2026', v: 'Four pilots, proposed', href: '/pilots/' },
+  /* refs/PROSPECTUS.txt: "CURRENT PILOT PIPELINE — FOUR ACTIVE PILOTS —
+     2026". This cell said "Four pilots, proposed" and /pilots/ tagged all
+     four PROPOSED, which the canonical document contradicts. Both say
+     active now. Neither says signed. */
+  { k: 'Open for 2026', v: 'Four active pilots', href: '/pilots/' },
 ];
 ---
 <Base title="Institute" description="How the Lion Forum Institute works: short pilots, measured outcomes, published results.">

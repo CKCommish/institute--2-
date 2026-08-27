@@ -22,7 +22,13 @@ import { site, pilots, model } from '../data/site.js';
    somewhere to run it — and the subject is derived from it, so the label
    and what lands in the mail client are one string. */
 const roles = [
-  { t: 'Fund it', p: 'Underwrite one pilot, end to end.', a: 'Funding' },
+  /* The funder half of the prospectus's HOW WE WORK, which the site had
+     nowhere: "We work with major foundations and private technology
+     companies to fund our mission. We help these partners source, vet,
+     implement, and report on the programs they want to see in the world."
+     The four verbs are what a funder gets for the money and they belong on
+     the funding door. */
+  { t: 'Fund it', p: 'Underwrite a pilot. We source, vet, implement and report.', a: 'Funding' },
   { t: 'Build it', p: 'Bring the model, the product, or the team.', a: 'Technology' },
   { t: 'Run it', p: 'A health system, district, university, or agency.', a: 'Somewhere to run it' },
 ];
@@ -156,16 +162,16 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
                for itself, and the one a reader must not get wrong: what the
                names in the second column ARE.
 
-               It said "Each pilot is named for whoever proposed it." That
-               asserted that a former U.S. Secretary of Education and a former
-               Governor each brought a proposal to this Institute. No source
-               says so — refs/BRIEF.md lists the pilots by those names and
-               nothing more — and it pointed the initiative the opposite way
-               from every other surface on the site (/pilots/ pilotTerms and
-               the homepage both say partners are SOUGHT). This is now the
-               same sentence those two already ship, word for word, so the
+               It said "Each pilot is named for whoever proposed it", which
+               asserted that a former Secretary of Education and a former
+               Governor each brought a proposal here; then it said "Partners
+               named are sought for 2026. None is signed", which
+               refs/PROSPECTUS.txt contradicts — FOUR ACTIVE PILOTS, and the
+               Institute "is working with" three of the four. No source says
+               anything about signing, either way. This is now the same
+               sentence /pilots/ and the homepage ship, word for word, so the
                three cannot drift apart again. */}
-          <p class="lede pfour__bridge">Partners named are sought for 2026. None is signed.</p>
+          <p class="lede pfour__bridge">Three are under way. The fourth is in exploration.</p>
         </div>
       </div>
 
@@ -188,7 +194,7 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
                    index no height at all. */}
               <span class="pindex__f">
                 <span class="pindex__who">{p.partner}</span>
-                <span class="label pindex__q">Proposed</span>
+                <span class="label pindex__q">{p.status}</span>
               </span>
               <span class="pindex__g">{p.tagline}</span>
               <svg class="arrow pindex__arrow" viewBox="0 0 22 10" aria-hidden="true">

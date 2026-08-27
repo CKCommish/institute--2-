@@ -77,11 +77,14 @@ const { pilot: p } = Astro.props;
        in a partner slot asserts a partnership; nobody has signed one. The
        qualifier rides every appearance of these four on this site — here
        it rides the card rather than the name, which is both truer (the
-       PILOT is proposed) and the only way it stops wrapping. */}
+       PILOT, not the partnership, that carries a stage) and the only way it
+       stops wrapping. The word is `p.status` — the prospectus's own, Active
+       for 01-03 and Exploring for 04. It used to be the literal "Proposed"
+       on all four, which the prospectus contradicts. */}
   <p class="card__rail">
     <span class="index card__i">{p.index}</span>
     <span class="label card__field">{p.field}</span>
-    <span class="label card__q">Proposed</span>
+    <span class="label card__q">{p.status}</span>
   </p>
 
   <p class="card__who"><span class="eyebrow card__partner">{p.partner}</span></p>
