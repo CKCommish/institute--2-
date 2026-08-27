@@ -662,8 +662,12 @@ mailbox, it is the first thing a partner will discover is untrue.
   it. If the h1 is ever moved away from that ledger, it has to change.
 - **`/institute/`, "Every pilot runs the same way."** Present tense for a method
   no pilot has run. It reads as a statement of method rather than of history,
-  the method is BRIEF.md's, and the eyebrow two rungs above it says
-  "Four pilots, proposed". Watch it; do not let it acquire an object.
+  the method is BRIEF.md's, and refs/PROSPECTUS.txt now describes it in the
+  present tense itself ("For each pilot, we identify a problem, match it with a
+  technology partner, recruit implementation partners, and measure outcomes").
+  The old hedge cited here — an eyebrow reading "Four pilots, proposed" — is
+  gone, because the prospectus calls three of the four active. Watch the line;
+  do not let it acquire an object, a number or a result.
 
 ## Adding the photographs when they arrive
 

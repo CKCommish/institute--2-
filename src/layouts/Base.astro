@@ -6,6 +6,14 @@ const {
   title,
   description = 'The Lion Forum Institute exists to ensure the technologies of tomorrow strengthen American families today.',
   theme = 'ink',
+  /* Newsreader ITALIC is a 147KB face and only /forum/ sets a word in it —
+     the two verbs in the claim. Left to CSS discovery it arrived after first
+     paint and swapped, which was the site's only nonzero CLS (0.0059, /forum/,
+     both viewports). Preloaded where it is used, and only there: adding it to
+     Base unconditionally would put 147KB on five pages that never render a
+     glyph of it. If another page ever sets an italic in the display face, set
+     this on that page too rather than moving it here. */
+  preloadItalic = false,
 } = Astro.props;
 const full = title ? `${title} — Lion Forum Institute` : 'Lion Forum Institute';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -46,6 +54,9 @@ const ogImage = new URL('/og.jpg', Astro.site).href;
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/newsreader-normal-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/libre-franklin-normal-latin.woff2" as="font" type="font/woff2" crossorigin />
+    {preloadItalic && (
+      <link rel="preload" href="/fonts/newsreader-italic-latin.woff2" as="font" type="font/woff2" crossorigin />
+    )}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
