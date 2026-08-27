@@ -365,9 +365,6 @@ export const forum = {
   name: 'The Lion Forum',
   place: 'Kennedy Compound, Hyannis Port',
   access: 'By invitation',
-  /* The bridge rung under the eyebrow: who is in the room, plainly, so the
-     display line above can be a claim rather than a list. */
-  who: 'Founders, investors, elected officials.',
   line: 'The people who build sit with the people who decide.',
   /* THE CLOSE, set on cream at the series-breaker rung. One sentence that
      states the relationship, one that says what the Institute does with it.
@@ -393,8 +390,18 @@ export const forum = {
         term: 'Format',
         text: 'By invitation only, convened each year at the historic Kennedy Compound in Hyannis Port.',
       },
+      /* `lead: true` marks the row /forum/ hoists to §01, under the claim,
+         instead of listing it in the ledger — the page used to describe its
+         own room twice, at two scopes, 400px apart. The page found this row
+         by matching its term against /^the room$/i, so renaming the term in
+         THIS file silently un-hoisted it and put the duplicate back with no
+         error anywhere. The relationship is a property of the row now, not
+         of its display string: rename `term` freely, and move `lead` if a
+         different row should ever take that position. Exactly one row must
+         carry it — /forum/ throws at build time otherwise. */
       {
         term: 'The room',
+        lead: true,
         text: 'Members of Congress, senior administration officials and the leadership of the top AI labs, alongside founders and investors.',
       },
       {

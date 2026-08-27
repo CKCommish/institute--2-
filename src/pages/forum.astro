@@ -117,11 +117,28 @@ const claim = forum.line
    no longer asking anyone to take that on trust.
 
    This is composition, not copy — every string still lives in
-   src/data/site.js and neither is rewritten here. `forum.who` is the short
-   version and nothing on the site renders it any more; it is the one string
-   to delete the next time that file is open. */
-const roomRow = forum.brief.rows.find((r) => /^the room$/i.test(r.term));
-const who = roomRow ? roomRow.text : forum.who;
+   src/data/site.js and neither is rewritten here. The short version,
+   `forum.who`, is gone from that file: it was rendered nowhere once the
+   ledger's row took this position, and a fact string with no reader is a
+   fact string that drifts.
+
+   AND THE HOIST IS DECLARED, NOT GUESSED. This used to find the row with
+   /^the room$/i against its term, fall back to `forum.who` when the match
+   failed, and drop the matched row from the ledger by identity — so a copy
+   edit to the term in site.js quietly undid both halves at once: §01 fell
+   back to the weaker line AND the room returned to the ledger, restoring
+   the exact duplication described above, with nothing raised anywhere. The
+   row now carries `lead: true` and the page reads that. A rename cannot
+   reach it, and a missing or doubled flag stops the build rather than
+   shipping a page that says the same thing twice. */
+const leadRows = forum.brief.rows.filter((r) => r.lead);
+if (leadRows.length !== 1) {
+  throw new Error(
+    `/forum/: forum.brief.rows must contain exactly one row with lead: true — the room named under the claim in §01 — but found ${leadRows.length}. See src/data/site.js.`,
+  );
+}
+const roomRow = leadRows[0];
+const who = roomRow.text;
 const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
 ---
 {/*
