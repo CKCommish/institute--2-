@@ -214,7 +214,9 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
   <section class="model" id="model">
     <div class="shell model__in">
       <div class="model__head">
-        <p class="eyebrow" data-reveal>{model.label}</p>
+        {/* The eyebrow IS this section's heading — it was a <p>, which put an
+            h1→h3 jump in the outline. Same type, correct outline. */}
+        <h2 class="eyebrow model__eyebrow" data-reveal>{model.label}</h2>
         <p class="bridge model__lead" data-reveal="90">{model.lead}</p>
       </div>
 
@@ -897,6 +899,7 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
   .model { padding-block: clamp(3.5rem, 7vw, 6.5rem); border-top: 1px solid var(--rule); }
   .model__in { display: grid; gap: clamp(1.75rem, 3.5vw, 3rem); }
   .model__head { display: grid; gap: clamp(0.9rem, 1.8vw, 1.4rem); }
+  .model__eyebrow { font: inherit; margin: 0; }
   .model__lead { max-width: 46ch; }
   .model__figure { display: flex; align-items: baseline; gap: 0.6ch; }
   .model__amount { line-height: 0.92; letter-spacing: -0.028em; }
