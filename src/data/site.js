@@ -327,7 +327,8 @@ export const method = [
    institute: Founding Partner of the Lion Forum, which the prospectus
    states of both men in its own words ("Christopher co-founded the Lion
    Forum"; Judd "is also a founding partner of the Lion Forum"). The other
-   half — K. Ventures — is on /people/, stated once at the bridge rung. The
+   half — K. Ventures — is on /people/ as `foundersNote` below, stated once
+   at the bridge rung and as a fact rather than a repeated office. The
    brief allows a person one title line, and this is it. Do not restore
    "Co-founder", and do not compose a new title for either man out of the
    Institute's name. */
@@ -335,24 +336,31 @@ export const founders = [
   {
     name: 'Christopher Kennedy McKelvy',
     role: 'Founding Partner, The Lion Forum',
-    lines: [
-      'Founding Partner, K. Ventures',
-      'Founding Partner, The Lion Forum',
-    ],
     detail: 'Army Ranger, Afghanistan. Oculus VR and Meta. MPA, Harvard. BS, Syracuse.',
     portrait: '/media/founder-mckelvy.jpg',
   },
   {
     name: 'Judd Olanoff',
     role: 'Founding Partner, The Lion Forum',
-    lines: [
-      'Founding Partner, K. Ventures',
-      'Founding Partner, The Lion Forum',
-    ],
     detail: 'Finance and politics. MBA, Stanford. MPA, Harvard. BA, Amherst.',
     portrait: '/media/founder-olanoff.jpg',
   },
 ];
+
+/* The one affiliation both men share that `role` above does not carry,
+   stated once for the pair on /people/ rather than twice inside the
+   records — and stated as the fact, not as a third title. It lives
+   here and not in the page because it is copy, and because the field it
+   replaced (`founders[].lines`, the two quoted offices) had no consumer at
+   all while the page hardcoded its own wording — two statements of the same
+   fact, free to drift apart with nothing to catch it. There is now one.
+   Sourced: the prospectus says Christopher "later co-founded K. Ventures"
+   and that Judd spent his career in finance and politics "before
+   co-founding K. Ventures". Do not restage this as a third "Founding
+   Partner": that word is already the register of both records below it, and
+   saying it a third time over them is what made this band read as a claim
+   about who founded the Institute. */
+export const foundersNote = 'Both co-founded K. Ventures.';
 
 /* Prospective board — names and one short line only.
    NOTE: titles are pending client confirmation. See CONTENT-NOTES.md */

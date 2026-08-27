@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
 import Portrait from '../components/people-portrait.astro';
-import { founders, board } from '../data/site.js';
+import { founders, board, foundersNote } from '../data/site.js';
 import { standingOf, boardBridge, mastheadBridge } from '../components/people-cohorts.js';
 
 /* We hold no rights-cleared portraits of either founder, and the page is
@@ -21,15 +21,21 @@ const people = founders.map((f) => ({
    made the least distinguishing text the loudest text in each record, so
    they are stated once, above the register, and each record then carries
    only what separates the two men. */
-/* WAVE 10 JUDGE: `role` is now the prospectus's own office, "Founding
-   Partner, The Lion Forum", printed directly above each name. This bridge
-   therefore stated "The Lion Forum" once and the register repeated it twice
-   60px (1440) / 130px (390) below — three times in one glance, which undoes
-   this bridge's own stated purpose of saying the shared affiliation ONCE.
-   K. Ventures is the only half the bridge still adds, and the prospectus
-   gives it to both men ("FOUNDING PARTNER, K. VENTURES"). Shorter than the
-   old string, so the 34ch .fs__note measure and its two-line set hold. */
-const sharedAffiliation = 'Both are also Founding Partners of K. Ventures.';
+/* WAVE 11: this rung's copy now comes from site.js (`foundersNote`) instead
+   of being hardcoded here. It had been a second, unowned statement of a fact
+   the data file also carried in `founders[].lines` — a field with no consumer
+   on any page, free to drift from this string forever with no gate to notice.
+   `lines` is gone; site.js is now the one place the fact is written.
+
+   Its wording changed with it. This band read "Founders" over "Both are also
+   Founding Partners of K. Ventures." over two records each labelled FOUNDING
+   PARTNER, THE LION FORUM — the word four times in one glance, and the first
+   of the four a claim no source makes: nothing says either man founded this
+   Institute. The prospectus's own bio sentences do say each of them
+   co-founded K. Ventures, which is shorter, is not a third title, and leaves
+   "Founding" to the two record labels alone, where it is the register of the
+   diptych rather than a claim standing over it. The head above is the
+   prospectus's own name for this section, "WHO WE ARE". */
 
 /* The micro rung that hands a reader from a 53px name down to a 19px
    credential line, and — set identically in both bays — the thing that makes
@@ -48,7 +54,15 @@ const standing = standingOf(board);
 const boardCount = board.length;
 const founderCount = String(founders.length).padStart(2, '0');
 ---
-<Base title="People" description="The two founding partners and the prospective board of the Lion Forum Institute.">
+{/* WAVE 11, JUDGE PASS: the description was "The two founding partners and
+   the prospective board of the Lion Forum INSTITUTE" — the exact claim this
+   wave removed from the visible page, still standing in the head, and shipped
+   to og: and twitter: as well, which is the string a funder or a journalist
+   sees when the link is pasted. No source says either man founded the
+   Institute; the prospectus says both are Founding Partner of THE LION FORUM,
+   and heads the board "PROSPECTIVE BOARD MEMBERS". Both halves now name what
+   the prospectus names. */}
+<Base title="People" description="Two founding partners of the Lion Forum, and sixteen names put forward as a prospective board.">
 
   {/* ── Masthead ─────────────────────────────────────────────────── */}
   {/* eyebrow → bridge → display. The bridge is the rung that lets an
@@ -67,9 +81,9 @@ const founderCount = String(founders.length).padStart(2, '0');
             name, and the house arrow turned down the page, on a row that is
             bounded at both ends at every width. */}
         <nav class="pm__idx" aria-label="On this page">
-          <a class="pm__idx-i" href="#founders" data-reveal="320">
+          <a class="pm__idx-i" href="#who-we-are" data-reveal="320">
             <span class="pm__idx-n tnum">{founderCount}</span>
-            <span class="label pm__idx-l">Founders</span>
+            <span class="label pm__idx-l">Who we are</span>
             <svg class="arrow arrow--down pm__idx-a" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
           </a>
           <a class="pm__idx-i" href="#board" data-reveal="400">
@@ -83,8 +97,8 @@ const founderCount = String(founders.length).padStart(2, '0');
     </div>
   </section>
 
-  {/* ── Founders ─────────────────────────────────────────────────── */}
-  {/* Two co-founders, one title, one treatment. The page previously gave the
+  {/* ── Who we are ───────────────────────────────────────────────── */}
+  {/* Two records, one title, one treatment. The page previously gave the
       first name a plate, a feature rung and a settle, and the second a band
       and a single run — on a page headed "the people accountable for the
       work", that composition said one of them was more accountable. They now
@@ -96,11 +110,11 @@ const founderCount = String(founders.length).padStart(2, '0');
       flush-left under a full-width rule; this is a two-up spread with a spine
       down the middle, so the founders read as a pair and not as a list of
       two. */}
-  <section class="fs on-panel" id="founders" aria-labelledby="founders-h">
+  <section class="fs on-panel" id="who-we-are" aria-labelledby="who-h">
     <div class="shell">
       <div class="fs__head">
-        <h2 class="eyebrow" id="founders-h" data-reveal>Founders</h2>
-        <p class="bridge fs__note" data-reveal="110">{sharedAffiliation}</p>
+        <h2 class="eyebrow" id="who-h" data-reveal>Who we are</h2>
+        <p class="bridge fs__note" data-reveal="110">{foundersNote}</p>
       </div>
 
       <hr class="rule fs__rule" data-wipe="left" data-delay="60" />
@@ -444,7 +458,7 @@ const founderCount = String(founders.length).padStart(2, '0');
   .pm__idx-i:focus-visible .pm__idx-a { color: var(--brass); transform: rotate(90deg) translateX(3px); }
   .pm__rule { margin-top: clamp(2rem, 3.8vw, 3.2rem); }
 
-  /* ── Founders ───────────────────────────────────────────────────── */
+  /* ── Who we are ─────────────────────────────────────────────────── */
   /* A band set into the page, full-bleed, opening on the masthead's rule so
      the first screen closes on the register rather than on air. */
   .fs {

@@ -1,0 +1,15 @@
+{
+  "_note": "Committed BEFORE opening .key.json. Sheets: progress/gauntlet/w11/blind2-desktop (fresh live Oryzo capture 27 Aug 2026 + settled-scroll capture of our build).",
+  "_honesty": "I can identify both sites on sight; a coaster render and a navy/cream civic site are not confusable. The blinding here buys ordering discipline (picks fixed before the key is opened), not naivety. This is stated so nobody reads the result as a naive-observer test.",
+  "picks": { "1":"A", "2":"B", "3":"B", "4":"A", "5":"B", "6":"A", "7":"B", "8":"A", "9":"A", "10":"A" },
+  "overall": "A",
+  "believesOursIs": "A",
+  "criteria_forced_picks": {
+    "pacing":               { "winner_side_on_pair_06": "A", "why": "every frame of the winner is loaded; the loser runs two near-empty frames back to back at the 60-80% mark (pairs 06 and 08)" },
+    "whitespace":           { "winner_side_on_pair_02": "B", "why": "margin used as structure - cream field, ranged-right measure, one rule; the loser's empty areas are render falloff around a floating object" },
+    "type_restraint":       { "winner_side_on_pair_05": "B", "why": "two families, four sizes, one accent, held across ten frames; loser runs grotesque display + serif magazine pastiche + monospace annotation + handwriting" },
+    "motion":               { "winner_side_on_pair_06": "A", "why": "loser's frames differ mainly by scroll offset; its one pinned scene spends most of a page-height to deliver a handful of words and closes on an empty frame" },
+    "information_density":  { "winner_side_on_pair_05": "B", "why": "one frame carries four named partners, four domains and four one-line claims, all legible; the loser carries one gag per screen" },
+    "one_glance_comprehension": { "winner_side_on_pair_01": "A", "why": "first screen states what the organisation is and names its four 2026 pilots inside the fold; loser's first screen states a product name" }
+  }
+}

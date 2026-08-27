@@ -199,10 +199,20 @@ const spec = [
     border-block: 1px solid var(--rule);
     padding-block: clamp(3.5rem, 1rem + 5vw, 7rem);
   }
+  /* No reserved screen. `min-height: min(80svh, 44rem)` put a 704px floor
+     under 327px of content — an 11px eyebrow, a 65px gap and a 250px diagram —
+     and `align-content: center` split the leftover 377px evenly above and
+     below it. Those two halves were the two largest voids anywhere on the
+     site: measured at 1440x900, 350px between the spec rail's last line and
+     the eyebrow, 424px between the hub and the cream claim. The emptiness was
+     a by-product of a floor, not an interval anyone chose, and it made the
+     clearest object on the site read as hesitant rather than as air. The band
+     is now exactly the diagram plus its own padding (882px -> 556px; the two
+     gaps 161px and 235px), and the diagram below has been given some of the
+     height it was standing in. */
   .ibridge__in {
-    display: grid; align-content: center; justify-items: center;
+    display: grid; justify-items: center;
     gap: clamp(2.4rem, 4.5vw, 4.5rem);
-    min-height: min(80svh, 44rem);
   }
   .ibridge__k { justify-self: start; }
   .brg { width: 100%; }
@@ -214,7 +224,12 @@ const spec = [
     grid-template-columns: minmax(0, 1fr) var(--hub-w) minmax(0, 1fr);
     grid-template-rows: auto repeat(4, auto);
     column-gap: var(--brg-gap);
-    row-gap: clamp(0.5rem, 1.4vw, 1.1rem);
+    /* The rows carry the object now that nothing else is holding the scene
+       open. Four gaps at the old 1.1rem drew a 250px diagram; at 1.9rem they
+       draw 302px, the hub's own padding takes it from 154px to 183px, and the
+       rails spanning `grid-row: 1 / -1` run that much longer. Mobile overrides
+       both row-gap and hub padding below, so the phone is untouched. */
+    row-gap: clamp(0.5rem, 2.4vw, 1.9rem);
   }
   .brg[data-reveal] { opacity: 1; transform: none; transition: none; }
 
@@ -272,7 +287,7 @@ const spec = [
     grid-column: 2; grid-row: 1 / -1; align-self: center;
     position: relative;
     display: grid; justify-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem);
-    padding: clamp(1.8rem, 3.2vw, 3rem) clamp(1rem, 2vw, 1.8rem);
+    padding: clamp(1.8rem, 4.2vw, 3.9rem) clamp(1rem, 2vw, 1.8rem);
     border: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
     transition: opacity 460ms var(--ease-out) 640ms;
   }
@@ -293,8 +308,14 @@ const spec = [
     background: var(--brass);
     transition: transform 420ms var(--ease-out) 720ms;
   }
-  .brg__hub::before { right: 100%; transform: scaleX(0); transform-origin: left; }
-  .brg__hub::after { left: 100%; transform: scaleX(0); transform-origin: right; }
+  /* Same trap as the rails, one line down, and it had been shipping: the
+     connectors' hidden state was declared unconditionally, so with JavaScript
+     off `.brg.is-in` never arrived and the hub sat unattached to either arm —
+     the exact "half-connected diagram reads as timidity" this block was
+     written to avoid. Origin stays here; only the collapse is gated. */
+  .brg__hub::before { right: 100%; transform-origin: left; }
+  .brg__hub::after { left: 100%; transform-origin: right; }
+  html.js .brg__hub::before, html.js .brg__hub::after { transform: scaleX(0); }
   .brg.is-in .brg__hub::before, .brg.is-in .brg__hub::after { transform: none; }
 
   .brg__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brass); }
@@ -397,8 +418,9 @@ const spec = [
     .brg__hub::after { content: none; }
     .brg__hub::before {
       content: ''; right: 100%; width: var(--brg-gut);
-      transform: scaleX(0); transform-origin: right;
+      transform-origin: right;
     }
+    html.js .brg__hub::before { transform: scaleX(0); }
     .brg.is-in .brg__hub::before { transform: none; }
     .iclaim__t { text-align: left; margin-inline: 0; max-width: 16ch; }
   }
