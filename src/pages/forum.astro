@@ -244,14 +244,28 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
   in the footer's secondary door, which on this route is a link to this page.
   The footer's is suppressed on /forum/ only.
 
-  TWO LOCATION STRINGS, TWO JOBS, TWO CORNERS. "Kennedy Compound, Hyannis
-  Port" describes the CONVENING: it sits in the masthead's foot band at the
-  bridge rung, lower left, plain sentence case. "Block Island, Rhode Island"
-  describes the PHOTOGRAPH: it sits in the opposite corner, upper right, in
-  the dim tracked credit register every full-bleed frame on this site uses.
-  Diagonally opposite, in two different voices, so a reader cannot collapse
-  one into the other. That separation is load-bearing while the picture is a
-  harbour 200 miles from the place the page names. See refs/PHOTO-FACTS.md.
+  TWO LOCATION STRINGS, TWO JOBS — AND THE SEPARATION IS NO LONGER A
+  DIAGONAL. It used to be: the event line at the bridge rung in the foot
+  band, lower left; the photograph's credit in the dim register, upper
+  right. Two corners, two registers, and a comment here arguing that a
+  reader could not collapse them. The wave-11 blind read looked at the
+  pixels and found otherwise — 24-27px cream in the bottom-left corner of a
+  full-bleed photograph is the canonical caption position, and dimness in
+  the far corner does not outrank it. refs/PHOTO-FACTS.md names that exact
+  arrangement as the thing that must not happen, and its own remedy is
+  "keep the event line in the display stack with the headline."
+
+  So the event line is now IN the display stack, bound to the name, and the
+  string itself carries a verb: "Held at the Kennedy Compound, Hyannis
+  Port" is a statement about the convening and cannot be read as a caption
+  for anything. The photograph's credit keeps its corner and its register.
+  The foot band keeps the eyebrow, the rule and the cue.
+
+  WHAT THIS COST. The masthead's named arrangement was the name hung off
+  the right rail in the frame's empty half WITH the two location strings in
+  diagonally opposite corners. The first half survives — the stack still
+  hangs right, in the water, and the sloop still keeps its own third. The
+  diagonal is spent, deliberately, because the diagonal WAS the defect.
 
   Motion ranks the page by KIND, not only by delay: the masthead lifts its
   lines on load, the claim SETTLES under scroll and its two italic verbs
@@ -275,18 +289,21 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
        missing, so 11.7px never stands directly against 126px again.
 
        TWO LOCATION STRINGS, TWO JOBS, and they are not allowed to collapse
-       into one. "Kennedy Compound, Hyannis Port" describes the CONVENING, so
-       it sits inside the display stack, in the bridge voice, one line under
-       the name. "Block Island, Rhode Island" describes the PHOTOGRAPH, so it
-       sits in the opposite corner in the dim credit register that every
-       full-bleed scene on this site uses. See refs/PHOTO-FACTS.md. */}
+       into one. "Held at the Kennedy Compound, Hyannis Port" describes the
+       CONVENING, so it sits inside the display stack, in the bridge voice,
+       one line under the name, and says what it is in its own words. "Block
+       Island, Rhode Island" describes the PHOTOGRAPH, so it sits in a corner
+       in the dim credit register that every full-bleed scene on this site
+       uses. See refs/PHOTO-FACTS.md. */}
   <section class:list={['fh', mast.hang === 'right' && 'fh--hangR']}>
     {/* The credit is not optional on the stand-in, it is that frame's whole
-        problem. The event line below reads as a caption the moment it is the
-        only place-name on the picture, and the picture is a harbour on Block
-        Island, 200 miles from Hyannis Port. Credit top-right, opposite the
-        event line in the foot band: two location strings, two corners, two
-        registers, so a reader cannot collapse them. refs/PHOTO-FACTS.md.
+        problem: the picture is a harbour on Block Island, 200 miles from
+        Hyannis Port, and an unlabelled full-bleed frame under this page's
+        name invites the reader to supply the label. Credit top-right, in the
+        dim register. It is no longer carrying the whole separation on its
+        own — the event line moved into the display stack and grew a verb —
+        but it is still the only thing on the page that says where the
+        photograph was taken. refs/PHOTO-FACTS.md.
 
         The lawn frame is the one slot where the two strings agree, and it is
         still labelled — a corner label on an owned photograph is a location,
@@ -302,12 +319,21 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
     <div class="shell fh__in">
       <div class="fh__lock">
         <h1 class="display display--poster fh__h lines">{forum.name}</h1>
+        {/* IN THE DISPLAY STACK, UNDER THE NAME. refs/PHOTO-FACTS.md's own
+             remedy, applied: "keep the event line in the display stack with
+             the headline." It used to sit at the left end of the foot band,
+             alone in the bottom-left corner of a full-bleed photograph at
+             24-27px cream — the canonical caption position — with the
+             photograph's true credit small and dim in the far corner. The
+             diagonal was the argument; the pixels were the caption. Bound to
+             the name it is a billing line, and the string carries "Held at"
+             so it says so on its own as well. */}
+        <p class="bridge bridge--fg fh__place">{forum.place}</p>
       </div>
 
       <div class="fh__bar">
         <div class="fh__meta">
           <p class="eyebrow fh__brow">{forum.access}</p>
-          <p class="bridge fh__place">{forum.place}</p>
         </div>
         <span class="fh__rule" aria-hidden="true"></span>
         {/* Points at the SECTION, not its heading. The h2 carries
@@ -610,9 +636,11 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
     align-self: end;
     justify-self: start;
     width: fit-content;
-    max-width: min(100%, 42ch);
+    max-width: min(100%, 46ch);
     text-align: left;
   }
+  /* The event line is wider than the name's 9ch measure, so the lock is
+     allowed the room it needs; hung right, the extra runs into open water. */
   .fh--hangR .fh__lock { justify-self: end; }
 
   /* brass tick — a graphic anchor above the stack, no words spent */
@@ -652,7 +680,24 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
     gap: clamp(1.25rem, 2.6vw, 2.4rem);
   }
   .fh__meta { display: grid; gap: 0.35rem; }
-  .fh__brow, .fh__place { margin: 0; max-width: none; }
+  .fh__brow { margin: 0; max-width: none; }
+  /* The event line rides the name now, not the foot band. Ranged with the
+     stack (right when the stack hangs right) so the two read as one block. */
+  /* Wider than the name's 9ch measure on purpose: at the name's width the
+     line breaks between "Kennedy" and "Compound" and splits the proper noun.
+     `max-content` lets it set the lock's width instead, and the lock is
+     right-hung, so the extra width runs LEFT into the open water rather than
+     across the sloop. */
+  /* AT --fg, NOT THE BRIDGE'S USUAL --fg-mute. Two reasons, one of them a
+     measurement. It is in the display stack now, bound to the name, so it is
+     part of that block rather than a note beside it. And photo-meter caught
+     the move: at 390px the line leaves the foot band's deep ink and lands at
+     80% of the frame on backdrop L* 35.4, where the muted grey measured
+     4.17:1 against a 4.5 budget. Cream clears it with room. */
+  .fh__place {
+    margin: clamp(0.5rem, 1vw, 0.85rem) 0 0;
+    width: max-content; max-width: 34ch;
+  }
 
   /* Local motion primitive: the masthead sits above motion.js's reveal
      rootMargin, so a scroll trigger can never fire here. Load-timed instead,
@@ -1062,6 +1107,9 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
        rule here silently lost to it and hung the name off the right edge of
        a 390 screen. There is no open half at this width on any photograph. */
     .fh .fh__lock, .fh--hangR .fh__lock { width: auto; justify-self: stretch; max-width: 100%; }
+    /* No open half to run into on a phone: the line takes the column and
+       wraps where the column ends, like every other line on the screen. */
+    .fh__place { width: auto; max-width: 100%; }
     .fh__bar { grid-template-columns: minmax(0, 1fr) auto; row-gap: 1.1rem; }
     .fh__meta { grid-column: 1 / -1; }
 

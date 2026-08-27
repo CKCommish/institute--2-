@@ -392,7 +392,29 @@ export const board = [
 
 export const forum = {
   name: 'The Lion Forum',
-  place: 'Kennedy Compound, Hyannis Port',
+  /* THE EVENT'S LOCATION, AND WHY IT HAS A VERB IN IT.
+
+     This read 'Kennedy Compound, Hyannis Port' — a bare place-name — and it
+     is set, in both of its two consumers, on a full-bleed photograph of Old
+     Harbor, Block Island, Rhode Island. refs/PHOTO-FACTS.md: "A full-bleed
+     photograph with a place-name set over it reads as a caption, whether or
+     not you meant it as one." Position and register were doing all the work
+     of keeping it apart from the photograph's own credit, and the wave-11
+     blind read looked at the pixels and found the work not done: the big
+     cream place-name reads as the caption and the small dim one reads as
+     noise, whichever corners they are in.
+
+     A clause with a verb cannot be read as a caption. 'Held at' says the
+     string is about the CONVENING, not about the frame, and it says it in
+     the string itself, so the separation survives any crop, any viewport
+     and any future layout. Sourced: the prospectus, "The Lion Forum is an
+     invitation-only convening held at the historic Kennedy Compound in
+     Hyannis Port, Massachusetts."
+
+     WHEN THE CLIENT'S OWN KENNEDY COMPOUND FRAMES LAND: this string does
+     not need to change. It is true of the event either way, and 'Held at'
+     is not a hedge against the stand-in — it is what the line means. */
+  place: 'Held at the Kennedy Compound, Hyannis Port',
   access: 'By invitation',
   line: 'The people who build sit with the people who decide.',
   /* THE CLOSE, set on cream at the series-breaker rung. One sentence that

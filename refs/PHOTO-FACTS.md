@@ -148,6 +148,54 @@ against this photograph as though it described it.
 If the Institute ever obtains a released photograph of the actual venue, that
 tension disappears and this frame should be swapped out.
 
+### What was done about it, and why position alone was not enough (wave 12)
+
+The remedy above was written as a POSITIONAL one — event line in the display
+stack, credit in a corner, two registers — and for eleven waves the site
+believed it had applied it. It had not. On `/forum/` the event line had drifted
+out of the display stack into the left end of the masthead's foot band: 24-27px
+cream, alone in the bottom-left corner of a full-bleed photograph of Block
+Island, with the true credit small and dim in the opposite corner. That is the
+canonical caption position, and the wave-11 blind read named it. The homepage
+held scene had the line in the right place and still printed both strings in one
+frame, the big one reading as the caption.
+
+Two changes, and the second is the one that lasts:
+
+1. **`/forum/` now applies the remedy as written.** `src/pages/forum.astro`:
+   the event line sits inside `.fh__lock`, under the `<h1>`, ranged with the
+   name. The foot band keeps the eyebrow, the rule and the cue. This spent
+   half of that masthead's named arrangement — the two location strings in
+   diagonally opposite corners — on purpose, because the diagonal was the
+   defect. The other half, the name hung off the right rail in the empty half
+   of the frame, is untouched.
+
+2. **The string itself stopped being a bare place-name.** `forum.place` in
+   `src/data/site.js` read `Kennedy Compound, Hyannis Port` and now reads
+   **`Held at the Kennedy Compound, Hyannis Port`**. Sourced to the
+   prospectus: "The Lion Forum is an invitation-only convening held at the
+   historic Kennedy Compound in Hyannis Port, Massachusetts." A clause with a
+   verb is a statement about the EVENT and cannot be read as a caption for a
+   photograph, in any corner, at any size, on any viewport. Position and
+   register still help; they are no longer carrying the claim by themselves.
+
+The rule this adds to the one above: **a place-name set on a photograph is
+kept honest by its grammar before it is kept honest by its position.** If a
+layout ever needs the event line somewhere else, the string survives the move.
+
+**When the client's Kennedy Compound photographs land**, none of this has to
+be undone. `forum.place` is true of the convening either way and stays as it
+is; `forum.photos.lawn` already carries its own credit (`Hyannis Port,
+Massachusetts`), and on that day the two strings agree and the corner label
+stops being a disambiguation and becomes a plain location. What comes off the
+site then is `forum.jpg` itself, per the section below — not this wording.
+
+Every other photograph on the site was walked for the same arrangement. There
+is no other display-sized place-name set over a photograph anywhere: all seven
+corner labels are in the credit register, and the only other place-name near a
+frame is pilot 03's `where: 'Indianapolis.'`, which sits in the copy column
+beside its plate, not on it, and is the photograph's true location regardless.
+
 
 ## Client-owned photography
 
