@@ -14,18 +14,31 @@ node tools/blind.mjs progress/shots/<label>/home desktop /tmp/blind-<you>
 
 Use **your own port**. Never `npx astro build` into the shared `dist/`.
 
-## The six gates — run all of them before you report
+## The seven gates — run all of them before you report
+
+```bash
+node tools/gates.mjs        # all seven, in parallel, one verdict — THIS IS THE WAY TO RUN THEM
+```
+
+It builds to its own `dist-gates-<hash>`, serves it on a port the OS hands
+out, and runs the seven below in a pool. Nothing is shared, so two builders
+can run it at the same moment — which is what wave 12 could not do, and why
+two racing runs reported a phantom failure. It caches each gate's verdict
+against the hash of the source tree AND of the gate's own file, so a re-run
+on an unchanged build is instant; `--fresh` ignores the cache. Whole suite:
+**4m03s** wall, against ~13min of running them one at a time.
 
 ```bash
 node tools/audit.mjs        # contrast, overflow, heading order, alt text, tap targets, dead links
 node tools/photo-meter.mjs  # type over photographs — both viewports, swept through the frame
+node tools/ink-floor.mjs    # the MINIMUM of every type-over-photograph contrast curve
 node tools/nojs-meter.mjs   # all 7 routes x 2 viewports with JavaScript OFF
 node tools/nojs-diff.mjs    # the same routes compared as PICTURES, script on vs script off
 node tools/perf.mjs         # page weight, LCP, CLS at load and through a full scroll
 node tools/hold-meter.mjs / # the homepage held scene, sampled across its pinned range
 ```
 
-These are gates, not diagnostics. A wave is not done until all six are green,
+These are gates, not diagnostics. A wave is not done until all seven are green,
 and "I read the DOM and it looked right" is not one of them.
 
 **Why `nojs-meter` exists.** A defect shipped through eight waves and four
@@ -52,6 +65,31 @@ subject. Read its header before changing a threshold. It exempts the fixed
 bar, which is deliberately a different object without a script; that band is
 `nojs-meter`'s, in contrast. **Run both.**
 
+**Why `ink-floor` exists, and what it settles.** The site's tightest number
+had no gate on it and had been misquoted twice, each time by a meter that
+sampled where the minimum was not. `photo-meter` parks a FIGURE at five
+fractions of the viewport — but a held stage is `position: sticky`, so it
+does not move when the page scrolls and those five stops collapse to
+roughly one; and it composites type using the element's own colour alpha
+only, ignoring `opacity` on the element and every ancestor, so a beat at
+--be 0.55 is read as fully inked cream. That is where its 7.19:1 came from.
+`hold-meter` cascades opacity properly and sweeps the pin, which is why it
+read 4.17:1 on the same string — **the cascaded reading is the honest one**,
+and photo-meter's blindness to ancestor opacity is a real defect in it, not
+a difference of convention. But hold-meter samples 17 fixed positions on one
+scene of one route. Neither is a superset of the other.
+
+`ink-floor` measures one quantity — cascaded ink against the brightest
+3-row band of what is actually painted behind the glyphs — for every string
+over a photograph on every route at both viewports, and it does not sample
+the curve, it MINIMISES it: a coarse vh/5 sweep, then the coarse argmin
+trisected to ≤8px. Two conventions in it are worth knowing: the band is
+three pixel rows, not one, because a 1px foreground hairline crossing a
+glyph box is not the ground behind it (the nav's progress rule read as
+2.31:1 under a brass numeral before that); and it waits for CSS transitions
+to finish as well as for the scroll to stop, because the nav's 460ms colour
+transition photographs as 1.46:1 halfway through and is not reproducible.
+
 **Two numbers to quote correctly.** The site's tightest type-over-photograph is
 the 11px "By invitation" eyebrow on the homepage Forum figure: **4.563:1 on
 mobile**, 0.06 above AA, at t≈0.275 of the held scene's pinned range. It has
@@ -69,8 +107,13 @@ verified by re-sweeping the pre-change build). No gate is positioned to catch
 this number moving: photo-meter samples one position and steps past the
 shoulder, hold-meter's 17 positions step past the minimum, and during wave 12
 the two instruments read the same string as 4.17:1 and 7.19:1. Anyone
-touching `--k`, the ink knee, or the cap in `HeldScene.astro` must sweep it
-densely by hand.
+touching `--k`, the ink knee, or the cap in `HeldScene.astro` is now caught
+by `ink-floor`: weakening the cap by 0.015 of alpha — a change photo-meter
+still calls clean — drops the eyebrow to 4.453:1 and fails the gate.
+
+Wave 13 re-measured the number and it did not move: `ink-floor` floors that
+curve at **4.569:1** under its own 3-row band rule, **4.562:1** under the
+single-row convention the 4.563 was quoted in. Quote 4.563; it is right.
 
 **A trap worth knowing.** `base.css` sets `html { scroll-behavior: smooth }`,
 so `window.scrollTo` starts an animation. Any meter that scrolls and then waits

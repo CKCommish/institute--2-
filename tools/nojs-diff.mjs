@@ -171,8 +171,31 @@
      defects 1 and 2  inside the exempted bar; `nojs-meter` fires on both
                (24 and 21 issues, contrast 1:1 and 1.14:1). Run both tools.
 
+   ── THE BLIND SPOT, STATED ───────────────────────────────────────────────
+   BOTH SIDES OF THIS COMPARISON ARE THE STACKED LAYOUT, SO NOTHING IN THE
+   ENHANCED PINNED HOLD IS EVER COMPARED. The reference is reduced-motion and
+   the render under test is JS-off, and HeldScene's pin is gated on BOTH
+   `html.js` AND `(prefers-reduced-motion: no-preference)` — so the sticky
+   stage, the arc, the cap, the beat ink, the push and every beat envelope are
+   absent from both renders. That is not a bug in the pairing: the pairing is
+   what makes the two documents the same height, and without it the homepage
+   is ~2000px out of register from the Forum scene down and every band below
+   it is noise. But it means this tool has never once looked at the scene the
+   site's tightest number lives in.
+
+   CAN IT BE CLOSED? Not by this tool, and not by a third render either. The
+   defect family it hunts is "a visible state whose only declaration is gated
+   on a script-written class", and inside the pinned hold there is by
+   definition no scriptless render to compare against — with no script there
+   is no pin. There is nothing to diff. What the enhanced hold needs is not a
+   diff but a measurement, and that is what `tools/ink-floor.mjs` is: it runs
+   with scripts on and motion enabled, and it minimises the contrast curve of
+   every string over every photograph across the whole scroll range, pinned
+   scenes included. Between them the coverage is complete; neither covers the
+   other's ground. Run both.
+
    usage: BASE=http://127.0.0.1:4399 node tools/nojs-diff.mjs [--json]
-                                     [--routes=/,/institute/] [--write=DIR] */
+                       [--routes=/,/institute/] [--write=DIR] [--jobs=4] */
 import { launch } from './browser.mjs';
 import sharp from 'sharp';
 import fs from 'node:fs';
@@ -324,53 +347,89 @@ const findings = [];
 const banner = [];
 let frames = 0;
 
-for (const view of VIEWS) {
-  const mk = (js) => browser.newContext({
+/* ── THE JOB POOL ────────────────────────────────────────────────────────
+   This tool ran 9m14s serially, which the wave-12 judge named as the thing
+   most likely to stop a builder running it at all — and a gate nobody runs
+   is not a gate. Nothing in a (view, route) pair touches anything in another
+   one: each owns two contexts, two pages and its own pixel buffers. So they
+   go through a pool. Findings are written into a slot indexed by job, not
+   pushed, so the report is byte-identical to the serial order however the
+   pool interleaves — a diff tool whose output moved between runs would be
+   worse than a slow one. `--jobs=1` restores the serial run exactly. */
+const jobs = [];
+for (const view of VIEWS) for (const route of ROUTES) jobs.push({ view, route });
+const slots = jobs.map(() => []);
+const JOBS = Math.max(1, Math.min(Number(arg('jobs') || 4), jobs.length));
+
+/* The exempted band, measured rather than guessed: the bar's own height plus
+   the tail its scrim is allowed to reach over. See the header. Once per
+   view, before the pool, so the workers share one answer. */
+const SKIPS = new Map();
+{
+  const ctx = await browser.newContext({ viewport: VIEWS[0].vp, deviceScaleFactor: 1 });
+  const p = await ctx.newPage();
+  for (const view of VIEWS) {
+    await p.setViewportSize(view.vp);
+    await p.goto(base + ROUTES[0], { waitUntil: 'load', timeout: 60000 });
+    const navBand = await p.evaluate(() => {
+      const nav = document.querySelector('[data-nav], .nav');
+      if (!nav) return null;
+      const tail = getComputedStyle(nav).getPropertyValue('--nav-tail').trim();
+      const px = tail.endsWith('rem')
+        ? parseFloat(tail) * parseFloat(getComputedStyle(document.documentElement).fontSize)
+        : parseFloat(tail) || 0;
+      return Math.ceil(nav.getBoundingClientRect().height + (Number.isFinite(px) ? px : 0)) + 2;
+    }).catch(() => null);
+    SKIPS.set(view.tag, navBand || NAV_BAND);
+    banner.push(`${view.tag}: fixed bar exempt, top ${SKIPS.get(view.tag)}px`);
+  }
+  await ctx.close();
+}
+
+let nextJob = 0;
+await Promise.all(Array.from({ length: JOBS }, async () => {
+  const mk = (view, js) => browser.newContext({
     viewport: view.vp, isMobile: !!view.mobile, hasTouch: !!view.mobile,
     deviceScaleFactor: 1, javaScriptEnabled: js,
     /* see header: the reference is normalised, the render under test is not */
     reducedMotion: js ? 'reduce' : 'no-preference',
   });
-  const ctxOn = await mk(true), ctxOff = await mk(false);
-  const pOn = await ctxOn.newPage(), pOff = await ctxOff.newPage();
+  let ctxOn = null, ctxOff = null, pOn = null, pOff = null, tag = null;
+  while (true) {
+    const i = nextJob++;
+    if (i >= jobs.length) break;
+    const { view, route } = jobs[i];
+    if (tag !== view.tag) {
+      if (ctxOn) { await ctxOn.close(); await ctxOff.close(); }
+      ctxOn = await mk(view, true); ctxOff = await mk(view, false);
+      pOn = await ctxOn.newPage(); pOff = await ctxOff.newPage();
+      tag = view.tag;
+    }
+    const SKIP = SKIPS.get(view.tag);
+    const out = slots[i];
 
-  /* The exempted band, measured rather than guessed: the bar's own height
-     plus the tail its scrim is allowed to reach over. See the header. */
-  await pOn.goto(base + ROUTES[0], { waitUntil: 'load', timeout: 60000 });
-  const navBand = await pOn.evaluate(() => {
-    const nav = document.querySelector('[data-nav], .nav');
-    if (!nav) return null;
-    const tail = getComputedStyle(nav).getPropertyValue('--nav-tail').trim();
-    const px = tail.endsWith('rem')
-      ? parseFloat(tail) * parseFloat(getComputedStyle(document.documentElement).fontSize)
-      : parseFloat(tail) || 0;
-    return Math.ceil(nav.getBoundingClientRect().height + (Number.isFinite(px) ? px : 0)) + 2;
-  }).catch(() => null);
-  const SKIP = navBand || NAV_BAND;
-  banner.push(`${view.tag}: fixed bar exempt, top ${SKIP}px`);
-
-  for (const route of ROUTES) {
     const load = async (p) => {
       await p.goto(base + route, { waitUntil: 'load', timeout: 60000 });
       await p.evaluate(() => document.fonts && document.fonts.ready).catch(() => {});
       await p.waitForTimeout(500);
       return p.evaluate(() => document.documentElement.scrollHeight);
     };
-    const hOn = await load(pOn), hOff = await load(pOff);
+    /* both sides load at once: they are two independent browsers */
+    const [hOn, hOff] = await Promise.all([load(pOn), load(pOff)]);
 
     /* Neither side is pinned, so the two renders are the same document. A
        height that moves means a whole block of layout only exists on one
        side — the loudest form of this defect, and worth its own line. */
     if (Math.abs(hOn - hOff) > 2) {
-      findings.push({ view: view.tag, route, band: null, note: `document height ${hOn}px with JS, ${hOff}px without (Δ${hOn - hOff}px) — layout differs, per-band diff below is unreliable` });
+      out.push({ view: view.tag, route, band: null, note: `document height ${hOn}px with JS, ${hOff}px without (Δ${hOn - hOff}px) — layout differs, per-band diff below is unreliable` });
     }
 
     const H = view.vp.height;
     const n = Math.max(1, Math.min(MAX_BANDS, Math.ceil(Math.min(hOn, hOff) / H)));
     const span = Math.max(0, Math.min(hOn, hOff) - H);
-    for (let i = 0; i < n; i++) {
-      const y = n === 1 ? 0 : Math.round(span * (i / (n - 1)));
-      await settleAt(pOn, y); await settleAt(pOff, y);
+    for (let k = 0; k < n; k++) {
+      const y = n === 1 ? 0 : Math.round(span * (k / (n - 1)));
+      await Promise.all([settleAt(pOn, y), settleAt(pOff, y)]);
       /* Where the never-settling objects are IN THIS FRAME. Read off the
          reference, which is the only side running a script. */
       const boxes = await pOn.evaluate((sel) => [...document.querySelectorAll(sel.join(','))]
@@ -381,12 +440,12 @@ for (const view of VIEWS) {
       const [ra, rb] = await Promise.all([raw(sa), raw(sb)]);
       frames++;
       if (ra.info.width !== rb.info.width || ra.info.height !== rb.info.height) {
-        findings.push({ view: view.tag, route, band: y, note: 'frame size mismatch' });
+        out.push({ view: view.tag, route, band: y, note: 'frame size mismatch' });
         continue;
       }
       const regions = diffRegions(ra.data, rb.data, ra.info.width, ra.info.height, SKIP, boxes);
       if (!regions.length) continue;
-      findings.push({ view: view.tag, route, band: y, regions: regions.slice(0, 6), total: regions.reduce((s, r) => s + r.px, 0) });
+      out.push({ view: view.tag, route, band: y, regions: regions.slice(0, 6), total: regions.reduce((s, r) => s + r.px, 0) });
       if (writeDir) {
         const d = path.join(writeDir, `${view.tag}${route.replace(/\//g, '_')}${y}`);
         fs.mkdirSync(d, { recursive: true });
@@ -395,8 +454,9 @@ for (const view of VIEWS) {
       }
     }
   }
-  await ctxOn.close(); await ctxOff.close();
-}
+  if (ctxOn) { await ctxOn.close(); await ctxOff.close(); }
+}));
+for (const slot of slots) for (const f of slot) findings.push(f);
 await browser.close();
 
 if (asJson) console.log(JSON.stringify({ base, frames, findings }, null, 2));

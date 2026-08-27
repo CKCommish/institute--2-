@@ -17,3 +17,4 @@ tmp-*.mjs
 tools/[a-z].mjs
 tools/[a-z][0-9].mjs
 tools/z*.mjs
+.gate-cache/
