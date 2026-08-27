@@ -70,15 +70,27 @@
    IT IS NOT, HOWEVER, "no type on photography at all" — this comment said
    that for two waves and it was never true. `.held__fig .fig__credit` is set
    ON the picture in this layout too, which is why `.held__cap` is drawn here
-   (see its rule below). MEASURED, wave-15 judge, by subtraction on the glass
-   at the settled offset with the bar nowhere near it: the homepage credit
-   BLOCK ISLAND, RHODE ISLAND reads 1.13:1 desktop / 1.21:1 mobile under
-   `reduce` against a 4.5 budget. The cap is not buying enough, and this is
-   not a scrim finding — the bar does not reach it. It also is not only an
-   accessibility finding: refs/PHOTO-FACTS.md puts that credit there to stop
-   a Block Island harbour reading as the Kennedy Compound named three lines
-   below it, so a credit nobody can read is a disclaimer that is not doing
-   its job. Do not restore the "no type on photography" claim.
+   (see its rule below). Do not restore the "no type on photography" claim.
+
+   AND THE CAP WAS NOT UNDER IT. The wave-15 judge measured that credit at
+   1.13:1 desktop / 1.21:1 mobile under `reduce` and concluded "the cap is not
+   buying enough". The cap was buying nothing, because it was on the WRONG
+   SIDE of the glyphs: this scene's whole ink stack was a SIBLING of the
+   figure, and `.fig` sets `isolation: isolate`, so no z-index out here can
+   reach beneath a layer in there. Differenced glyph-against-backdrop in all
+   three render modes, the ground under that credit read 0.006 relative
+   luminance — already deep — while the cream ink read 0.039-0.079 against the
+   0.60 the same string reads on /forum/. The cap was painting the DISCLAIMER
+   out, and every previous wave's instinct (more cap, heavier cap) made it
+   worse. `.held__grade` is now handed to Figure's `grade` slot, which renders
+   it above the grain and below the credit; measured after, the same credit
+   reads 7.67-11.80:1 across the six mode x viewport combinations. Nothing
+   about the ink's weight, height or position changed — only its paint order.
+
+   The reason this matters more than a contrast budget: refs/PHOTO-FACTS.md
+   puts that credit there to stop a Block Island harbour reading as the
+   Kennedy Compound named three lines below it. A credit nobody can read is a
+   disclaimer that is not doing its job.
    ------------------------------------------------------------------- */
 import Figure from './Figure.astro';
 
@@ -202,7 +214,7 @@ const style = [
             grade={grade} vig={vig} scrim="none"
             focal={focal} focalSm={focalSm} zoom={zoom} zoomSm={zoomSm}
             credit={credit} creditPos={creditPos}
-            loading="lazy" sizes="100vw" class="held__fig" />
+            loading="lazy" sizes="100vw" class="held__fig">
 
     {/* THE GRADE STACK. One box that always covers exactly the photograph
         and nothing else — inset:0 over the pinned stage, and the stacked
@@ -216,7 +228,7 @@ const style = [
         subject instead of the whole picture dimming. This is the tonal
         event. The photograph under it is never touched — the house grade
         stays the house grade. */}
-    <div class="held__grade" aria-hidden="true">
+    <div class="held__grade" slot="grade" aria-hidden="true">
       {/* THE BAR BAND, CONTINUED. Figure guarantees ink under the fixed nav
           on every full-bleed frame, but it guarantees exactly the bar's
           height and releases hard — invisible under the house grade of 0.5,
@@ -240,6 +252,7 @@ const style = [
           the rest of the frame back to the photograph. */}
       <div class="held__foot"></div>
     </div>
+    </Figure>
 
     {(eyebrow || showCount) && (
       <div class="shell held__top">
@@ -292,7 +305,15 @@ const style = [
      could see it, because both run with motion enabled and the enhanced cap
      covers it there. So the cap is drawn here as well, sized to the figure
      instead of to the viewport, and at a fixed weight: there is no arc in
-     this layout, so there is nothing for it to track. */
+     this layout, so there is nothing for it to track.
+
+     READ THE PARAGRAPH ABOVE BEFORE TOUCHING THE WEIGHTS. Between that wave
+     and this one, this cap did not protect the credit — it painted over it,
+     because the whole grade stack sat outside the figure's stacking context.
+     It is inside it now. If a credit here ever measures thin again, check
+     paint order before you reach for opacity: this ink darkens the cream and
+     the picture in exactly the same proportion, so adding weight cannot
+     move the ratio. */
   .held__cap {
     display: block;
     position: absolute;
@@ -315,11 +336,20 @@ const style = [
      land two stops brighter than the rest of the site: one flat sheet puts
      it back on the house grade, and the foot gives the bottom edge the same
      seam every other full-bleed frame has. */
+  /* INSIDE THE FIGURE, VIA ITS `grade` SLOT — and that is the fix, not a
+     tidy-up. This box used to be a SIBLING of the figure at z-index 1, which
+     put every layer in it (the arc sheet, the cap, the foot) ON TOP OF the
+     photograph's location credit: `.fig` sets `isolation: isolate`, so a
+     z-index out here can never reach beneath a layer in there. The credit
+     measured 1.79-2.28 : 1 in all three render modes with a ground of 0.006 —
+     the ink under the credit was already deep, the cream glyphs were the
+     thing being painted out. Figure renders the slot above its grain and
+     below its credit, so the same ink now lands where it was always meant to.
+     It is also exactly the figure's own box in both layouts, which is what
+     the duplicated aspect-ratio was reconstructing by hand. */
   .held__grade {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    aspect-ratio: var(--held-ratio);
-    z-index: 1;
+    inset: 0;
     pointer-events: none;
     background: rgb(5 13 22 / 0.14);
   }
@@ -384,7 +414,7 @@ const style = [
   .held--right .held__line, .held--right .held__note { margin-left: auto; text-align: right; }
 
   @media (max-width: 720px) {
-    .held :global(.held__fig), .held__grade { aspect-ratio: var(--held-ratio-sm); }
+    .held :global(.held__fig) { aspect-ratio: var(--held-ratio-sm); }
     .held__line { max-width: 14ch; }
     /* The small-screen crop is a 4/5 portrait, so the credit sits higher up a
        brighter sky than it does on the 16/9: measured 4.28 : 1 at the desktop
@@ -431,7 +461,7 @@ const style = [
       inset: 0;
       aspect-ratio: auto;
     }
-    :global(html.js) .held__grade { inset: 0; aspect-ratio: auto; }
+    :global(html.js) .held__grade { inset: 0; }
     /* THE PUSH — continuous, scroll-linked, reversible, taken around the same
        point the crop is composed on, so the frame opens into its own subject
        rather than into its middle.

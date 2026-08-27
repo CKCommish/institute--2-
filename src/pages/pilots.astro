@@ -153,22 +153,15 @@ const grades = {
 </Base>
 
 <style>
-  /* ── Nav guard, local to this page ─────────────────────────────────
-     Nav.astro is not this piece's file. The shared scrim holds solid for
-     64% of its span and then feathers over the remaining 36% — which is
-     right for body copy passing under the bar and wrong for a serif
-     display line, because a half-faded 53px title reads as a ghost rather
-     than as something occluded. This page therefore shortens the tail and
-     holds it solid nearly all the way, so anything crossing the bar is
-     covered, not dimmed, and the transition zone is a ~20px sliver instead
-     of a 45px fade. The :has() guard keeps the rule inert everywhere else. */
-  :global(header.nav:has(~ main .pd))  { --nav-tail: 1.6rem; }
-  :global(header.nav.is-scrolled:has(~ main .pd))::before {
-    -webkit-mask-image: linear-gradient(
-      to bottom, #000 0%, #000 88%, rgba(0,0,0,0.45) 95%, transparent 100%);
-    mask-image: linear-gradient(
-      to bottom, #000 0%, #000 88%, rgba(0,0,0,0.45) 95%, transparent 100%);
-  }
+  /* ── Nav guard, DELETED ────────────────────────────────────────────
+     This page used to shorten the bar's tail and steepen its mask by hand,
+     because a half-faded 53px serif title reads as a ghost rather than as
+     something occluded. That was the right observation and the wrong
+     place: it is not a property of this page's display type, it is the
+     half-lit-band rule, and Nav.astro now states it once for the whole
+     site. The override had drifted into an exact copy of the shared values
+     and was the same rule typed twice, waiting to disagree with itself.
+     See the band note on `.nav::before` in Nav.astro. */
 
   /* ── Masthead ──────────────────────────────────────────────────────
      eyebrow → bridge → banner, then the rule, then the terms every one of

@@ -264,6 +264,20 @@ const style = [
   <div class="fig__vig" aria-hidden="true"></div>
   <div class="fig__grain" aria-hidden="true"></div>
 
+  {/* THE SCENE'S OWN INK — AND IT GOES UNDER THE CREDIT.
+      A scene that inks its own picture (HeldScene's arc sheet, its bar cap,
+      its foot) used to paint that ink as a SIBLING after this figure. `.fig`
+      sets `isolation: isolate`, so nothing outside the figure can ever get
+      beneath a layer inside it: the scene's ink landed on top of the location
+      credit instead of under it. Measured on the shipped homepage, all three
+      render modes, glyph pixels differenced against the same pixels with the
+      glyphs made transparent: the Block Island credit read 1.79-2.28 : 1 with
+      a ground of 0.006 — the backdrop was already dark, the CREAM was being
+      painted out (ink 0.049 where the same string on /forum/ reads 0.60).
+      More cap made it worse, not better. Scene ink belongs here, above the
+      grain and below the credit. */}
+  <div class="fig__ink"><slot name="grade" /></div>
+
   {credit && (
     <p class="label fig__credit" data-pos={creditPos}>
       <span class="fig__dot" aria-hidden="true"></span>{credit}
@@ -533,6 +547,15 @@ const style = [
       var(--ink-900) 0%,
       color-mix(in srgb, var(--ink-900) 52%, transparent) 34%,
       transparent 100%);
+  }
+
+  /* A scene's own ink layer, painted over the picture and under the credit.
+     Empty on every figure that is not handed one. */
+  .fig__ink {
+    position: absolute;
+    inset: 0;
+    z-index: 7;
+    pointer-events: none;
   }
 
   /* 5 ── the wipe entrance ─────────────────────────────────────────

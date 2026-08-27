@@ -103,7 +103,22 @@ reach was 119px desktop / 114 mobile against /pilots/'s 89. The reach any
 route actually has is `--nav-h + --nav-tail`, both of which are fluid and one
 of which a page may override — read it off the element, never off this file.
 Wave 15 made the shape one thing everywhere; the number still varies with the
-viewport.)
+viewport. Wave 16 made the tail 0.375rem and moved the mask's stops from
+percentages of that fluid height to absolute lengths off `--nav-h`, so the
+scrim is now solid to exactly the bar's bottom edge and the fade is exactly
+the tail: reach is `--nav-h + 0.375rem`, 69.4px desktop / 64px mobile, and the
+HALF-LIT BAND — the only number that governs — is 6px in every render mode at
+both viewports. /pilots/'s local override is deleted; the rule is written
+once.)
+
+**And the quantity that sizes that band is the INK, not the line box.** Two
+waves compared it against 11.664px, the font-size of the site's smallest meta
+label, and passed a band that still crushed whole strings. A reader does not
+see a font size. Measured by subtraction at 3x, the rows that change when
+"Special Olympics" on /pilots/ is taken off the glass span cap to descender
+and are **8.67px**. Wave 15's 10.7px band cleared 11.664 and did not clear
+8.67, and the label read 1.43:1 at full coverage under it. Size the band
+against 8.67px, with margin.
 This file used to describe that as a convention — "the band is what is painted
 behind the glyphs" — which is how a hole gets written up as a decision. It was
 a hole.
