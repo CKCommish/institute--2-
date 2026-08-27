@@ -1,7 +1,7 @@
 ---
 import { whyNow, whyNowLead } from '../../data/site.js';
 ---
-<!-- THE PAGE'S ONE EXCEPTION.
+{/* THE PAGE'S ONE EXCEPTION.
 
      Everything else on this site is drawn with the same move: an 11.7px
      label at the top-left rail, a full-width horizontal rule under it, and a
@@ -34,20 +34,20 @@ import { whyNow, whyNowLead } from '../../data/site.js';
      The RULE is territory and is uncovered downward from the top, so the
      scene draws its own division before anything is set against it. The
      CLAIM is weight and is on settle — scroll-linked, reversible, resolving
-     under the reader. Settle is spent once on this page, here. -->
+     under the reader. Settle is spent once on this page, here. */}
 <section class="why on-cream" id="why" aria-labelledby="why-h">
   <div class="shell why__in">
 
-    <!-- The narrow column. Flush to the rule, not to the page. -->
+    {/* The narrow column. Flush to the rule, not to the page. */}
     <div class="why__side">
       <p class="eyebrow why__eyebrow" data-reveal>Why now</p>
       <p class="bridge why__bridge" data-reveal="220">{whyNowLead}</p>
     </div>
 
-    <!-- The division. Vertical, full height, drawn top-down. -->
+    {/* The division. Vertical, full height, drawn top-down. */}
     <span class="why__rule" aria-hidden="true" data-wipe="top" data-delay="60"></span>
 
-    <!-- The major column. -->
+    {/* The major column. */}
     <div class="why__main">
       <h2 class="display display--poster why__h" id="why-h" data-settle="0.5">
         {whyNow}<span class="why__ast" aria-hidden="true">*</span>

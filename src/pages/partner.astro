@@ -45,27 +45,34 @@ const OPTIC = { C: 0.028, G: 0.028, O: 0.028, Q: 0.028, S: 0.020 };
 const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
 ---
 <Base title="Partner" description="Partner on a 2026 pilot with the Lion Forum Institute.">
-  <!-- ── The ask, once ────────────────────────────────────────────────
+  {/* ── The ask, once ────────────────────────────────────────────────
        ONE focal point, and it is the ACT, not the statement about the act.
        The screen holds four things and they are ranked: a quiet lead-in, the
        86px line that says what this is, a brass rule, and the address —
        drawn as a row between two brass hairlines, on a rung nothing else on
        the screen uses. The order a reader's eye takes them in is the order
        they are listed in only because the last one is the only object on the
-       screen with edges — and those edges are the page's own measure. -->
+       screen with edges — and those edges are the page's own measure. */}
   <section class="phead">
-    <!-- No photograph. This route used to run a full-height frame of a real
+    {/* No photograph. This route used to run a full-height frame of a real
          child at a Special Olympics meet behind the ask — a person with no
          relationship to this institute, carrying no line and answering no
          question. That photograph does honest work on /pilots/, where it is
          the pilot it belongs to. Here it was ground. A closing ask does not
-         need a picture; it needs one line, one address, and room. -->
+         need a picture; it needs one line, one address, and room. */}
     <div class="shell phead__in">
       <div class="phead__top" data-reveal>
         <p class="eyebrow">Work with us</p>
+        {/* "Most need two of the three." was here, and it was a
+             distribution invented over four pilots that have never run. It
+             also contradicted this page's own headline 1,550px below ("Every
+             pilot needs all three.") and /institute/ ("A pilot needs money, a
+             technology, AND a real place to run."). The list is conjunctive
+             on every other surface and in the data — all four `needs` blocks
+             in site.js carry fund, build and run — so it is conjunctive
+             here. */}
         <p class="bridge phead__bridge">
-          Every pilot needs money, a technology, or somewhere real to run it.
-          Most need two of the three.
+          Every pilot needs money, a technology, and somewhere real to run it.
         </p>
       </div>
 
@@ -75,7 +82,7 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
         <div class="ask">
           <span class="ask__rule" data-wipe="left" data-delay="420" aria-hidden="true"></span>
 
-          <!-- THE ACTION STANDS ON THE PAGE'S RAIL, LIKE EVERYTHING ELSE.
+          {/* THE ACTION STANDS ON THE PAGE'S RAIL, LIKE EVERYTHING ELSE.
                It was a shrink-to-fit plate: 32.6px of horizontal padding
                inside a 1px border that sat on the rail, so the border was on
                51.4 and the ADDRESS — the one string this whole route exists
@@ -90,7 +97,7 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
                rule above it and the pilot arrows below it. Its edges are two
                brass hairlines at the page's own measure, and the hover wash
                fills rail to rail — the same grammar as the four pilot rows,
-               at the action's rung. -->
+               at the action's rung. */}
           <a class="ask__mail" href={mailto()} data-reveal="520">
             <span class="ask__mail-t">{site.email}</span>
             <svg class="arrow ask__arrow" viewBox="0 0 22 10" aria-hidden="true">
@@ -98,20 +105,20 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
             </svg>
           </a>
 
-          <!-- The instruction and the cue are ONE ROW and they share a
+          {/* The instruction and the cue are ONE ROW and they share a
                baseline. They were two boxes bottom-aligned, which is not the
                same thing: `.tap`'s negative margin sits under the cue's
                border box, so the two lines of 11–16px type were landing 8px
-               apart. Grid baseline alignment reads the type, not the box. -->
+               apart. Grid baseline alignment reads the type, not the box. */}
           <p class="ask__sub" data-reveal="560">Name the pilot and the role. A person answers.</p>
 
-          <!-- The rule ran the full 1338px measure and ended in nothing: the
+          {/* The rule ran the full 1338px measure and ended in nothing: the
                ask hangs off its left end and the right two-thirds terminated
                at the viewport edge. A pause is only held when it is bounded
                on both sides. This is that second side, and it is the one
                object the first screen was actually missing — the fold gave a
                reader no signal that the page continued. House `.cue`, set at
-               the sub's rung so nothing sits level with the address. -->
+               the sub's rung so nothing sits level with the address. */}
           <a class="cue tap ask__cue" href="#pilots" data-reveal="640">
             <span class="label">The four pilots</span>
             <i class="cue__line" aria-hidden="true"></i>
@@ -122,34 +129,43 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
     </div>
   </section>
 
-  <!-- ── The payload, and now it is set as the payload ───────────────
+  {/* ── The payload, and now it is set as the payload ───────────────
        These four are what a partner is actually being asked to fund. They
        used to sit in a right-hand column at half the size of the line above
        them — the most concrete facts on the route, set as a sidebar. They
        are now the page's body: a band set into the page, four full-width
        rows, each name at the section-headline rung with the principal who
-       owns it beside it. -->
+       owns it beside it. */}
   <section class="pfour" id="pilots">
     <div class="shell pfour__in">
       <div class="pfour__head">
-        <!-- NO REVEAL ON THIS BLOCK, DELIBERATELY. It is the first thing
+        {/* NO REVEAL ON THIS BLOCK, DELIBERATELY. It is the first thing
              under the fold, and the reveal observer discounts the bottom 12%
              of the viewport: at 1440x900 this block sat at y=805 — on screen,
              and at opacity 0 for ever, because nothing below the trigger line
              can trigger. Geometry alone cannot fix that, since the dead band
              scales with the window and this block does not. It is static;
              the four rows under it still arrive in sequence, which is the
-             section's actual motion event. -->
+             section's actual motion event. */}
         <div class="pfour__top">
           <p class="eyebrow">Open for 2026</p>
-          <!-- The eyebrow already says OPEN FOR 2026; this line used to open
+          {/* The eyebrow already says OPEN FOR 2026; this line used to open
                "Four pilots are open for 2026" and spend a line and a half
                saying it again. A bridge that repeats its own eyebrow carries
-               nothing. It now carries the one thing the index below cannot
-               say for itself, and the one a reader must not get wrong: the
-               names in the second column proposed these pilots. None of them
-               has signed. -->
-          <p class="lede pfour__bridge">Each pilot is named for whoever proposed it. None is signed.</p>
+               nothing. It carries the one thing the index below cannot say
+               for itself, and the one a reader must not get wrong: what the
+               names in the second column ARE.
+
+               It said "Each pilot is named for whoever proposed it." That
+               asserted that a former U.S. Secretary of Education and a former
+               Governor each brought a proposal to this Institute. No source
+               says so — refs/BRIEF.md lists the pilots by those names and
+               nothing more — and it pointed the initiative the opposite way
+               from every other surface on the site (/pilots/ pilotTerms and
+               the homepage both say partners are SOUGHT). This is now the
+               same sentence those two already ship, word for word, so the
+               three cannot drift apart again. */}
+          <p class="lede pfour__bridge">Partners named are sought for 2026. None is signed.</p>
         </div>
       </div>
 
@@ -159,7 +175,7 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
             <a class="pindex__a" href={`/pilots/#${p.id}`}>
               <span class="index pindex__i">{p.index}</span>
               <span class="display display--head pindex__n" style={optic(p.title)}>{p.title}</span>
-              <!-- WHOSE PILOT THIS IS, AND HOW FAR ALONG. Two of these four
+              {/* WHOSE PILOT THIS IS, AND HOW FAR ALONG. Two of these four
                    values are living, identifiable public officials. In an
                    unlabelled second column on a page whose verb is "Partner
                    on a pilot.", a bare name asserts "this is the partner" —
@@ -169,7 +185,7 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
                    all four so the grammar stays one grammar. It stacks rather
                    than sitting inline: the row's height is set by the 53px
                    title beside it, so a second line in this cell costs the
-                   index no height at all. -->
+                   index no height at all. */}
               <span class="pindex__f">
                 <span class="pindex__who">{p.partner}</span>
                 <span class="label pindex__q">Proposed</span>
@@ -185,32 +201,32 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
     </div>
   </section>
 
-  <!-- The one hard cut in the scroll: the ground changes and the three
-       doors arrive. Numeral is the index, the verb is the content. -->
+  {/* The one hard cut in the scroll: the ground changes and the three
+       doors arrive. Numeral is the index, the verb is the content. */}
   <section class="on-cream proles" id="ways">
     <div class="shell proles__in">
       <div class="proles__head">
         <p class="eyebrow" data-reveal>Three ways in</p>
-        <!-- The rung this scene was missing. base.css: "Every scene that
+        {/* The rung this scene was missing. base.css: "Every scene that
              opens with an eyebrow and a display line should carry one of
              these between them." Both other sections on this route do; this
              one jumped 11px → 53px. It also carries the instruction, which
              the headline underneath cannot: the headline states what a pilot
-             needs, the bridge says what the reader is being asked to do. -->
+             needs, the bridge says what the reader is being asked to do. */}
         <p class="bridge proles__bridge" data-reveal="110">Pick the one you can do.</p>
         <h2 class="display display--head proles__h" data-settle="0.62">Every pilot needs all three.</h2>
       </div>
-      <!-- The page's one spatial idea: three doors opening outward from a
-           single point, as one gesture. Not three identical lift-fades. -->
-      <!-- Anchored left, not centre. A centre wipe grows outward from the
+      {/* The page's one spatial idea: three doors opening outward from a
+           single point, as one gesture. Not three identical lift-fades. */}
+      {/* Anchored left, not centre. A centre wipe grows outward from the
            middle, so column 01's leading characters are the LAST thing to
            arrive: "Fund it" reads as "und it" for a third of the wipe. The
-           rows hang off a left rule; the mask opens off the same edge. -->
-      <!-- The wipe moved off the <ol> and onto a wrapper with 6px of slack.
+           rows hang off a left rule; the mask opens off the same edge. */}
+      {/* The wipe moved off the <ol> and onto a wrapper with 6px of slack.
            `clip-path: inset(0)` clips to the BORDER box even when the mask is
            fully open, so a focus ring on the first or last door — 1.5px at
            3px offset — was being sliced by the mask that revealed it. The
-           columns now have somewhere to put a ring. -->
+           columns now have somewhere to put a ring. */}
       <div class="proles__wrap" data-wipe="left" data-delay="120">
         <ol class="proles__list">
           {roles.map((r, i) => (
@@ -220,20 +236,20 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
                 <span class="index door__n">{String(i + 1).padStart(2, '0')}</span>
                 <h3 class="display display--sub door__t">{r.t}</h3>
                 <p class="door__p">{r.p}</p>
-                <!-- The action, named and sized as one. It sits one rung
+                {/* The action, named and sized as one. It sits one rung
                      under the door's own title and above every other line in
                      the column, so the ladder inside a door now ends on the
-                     thing you press instead of starting there. -->
+                     thing you press instead of starting there. */}
                 <span class="door__go">
                   <svg class="arrow door__arrow" viewBox="0 0 22 10" aria-hidden="true">
                     <path d="M16 1l5 4-5 4M21 5H0"/>
                   </svg>
                   <span class="door__go-t">Email us about {r.a.toLowerCase()}</span>
                 </span>
-                <!-- The one thing a mailto cannot do is tell you it heard.
+                {/* The one thing a mailto cannot do is tell you it heard.
                      The page leaves the door marked, and the two you did not
                      take step back, so returning to this tab shows which of
-                     the three was chosen. -->
+                     the three was chosen. */}
                 <span class="door__got" aria-hidden="true"><span class="door__got-t">Opening your mail app</span></span>
               </a>
             </li>

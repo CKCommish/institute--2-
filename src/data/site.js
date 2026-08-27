@@ -115,7 +115,7 @@ export const pilots = [
     },
     /* What the PHOTOGRAPH is, not what the pilot is. See refs/PHOTO-FACTS.md:
        a pilot's name set over a full-bleed frame reads as a caption for it. */
-    credit: 'Unified track event · U.S. Army',
+    credit: 'Unified track event · Camp Humphreys, Korea',
     detail: {
       what: 'Reminders, adherence and navigation.',
       who: 'Athletes who take a free screening.',
@@ -160,9 +160,17 @@ export const pilots = [
     index: '03',
     partner: 'Butler University',
     title: 'Infant Mortality',
-    tagline: 'Risk found early, in the weeks that decide outcomes.',
+    /* "in the weeks that decide outcomes" was an asserted clinical window —
+       the same claim as the "ninety-day window" this file's header records as
+       already removed, rewritten as prose so it no longer looked like a
+       number. BRIEF.md gives data plus intervention, and nothing else. */
+    tagline: 'Risk found in the data, and acted on.',
     field: 'Health',
-    problem: 'Infant mortality in Indianapolis, concentrated among Medicaid mothers.',
+    /* "concentrated among Medicaid mothers" was an epidemiological claim about
+       a named city's health data that no source carries. BRIEF.md names the
+       PEOPLE the intervention is for, not where the mortality falls — that is
+       `detail.who`. Same category as the national ranking already stripped. */
+    problem: 'Infant mortality in Indianapolis.',
     approach: 'Maternal health data read for early risk.',
     goal: 'Risk identified early enough to act on.',
     horizon: '3–12 months',
@@ -201,7 +209,9 @@ export const pilots = [
     field: 'Education',
     problem: 'The largest choices, with the least guidance.',
     approach: 'Built with districts, school to work.',
-    goal: 'More students land in a defined pathway.',
+    /* "More students" is a comparison, and there is no baseline to compare
+       to: no pilot has run. The goal without the comparative is the same goal. */
+    goal: 'Students land in a defined pathway.',
     horizon: '3–12 months',
     image: '/media/pilot-education.jpg',
     /* already close to the target; it is the frame the other three were
@@ -317,8 +327,17 @@ export const forum = {
   /* THE CLOSE, set on cream at the series-breaker rung. One sentence that
      states the relationship, one that says what the Institute does with it.
      No third line — the brief's supporting-line budget is spent here. */
-  role: 'The Institute is a lead sponsor of the Lion Forum.',
-  roleNote: 'Pilots find their partners in this room, and come back to it to report what happened.',
+  /* BRIEF.md: "The Institute is a major sponsor." It said "lead sponsor"
+     here, at 60px, which is a named rank in a sponsorship hierarchy and not a
+     synonym. Nothing in any source ranks the Institute among the Forum's
+     sponsors. */
+  role: 'The Institute is a major sponsor of the Lion Forum.',
+  /* BRIEF.md states this as intent — the Institute "uses it to recruit
+     partners and share results." This line used to be in the present tense
+     ("Pilots find their partners in this room, and come back to it to report
+     what happened"), which is recurring practice for something no pilot has
+     done once: none is signed. Purpose, not history. */
+  roleNote: 'The Institute is there to find pilot partners, and to bring results back to the room.',
   /* The substance beat. A foundation officer or a policy lead has to leave
      this page knowing what the convening is, who is in it, and why the
      Institute is there. Three entries, one sentence each — the brief's

@@ -23,6 +23,14 @@ problem, and this is exactly the kind of site where someone will check.
 | `pilot-education.jpg` | Two students welding in an Oregon public high-school shop class | — |
 | `stake.jpg` | A row of small bungalow and brick houses on a brick street in the **Southside Bricks** neighbourhood of **Huntington, West Virginia**, May 2015. Lawns, a picket fence, a front porch with coats on it, no person anywhere in the frame. | that this is Indianapolis or any pilot's location, that it is a place the Institute works in, that it is anyone's home in particular, or that the porch implies a named family |
 
+> The shipped credit is `Unified track event · Camp Humphreys, Korea`. It was
+> `Unified track event · U.S. Army` — the only pilot credit with no location,
+> in a column where the other three read Muskingum County, Ohio / Indianapolis,
+> Indiana / Adrian, Oregon. In that set, omitting the location IS the
+> implication this row forbids: a reader completes the pattern with a U.S.
+> place. The event stays in the string because it is the clause that stops the
+> frame reading as a Healthy Athletes screening.
+
 `pilot-health-track.jpg` is also a **crop, and the crop is the point.**
 The Army original is a girl of about seven at a Unified track meet in South
 Korea: face fully visible, her school's name legible across her shirt. Until
@@ -90,7 +98,23 @@ full-bleed scene — the same tracked micro-caps used elsewhere, at low contrast
 
 - `hero.jpg` → `Greenville, Mississippi`
 - `forum.jpg` → `Block Island, Rhode Island`
-- `institute.jpg` → `Library of Congress`
+- `institute.jpg` → `Dallas, Texas`
+
+**Changed in the last wave, and this is the reason.** The credit here read
+`Library of Congress` — the only corner label on the site that was not a
+place-name, in a set that otherwise reads Greenville / Block Island /
+Huntington / Indianapolis / Muskingum County / Adrian. An archive name is an
+attribution, and attribution is not what this label is for: the rule two
+paragraphs up says the label exists to stop a headline reading as a caption,
+which is a LOCATION job. It also failed the one thing this file says
+`institute.jpg` must never imply. Under "We sit between the builders and the
+institutions" and under "Sixteen put forward", `Library of Congress` does
+nothing to stop a reader taking the room for the Institute's own; `Dallas,
+Texas` does, in two words, because the Institute is not in Dallas. The
+location is from `public/media/ATTRIBUTIONS.md`: the Tower Building at Fair
+Park, Dallas, Texas (LC-DIG-highsm-30117). No attribution is legally required
+on any frame in this set — ATTRIBUTIONS.md is the legal record — so nothing is
+lost by making this label do the same job as the other six.
 
 This is honest, it is what serious editorial sites do, and it adds a layer of
 real texture to a corner that is otherwise empty.

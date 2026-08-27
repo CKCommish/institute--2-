@@ -39,7 +39,7 @@ const founderCount = String(founders.length).padStart(2, '0');
 ---
 <Base title="People" description="The founders and prospective board of the Lion Forum Institute.">
 
-  <!-- ── Masthead ─────────────────────────────────────────────────── -->
+  {/* ── Masthead ─────────────────────────────────────────────────── */}
   {/* eyebrow → bridge → display. The bridge is the rung that lets an
       11px label introduce an 86px line; without it the label is orphaned
       and the display type reads as merely large. */}
@@ -72,7 +72,7 @@ const founderCount = String(founders.length).padStart(2, '0');
     </div>
   </section>
 
-  <!-- ── Founders ─────────────────────────────────────────────────── -->
+  {/* ── Founders ─────────────────────────────────────────────────── */}
   {/* Two co-founders, one title, one treatment. The page previously gave the
       first name a plate, a feature rung and a settle, and the second a band
       and a single run — on a page headed "the people accountable for the
@@ -115,7 +115,7 @@ const founderCount = String(founders.length).padStart(2, '0');
     </div>
   </section>
 
-  <!-- ── Prospective board ────────────────────────────────────────── -->
+  {/* ── Prospective board ────────────────────────────────────────── */}
   {/* The roster's problem was never the names, it was the form: sixteen
       rows at one pitch make a reader process a directory before they can
       feel a room. So the calibre is stated once, in the bridge, and the
@@ -140,7 +140,7 @@ const founderCount = String(founders.length).padStart(2, '0');
       why the sentence goes HERE and not above the grid.
 
       It takes --step-feature, the series-breaker, and it is the only thing on
-      the page at that rung: the claim below ("Advising the pilots we run…")
+      the page at that rung: the claim below ("A board to advise the pilots…")
       was there and has been dropped to --step-head, because on a page that
       now shows sixteen photographs, the loudest line cannot be the one
       describing what these people would do. Both clauses are within two
@@ -151,17 +151,17 @@ const founderCount = String(founders.length).padStart(2, '0');
       There used to be a 245px "16" set here instead. It is not coming back:
       it was twice --step-banner, so the loudest object on the whole site sat
       on an inner page; it repeated a number the masthead already states; and
-      a display numeral centred on sixteen chairs in a room the Institute does
+      a display numeral centred on an empty table in a room the Institute does
       not own is exactly the reading refs/PHOTO-FACTS.md exists to prevent. A
       sentence with a number in it does the same work and can be argued with,
       which a numeral cannot. */}
   <section class="seam" id="board" aria-labelledby="board-h">
     <Figure
-      src="/media/institute.jpg" alt="An empty committee room: sixteen chairs set around a long table beneath a flag."
+      src="/media/institute.jpg" alt="An empty meeting room: chairs set around a long table beneath a flag."
       ratio="auto" ratioSm="3 / 4" grade={0.45} lift={1.1}
       zoom={1.02} focal="50% 52%" zoomSm={1.28} focalSm="50% 56%"
       scrim="bottom" rise={0.62} reach={1} ink={1} vig={0.3} enter="wipe"
-      credit="Library of Congress" creditPos="bottom-right" />
+      credit="Dallas, Texas" creditPos="bottom-right" />
 
     <div class="shell seam__in">
       <p class="eyebrow" data-reveal>Prospective board</p>
@@ -181,6 +181,16 @@ const founderCount = String(founders.length).padStart(2, '0');
             and runs past the right one, so the page's loudest sentence is
             the one thing that does not obey its grid. */}
         {/* TWO SENTENCES, TWO LINES, AND THE COPY IS CUT TO MAKE THAT TRUE.
+            The mood is PURPOSIVE, and it has to be. This line read "Advising
+            the pilots we run. Opening the doors they need." — two present
+            participles asserting that sixteen named people are doing work for
+            an organisation none of them has joined (site.js: nobody has agreed
+            to serve; the ledger below reads 00 SEATED) on pilots the Institute
+            does not run (/pilots/: all four proposed, none signed). "A board
+            to advise…" states what the board is FOR, which is what this page
+            is about and is the whole of what any source carries. The two
+            clauses are 28 and 29 characters, so the balance below still
+            breaks at the full stop.
             "Advising the pilots. Opening the doors they need." set at the
             series-breaker rung and given the whole measure put seven words
             on line one and the word "need." alone on line two — a one-word
@@ -195,7 +205,7 @@ const founderCount = String(founders.length).padStart(2, '0');
             display at the punctuation instead of in the middle of a
             clause. */}
         <div class="bd__claim">
-          <p class="display display--head bd__h lines">Advising the pilots we run. Opening the doors they need.</p>
+          <p class="display display--head bd__h lines">A board to advise the pilots. To open the doors they need.</p>
         </div>
       </header>
 

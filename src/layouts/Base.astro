@@ -37,11 +37,11 @@ const ogImage = new URL('/og.jpg', Astro.site).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <link rel="canonical" href={canonical} />
-    <!-- The motion system hides [data-reveal]/[data-wipe] until the engine
+    {/* The motion system hides [data-reveal]/[data-wipe] until the engine
          lands them. That hidden state must be conditional on JS actually
          running, or a failed/blocked bundle leaves the page blank. motion.js
          also sets this class; setting it here, synchronously and before first
-         paint, is what makes the CSS gate safe (no flash of shown-then-hidden). -->
+         paint, is what makes the CSS gate safe (no flash of shown-then-hidden). */}
     <script is:inline>document.documentElement.classList.add('js');</script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/newsreader-normal-latin.woff2" as="font" type="font/woff2" crossorigin />

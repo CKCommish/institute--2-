@@ -47,7 +47,13 @@ const standing = standingOf(board);
     <header class="people__head">
       <div class="people__headL">
         <p class="eyebrow" data-reveal>People</p>
-        <h2 class="display display--head people__h lines" id="people-h">Two founders. Sixteen people asked to govern the work.</h2>
+        {/* THE VERB IS "PUT FORWARD", NOT "ASKED". people-cohorts.js already
+            holds the rule and /people/ already ships it: "asked" asserts that
+            an invitation was extended to sixteen named living people, and
+            nobody has confirmed that one was. Put forward is what
+            CONTENT-NOTES.md says is true. One char shorter, so the 18ch
+            measure below is unchanged. */}
+        <h2 class="display display--head people__h lines" id="people-h">Two founders. Sixteen put forward to govern the work.</h2>
       </div>
       <p class="bridge people__bridge" data-reveal="90">{homeBridge}</p>
     </header>
@@ -214,7 +220,7 @@ const standing = standingOf(board);
      right-hand column — a caption for the people the scene's own headline
      asks the reader to weigh. They are set at --step-sub here, one rung
      under the claim above them and the same rank as the two founders'
-     names, which is what "asked to govern the work" actually means. */
+     names, which is what "put forward to govern the work" actually means. */
   .people__names {
     font-family: var(--serif);
     font-weight: 340;

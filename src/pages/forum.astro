@@ -178,7 +178,7 @@ const claim = forum.line
   Ladder, top to bottom: 126 banner · 86 poster · 67 feature · 26.6 bridge ·
   19 lede · 16 body · 13.1 index · 11.7 micro.
 */}<Base title="Forum" description="The Lion Forum: an invitation-only convening at the Kennedy Compound, Hyannis Port.">
-  <!-- 1 ── the masthead. Kicker, dateline, name: the ladder the hero was
+  {/* 1 ── the masthead. Kicker, dateline, name: the ladder the hero was
        missing, so 11.7px never stands directly against 126px again.
 
        TWO LOCATION STRINGS, TWO JOBS, and they are not allowed to collapse
@@ -186,7 +186,7 @@ const claim = forum.line
        it sits inside the display stack, in the bridge voice, one line under
        the name. "Block Island, Rhode Island" describes the PHOTOGRAPH, so it
        sits in the opposite corner in the dim credit register that every
-       full-bleed scene on this site uses. See refs/PHOTO-FACTS.md. -->
+       full-bleed scene on this site uses. See refs/PHOTO-FACTS.md. */}
   <section class:list={['fh', mast.hang === 'right' && 'fh--hangR']}>
     {/* The credit is not optional on the stand-in, it is that frame's whole
         problem. The event line below reads as a caption the moment it is the
@@ -217,11 +217,11 @@ const claim = forum.line
           <p class="bridge fh__place">{forum.place}</p>
         </div>
         <span class="fh__rule" aria-hidden="true"></span>
-        <!-- Points at the SECTION, not its heading. The h2 carries
+        {/* Points at the SECTION, not its heading. The h2 carries
              data-settle, so it is transformed while it arrives and the
              browser scrolls to a position it is no longer at — the claim
              landed 33px above the viewport top, under the fixed bar. The
-             section is untransformed and is what "Scroll" means anyway. -->
+             section is untransformed and is what "Scroll" means anyway. */}
         <a class="cue tap fh__cue" href="#fsay">
           <span class="label">Scroll</span><i class="cue__line" aria-hidden="true"></i>
         </a>
@@ -229,8 +229,8 @@ const claim = forum.line
     </div>
   </section>
 
-  <!-- 2 ── the claim. Flush left, nothing in a margin beside it, and the
-       only thing on the page that moves with the scroll rather than at it. -->
+  {/* 2 ── the claim. Flush left, nothing in a margin beside it, and the
+       only thing on the page that moves with the scroll rather than at it. */}
   <section class="fsay" id="fsay" aria-labelledby="fsay-h">
     <div class="shell">
       <div class="frow">
@@ -250,7 +250,7 @@ const claim = forum.line
     </div>
   </section>
 
-  <!-- ── THE ROOM. A SLOT THAT IS EMPTY TODAY AND RENDERS NOTHING.
+  {/* ── THE ROOM. A SLOT THAT IS EMPTY TODAY AND RENDERS NOTHING.
 
        The claim above says the people who build sit with the people who
        decide. This is the one beat that could show it, and it can only be
@@ -265,7 +265,7 @@ const claim = forum.line
        about the people in it, and these are the three frames with
        identifiable guests. They are set at the size of a plate in a page,
        no page type over them, no names under them, one to three of them
-       in a row. Do not promote one of these to full bleed. -->
+       in a row. Do not promote one of these to full bleed. */}
   {room.length > 0 && (
     <section class="froom" aria-label="The Lion Forum">
       <div class="shell">
@@ -284,7 +284,7 @@ const claim = forum.line
     </section>
   )}
 
-  <!-- 3 ── THE LEDGER, and the page's one change of axis.
+  {/* 3 ── THE LEDGER, and the page's one change of axis.
 
        This page sold the Forum with four slogans and a mailto. A programme
        officer who wanted to know what the convening actually IS had nothing
@@ -303,7 +303,7 @@ const claim = forum.line
        one of the page's three ground changes; the rules do the ranking and
        the change of value is spent on §5 instead. The hairlines are pulled
        back to the text measure — they used to over-span the sentences under
-       them by 419px in all four rows. -->
+       them by 419px in all four rows. */}
   <section class="fbrief" aria-labelledby="fbrief-h">
     <div class="shell">
       <div class="frow">
@@ -327,13 +327,13 @@ const claim = forum.line
     </div>
   </section>
 
-  <!-- 4 ── the plate. The same harbour seen CLOSE — the moored hull, the
+  {/* 4 ── the plate. The same harbour seen CLOSE — the moored hull, the
        buoys, the near water, the sky taken off — so the page carries two
        photographic weights rather than one frame drawn twice. Shorter than a
        viewport on purpose: the pause is bounded by the ledger above and the
        cream below, never by a screen edge. It carries no type; its one mark
        is the photograph's own credit. It opens on both axes, then closes the
-       last five percent of its scale as you scroll it. -->
+       last five percent of its scale as you scroll it. */}
   <div class="fplate" data-wipe="center-y">
     <div class="fplate__frame" data-settle="0.42">
       <Figure src={plate.src} alt={plate.alt}
@@ -346,7 +346,7 @@ const claim = forum.line
     </div>
   </div>
 
-  <!-- 5 ── THE CLOSE, and the page's one exception.
+  {/* 5 ── THE CLOSE, and the page's one exception.
 
        Everything above this line is cream type on navy, opening flush at the
        left rail. This is the page turned over: full-bleed cream, arriving
@@ -362,7 +362,7 @@ const claim = forum.line
        into the 460px of right-hand column the rest of the page left empty.
 
        The footer's quieter "Inquire about the Lion Forum" door is suppressed
-       on this route — it points at this page, and this page has just asked. -->
+       on this route — it points at this page, and this page has just asked. */}
   <section class="on-cream frole" aria-labelledby="frole-h" data-settle="0.86">
     <span class="frole__cut" aria-hidden="true"></span>
     <div class="shell frole__shell">
@@ -374,7 +374,7 @@ const claim = forum.line
       <div class="frole__grid">
         <p class="eyebrow frole__brow" data-reveal>The Institute&rsquo;s role</p>
 
-        <!-- THE FOURTH QUESTION, AND THE RAIL THAT WAS EMPTY UNDER IT.
+        {/* THE FOURTH QUESTION, AND THE RAIL THAT WAS EMPTY UNDER IT.
 
              A programme officer arrives wanting four answers: what this is,
              who is in it, what the Institute's relationship to it is, and
@@ -391,7 +391,7 @@ const claim = forum.line
 
              It states only what the brief supports. It does not say who
              writes the guest list, what a sponsor's say over it is, how
-             often the Forum meets, or what happens after you write. -->
+             often the Forum meets, or what happens after you write. */}
         <div class="frole__invite" data-reveal="300">
           <span class="frole__inviteRule" aria-hidden="true"></span>
           <p class="label frole__inviteT">{forum.invite.term}</p>
@@ -402,12 +402,12 @@ const claim = forum.line
           <h2 class="display display--feature frole__p" id="frole-h" data-reveal>{forum.role}</h2>
           <p class="frole__note" data-reveal="120">{forum.roleNote}</p>
 
-          <!-- ONE DOOR, and it now carries the address it opens. The ask was
+          {/* ONE DOOR, and it now carries the address it opens. The ask was
                a verb over a mailto: nothing on the page said where an
                inquiry went, and a reader who wanted to write from something
                other than a mail client had nothing to copy. The address is
                inside the same <a>, one rung down, so this is still a single
-               link and not a second ask 40px under the first. -->
+               link and not a second ask 40px under the first. */}
           <a class="frole__cta" href={inquire} data-reveal="240">
             <span class="frole__ctaRule" aria-hidden="true"></span>
             <span class="bridge frole__ctaText">

@@ -22,19 +22,19 @@ const spec = [
 ];
 ---
 <Base title="Institute" description="How the Lion Forum Institute works: short pilots, measured outcomes, published results.">
-  <!-- ── The room ────────────────────────────────────────────────────
+  {/* ── The room ────────────────────────────────────────────────────
        The page's one exception, and it is a photograph rather than a
        typographic trick: a long table with chairs down both sides, a flag on
        the axis, mirrored doors left and right. It is the bridge, photographed
        — so it is given the whole first screen at full bleed and the statement
        is set INTO it, low left, where the frame's own floor is empty.
-       It used to be a 622×336 card in the right column under a spec table. -->
+       It used to be a 622×336 card in the right column under a spec table. */}
   <section class="ihero">
     <Figure
       src="/media/institute.jpg" alt="" ratio="auto" loading="eager"
       grade={0.52} focal="50% 44%" zoom={1.06} lift={1.05} vig={0.34}
       scrim="bottom" reach={1} rise={0.78} ink={1.06}
-      credit="Library of Congress" creditPos="bottom-right"
+      credit="Dallas, Texas" creditPos="bottom-right"
       class="ihero__bg" sizes="100vw" />
 
     <div class="shell ihero__in">
@@ -44,7 +44,7 @@ const spec = [
     </div>
   </section>
 
-  <!-- The spec, as a rail across the page rather than a card beside it. -->
+  {/* The spec, as a rail across the page rather than a card beside it. */}
   <section class="ispec">
     <dl class="shell ispec__in" data-wipe="left" data-delay="120">
       {spec.map((s) => (
@@ -56,10 +56,10 @@ const spec = [
     </dl>
   </section>
 
-  <!-- ── The one idea on the page ────────────────────────────────────
+  {/* ── The one idea on the page ────────────────────────────────────
        One shared five-row baseline grid: both arms sit on the same rows,
        both rails run the same length, and the connectors are the last
-       thing to arrive — left arm, right arm, rails, connectors. -->
+       thing to arrive — left arm, right arm, rails, connectors. */}
   <section class="on-panel ibridge" id="bridge">
     <div class="shell ibridge__in">
       <p class="eyebrow ibridge__k" data-reveal>The bridge</p>
@@ -84,16 +84,16 @@ const spec = [
     </div>
   </section>
 
-  <!-- ── The page turned over ────────────────────────────────────────
+  {/* ── The page turned over ────────────────────────────────────────
        One sentence, full bleed, on cream. The system keeps exactly one of
        these per page and this is what it is for: the diagram above states
-       the arrangement, this states why it has to exist. -->
+       the arrangement, this states why it has to exist. */}
   <section class="on-cream iclaim">
     <p class="display display--feature iclaim__t shell" data-settle="0.62">Neither side can run the pilot alone.</p>
   </section>
 
-  <!-- ── How a pilot runs ────────────────────────────────────────────
-       A ledger, not a card row: three full-width entries, one rule each. -->
+  {/* ── How a pilot runs ────────────────────────────────────────────
+       A ledger, not a card row: three full-width entries, one rule each. */}
   <section class="imeth">
     <div class="shell imeth__in">
       <div class="imeth__head">

@@ -72,7 +72,7 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
     </div>
   )}
 
-  <!-- Corner-anchored utility, set below the header's weight on purpose. -->
+  {/* Corner-anchored utility, set below the header's weight on purpose. */}
   <div class="shell foot__base">
     <span class="foot__rule" aria-hidden="true"></span>
 
@@ -83,7 +83,6 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
           <a href={n.href} class="label foot__nav-a">{n.label}</a>
         ))}
       </nav>
-      <span class="label foot__fine">Hyannis Port · Washington, D.C.</span>
       <span class="label foot__fine tnum">© {year} {site.name}</span>
     </div>
   </div>
@@ -186,6 +185,9 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
     display: flex; flex-wrap: wrap; align-items: baseline;
     gap: 0.5rem clamp(1.4rem, 3vw, 3rem);
   }
+  /* Third child is the copyright. A pair of office locations used to sit
+     between the nav and it; neither string was in refs/BRIEF.md or site.js
+     and the Institute has published no address, so they are gone. */
   .foot__row > :nth-child(3) { margin-left: auto; }
 
   /* Wordmark: chrome-mark.astro, same object as the bar.

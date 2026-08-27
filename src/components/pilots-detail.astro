@@ -165,17 +165,17 @@ const needs = [
     <p class="pd__rail" data-reveal>
       <span class="index pd__i">{p.index}</span>
       <span class="eyebrow pd__partner">{p.partner}</span>
-      <!-- the rail's break, declared. Inert above 700px. -->
+      {/* the rail's break, declared. Inert above 700px. */}
       <span class="pd__brk" aria-hidden="true"></span>
       <span class="label pd__q">Proposed</span>
       <span class="label pd__field">{p.field}</span>
     </p>
 
-    <!-- THE HEADER ROW. Three children on one explicit grid, not two
+    {/* THE HEADER ROW. Three children on one explicit grid, not two
          nested ones, so the middle track can be a declared interval and so
          a narrow viewport can put the photograph between the tagline and
          the outcome — which is the order a reader wants on a phone: name
-         the thing, show the thing, then say what it promises. -->
+         the thing, show the thing, then say what it promises. */}
     <div class="pd__head">
       <div class="pd__say-top">
         <h2 class="display display--head pd__t lines" id={hid}>{p.title}</h2>
@@ -215,12 +215,12 @@ const needs = [
         />
       </div>
 
-      <!-- THE OUTCOME, OUT OF THE TABLE. It was row five of a dossier,
+      {/* THE OUTCOME, OUT OF THE TABLE. It was row five of a dossier,
            set at 16px between "where it would run" and nothing. It is
            the single fact a funder is being asked to believe, and the
            one the Institute promises to publish either way — so it is set
            at the rung above the tagline, hung at the foot of the column,
-           and its last line lands on the photograph's bottom edge. -->
+           and its last line lands on the photograph's bottom edge. */}
       <div class="pd__goal" data-reveal="180">
         <p class="label label--brass">Measured by</p>
         <p class="bridge bridge--lift bridge--fg pd__goal-t">{p.goal}</p>
@@ -228,7 +228,7 @@ const needs = [
     </div>
 
     <div class="pd__cols">
-      <!-- ── what is designed ─────────────────────────────────────── -->
+      {/* ── what is designed ─────────────────────────────────────── */}
       <div class="pd__col">
         <p class="label label--brass pd__gl" data-reveal>The proposal</p>
         <dl class="pd__dl" data-seq="90" data-seq-from="40">
@@ -238,13 +238,13 @@ const needs = [
         </dl>
       </div>
 
-      <!-- ── and what is not ──────────────────────────────────────
+      {/* ── and what is not ──────────────────────────────────────
            The same list, the same rail, the same row pitch — set down on a
            plate instead of on the page. The head is a peer of "The
            proposal" and sits on its line; the plate's top edge sits on the
            first row's line. Two landmarks, both exact, and between them
            the reader gets the block's whole argument without reading a
-           word: this much is designed, this much is still open. -->
+           word: this much is designed, this much is still open. */}
       <div class="pd__col">
         <p class="label label--brass pd__gl" data-reveal="60">What it still needs</p>
         <div class="pd__open on-plate" data-reveal="80">

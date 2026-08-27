@@ -481,3 +481,152 @@ brief supports: the room is invited, and the Institute is in it.
 
 If the client can supply any of the above **in writing**, most of them are one
 short line each and the ledger has room for a fourth row.
+
+
+---
+
+# Wave 10 — the truth pass, and what is still open
+
+Four independent reviewers (a fact-checker, a foundation programme officer,
+the craft critic, a sceptical journalist) went over the rendered site. All four
+said the same thing: craft is not the problem, the truth layer is. Every
+finding they raised was an assertion the sources do not carry, and the pattern
+was consistent — the qualifier ("proposed", "sought", "not seated") was always
+present somewhere on the site and always absent from the largest type.
+
+## Removed this wave
+
+| where | was | now | why |
+| --- | --- | --- | --- |
+| `src/pages/people.astro` claim | "Advising the pilots we run. Opening the doors they need." | "A board to advise the pilots. To open the doors they need." | Two present participles asserting that sixteen named people are doing work for an organisation none has joined, over their own photographs, 90px above `00 SEATED`, and on pilots the Institute does not run. The mood is purposive now. |
+| `src/pages/partner.astro` pilots bridge | "Each pilot is named for whoever proposed it. None is signed." | "Partners named are sought for 2026. None is signed." | Attributed initiative to a former U.S. Secretary of Education and a former Governor. No source says who originated any pilot. It also pointed the opposite way from the homepage and /pilots/, which both said *sought*. Now the same sentence all three ship. |
+| `src/pages/partner.astro` lede | "…money, a technology, **or** somewhere real to run it. Most need two of the three." | "…money, a technology, **and** somewhere real to run it." | A distribution invented over four pilots that have never run, contradicting this page's own headline 1,550px below and /institute/. All four `needs` blocks in site.js carry all three. |
+| `src/components/Footer.astro`, `src/components/Nav.astro` | "Hyannis Port · Washington, D.C." | *(removed)* | An invented pair of office locations in the canonical address position, on all seven pages and in the mobile drawer — fourteen impressions. Neither string is in BRIEF.md or site.js. Hyannis Port is where the Forum convenes; Washington, D.C. appears in no source at all. |
+| `src/components/scenes/Hero.astro` eyebrow | "Four pilots · 2026" | "Four pilots, proposed · 2026" | The word *proposed* was on every other surface and nowhere in the first viewport of the front door, at either width, above four named institutions and officials. Also applied to the /pilots/ masthead eyebrow for one grammar. |
+| `src/components/scenes/PeopleScene.astro` headline | "Sixteen people **asked** to govern the work." | "Sixteen **put forward** to govern the work." | `people-cohorts.js` already holds this rule and /people/ already shipped it: *asked* asserts an invitation was extended to sixteen named living people, and nobody has confirmed one was. |
+| `site.js` `forum.role` | "a **lead** sponsor" | "a **major** sponsor" | BRIEF.md says major. Lead sponsor is a named rank in a sponsorship hierarchy, and it was the largest type on /forum/. |
+| `site.js` `forum.roleNote` | "Pilots find their partners in this room, and come back to it to report what happened." | "The Institute is there to find pilot partners, and to bring results back to the room." | Present-tense recurring practice for something no pilot has done once. BRIEF states it as intent. |
+| `site.js` pilot 03 `problem` | "Infant mortality in Indianapolis, **concentrated among Medicaid mothers**." | "Infant mortality in Indianapolis." | An epidemiological claim about a named city's health data, asserted flatly with no source. Same category as the national ranking already stripped. `detail.who` carries the population the intervention is for, which is what BRIEF actually says. |
+| `site.js` pilot 03 `tagline` | "Risk found early, **in the weeks that decide outcomes**." | "Risk found in the data, and acted on." | An asserted clinical window — the "ninety-day window" this file already recorded as removed, rewritten as prose so it no longer looked like a number. |
+| `site.js` pilot 04 `goal` | "**More** students land in a defined pathway." | "Students land in a defined pathway." | A comparative with no baseline to compare to. |
+| `src/pages/people.astro` board `alt` | "…**sixteen chairs** set around a long table…" | "…chairs set around a long table…" | A fabricated count, and it was exactly the size of the board, asserted 200px above "Sixteen put forward" — turning a 1936 exposition hall in Dallas into a room laid for this board. Neither PHOTO-FACTS nor ATTRIBUTIONS records a chair count; there are fourteen. |
+| `institute.jpg` credit (both uses) | "Library of Congress" | "Dallas, Texas" | See refs/PHOTO-FACTS.md. The corner label's job is location, not attribution, and an archive name does nothing to stop the "Institute's own room" reading this file exists to prevent. |
+| `site.js` pilot 01 `credit` | "Unified track event · U.S. Army" | "Unified track event · Camp Humphreys, Korea" | The only pilot credit with no location, in a column where the other three are U.S. place-names. PHOTO-FACTS: never imply the frame is domestic. In that set, omitting the location IS the implication. |
+
+## The one the reviewers could not see: 72 comments were shipping in view-source
+
+Astro emits `<!-- … -->` to the browser and strips `{/* … */}` at build. This
+repo writes long, candid comments — they are the best thing in it — and 61 of
+them were written in the HTML form, which rendered as **72 comments in the
+built pages** (some components repeat per card). On a link going to funders,
+partners and journalists, view-source is part of the page.
+
+The worst of them was on the **homepage**, in `src/components/scenes/Hero.astro`:
+
+> "The lower half's job is proof. **The four institutions that agreed to run a
+> pilot** are the only credential this page has…"
+
+That is false, it is the precise claim the entire site is built to avoid, and
+it was one Ctrl-U away from the four names it describes. Others shipping in
+`/partner/` admitted a deleted sentence, described a "real child at a Special
+Olympics meet" used as ground, and quoted a git SHA and a critic's verdict.
+
+**Fixed both ways.** The Hero sentence is corrected in source. All 61 markup
+comments are now `{/* … */}`; the built pages carry **zero** HTML comments and
+the CSS minifier already stripped `/* */` from the stylesheets. Not one word of
+rendered text changed — verified word-for-word against the previous build —
+and every page height in `tools/shoot.mjs` is identical. `AGENTS.md` carries
+the rule now.
+
+## Still needed from the client — nothing below can be written from a source
+
+Each of these is a hole a reviewer walked into. **Do not fill any of them by
+inference.** A missing fact is recoverable; a fabricated one attributed to a
+real partner is not — that failure has now happened five times on this project.
+
+### 1. The size of the ask. *(the foundation officer's blocker)*
+
+There is no number anywhere on the site and no promise of one: zero dollar
+signs, zero ranges, no "budget available on request" across seven pages. The
+only statement of the ask is "One pilot, end to end." — `needs.fund`, repeated
+identically under all four pilots in `src/data/site.js`, and again as door 01
+on `/partner/`.
+
+A programme officer cannot tell whether this is a $75k discretionary cheque or
+a $3M board item, and that single fact decides who at a foundation reads the
+link and what they write back. **No budget exists yet, so the fix is not a
+figure — it is one honest line the client will stand behind** about when a
+costed budget appears. One sentence, and it goes under door 01 on `/partner/`.
+
+### 2. Whether each named pilot partner has actually been approached.
+
+The site now says, in one voice on three pages, "Partners named are sought for
+2026. None is signed." That is the most conservative reading of BRIEF.md, which
+lists the four pilots by partner name and states nothing about who initiated
+what.
+
+But *sought* is still a claim about a real person: it says the Institute has
+approached Special Olympics, Governor Inslee, Butler University and Secretary
+Cardona. **Only the client knows whether each has been contacted, and whether
+each consents to being named on a public link.** If any has not, that name
+cannot stay in the pilot slot in any form. If any of the four in fact brought
+the proposal to the Institute, "sought" is wrong for that pilot — but it must
+be corrected per pilot, in writing, not restored as a blanket sentence.
+
+### 3. A real metric for each pilot.
+
+`/pilots/` sets the label **MEASURED BY** at ~34px over four sentences, and not
+one of the four has a baseline, a unit or a target:
+
+- "Those terms adopted by one state."
+- "Care completed, not just recommended."
+- "Risk identified early enough to act on."
+- "Students land in a defined pathway."
+
+The page above them promises "One measurable outcome each." A reader who has
+been told *measured* and is handed a sentence starts to wonder whether anyone
+has thought about evaluation. Two acceptable resolutions, both requiring the
+client: supply the metric, or state plainly when the metric gets set (e.g.
+that it is agreed with the partner before the pilot starts). **Do not invent a
+number for this slot.** The label may be worth changing if neither can be had.
+
+### 4. Legal and fiscal status.
+
+`grep` across all seven pages: zero occurrences of 501(c), nonprofit, charity,
+fiscal sponsor, EIN. A foundation cannot process a grant without knowing what
+the Institute is. Nothing in BRIEF.md says. One line in the footer would carry
+it — and the footer now has room, since the invented offices came out of it.
+
+### 5. An address, if there is one.
+
+"Hyannis Port · Washington, D.C." is gone from the footer and the mobile menu
+because no source carries it. If the Institute has a real registered address,
+that is where it goes and the slot is empty and waiting.
+
+### 6. "A person answers."
+
+`/partner/`, under the mailto. It is a first-party promise about the
+Institute's own behaviour rather than a claim about a third party, so it is
+left standing — but nobody has confirmed it. If no one is staffing that
+mailbox, it is the first thing a partner will discover is untrue.
+
+### 7. Still open from earlier waves
+
+- `partners@lionforuminstitute.org` and the domain in `astro.config.mjs` are
+  invented and unconfirmed. This is the site's only call to action.
+- The sixteen board one-line titles are unconfirmed.
+- Per-person permission to publish a likeness is unconfirmed, for all sixteen.
+
+## Two things looked at and deliberately left alone
+
+- **`/people/` h1, "The people accountable for the work."** A prospective board
+  is not yet accountable for anything. It stays because the qualifier is in the
+  same viewport and in the reader's path: the bridge above it is future-tense
+  ("the people who **will** answer for it") and the ledger directly beneath it
+  reads `02 FOUNDERS / 16 PROSPECTIVE BOARD`. That is the test the reviewers
+  set — the hedge on the same screen as the largest type — and this line passes
+  it. If the h1 is ever moved away from that ledger, it has to change.
+- **`/institute/`, "Every pilot runs the same way."** Present tense for a method
+  no pilot has run. It reads as a statement of method rather than of history,
+  the method is BRIEF.md's, and the eyebrow two rungs above it says
+  "Four pilots, proposed". Watch it; do not let it acquire an object.

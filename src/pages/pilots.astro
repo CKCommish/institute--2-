@@ -71,9 +71,9 @@ const grades = {
 <Base title="Pilots" description="Four pilots proposed for 2026: what each one is, who it is for, and what it still needs.">
   <section class="phead">
     <div class="shell phead__in">
-      <p class="eyebrow phead__eyebrow" data-reveal>Four pilots · 2026</p>
-      <!-- the rung between an 11px label and the poster line: without it the
-           display type reads as merely large -->
+      <p class="eyebrow phead__eyebrow" data-reveal>Four pilots, proposed · 2026</p>
+      {/* the rung between an 11px label and the poster line: without it the
+           display type reads as merely large */}
       <p class="bridge phead__bridge" data-reveal="90">
         One measurable outcome each. The result is published either way.
       </p>
@@ -81,12 +81,12 @@ const grades = {
 
       <span class="phead__rule" aria-hidden="true" data-wipe="left" data-delay="240"></span>
 
-      <!-- THE TERMS, ONCE, AND ABOVE THE FOLD.
+      {/* THE TERMS, ONCE, AND ABOVE THE FOLD.
            Every one of these is true of all four pilots, so the old page's
            choice — repeat the duration on four rails and say the status in
            an 11px word — cost four times the ink and told a reader less.
            Three keys at one serif rung, hung off the masthead rule. The
-           middle one is the sentence a funder must not be able to miss. -->
+           middle one is the sentence a funder must not be able to miss. */}
       <dl class="terms" data-seq="110" data-seq-from="380">
         {pilotTerms.map((t) => (
           <div class="terms__i" data-reveal>
@@ -101,11 +101,11 @@ const grades = {
     </div>
   </section>
 
-  <!-- ── LAYER ONE: THE CARDS ─────────────────────────────────────────
+  {/* ── LAYER ONE: THE CARDS ─────────────────────────────────────────
        A band set into the page, four cells on one grid. This is the layer
        the brief's one-line-per-field cap governs, and it is the only place
        on the site where all four arguments can be read against each other
-       without scrolling. -->
+       without scrolling. */}
   <section class="pgrid on-panel" aria-labelledby="pgrid-h">
     <div class="shell pgrid__in">
       <div class="pgrid__head">
@@ -125,11 +125,11 @@ const grades = {
     </div>
   </section>
 
-  <!-- ── THE TURN ─────────────────────────────────────────────────────
+  {/* ── THE TURN ─────────────────────────────────────────────────────
        The page's one change of ground, spent on the hinge between the two
        layers: above it, four summaries; below it, four dossiers. Full
        bleed, one sentence, and the sentence is the contents of everything
-       that follows. -->
+       that follows. */}
   <section class="pturn on-cream">
     <div class="shell pturn__in">
       <p class="eyebrow" data-reveal>In detail</p>

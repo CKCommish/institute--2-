@@ -2,16 +2,20 @@
 import Figure from '../Figure.astro';
 import { pilots } from '../../data/site.js';
 ---
-<!-- Three registers, corner-anchored, with an open photographic band between
+{/* Three registers, corner-anchored, with an open photographic band between
      the poster and the ledger:
 
        1. caption rail   top-right only — the nav holds the top-left corner
        2. the poster     upper-left: a quiet lead-in clause, then the claim
        3. the ledger     the four 2026 partners, NAMED, inside the first screen
 
-     The lower half's job is proof. The four institutions that agreed to run a
-     pilot are the only credential this page has, so they are set as the
-     second-largest voice in the frame — not as a duration tag. Three ranked
+     The lower half's job is proof. The four named pilots are the only
+     credential this page has, so they are set as the second-largest voice in
+     the frame — not as a duration tag. NOBODY HAS AGREED TO RUN ONE. This
+     note used to read "the four institutions that agreed to run a pilot",
+     which is false, is the exact claim the rest of the site is built to
+     avoid, and was shipping in the homepage's view-source. The eyebrow above
+     the cells says "Four pilots, proposed". Three ranked
      sizes per cell: brass numeral, partner name, project whisper.
 
      AND THE PHOTOGRAPH HAS TO CARRY THE FRAME, which is the other half of
@@ -118,14 +122,14 @@ import { pilots } from '../../data/site.js';
      777–900   THE LEDGER   the print's foot + .hero__index::before.
 
      The rule the frame is built on: the sentence gets the quiet band, the
-     photograph gets the lit one, and no zone is inked twice. -->
+     photograph gets the lit one, and no zone is inked twice. */}
 <section class="hero" aria-labelledby="hero-h">
-  <!-- Register 1 rides on the figure: the location credit is Figure's own
+  {/* Register 1 rides on the figure: the location credit is Figure's own
        object (.label, --fg-meta, brass dot, corner-anchored), the same one
        every other full-bleed scene carries. It used to be re-drawn here as
        .hero__place + .hero__dot, with a pulsing beacon ring nothing else on
        the site has — a second construction of a system object, and a piece of
-       animated decoration on a civic institute's front door. -->
+       animated decoration on a civic institute's front door. */}
   <Figure src={['/media/hero-graded.jpg', '/media/hero.jpg']} alt="" ratio="auto"
           grade={0.34}
           focal="33% 92%"   zoom={1.18}
@@ -135,9 +139,9 @@ import { pilots } from '../../data/site.js';
           credit="Greenville, Mississippi" creditPos="top-right" class="hero__bg" />
   <div class="hero__veil" aria-hidden="true"></div>
 
-  <!-- Register 2. Two voices inside one sentence: the lead-in clause at the
+  {/* Register 2. Two voices inside one sentence: the lead-in clause at the
        page's mid tier, the claim at display scale. Read together they are the
-       brief's sentence in full, and the h1 carries the whole of it. -->
+       brief's sentence in full, and the h1 carries the whole of it. */}
   <div class="hero__mid shell">
     <h1 class="hero__h" id="hero-h">
       <span class="bridge bridge--lift hero__kicker">The Lion Forum Institute exists to ensure</span>
@@ -151,10 +155,21 @@ import { pilots } from '../../data/site.js';
     </h1>
   </div>
 
-  <!-- Register 3. -->
+  {/* Register 3. */}
   <div class="hero__index shell">
     <div class="hero__index-head">
-      <span class="eyebrow hero__index-label">Four pilots · 2026</span>
+      {/* THE QUALIFIER IS IN THE FIRST SCREEN, WHICH IS WHERE IT WAS
+           MISSING. The four cells below name Special Olympics, a sitting-era
+           Governor, a university and a former Secretary of Education at the
+           second-largest weight in the frame. The word "proposed" existed on
+           every other surface (/institute/ "Four pilots, proposed";
+           /pilots/ a PROPOSED tag per card; /partner/ per row) and appeared
+           nowhere above the fold on the front door — 2,400px down at 1440,
+           and below the fold at 390 too. The brief's own success test is
+           that the institute is understandable from this screen alone, so
+           the hedge has to be on this screen. One word, in the label that
+           already heads the ledger. */}
+      <span class="eyebrow hero__index-label">Four pilots, proposed · 2026</span>
       <a class="cue tap hero__scroll" href="#why">
         <span class="label label--lit">Scroll</span><i class="cue__line" aria-hidden="true"></i>
       </a>

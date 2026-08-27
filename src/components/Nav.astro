@@ -21,13 +21,13 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
       <span class="cta__t">{cta.label}</span>
     </a>
 
-    <!-- The burger's HIT BOX and the burger's OBJECT are two different
+    {/* The burger's HIT BOX and the burger's OBJECT are two different
          boxes. The button is the target — transparent, 44px tall where the
          pointer is a thumb. The span is the object — a star and a word, in
          the same register the desktop bar sets everything else in. It used
          to be a drawn capsule, which made the only control on a phone the
          loudest thing in the bar and gave the chrome a filled-button
-         vocabulary the pages underneath do not have. -->
+         vocabulary the pages underneath do not have. */}
     <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
       <span class="label burger__o">
         <svg class="star" viewBox="0 0 12 12" aria-hidden="true"><path d={star} fill="currentColor" /></svg>
@@ -36,9 +36,9 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     </button>
   </div>
 
-  <!-- The bar's scroll affordance: a hairline that fills as the page runs
+  {/* The bar's scroll affordance: a hairline that fills as the page runs
        out. Only visible once you have started, so the first screen is clean.
-       --nav-p is written by the sync() below; no token or engine change. -->
+       --nav-p is written by the sync() below; no token or engine change. */}
   <span class="nav__prog" aria-hidden="true"></span>
 </header>
 
@@ -55,7 +55,6 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     </a>
     <div class="menu__foot" style={`--i:${nav.length + 1}`}>
       <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
-      <span class="label">Hyannis Port · Washington, D.C.</span>
     </div>
   </div>
 </div>

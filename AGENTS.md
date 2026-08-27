@@ -40,6 +40,20 @@ Use **your own port**. Never `npx astro build` into the shared `dist/`.
 - **One idea per scroll scene.** If a section needs a second idea, it is two
   scenes or it is cut.
 - Never transcribe the prospectus. Facts only, rewritten short.
+- **Comments in markup use `{/* … */}`, never `<!-- … -->`.** Astro ships an
+  HTML comment to the browser; it strips a JSX one at build. This repo's
+  comments are long, candid, and full of the working history — 72 of them were
+  shipping in view-source, including one on the homepage that read "the four
+  institutions that agreed to run a pilot", which is false and is the exact
+  claim the whole site is built to avoid. On a link going to funders and
+  journalists, view-source is part of the page. `{/* */}` is the house form;
+  CSS `/* */` inside `<style>` is fine, the minifier strips it.
+- **Every string must be traceable to `refs/BRIEF.md` or `src/data/site.js`.**
+  The pilots are proposed, no partner is signed, the board is not seated, and
+  no budget or baseline exists. Five separate waves have now found invented
+  specifics in this repo. If removing one leaves a hole, leave the hole and
+  record what is needed in `CONTENT-NOTES.md`. Never replace an invented
+  specific with a different invented specific.
 - No satire, no startup hype, no slogans that are not in `refs/BRIEF.md`.
 
 ## Reference
