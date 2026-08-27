@@ -54,7 +54,7 @@ export const cta = { label: 'Partner on a pilot', href: '/partner/' };
 
      THE DETAIL  `detail`, below. What a programme officer has to leave
                  with: what the pilot actually does, who it is for, the
-                 kind of place it would run in, and — set apart, because
+                 kind of place it runs in, and — set apart, because
                  it is half the truth about any pilot still open to
                  partners. SIX FIELDS, ONE SHORT LINE EACH — the same
                  cap the brief puts on a card field, because that is the
@@ -152,7 +152,13 @@ export const pilots = [
       needs: {
         fund: 'One pilot, end to end.',
         build: 'A partner to build and host the open dataset.',
-        run: 'Follow-up care after a screening.',
+        /* Every other pilot's `run` names a KIND of institution, per the
+           rule above; this one used to read 'Follow-up care after a
+           screening', which names a phase of care and answers a different
+           question than the label asks. A health system is on the
+           prospectus's own implementation-partner list, and follow-up care
+           is the prospectus's own next challenge for this pilot. */
+        run: 'A health system, after the screening.',
       },
     },
   },

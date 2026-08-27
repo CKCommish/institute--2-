@@ -21,6 +21,23 @@ import sharp from 'sharp';
    assign by position without being told to. */
 const MIN_WIDTH = 1400;
 
+/* AND A SECOND GUARD, ADDED AFTER IT HAPPENED FOR REAL. The wave-7 close
+   found four board headshots shipping as Lion Forum photography: Governor
+   Inslee under alt text reading "A speaker addressing the Lion Forum from
+   the stage", Kyla Scanlon under "a notebook open in front of them", and
+   Bailey and Chopra in the two slots /forum/ does not currently render. The
+   SLOTS hints below name inslee / scanlon / chopra by design — they are the
+   attendees the client described — so pointing this tool at
+   public/media/board/ matches almost every slot on the first pass.
+
+   MIN_WIDTH did not stop it, because an explicit slot=path assignment never
+   went through the size filter at all: only loose files did. Both holes are
+   closed here. A portrait of a named individual, cropped square for a board
+   grid, is never one of these frames, and the cost of the mistake is not a
+   layout bug — it is an uncleared claim about a real person on the page that
+   asks funders for money. */
+const isPortraitSource = (f) => /(^|\/)(public\/)?media\/board\//.test(f.replace(/\\/g, '/'));
+
 const SLOTS = {
   lawn:      { out: 'forum-lawn',      width: 2800, hint: /lawn|dusk|flag|harbou?r|compound|hyannis|crowd|speech/i },
   stage:     { out: 'forum-stage',     width: 2400, hint: /stage|backdrop|panel|two|step.?and.?repeat/i },
@@ -72,9 +89,32 @@ const tooSmall = [];
   }
   images = keep;
 }
+
+/* Board portraits never reach the matcher either. */
+{
+  const portraits = images.filter(isPortraitSource);
+  if (portraits.length) {
+    console.log(`ignored, board portraits: ${portraits.map((f) => path.basename(f)).join(', ')}`);
+    images = images.filter((f) => !isPortraitSource(f));
+  }
+}
 if (tooSmall.length) console.log(`ignored, under ${MIN_WIDTH}px wide: ${tooSmall.join(', ')}`);
 
 /* ── match loose files to slots ───────────────────────────────────── */
+/* Explicit assignments face the same two tests as matched ones. */
+for (const [slot, f] of explicit) {
+  if (!fs.existsSync(f)) { console.error(`missing: ${f}`); process.exit(1); }
+  if (isPortraitSource(f)) {
+    console.error(`refused: ${f} is a board portrait, not a Forum photograph (${slot}).`);
+    process.exit(1);
+  }
+  const m = await sharp(f).metadata().catch(() => null);
+  if (!m || (m.width || 0) < MIN_WIDTH) {
+    console.error(`refused: ${f} is ${m ? m.width + 'x' + m.height : 'unreadable'}, under ${MIN_WIDTH}px (${slot}).`);
+    process.exit(1);
+  }
+}
+
 const picked = new Map(explicit);
 for (const [slot, cfg] of Object.entries(SLOTS)) {
   if (picked.has(slot)) continue;

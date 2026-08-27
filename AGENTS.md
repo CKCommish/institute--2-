@@ -48,10 +48,21 @@ Use **your own port**. Never `npx astro build` into the shared `dist/`.
   claim the whole site is built to avoid. On a link going to funders and
   journalists, view-source is part of the page. `{/* */}` is the house form;
   CSS `/* */` inside `<style>` is fine, the minifier strips it.
-- **Every string must be traceable to `refs/BRIEF.md` or `src/data/site.js`.**
-  The pilots are proposed, no partner is signed, the board is not seated, and
-  no budget or baseline exists. Five separate waves have now found invented
-  specifics in this repo. If removing one leaves a hole, leave the hole and
+- **Every string must be traceable to `refs/PROSPECTUS.txt` or `refs/BRIEF.md`,
+  and the prospectus wins any conflict.** It is the client's own document and
+  it supersedes the brief, which was a summary written before it.
+  The prospectus heads its pilot list "FOUR ACTIVE PILOTS — 2026" and says the
+  Institute "is working with" three of the four named partners, so `status` is
+  Active for 01–03 and Exploring for 04 — the earlier house line here, "the
+  pilots are proposed, no partner is signed", was an authored negative no
+  source ever carried and it put "None is signed" on eleven places on the
+  site. Do not restore it. Equally, do not write that a partner has SIGNED:
+  no source says that either. The board is put forward and not seated (the
+  prospectus heads it "PROSPECTIVE BOARD MEMBERS"), and no budget, baseline
+  or start date exists. The one figure that does is the prospectus's own
+  "typical $2 million annual Core Partnership" — $1M core support, $1M
+  dedicated pilot funding — and it is on /partner/ with "typical" kept.
+  Six separate waves have now found invented specifics in this repo. If removing one leaves a hole, leave the hole and
   record what is needed in `CONTENT-NOTES.md`. Never replace an invented
   specific with a different invented specific.
 - No satire, no startup hype, no slogans that are not in `refs/BRIEF.md`.
@@ -59,5 +70,7 @@ Use **your own port**. Never `npx astro build` into the shared `dist/`.
 ## Reference
 
 `refs/oryzo/` holds the craft bar at the same viewports we shoot
-(desktop 1440×900, mobile 390×844). `refs/BRIEF.md` is the brief and wins any
-argument with this file.
+(desktop 1440×900, mobile 390×844). `refs/PROSPECTUS.txt` is the client's
+canonical fact sheet, `refs/BRIEF.md` is the brief, and `refs/PHOTO-FACTS.md`
+says what each photograph actually shows. All three win any argument with this
+file; between them, the prospectus wins on fact and the brief wins on scope.

@@ -400,6 +400,30 @@ and the harbour behind it.
 headshots arrived because they were zipped. Send these the same way and they
 can be wired in immediately.
 
+> **IT ALREADY WENT WRONG ONCE — READ THIS BEFORE RUNNING THE IMPORTER.**
+> The wave-7 close found four of the five slots below filled with **board
+> headshots**. `forum-podium.jpg` was Governor Inslee's board portrait and
+> `forum-notebook.jpg` was Kyla Scanlon's, and both were shipping on
+> `/forum/` as unnamed ~400px plates in the room band, directly under *"The
+> people who build sit with the people who decide"*, carrying the `alt`
+> strings written for pictures nobody has seen: *"A speaker addressing the
+> Lion Forum from the stage"* and *"A speaker at the Lion Forum, a notebook
+> open in front of them."* Neither source document says either person has
+> ever attended the Forum. `forum-stage@1200` (John Bailey) and
+> `forum-reception@1200` (Aneesh Chopra) were on disk too — not rendered,
+> because `onDisk()` tests the base path and only the `@1200` variant was
+> written, but still served at a guessable URL whose filename is itself the
+> claim. All eight files are off disk.
+>
+> It happened because the importer's slot hints deliberately match
+> `inslee` / `scanlon` / `chopra` — those are the attendees the client
+> described — so pointing it at `public/media/board/` fills nearly every
+> slot on the first pass, and an explicit `slot=path` assignment bypassed
+> the `MIN_WIDTH` filter entirely. `tools/add-photos.mjs` now refuses any
+> source under `public/media/board/` and runs explicit assignments through
+> the same size test as matched ones. **The check that matters is still the
+> human one: look at every file the importer wrote before you build.**
+
 Still to decide when they arrive: whether attendees at a private,
 invitation-only convening may be shown by name and face. Governor Inslee on
 stage is plainly fine. The reception and crowd frames put identifiable guests

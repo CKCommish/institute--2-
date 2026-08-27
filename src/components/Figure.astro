@@ -665,8 +665,11 @@ const style = [
      from end to end and only lets go outside the glyphs; the vertical one does
      the same top to bottom; multiplying them rounds the four corners for free,
      so the result is a soft lozenge that is uniform along the label rather
-     than a lens that is dense in one spot. Same footprint as the ellipse it
-     replaces (~2.4em of feather beyond each end), no new shape on the page.
+     than a lens that is dense in one spot. It is a larger footprint than the
+     ellipse, deliberately: the falloff is the only thing standing between this
+     and a chip, so it gets 3.7em across and 2.4em down to run in. Swept again
+     afterwards, at every settled scroll position on both viewports, the worst
+     END on the site reads 8.22 : 1 and the worst whole label 8.48 : 1.
 
      AND THE BACKDROP-FILTER HAD TO GO, which was the surprise. It was here
      because it is multiplicative and therefore self-levelling — ink on ink on
@@ -696,119 +699,120 @@ const style = [
   .fig__credit::before {
     content: '';
     position: absolute;
-    inset: -2.35em -3.9em -2.4em -4em;
+    inset: -2.85em -4.25em -2.9em -4.35em;
     z-index: -1;
-    /* Feather distances, measured in from each edge of the wash. They are
-       long on purpose: the plateau has to cover the glyph run end to end, so
-       the ONLY place the falloff can live is outside it, and a short falloff
-       on a value this dark is a chip. Half the label's own length of feather
-       across, twice its cap height down. */
-    --fx: 3.4em;
-    --fy: 1.95em;
-    background: rgba(3, 9, 16, 0.66);
-    -webkit-mask-image:
-      linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0) 0,
-        rgba(0, 0, 0, 0.03) calc(var(--fx) * 0.16),
-        rgba(0, 0, 0, 0.11) calc(var(--fx) * 0.32),
-        rgba(0, 0, 0, 0.26) calc(var(--fx) * 0.48),
-        rgba(0, 0, 0, 0.46) calc(var(--fx) * 0.64),
-        rgba(0, 0, 0, 0.66) calc(var(--fx) * 0.78),
-        rgba(0, 0, 0, 0.85) calc(var(--fx) * 0.9),
-        rgba(0, 0, 0, 1.0) calc(var(--fx) * 1.0),
-        rgba(0, 0, 0, 1) calc(100% - var(--fx)),
-        rgba(0, 0, 0, 0.85) calc(100% - var(--fx) * 0.9),
-        rgba(0, 0, 0, 0.66) calc(100% - var(--fx) * 0.78),
-        rgba(0, 0, 0, 0.46) calc(100% - var(--fx) * 0.64),
-        rgba(0, 0, 0, 0.26) calc(100% - var(--fx) * 0.48),
-        rgba(0, 0, 0, 0.11) calc(100% - var(--fx) * 0.32),
-        rgba(0, 0, 0, 0.03) calc(100% - var(--fx) * 0.16),
-        rgba(0, 0, 0, 0) 100%
-      ),
-      linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 0,
-        rgba(0, 0, 0, 0.03) calc(var(--fy) * 0.16),
-        rgba(0, 0, 0, 0.11) calc(var(--fy) * 0.32),
-        rgba(0, 0, 0, 0.26) calc(var(--fy) * 0.48),
-        rgba(0, 0, 0, 0.46) calc(var(--fy) * 0.64),
-        rgba(0, 0, 0, 0.66) calc(var(--fy) * 0.78),
-        rgba(0, 0, 0, 0.85) calc(var(--fy) * 0.9),
-        rgba(0, 0, 0, 1.0) calc(var(--fy) * 1.0),
-        rgba(0, 0, 0, 1) calc(100% - var(--fy)),
-        rgba(0, 0, 0, 0.85) calc(100% - var(--fy) * 0.9),
-        rgba(0, 0, 0, 0.66) calc(100% - var(--fy) * 0.78),
-        rgba(0, 0, 0, 0.46) calc(100% - var(--fy) * 0.64),
-        rgba(0, 0, 0, 0.26) calc(100% - var(--fy) * 0.48),
-        rgba(0, 0, 0, 0.11) calc(100% - var(--fy) * 0.32),
-        rgba(0, 0, 0, 0.03) calc(100% - var(--fy) * 0.16),
-        rgba(0, 0, 0, 0) 100%
-      );
-    mask-image:
-      linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0) 0,
-        rgba(0, 0, 0, 0.03) calc(var(--fx) * 0.16),
-        rgba(0, 0, 0, 0.11) calc(var(--fx) * 0.32),
-        rgba(0, 0, 0, 0.26) calc(var(--fx) * 0.48),
-        rgba(0, 0, 0, 0.46) calc(var(--fx) * 0.64),
-        rgba(0, 0, 0, 0.66) calc(var(--fx) * 0.78),
-        rgba(0, 0, 0, 0.85) calc(var(--fx) * 0.9),
-        rgba(0, 0, 0, 1.0) calc(var(--fx) * 1.0),
-        rgba(0, 0, 0, 1) calc(100% - var(--fx)),
-        rgba(0, 0, 0, 0.85) calc(100% - var(--fx) * 0.9),
-        rgba(0, 0, 0, 0.66) calc(100% - var(--fx) * 0.78),
-        rgba(0, 0, 0, 0.46) calc(100% - var(--fx) * 0.64),
-        rgba(0, 0, 0, 0.26) calc(100% - var(--fx) * 0.48),
-        rgba(0, 0, 0, 0.11) calc(100% - var(--fx) * 0.32),
-        rgba(0, 0, 0, 0.03) calc(100% - var(--fx) * 0.16),
-        rgba(0, 0, 0, 0) 100%
-      ),
-      linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 0,
-        rgba(0, 0, 0, 0.03) calc(var(--fy) * 0.16),
-        rgba(0, 0, 0, 0.11) calc(var(--fy) * 0.32),
-        rgba(0, 0, 0, 0.26) calc(var(--fy) * 0.48),
-        rgba(0, 0, 0, 0.46) calc(var(--fy) * 0.64),
-        rgba(0, 0, 0, 0.66) calc(var(--fy) * 0.78),
-        rgba(0, 0, 0, 0.85) calc(var(--fy) * 0.9),
-        rgba(0, 0, 0, 1.0) calc(var(--fy) * 1.0),
-        rgba(0, 0, 0, 1) calc(100% - var(--fy)),
-        rgba(0, 0, 0, 0.85) calc(100% - var(--fy) * 0.9),
-        rgba(0, 0, 0, 0.66) calc(100% - var(--fy) * 0.78),
-        rgba(0, 0, 0, 0.46) calc(100% - var(--fy) * 0.64),
-        rgba(0, 0, 0, 0.26) calc(100% - var(--fy) * 0.48),
-        rgba(0, 0, 0, 0.11) calc(100% - var(--fy) * 0.32),
-        rgba(0, 0, 0, 0.03) calc(100% - var(--fy) * 0.16),
-        rgba(0, 0, 0, 0) 100%
-      );
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
+    /* Feather distances, measured in from each edge of the wash. They are long
+       on purpose: the plateau has to cover the glyph run end to end, so the
+       ONLY place the falloff can live is outside it, and a short falloff on a
+       value this dark is a chip. */
+    --fx: 3.7em;
+    --fy: 2.4em;
+    /* BASE = the soft radial this replaces, unprefixed and unconditional. It
+       is thin at the two ends — that is the defect — but it is soft, and a
+       browser that cannot composite two masks is far better served by a thin
+       ellipse than by the black CROSS it would otherwise paint from two
+       feathers UNIONED. Written as the base rather than as an @supports-not
+       override so that nothing has to be reset: the minifier drops a prefixed
+       `-webkit-mask-image: none` as redundant, which would have left an old
+       WebKit wearing the union mask and this gradient at once. */
+    background: radial-gradient(
+      ellipse at center,
+      rgba(3, 9, 16, 0.9) 0%,
+      rgba(3, 9, 16, 0.82) 42%,
+      rgba(3, 9, 16, 0.44) 68%,
+      rgba(3, 9, 16, 0.14) 86%,
+      rgba(3, 9, 16, 0) 100%
+    );
   }
 
-  /* Without mask-composite the two feathers UNION instead of intersecting,
-     which paints a cross rather than a lozenge. Where that is the case, fall
-     back to the soft radial this replaced: thin at the ends, but soft, and a
-     credit that is thin at the ends is a great deal better than one wearing a
-     black cross. */
-  @supports not ((mask-composite: intersect) or (-webkit-mask-composite: intersect)) {
+  @supports ((mask-composite: intersect) or (-webkit-mask-composite: intersect)) {
     .fig__credit::before {
-      -webkit-mask-image: none;
-      mask-image: none;
-      background: radial-gradient(
-        ellipse at center,
-        rgba(3, 9, 16, 0.9) 0%,
-        rgba(3, 9, 16, 0.82) 42%,
-        rgba(3, 9, 16, 0.44) 68%,
-        rgba(3, 9, 16, 0.14) 86%,
-        rgba(3, 9, 16, 0) 100%
-      );
+      background: rgba(3, 9, 16, 0.66);
+      -webkit-mask-image:
+        linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0) 0,
+          rgba(0, 0, 0, 0.03) calc(var(--fx) * 0.16),
+          rgba(0, 0, 0, 0.11) calc(var(--fx) * 0.32),
+          rgba(0, 0, 0, 0.26) calc(var(--fx) * 0.48),
+          rgba(0, 0, 0, 0.46) calc(var(--fx) * 0.64),
+          rgba(0, 0, 0, 0.66) calc(var(--fx) * 0.78),
+          rgba(0, 0, 0, 0.85) calc(var(--fx) * 0.9),
+          rgba(0, 0, 0, 1) var(--fx),
+          rgba(0, 0, 0, 1) calc(100% - var(--fx)),
+          rgba(0, 0, 0, 0.85) calc(100% - var(--fx) * 0.9),
+          rgba(0, 0, 0, 0.66) calc(100% - var(--fx) * 0.78),
+          rgba(0, 0, 0, 0.46) calc(100% - var(--fx) * 0.64),
+          rgba(0, 0, 0, 0.26) calc(100% - var(--fx) * 0.48),
+          rgba(0, 0, 0, 0.11) calc(100% - var(--fx) * 0.32),
+          rgba(0, 0, 0, 0.03) calc(100% - var(--fx) * 0.16),
+          rgba(0, 0, 0, 0) 100%
+        ),
+        linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0) 0,
+          rgba(0, 0, 0, 0.03) calc(var(--fy) * 0.16),
+          rgba(0, 0, 0, 0.11) calc(var(--fy) * 0.32),
+          rgba(0, 0, 0, 0.26) calc(var(--fy) * 0.48),
+          rgba(0, 0, 0, 0.46) calc(var(--fy) * 0.64),
+          rgba(0, 0, 0, 0.66) calc(var(--fy) * 0.78),
+          rgba(0, 0, 0, 0.85) calc(var(--fy) * 0.9),
+          rgba(0, 0, 0, 1) var(--fy),
+          rgba(0, 0, 0, 1) calc(100% - var(--fy)),
+          rgba(0, 0, 0, 0.85) calc(100% - var(--fy) * 0.9),
+          rgba(0, 0, 0, 0.66) calc(100% - var(--fy) * 0.78),
+          rgba(0, 0, 0, 0.46) calc(100% - var(--fy) * 0.64),
+          rgba(0, 0, 0, 0.26) calc(100% - var(--fy) * 0.48),
+          rgba(0, 0, 0, 0.11) calc(100% - var(--fy) * 0.32),
+          rgba(0, 0, 0, 0.03) calc(100% - var(--fy) * 0.16),
+          rgba(0, 0, 0, 0) 100%
+        );
+      mask-image:
+        linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0) 0,
+          rgba(0, 0, 0, 0.03) calc(var(--fx) * 0.16),
+          rgba(0, 0, 0, 0.11) calc(var(--fx) * 0.32),
+          rgba(0, 0, 0, 0.26) calc(var(--fx) * 0.48),
+          rgba(0, 0, 0, 0.46) calc(var(--fx) * 0.64),
+          rgba(0, 0, 0, 0.66) calc(var(--fx) * 0.78),
+          rgba(0, 0, 0, 0.85) calc(var(--fx) * 0.9),
+          rgba(0, 0, 0, 1) var(--fx),
+          rgba(0, 0, 0, 1) calc(100% - var(--fx)),
+          rgba(0, 0, 0, 0.85) calc(100% - var(--fx) * 0.9),
+          rgba(0, 0, 0, 0.66) calc(100% - var(--fx) * 0.78),
+          rgba(0, 0, 0, 0.46) calc(100% - var(--fx) * 0.64),
+          rgba(0, 0, 0, 0.26) calc(100% - var(--fx) * 0.48),
+          rgba(0, 0, 0, 0.11) calc(100% - var(--fx) * 0.32),
+          rgba(0, 0, 0, 0.03) calc(100% - var(--fx) * 0.16),
+          rgba(0, 0, 0, 0) 100%
+        ),
+        linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0) 0,
+          rgba(0, 0, 0, 0.03) calc(var(--fy) * 0.16),
+          rgba(0, 0, 0, 0.11) calc(var(--fy) * 0.32),
+          rgba(0, 0, 0, 0.26) calc(var(--fy) * 0.48),
+          rgba(0, 0, 0, 0.46) calc(var(--fy) * 0.64),
+          rgba(0, 0, 0, 0.66) calc(var(--fy) * 0.78),
+          rgba(0, 0, 0, 0.85) calc(var(--fy) * 0.9),
+          rgba(0, 0, 0, 1) var(--fy),
+          rgba(0, 0, 0, 1) calc(100% - var(--fy)),
+          rgba(0, 0, 0, 0.85) calc(100% - var(--fy) * 0.9),
+          rgba(0, 0, 0, 0.66) calc(100% - var(--fy) * 0.78),
+          rgba(0, 0, 0, 0.46) calc(100% - var(--fy) * 0.64),
+          rgba(0, 0, 0, 0.26) calc(100% - var(--fy) * 0.48),
+          rgba(0, 0, 0, 0.11) calc(100% - var(--fy) * 0.32),
+          rgba(0, 0, 0, 0.03) calc(100% - var(--fy) * 0.16),
+          rgba(0, 0, 0, 0) 100%
+        );
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-composite: intersect;
+      mask-composite: intersect;
     }
   }
+
   .fig__credit[data-pos^='top']    { top: var(--ci); }
   .fig__credit[data-pos^='bottom'] { bottom: var(--ci); }
   .fig__credit[data-pos$='right']  { right: var(--ci); }

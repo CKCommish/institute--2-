@@ -92,7 +92,7 @@
       the outcome moved up a rung to `.bridge--lift`, which is the size the
       one fact a funder is asked to believe should have been all along.
 
-   2. THE TWO COLUMNS BELOW THE RULE DID NOT MEET. "The proposal" sat at
+   2. THE TWO COLUMNS BELOW THE RULE DID NOT MEET. The left head sat at
       y=2370 and "Where a partner comes in" at y=2403 — 33px apart, because the
       right-hand head was INSIDE the plate and wearing its padding. Worse,
       the left column's FIRST DATA ROW landed on exactly the right column's
@@ -100,9 +100,9 @@
       lists were built differently — term-beside-value on the left, term-
       over-value on the right — so nothing could be read across.
 
-      The head is now out of the plate and set as a peer of "The proposal"
+      The head is now out of the plate and set as a peer of "The pilot"
       on one line; the plate's top EDGE lands on the left column's first
-      row; and the needs list is the same object as the proposal list —
+      row; and the open list is the same object as the pilot list —
       same rail, same row pitch, same two columns — on a lighter ground.
       That is the argument the block exists to make, and it now reads in
       one glance: the same shape twice, one filled in on the page, one
@@ -156,7 +156,10 @@ const hid = `${p.id}-h`;
 const proposal = [
   { t: 'What it does', v: d.what },
   { t: 'Who it is for', v: d.who },
-  { t: 'Where it would run', v: d.where },
+  /* Conditional for 04 only. The prospectus calls 01-03 active and says
+     it 'is exploring' 04, so a single tense here is wrong for one of the
+     four blocks whichever tense is chosen. The status drives it. */
+  { t: p.status === 'Exploring' ? 'Where it would run' : 'Where it runs', v: d.where },
 ];
 
 const needs = [
@@ -235,7 +238,7 @@ const needs = [
     <div class="pd__cols">
       {/* ── what is designed ─────────────────────────────────────── */}
       <div class="pd__col">
-        <p class="label label--brass pd__gl" data-reveal>The proposal</p>
+        <p class="label label--brass pd__gl" data-reveal>The pilot</p>
         <dl class="pd__dl" data-seq="90" data-seq-from="40">
           {proposal.map((r) => (
             <div data-reveal><dt class="label">{r.t}</dt><dd>{r.v}</dd></div>
@@ -245,8 +248,8 @@ const needs = [
 
       {/* ── and what is not ──────────────────────────────────────
            The same list, the same rail, the same row pitch — set down on a
-           plate instead of on the page. The head is a peer of "The
-           proposal" and sits on its line; the plate's top edge sits on the
+           plate instead of on the page. The head is a peer of "The pilot"
+           and sits on its line; the plate's top edge sits on the
            first row's line. Two landmarks, both exact, and between them
            the reader gets the block's whole argument without reading a
            word: this much is designed, this much is still open. */}
