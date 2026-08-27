@@ -135,8 +135,49 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      With no script the bar takes a hard edge instead: an opaque band exactly
      its own height, so type sliding under it is covered outright rather than
      half-lit. The soft tail is a refinement the scripted bar can afford
-     because it also knows which ground it is over. */
-  :global(html:not(.js)) .nav::before {
+     because it also knows which ground it is over.
+
+     ── THE SECOND REASON THE HARD EDGE EXISTS ────────────────────────
+     Wave 10 wrote the rule for a bar that could not know its ground. Wave
+     14 found the other half of it: the soft tail is a refinement the bar
+     can afford over content that merely SCROLLS past it, and it cannot
+     afford over content that CARRIES TYPE ACROSS IT.
+
+     The homepage's held Forum scene is the one place on this site that
+     does. Its stage is `position: sticky` and one viewport high, so when
+     the pin releases the whole stage — photograph, eyebrow, location
+     credit, coda link — travels up through the bar's reach together. The
+     tail is 3.5rem of gradient past a 62px bar and it paints IN FRONT of
+     the page, so every string in that stage was dragged through it at
+     full weight. Measured on the glass at 1440x900, two renders per scroll
+     offset (the string, then the string hidden), scored row by row so a
+     covered row is not confused with a dim one:
+
+       "By invitation"           10.0 : 1 → 4.32 → 2.63 → 1.02, still
+                                 fully painted, over ~36px of scroll
+       "Inquire about the Forum" 15.7 : 1 → 4.93 → 1.56 → 1.03, likewise
+                                 (a LINK, at 1.5:1)
+
+     No gate could see it, and the reason is structural: every contrast
+     meter this project had MODELLED the ink and sampled only the ground,
+     so none of them had a term for anything painted IN FRONT of the
+     glyphs — and the bar paints in front. (hold-meter's 17 stops all sit
+     inside the pin as well, and this happens after it.) The measurements
+     above come from subtraction instead: shoot the frame twice at one
+     offset, with and without the string, and the glyph pixels are the
+     pixels that changed. `tools/glyph-floor.mjs`, landing in this same
+     wave, is that instrument as a gate; it is what should hold this fix.
+
+     Adding ink cannot fix it — the tail darkens the type and its ground
+     together, which is why the curve ends at 1.0 and not at some floor.
+     Removing the type costs the eyebrow's named moment. So the bar gives
+     up the tail for the length of that one scene: an opaque band exactly
+     its own height, with the progress hairline as its edge, and type
+     going under it is covered outright rather than half-lit. Same rule,
+     same variant, second reason. Every other route keeps the soft tail,
+     because nothing on them is held across it. */
+  :global(html:not(.js)) .nav::before,
+  .nav.is-hardedge::before {
     height: 100%;
     -webkit-mask-image: none; mask-image: none;
   }
@@ -799,6 +840,10 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      token or engine change, just a class when a cream scene is under the bar. */
   if (nav) {
     const light = [...document.querySelectorAll('.on-cream')];
+    /* One per site by construction (HeldScene may be spent once), so this is
+       one query and one node, not a list. */
+    const heldStage = document.querySelector('[data-hold-stage]');
+    const quietQ = matchMedia('(prefers-reduced-motion: reduce)');
     let queued = false;
     const sync = () => {
       queued = false;
@@ -811,8 +856,29 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
          by whichever ground holds most of the bar). */
       const band = nav.offsetHeight;
       const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      const tail = 3.5 * rem;
-      const reach = band + tail;
+      /* --nav-tail, not a second 3.5 typed here. The tail's length is one
+         number with two readers — the CSS that draws it and this function
+         that reasons about what it reaches over — and the two drifted once
+         already: HeldScene still set its type rail clear of 5.5rem after the
+         tail came down to 3.5rem. */
+      const tailCss = getComputedStyle(nav).getPropertyValue('--nav-tail').trim();
+      const tail = tailCss.endsWith('rem') ? parseFloat(tailCss) * rem
+                 : tailCss.endsWith('px') ? parseFloat(tailCss) : 3.5 * rem;
+
+      /* THE ONE SCENE THE TAIL CANNOT BE SOFT OVER. See the hard-edge rule
+         in the stylesheet above for the measurements. A held stage carries
+         its own type up through the bar on release; while any part of that
+         stage is inside the bar's reach the bar drops the tail and takes its
+         hard edge, so the type is covered outright instead of half-lit.
+         Gated on the same query the hold itself is gated on: under
+         `reduce` the scene is a stacked layout with no type over the
+         photograph and nothing travels, so the tail stays soft there.
+         Cost: one extra rect per frame, and only on a route that has one. */
+      const hard = !!heldStage && !quietQ.matches && !nav.classList.contains('is-menu')
+        && (() => { const r = heldStage.getBoundingClientRect();
+                    return r.top < band + tail && r.bottom > 0; })();
+      nav.classList.toggle('is-hardedge', hard);
+      const reach = band + (hard ? 0 : tail);
       /* The sheet's own [data-open] is set a frame late (so the panel has a
          paint to transition from), and set() called this sync BEFORE that
          frame — so every time the menu opened, the bar answered "closed",
@@ -861,6 +927,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(sync); } };
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll, { passive: true });
+    quietQ.addEventListener?.('change', onScroll);
     sync();
     nav.dataset.sync = '1';
     window.__navSync = sync;

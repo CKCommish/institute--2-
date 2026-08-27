@@ -158,6 +158,46 @@ const standing = standingOf(board);
 
 <style>
   .people { padding-bottom: 0; }
+
+  /* ── THE SEAM AFTER THE HOLD ─────────────────────────────────────
+     THE APPROACH PAD IS PAID ONCE, BY THE SCENE THAT ENDS.
+
+     Measured on the shipped build at 1440x900 under
+     `prefers-reduced-motion: reduce` — the site's own arrived-and-still
+     state, so this is the STATIC render and not an animation artefact —
+     every ink-to-ink seam on the homepage:
+
+         hero -> whyNow      9px
+         whyNow -> stake   -68px   (the photograph runs under the cream)
+         stake -> pilots   -22px
+         pilots -> held     25px   (this is what pull=0.62 bought)
+         held  -> PEOPLE   254px   <-- the outlier, by a factor of four
+
+     At 390x844 the same run reads 45 / 19 / 60 / 7 / 120px. The seam this
+     scene opens is four to ten times every other seam on its own page, and
+     it is the one place two consecutive left-rail display stacks sit on the
+     SAME navy with no tonal event between them: the coda link, then a third
+     of a viewport of nothing, then this scene's eyebrow. Nothing marks the
+     end of one scene or the start of the next except the size of the hole.
+
+     The arithmetic, not taste. The held scene ends on its own bottom pad —
+     78px at 1440, 37px at 390, measured from the coda's last ink to the
+     hold's box — and then this scene pays a FULL `--scene-pad` on top of it
+     (176px / 83px). That double count is the whole of the 254. So at this
+     one seam the scene gives up its own approach pad and keeps the hold's,
+     which brings the gap to 78px desktop and 37px mobile — inside the range
+     the rest of the page already sets.
+
+     It is `padding-top: 0` and not a negative margin on purpose. `pull` on
+     HeldScene closes an approach by overlapping the previous box, which is
+     safe above a photograph; here the box above ends in TYPE, and at the end
+     of the pinned range the stage is still sticky. Zeroing this scene's own
+     pad closes exactly the same distance with the two boxes touching rather
+     than overlapping, so nothing can ever ride over the coda.
+
+     Scoped to `.held + .people`, which is the condition it is reasoning
+     about, so a People scene that ever follows anything else keeps its pad. */
+  :global(.held) + .people { padding-top: 0; }
   .people__in { display: grid; gap: clamp(2.25rem, 5.5vw, 4.5rem); }
   .people__head {
     display: grid;
@@ -276,6 +316,20 @@ const standing = standingOf(board);
     /* Two corners need width. Below this the head stacks: eyebrow, claim,
        then the bridge under it, back on the rail. */
     .people__head { grid-template-columns: minmax(0, 1fr); }
+
+    /* A QUARTER OF THE PAD COMES BACK, AND 860 IS WHY. Above this width the
+       head is a SPREAD: the bridge answers from the right rail, so the seam
+       is marked by the frame filling out across its whole width and the two
+       scenes cannot be confused. Below it the head stacks and that signal is
+       gone — the hold's coda and this scene's eyebrow are then two micro-cap
+       lines on the same rail at the same measure, and at a bare 37px apart
+       they read as one list rather than as the end of one scene and the
+       start of another. 0.25 of the pad puts ~58px between them at 390px,
+       which is the widest seam the page already sets on a phone
+       (Stake -> Pilots, 60px). The signal the width used to carry is bought
+       back in the only currency left, and only where the width stopped
+       carrying it. */
+    :global(.held) + .people { padding-top: calc(var(--scene-pad) * 0.25); }
     .people__bridge {
       text-align: left;
       justify-self: start;

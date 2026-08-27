@@ -188,9 +188,9 @@
    on a script-written class", and inside the pinned hold there is by
    definition no scriptless render to compare against — with no script there
    is no pin. There is nothing to diff. What the enhanced hold needs is not a
-   diff but a measurement, and that is what `tools/ink-floor.mjs` is: it runs
+   diff but a measurement, and that is what `tools/glyph-floor.mjs` is: it runs
    with scripts on and motion enabled, and it minimises the contrast curve of
-   every string over every photograph across the whole scroll range, pinned
+   every string on the page across the whole scroll range, pinned
    scenes included. Between them the coverage is complete; neither covers the
    other's ground. Run both.
 

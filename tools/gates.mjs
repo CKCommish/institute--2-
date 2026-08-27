@@ -15,7 +15,7 @@
                  directory, not a browser profile. There is no lock to take
                  and none to forget.
      PARALLEL.   Gates run in a pool, longest-first. `nojs-diff` and
-                 `ink-floor` also parallelise internally, so the pool is
+                 `glyph-floor` also parallelise internally, so the pool is
                  deliberately narrow — three at a time on a machine with a
                  handful of cores is where this stopped getting faster.
      CACHE.      A gate's result is keyed by the hash of everything that can
@@ -31,7 +31,7 @@
    whose pattern does not match is FAILED, not passed — an unreadable verdict
    is the one failure mode a runner must never wave through.
 
-   usage: node tools/gates.mjs [--fresh] [--only=audit,ink-floor] [--pool=3]
+   usage: node tools/gates.mjs [--fresh] [--only=audit,glyph-floor] [--pool=3]
           node tools/gates.mjs --serve      (build + serve, print BASE, hold) */
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
@@ -68,13 +68,25 @@ const srcHash = (() => {
   return h.digest('hex').slice(0, 12);
 })();
 
+/* ── WHY THERE ARE FIVE OF THESE AND NOT SEVEN ───────────────────────────
+   Wave 14 replaced three overlapping contrast meters with one. `photo-meter`,
+   `hold-meter` and `ink-floor` all asked "how much contrast has this type
+   got", each with a different compositing model and so a different blind
+   spot: no ancestor opacity, seventeen fixed samples on one scene, and — the
+   one that was hiding a live 2.745:1 defect — no term at all for anything
+   painted in FRONT of the glyphs, such as the nav's scrim tail. Between them
+   they quoted one piece of type at 9.38, 7.19, 4.70 and 4.17.
+   `glyph-floor` measures the same quantity by subtracting a frame with the
+   glyphs hidden from the frame as it ships, so the ink is read off the glass
+   rather than modelled, for every string on the site rather than only those
+   over photographs. It is a strict superset of all three. `ink-floor` and
+   `hold-meter` are deleted; `photo-meter` keeps only its picture-grade half
+   and is a diagnostic now, with no threshold to gate on. */
 const GATES = [
   { name: 'nojs-diff',   cmd: ['tools/nojs-diff.mjs'],   want: /(\d+) finding\(s\)/,  cost: 9 },
-  { name: 'ink-floor',   cmd: ['tools/ink-floor.mjs'],   want: /(\d+) failure\(s\)/,  cost: 8 },
-  { name: 'photo-meter', cmd: ['tools/photo-meter.mjs'], want: /(\d+) type-over-photograph contrast failure\(s\)/, cost: 5 },
+  { name: 'glyph-floor', cmd: ['tools/glyph-floor.mjs'], want: /(\d+) failure\(s\)/,  cost: 9 },
   { name: 'nojs-meter',  cmd: ['tools/nojs-meter.mjs'],  want: /(\d+) issue\(s\)/,    cost: 4 },
   { name: 'audit',       cmd: ['tools/audit.mjs'],       want: /(\d+) issue\(s\)/,    cost: 3 },
-  { name: 'hold-meter',  cmd: ['tools/hold-meter.mjs', '/'], want: /(\d+) failure\(s\)/, cost: 2 },
   /* perf has no counted line: it prints its own verdict in words. */
   { name: 'perf',        cmd: ['tools/perf.mjs'],        want: /layout shift: all routes under 0\.1/, cost: 2, headline: /slowest LCP:.*/ },
 ].filter((g) => !ONLY || ONLY.includes(g.name));

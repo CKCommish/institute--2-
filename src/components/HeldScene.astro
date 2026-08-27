@@ -512,22 +512,56 @@ const style = [
     /* The eyebrow and the counter belong to the whole hold, so they arrive
        with the picture and leave with it, and never with a beat. They sit in
        the band the figure's own bar scrim guarantees. */
-    /* THE NAV SCRIM IS 5.5rem TALLER THAN THE NAV. Nav.astro paints a
-       full-opacity band the height of the bar and a little past it, released
-       over its last third, and it is opaque from the moment the page is
-       scrolled at all. Anything set in the top ~150px of a full-bleed figure
-       below the fold is therefore invisible — which is where Figure's own
-       default `creditPos="top-*"` lands, and where this rail was. Both are
-       moved clear of it here, together, so they stay on one line. */
+    /* THIS RAIL SITS CLEAR OF THE BAR'S REACH. Nav.astro paints a
+       full-opacity band the height of the bar and a little past it, and it
+       is opaque from the moment the page is scrolled at all. Anything set in
+       the top of a full-bleed figure below the fold is therefore invisible —
+       which is where Figure's own default `creditPos="top-*"` lands, and
+       where this rail was. Both are moved clear of it here, together, so
+       they stay on one line.
+
+       The 5.5rem is NOT the tail's length and has not been since the tail
+       came down to 3.5rem; it is a composed position that happens to have
+       been derived from the old one. Do not read it as "the reach plus a
+       gap" — the reach is `--nav-h + --nav-tail` = 118px at 1440x900, and
+       this rail lands at 166px, which is clearance, not coincidence. Nav's
+       sync() now reads --nav-tail rather than retyping it, so the two
+       cannot drift the way they did here. */
     :global(html.js) .held__top,
     :global(html.js) .held :global(.held__fig .fig__credit[data-pos^='top']) {
       top: calc(var(--nav-h) + 5.5rem + clamp(0.8rem, 2.4vh, 1.6rem));
     }
     /* It does NOT fade with the arc. A cream micro-label at 60% alpha over a
        sky that is still lit measures under 4.5:1 for the whole width of the
-       fade, and there is no ink cheap enough to rescue it; at full weight, on
-       the cap, it clears. The eyebrow names the scene for the whole hold,
-       which is what an eyebrow is for. */
+       fade, and there is no ink cheap enough to rescue it. The eyebrow names
+       the scene for the whole hold, which is what an eyebrow is for.
+
+       THE OLD CLAIM HERE — "at full weight, on the cap, it clears" — was
+       true on the cap and false at the exit, and that is where it was wrong
+       for four waves. On the cap this rail is at 166px and the bar's reach
+       ends at 118, so it clears by 48px. But the stage is `position:
+       sticky`: when the pin releases, the stage travels up and takes this
+       rail through the bar with it, at full cream, with no opacity anywhere
+       in its cascade. Measured on the glass, two renders per offset and
+       scored row by row: 10.0 : 1 → 4.32 → 2.63 → 1.02, still fully painted,
+       over about 36px of scroll. The coda link does the same thing 640px
+       later, 15.7 : 1 → 1.03.
+
+       (Both readings are subtraction, not a compositing model: the frame
+       shot twice at one offset, with and without the string, so the ink is
+       whatever light actually leaves the screen — scrim included. Every
+       meter that models the ink and samples only the ground is blind here
+       by construction, because the bar paints in FRONT of the glyphs.)
+
+       It is fixed in Nav.astro, not here, and the reason is worth keeping:
+       the failure is the bar's TAIL — a gradient that darkens the type and
+       its ground together, which is why the curve ends at 1.0 and not at a
+       floor. No ink under the type can lift it and no reposition can dodge
+       it, because everything in a sticky stage crosses the top of the
+       viewport on release. Nav now drops the tail for the length of this one
+       scene and takes the hard edge it already had for the no-script case,
+       so the rail is covered outright rather than half-lit. This rail keeps
+       its position, its weight and its full-pin hold; nothing here moved. */
     :global(html.js) .held__top {
       position: absolute;
       left: 0; right: 0;

@@ -14,32 +14,39 @@ node tools/blind.mjs progress/shots/<label>/home desktop /tmp/blind-<you>
 
 Use **your own port**. Never `npx astro build` into the shared `dist/`.
 
-## The seven gates — run all of them before you report
+## The five gates — run all of them before you report
 
 ```bash
-node tools/gates.mjs        # all seven, in parallel, one verdict — THIS IS THE WAY TO RUN THEM
+node tools/gates.mjs        # all five, in parallel, one verdict — THIS IS THE WAY TO RUN THEM
 ```
 
 It builds to its own `dist-gates-<hash>`, serves it on a port the OS hands
-out, and runs the seven below in a pool. Nothing is shared, so two builders
+out, and runs the five below in a pool. Nothing is shared, so two builders
 can run it at the same moment — which is what wave 12 could not do, and why
 two racing runs reported a phantom failure. It caches each gate's verdict
 against the hash of the source tree AND of the gate's own file, so a re-run
-on an unchanged build is instant; `--fresh` ignores the cache. Whole suite:
-**4m03s** wall, against ~13min of running them one at a time.
+on an unchanged build is instant; `--fresh` ignores the cache.
+
+`glyph-floor` is now the long pole: it shoots two frames at 3x for every
+offset it samples, and a full twelve route-view sweep is tens of minutes, not
+the four the six-gate suite used to cost. That is the price of the only
+contrast reading on this site that has never been wrong. Narrow it with
+`--routes=` and `--views=` while you work; run it whole before you report.
 
 ```bash
 node tools/audit.mjs        # contrast, overflow, heading order, alt text, tap targets, dead links
-node tools/photo-meter.mjs  # type over photographs — both viewports, swept through the frame
-node tools/ink-floor.mjs    # the MINIMUM of every type-over-photograph contrast curve
+node tools/glyph-floor.mjs  # EVERY string on the site, contrast measured by subtraction
 node tools/nojs-meter.mjs   # all 7 routes x 2 viewports with JavaScript OFF
 node tools/nojs-diff.mjs    # the same routes compared as PICTURES, script on vs script off
 node tools/perf.mjs         # page weight, LCP, CLS at load and through a full scroll
-node tools/hold-meter.mjs / # the homepage held scene, sampled across its pinned range
 ```
 
-These are gates, not diagnostics. A wave is not done until all seven are green,
+These are gates, not diagnostics. A wave is not done until all five are green,
 and "I read the DOM and it looked right" is not one of them.
+
+`tools/photo-meter.mjs` is a DIAGNOSTIC, not a gate: it reports how far each
+photograph's grade sits off the ground, in bands and corners, and it has never
+had a pass/fail threshold. Run it when you change a picture or the grade.
 
 **Why `nojs-meter` exists.** A defect shipped through eight waves and four
 green meters: the fixed nav's scrim was switched on by a script-written class,
@@ -65,55 +72,95 @@ subject. Read its header before changing a threshold. It exempts the fixed
 bar, which is deliberately a different object without a script; that band is
 `nojs-meter`'s, in contrast. **Run both.**
 
-**Why `ink-floor` exists, and what it settles.** The site's tightest number
-had no gate on it and had been misquoted twice, each time by a meter that
-sampled where the minimum was not. `photo-meter` parks a FIGURE at five
-fractions of the viewport — but a held stage is `position: sticky`, so it
-does not move when the page scrolls and those five stops collapse to
-roughly one; and it composites type using the element's own colour alpha
-only, ignoring `opacity` on the element and every ancestor, so a beat at
---be 0.55 is read as fully inked cream. That is where its 7.19:1 came from.
-`hold-meter` cascades opacity properly and sweeps the pin, which is why it
-read 4.17:1 on the same string — **the cascaded reading is the honest one**,
-and photo-meter's blindness to ancestor opacity is a real defect in it, not
-a difference of convention. But hold-meter samples 17 fixed positions on one
-scene of one route. Neither is a superset of the other.
+## The contrast meters, and the hole that ran through all of them
 
-`ink-floor` measures one quantity — cascaded ink against the brightest
-3-row band of what is actually painted behind the glyphs — for every string
-over a photograph on every route at both viewports, and it does not sample
-the curve, it MINIMISES it: a coarse vh/5 sweep, then the coarse argmin
-trisected to ≤8px. Two conventions in it are worth knowing: the band is
-three pixel rows, not one, because a 1px foreground hairline crossing a
-glyph box is not the ground behind it (the nav's progress rule read as
-2.31:1 under a brass numeral before that); and it waits for CSS transitions
-to finish as well as for the scroll to stop, because the nav's 460ms colour
-transition photographs as 1.46:1 halfway through and is not reproducible.
+This project built four contrast meters in four waves and every one of them
+measured the ground and then MODELLED the ink on top of it. Each model had a
+different missing term, so each had a different blind spot, and one piece of
+type was quoted at 9.38:1, 7.19:1, 4.70:1 and 4.17:1 by tools that were all
+green at the time.
 
-**Two numbers to quote correctly.** The site's tightest type-over-photograph is
-the 11px "By invitation" eyebrow on the homepage Forum figure: **4.563:1 on
-mobile**, 0.06 above AA, at t≈0.275 of the held scene's pinned range. It has
-now been misquoted twice, each time by a meter that did not sample densely
-enough. It was 9.38 while photo-meter measured one viewport at one scroll
-position — 58% too generous. It was then 4.70 on a 16-sample sweep; at 40
-samples the same curve floors at 4.563. The next thinnest is **4.79:1**, the
-13px brass section indices.
+| meter | its model of the ink | what it could not see |
+| --- | --- | --- |
+| `audit` | the DOM's nearest background colour | photographs, at all |
+| `photo-meter` | `c*a + bg*(1-a)`, colour alpha only | `opacity` on the element or any ancestor; a sticky stage, where its five stops collapse to one |
+| `hold-meter` | cascaded opacity, 17 fixed samples | anything off that one scene, and the minimum, which falls between samples |
+| `ink-floor` | cascaded opacity, curve minimised | **anything painted in FRONT of the glyphs** |
 
-Two things follow. **Quote 4.563, not 4.70 and not 9.38.** And note what the
-correction means: the margin on the site's tightest type is 0.06, not 0.20,
-and it always was — wave 12's `floor` change did not move it (the minimum
-sits where `--open` is 1 and `floor` contributes nothing by construction;
-verified by re-sweeping the pre-change build). No gate is positioned to catch
-this number moving: photo-meter samples one position and steps past the
-shoulder, hold-meter's 17 positions step past the minimum, and during wave 12
-the two instruments read the same string as 4.17:1 and 7.19:1. Anyone
-touching `--k`, the ink knee, or the cap in `HeldScene.astro` is now caught
-by `ink-floor`: weakening the cap by 0.015 of alpha — a change photo-meter
-still calls clean — drops the eyebrow to 4.453:1 and fails the gate.
+That last row is the one to learn from. `ink-floor` was built to fix
+photo-meter's blindness to ancestor opacity and it did — its 4.563:1 for the
+homepage eyebrow is right, and it is still the number to quote. But its model
+had one term for what is behind the glyphs and none for what is over them, so
+the nav's 89px scrim tail was a free pass in it exactly as it was in the other
+three, and it was hiding 11px type at **2.745:1** while the gate was green.
+This file used to describe that as a convention — "the band is what is painted
+behind the glyphs" — which is how a hole gets written up as a decision. It was
+a hole.
 
-Wave 13 re-measured the number and it did not move: `ink-floor` floors that
-curve at **4.569:1** under its own 3-row band rule, **4.562:1** under the
-single-row convention the 4.563 was quoted in. Quote 4.563; it is right.
+**`tools/glyph-floor.mjs` closes it by not having a model.** It shoots each
+frame twice at the same scroll offset, once as it ships and once with the
+glyphs taken off the glass with `-webkit-text-fill-color: transparent`, and
+takes the glyph pixels as exactly the pixels that changed. The ink is the ON
+frame's colour at the stems — after colour alpha, after every ancestor's
+opacity, after any blend mode, and after any scrim, wash or overlay painted in
+front. The ground is the brightest 3-row band of the OFF frame, which is
+ink-floor's rule kept unchanged so the two are comparable; on the homepage
+eyebrow they agree to within a few hundredths, which they must, because on a
+string with nothing in front of it "observed ink" and "correctly modelled ink"
+are the same quantity.
+
+Two things fall out of subtraction for free. Text behind an opaque object
+changes no pixels, so occlusion handles itself and the hand-written "drop
+content under the bar's box, keep content under its tail" rule is gone. And
+the tool does not need to know what the ground is made of, so it is not scoped
+to `figure.fig`: it measures **every string on every route at both viewports**,
+over photographs, over flat navy, and under the nav tail — which is the only
+way the tail's crossings of opaque grounds were ever going to be seen.
+
+So `ink-floor` and `hold-meter` are **deleted**, and `photo-meter` keeps only
+its picture-grade half. Three meters answering one question with three
+different blind spots is worse than one that is right. Two questions remain
+genuinely separate and both still have a tool: `audit` answers "does the
+markup declare enough contrast" — a static, DOM-level question that catches
+authoring mistakes anywhere on a page without a browser sweep — and
+`photo-meter` answers "how is the grade sitting on this picture", which is
+about the photograph and not about any type on it.
+
+**Three conventions inside `glyph-floor` worth knowing before you argue with a
+number.** The band is three pixel rows, not one, because a 1px FOREGROUND
+hairline crossing a glyph box is not the ground behind it — the nav's progress
+rule read as 2.31:1 under a brass numeral before that. The frames it MEASURES
+on are shot at 3x: a 13px stem is one antialiased device pixel at 1x, so the
+ink reads far lighter than its colour and the brass indices on cream came out
+at 3.67:1 against an arithmetic 4.79 — the tool was reporting the browser's
+antialiasing as ink. At 3x the same string reads 4.761 against that 4.794,
+which is the check that says it is measuring ink and not sampling error. The
+whole sweep runs at 3x, and that is what it costs: about seven minutes a
+route-view. A two-stage shortcut — locate at 1x, re-shoot the argmin at 3x —
+was built and then abandoned, and the reason is worth knowing before anyone
+rebuilds it: the 1x bias is not a constant per string, it depends on the
+ground, so the 1x curve is a different shape with its minimum somewhere else.
+Run that way the tool located the "By invitation" eyebrow at t 0.421 and
+called it 8.50:1. It survives as `--find-scale=1` for a quick look, never for
+a gate. And a reading only
+counts if the string is painted at half its own strongest ink or better;
+below that it is being swapped, not read. That is the project's old
+`--min-opacity 0.5` restated in the domain where it can be checked, and it
+matters because `motion.js` layer 3 is scroll-linked and reversible: a reader
+who stops mid-scroll holds a partial state indefinitely, and no amount of
+waiting settles it. Those states are printed under their own heading and
+`--strength=0` shows them all.
+
+**The number to quote.** The site's tightest ARRIVED type is the 11px
+"By invitation" eyebrow on the homepage Forum figure: **4.563:1 on mobile**,
+0.06 above AA, at t≈0.275 of the held scene's pinned range. It has been
+misquoted twice, each time by a meter that did not sample densely enough —
+9.38 at one viewport and one scroll position, then 4.70 on a 16-sample sweep.
+`ink-floor` floored it at 4.569 and `glyph-floor` reads 4.503 by subtraction;
+the gap is the browser's own antialiasing, and both say the same thing, which
+is that the margin on the site's thinnest type is a rounding error and not a
+cushion. Anyone touching `--k`, the ink knee, or the cap in the held scene is
+caught by `glyph-floor`.
 
 **A trap worth knowing.** `base.css` sets `html { scroll-behavior: smooth }`,
 so `window.scrollTo` starts an animation. Any meter that scrolls and then waits
@@ -124,6 +171,15 @@ every blind comparison this project ran before then was scored off frames that
 caught our reveals at 30–50% opacity. `progress/gauntlet/w11/blind-desktop/`
 is what that looked like. It now uses the same instant-scroll-and-settle the
 meters do; `SETTLE_MS` overrides the wait.
+
+And scroll-still is not the same as settled, twice over. The nav carries 460ms
+`transition: color` rules, so a frame taken 90ms after the scroll stops
+photographs a crossfade — the wordmark reads 1.46:1 half way between ink and
+cream, which is not a defect and is not reproducible. Worse, `data-reveal`
+fires from an IntersectionObserver on a later task than the scroll, so a
+single "nothing is animating" check can pass in the gap BEFORE the reveal
+starts and catch a name at opacity 0.54: a settled 5.21:1 photographs as
+2.96:1. Wait for quiet, wait again, and only then shoot.
 
 ## Where things live
 
