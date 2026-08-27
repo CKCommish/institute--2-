@@ -2,28 +2,65 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/scenes/Hero.astro';
 import WhyNow from '../components/scenes/WhyNow.astro';
-import MethodScene from '../components/scenes/MethodScene.astro';
 import Stake from '../components/scroll-Stake-alt.astro';
 import PilotsScene from '../components/scenes/PilotsScene.astro';
 import ForumScene from '../components/scenes/ForumScene.astro';
 import PeopleScene from '../components/scenes/PeopleScene.astro';
 ---
-{/* Seven beats. No two adjacent scenes land at the same weight, on the same
+{/* Six beats. No two adjacent scenes land at the same weight, on the same
      ground, or in the same composition:
        Hero      photograph · poster left, named ledger low     100svh
        WhyNow    cream · narrow left column, vertical rule, claim right
-       Method    ink-700 PANEL · CENTRED — the only centred scene on the site
        Stake     photograph · ONE sentence, set RIGHT               108svh
        Pilots    ink-900 · the long ledger, flush left
        Forum     photograph · THE HELD SCENE — pinned, 2.9 viewports
        People    ink-900 head, then a full-bleed ink-800 WALL of names
 
-     FOUR ARMATURES. The site's default move — micro label at the left rail,
+     THREE ARMATURES. The site's default move — micro label at the left rail,
      hairline ruled the full frame, block hung beneath — belongs to Hero,
      Pilots and Forum. WhyNow turns it ninety degrees (the division is
-     vertical, the major column is the right one). Method abandons the left
-     edge and sets on the centre line. Stake abandons the armature entirely:
-     no label, no rule, no counter, no eyebrow, one sentence set right.
+     vertical, the major column is the right one). Stake abandons the
+     armature entirely: no label, no rule, no counter, no eyebrow, one
+     sentence set right.
+
+     THE METHOD SCENE IS GONE, and this is the seventh beat that was here.
+     It set `method` — the same three-item array, the same three titles and
+     the same three captions — that /institute/ sets as a numbered left-ranged
+     ledger. The same content, twice, in two grammars, and the homepage had
+     the weaker one: centre-set, the only centred block on a site whose whole
+     grammar is a left rail (a left-edge histogram of this page put 28 text
+     elements at exactly x=51, and none of them were in that scene), with all
+     three titles and two of the three captions wrapping to two lines that
+     set on one line in the ledger. A reader who follows this page's own
+     INSTITUTE link meets the identical three steps set properly.
+
+     It goes rather than gets left-railed, and the reason is that
+     left-railing it would have made the duplication WORSE: matched to the
+     ledger's grammar, the two would have been the same object rendered
+     twice. Removing it closes both defects with one move, and it is the move
+     the brief already asked for. refs/BRIEF.md's site map gives Home
+     "mission line, four pilots as cards, Lion Forum as one scene, one CTA"
+     — no method explainer — and gives Institute "what we do and how we work,
+     as a diagram or three beats", which is exactly what /institute/ already
+     carries, in both of the forms named, one click away.
+
+     Nothing factual left with it. The three steps are on /institute/; the
+     "3–12 months" figure is /institute/'s own Horizon row, /pilots/'s
+     opening, and every pilot's `horizon`. And the scene was a legend for a
+     table that describes itself: Pilots, one screen below, states the same
+     sequence concretely — a problem a family can name, who builds it and who
+     runs it, one measurable outcome each — as problem / approach / goal on
+     four cards.
+
+     Stake was described here as the hinge between Method (abstract) and
+     Pilots (concrete). It still hinges, between WhyNow (the claim) and
+     Pilots (the answer), which is the shorter argument.
+
+     `src/components/scenes/MethodScene.astro` is deleted rather than left
+     unimported. This repo has already shipped one scene that existed only in
+     a file nothing built (`HeldScene` in `_lab.astro`, zero held scenes in
+     `dist/` for four waves); an orphaned component is that trap with the
+     safety off.
 
      THE EXCEPTION, SPENT ONCE. Stake is 108svh ON DESKTOP — taller than the
      viewport it is read in, the only element on the site that is. It exists
@@ -38,9 +75,11 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
      class of reason: on a 390px screen the tall slot filled the whole
      viewport with two faces and pushed the sentence below the fold, so the
      phone gets a band that holds the picture and its line in one screen. One of them is now the largest object
-     on the page, on every viewport. It is also the hinge between Method
-     (abstract) and Pilots (concrete), which were consecutive and opened with
-     the identical three-element overture.
+     on the page, on every viewport. It is also the hinge between WhyNow
+     (the claim) and Pilots (the answer) — it used to hinge Method to Pilots,
+     which were consecutive and opened with the identical three-element
+     overture; Method is gone and the two it now separates were never that
+     pair.
 
      TONAL PACING, MEASURED ON THE SHIPPED PAGE. Wave 4 opened with "79% of
      the page inside a 5.7-point L* band". `tools/tone-meter.mjs`, run against
@@ -52,8 +91,7 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
 
          hero photograph     200– 780   L* 29 – 44
          cream WhyNow        920–1420   L* 93.8
-         METHOD PANEL       1440–1780   L* 14.5
-         Stake photograph   2880–3120   L* 24
+           Stake photograph   2880–3120   L* 24
          Pilots ledger      3140–4260   L*  3.7   <- the one flat run left
          THE HELD FORUM     4740–6220   L* 40 -> 69.5 -> 4, inside one scene
          board wall         7460–7980   L* 14.5
@@ -61,8 +99,13 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
      The Pilots ledger is still 1,120px of one value; this file does not own
      it. The hold is what now answers it — the ledger's flat navy runs
      straight into a picture that opens out of that exact value.
-     GROUND CLASSES SPENT: two — .on-cream once (WhyNow) and .on-panel twice
-     (Method, the board wall). Under the ceiling in tokens.css.
+     GROUND CLASSES SPENT: two — .on-cream once (WhyNow) and .on-panel once
+     (the board wall). Under the ceiling in tokens.css. Removing the Method
+     panel removed one 340px tonal event; the cream now runs straight into
+     the Stake photograph, which is a hard tonal edge and not a seam — the
+     halved bottom pad Method carried existed because a navy panel above a
+     navy-ground photograph reads as a seam at near-identical value, and
+     cream against that photograph is the opposite case. Re-measured below.
 
      The People wall runs flush into the footer, so the page ends on a hard
      tonal edge rather than on 290px of empty navy.
@@ -112,7 +155,6 @@ import PeopleScene from '../components/scenes/PeopleScene.astro';
 <Base>
   <Hero />
   <WhyNow />
-  <MethodScene />
   <Stake />
   <PilotsScene />
   <ForumScene />

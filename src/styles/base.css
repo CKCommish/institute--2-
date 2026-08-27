@@ -390,6 +390,17 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
   display: block;
   transition: transform var(--dur-3) var(--ease-out) var(--line-delay, 0ms);
   will-change: transform;
+  /* A line is re-laid out in its own block, so it must not be allowed to
+     break again. It can come back a fraction WIDER than it was inside the
+     paragraph: Chrome drops the trailing letter-spacing at a soft wrap but
+     keeps it at the end of a block, and this site's display type carries a
+     negative one. /people/'s masthead is 976.0px of type in a 977.3px box —
+     re-set on its own it measured 978.3 and broke to a third line, so the
+     scripted reader got a two-line break rendered as three. Nothing here
+     changes the no-JS or reduced-motion render: `.line` only exists once a
+     script has split the element, and both of those paths take the same
+     split. */
+  white-space: nowrap;
 }
 :where(html.js) .lines .line > span { transform: translate3d(0, 105%, 0); }
 .is-in .lines .line > span,

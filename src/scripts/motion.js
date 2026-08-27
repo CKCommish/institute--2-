@@ -103,39 +103,72 @@ function runWipes(vh) {
   }
 }
 
-/* Split a .lines element's text into masked lines after layout. */
+/* Split a .lines element's text into masked lines after layout.
+
+   WHERE THE BREAK COMES FROM. This used to measure by wrapping every word in
+   a `display: inline-block` probe and grouping the probes by offsetTop. That
+   measures a different paragraph than the one that was written: an
+   inline-block is an atomic inline-level box, so the line breaker sees a row
+   of opaque boxes instead of a text run, and `text-wrap: pretty` (base.css,
+   and `.pm__h`) and `text-wrap: balance` (base.css, and `.bd__h`/`.pm__h`
+   under 1024) have no text run to work on and do nothing at all. Every
+   `.lines` element on the site was therefore frozen at a break the CSS had
+   not asked for. nojs-diff caught it on /people/: the masthead read
+   "The people accountable / for the work." with a script and
+   "The people accountable for / the work." without one — same element, same
+   box, two typographies.
+
+   A Range measures the real thing. The element keeps its original single text
+   node while we read, so the browser breaks it exactly as it does for a
+   reader with no script — pretty and balance included — and all we ask is
+   which line box each word's first character landed in. Nothing is inserted,
+   so nothing is perturbed: no probes, no layout written, one forced layout
+   read per element, once, on fonts.ready.
+
+   AND THE TOKENS SPLIT ON BREAKABLE WHITESPACE ONLY — space, tab, newline,
+   never U+00A0. The old `split(/\s+/)` + `join(' ')` pair matched the
+   non-breaking space too and rebuilt it as a plain one, so wave 12's
+   "Kennedy<nbsp>Compound" fix was silently undone for every reader who ran
+   the script. Lines are now sliced out of the raw string, so what was written
+   stays written. */
+function measureLines(el, raw) {
+  const node = el.firstChild;
+  if (!node || node.nodeType !== 3) return [raw];
+
+  const tokens = [];
+  const re = /[^ \t\r\n]+/g;
+  let m;
+  while ((m = re.exec(raw))) tokens.push([m.index, m.index + m[0].length]);
+  if (!tokens.length) return [raw];
+
+  const range = document.createRange();
+  const rows = [];
+  let top = null;
+  for (const t of tokens) {
+    range.setStart(node, t[0]);
+    range.setEnd(node, t[0] + 1);
+    const r = range.getBoundingClientRect();
+    if (top === null || Math.abs(r.top - top) > 4) { rows.push([t[0], t[1]]); top = r.top; }
+    else rows[rows.length - 1][1] = t[1];
+  }
+  return rows.map(([a, b]) => raw.slice(a, b));
+}
+
 function splitLines(el) {
   if (el.dataset.split === 'done') return;
   const raw = el.dataset.text || el.textContent.trim();
   el.dataset.text = raw;
+  /* Measure the element as written, in one text node. */
+  if (el.textContent !== raw) el.textContent = raw;
 
-  // Measure natural line breaks by wrapping each word then grouping by offsetTop.
-  const words = raw.split(/\s+/);
-  el.textContent = '';
-  const probes = words.map((w, i) => {
-    const s = document.createElement('span');
-    s.className = 'probe';
-    s.style.display = 'inline-block';
-    s.textContent = w;
-    el.appendChild(s);
-    if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
-    return s;
-  });
-
-  const rows = [];
-  let top = null;
-  probes.forEach((p) => {
-    const t = Math.round(p.offsetTop);
-    if (top === null || Math.abs(t - top) > 4) { rows.push([]); top = t; }
-    rows[rows.length - 1].push(p.textContent);
-  });
+  const rows = measureLines(el, raw);
 
   el.textContent = '';
   rows.forEach((row, i) => {
     const line = document.createElement('span');
     line.className = 'line';
     const inner = document.createElement('span');
-    inner.textContent = row.join(' ');
+    inner.textContent = row;
     inner.style.setProperty('--line-delay', `${i * 85}ms`);
     line.appendChild(inner);
     el.appendChild(line);
