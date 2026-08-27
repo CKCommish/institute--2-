@@ -123,6 +123,23 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      cream. The bar cannot ask a script whether it needs a ground when there
      is no script, so without one it always has it. */
   :global(html:not(.js)) .nav::before { opacity: 1; }
+  /* AND THE SAME HOLE, ONE LAYER DOWN: the scrim's COLOUR is script-written
+     too. `.is-inverted` is what turns the scrim cream over a cream scene, so
+     with no script the bar paints an INK scrim — correct under the bar, where
+     the links are cream, but the scrim is taller than the bar (--nav-tail)
+     and masked into a fade, and that fade drags the page's own INK type
+     through a dark gradient on every .on-cream scene. Measured no-JS on
+     mobile /people/: "Partner, Lightspeed Venture Partners" at 1.03:1, and
+     the whole board roster between 1.8 and 4.0:1 as each name passes under
+     the tail. Visible in a screenshot, invisible to every DOM-walking meter.
+     With no script the bar takes a hard edge instead: an opaque band exactly
+     its own height, so type sliding under it is covered outright rather than
+     half-lit. The soft tail is a refinement the scripted bar can afford
+     because it also knows which ground it is over. */
+  :global(html:not(.js)) .nav::before {
+    height: 100%;
+    -webkit-mask-image: none; mask-image: none;
+  }
   /* NOTE on the open sheet: the scrim stays ON. The sheet is fixed at z 99
      and the bar at z 100, so while the menu is open the thing behind the
      bar IS the sheet — ink — and sync() writes ink into --nav-a/--nav-b to

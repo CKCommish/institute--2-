@@ -1,6 +1,7 @@
 /* Objective checks the critics cannot eyeball. Run against a live dev server.
    usage: BASE=http://127.0.0.1:4460 node tools/audit.mjs [--json] */
 import { launch } from './browser.mjs';
+import { measureFrame, settleScroll } from './pixel-contrast.mjs';
 
 const base = process.env.BASE || 'http://127.0.0.1:4399';
 const ROUTES = ['/', '/pilots/', '/institute/', '/forum/', '/people/', '/partner/'];
@@ -50,8 +51,42 @@ const SAMPLE_TEXT = () => {
       f = f.parentElement;
     }
     if (floats) return;
-    let bg = 'rgba(0, 0, 0, 0)', n = el;
-    while (n && bg === 'rgba(0, 0, 0, 0)') { bg = getComputedStyle(n).backgroundColor; n = n.parentElement; }
+    /* THE DOM WALK IS ONLY HONEST WHEN THE GROUND IS AN OPAQUE COLOUR.
+       Wave 9 built the case and this meter failed it twice over. A
+       rgba(255,255,255,0.35) panel carrying 13px #f2f2f2 over the /institute/
+       hero photograph measures 3.03:1 in real pixels; audit reported 0 issues.
+       Give the same panel a darker text colour and audit DID fire — at 3.95:1
+       where the pixels are ~2.1:1 — because this loop composites a translucent
+       panel over its DOM ANCESTOR rather than over the photograph showing
+       through it. A meter that reports a number nobody can see is worse than
+       one that reports nothing: it is a second false witness, and the project
+       had been treating it as the backstop for the pixel meters.
+
+       So the walk now stops at the first thing it cannot vouch for — a
+       translucent background, a background-image, or a gradient — and hands
+       that rung to the pixel pass below instead of guessing at it. */
+    let bg = 'rgba(0, 0, 0, 0)', n = el, unreliable = false;
+    while (n && n !== null) {
+      const ncs = getComputedStyle(n);
+      if (ncs.backgroundImage && ncs.backgroundImage !== 'none') { unreliable = true; break; }
+      const b = ncs.backgroundColor;
+      const m = b.match(/rgba?\(([^)]+)\)/);
+      if (m) {
+        const parts = m[1].split(/[\s,\/]+/).filter(Boolean).map(Number);
+        const alpha = parts.length > 3 ? parts[3] : 1;
+        if (alpha >= 1) { bg = b; break; }
+        if (alpha > 0) { unreliable = true; break; }
+      }
+      n = n.parentElement;
+    }
+    if (unreliable || bg === 'rgba(0, 0, 0, 0)') {
+      /* keyed exactly as pixel-contrast.mjs keys its rows, so the two can be
+         joined without guessing which rung is which */
+      const tag = el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className.trim() ? '.' + el.className.trim().split(/\s+/)[0] : '');
+      (window.__auditPx = window.__auditPx || new Set())
+        .add(tag + '|' + el.textContent.replace(/\s+/g, ' ').trim().slice(0, 34) + '|' + Math.round(parseFloat(cs.fontSize)));
+      return;
+    }
     const key = cs.color + '|' + bg + '|' + cs.fontSize + '|' + cs.fontWeight;
     if (seen.has(key)) return;
     seen.add(key);
@@ -143,15 +178,33 @@ for (const view of [{ tag: 'desktop', vp: { width: 1440, height: 900 } }, { tag:
        So the sampler is swept down the document and the results merged. It is
        cheap — the dedupe key means a repeated rung costs one getComputedStyle
        and nothing else. */
-    data.text = await page.evaluate(SAMPLE_TEXT);
-    for (let sy = view.vp.height * 0.8; sy < 40000; sy += view.vp.height * 0.8) {
-      const done = await page.evaluate((y) => { window.scrollTo(0, y); return y >= document.documentElement.scrollHeight - innerHeight; }, sy);
-      await page.waitForTimeout(320);
-      const extra = await page.evaluate(SAMPLE_TEXT);
-      data.text.push(...extra);
+    /* base.css sets scroll-behavior:smooth, so window.scrollTo starts an
+       ANIMATION. This sweep used to scroll and wait a flat 320ms, which meant
+       element rects were read at one offset and — for the pixel pass — the
+       screenshot taken at another. settleScroll waits for scrollY to stop. */
+    const pxWorst = new Map();
+    const step = async () => {
+      data.text.push(...await page.evaluate(SAMPLE_TEXT));
+      const flagged = await page.evaluate(() => [...(window.__auditPx || [])]);
+      if (!flagged.length) return;
+      const want = new Set(flagged);
+      for (const r of await measureFrame(page, view.vp)) {
+        const k = `${r.tag}|${r.sample}|${r.size}`;
+        if (!want.has(k)) continue;
+        const prev = pxWorst.get(k);
+        if (!prev || r.ratio < prev.ratio) pxWorst.set(k, r);
+      }
+    };
+    data.text = [];
+    await settleScroll(page, 0);
+    await step();
+    for (let i = 1; i < 60; i++) {
+      const done = await settleScroll(page, Math.round(view.vp.height * 0.8 * i));
+      await page.waitForTimeout(220);
+      await step();
       if (done) break;
     }
-    await page.evaluate(() => window.scrollTo(0, 0));
+    await settleScroll(page, 0);
 
     // heading order
     let prev = 0;
@@ -187,6 +240,11 @@ for (const view of [{ tag: 'desktop', vp: { width: 1440, height: 900 } }, { tag:
       const large = t.size >= 24 || (t.size >= 18.66 && Number(t.weight) >= 700);
       const need = large ? 3 : 4.5;
       if (r < need) issues.push(`contrast ${r.toFixed(2)}:1 (needs ${need}) — ${t.size}px "${t.sample}"`);
+    }
+
+    /* the rungs the DOM could not vouch for, measured in pixels */
+    for (const r of pxWorst.values()) {
+      if (!r.ok) issues.push(`contrast ${r.ratio}:1 (needs ${r.need}) [pixels] — ${r.size}px ${r.tag} "${r.sample}" · backdrop L* ${r.backdropL}`);
     }
 
     if (data.docScrollsX) issues.push(`document scrolls horizontally (scrollWidth > clientWidth)`);

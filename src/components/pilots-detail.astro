@@ -53,9 +53,8 @@
 
    THE PHOTOGRAPH IS A PLATE, NOT A SCREEN. One column wide — about 530px
    at 1440, a third of the width and a third of the height the old card
-   spent — sitting in the header row above the partner plate,
-   so the right of every block is picture-then-object and the left is words
-   the whole way down. Nothing is set on any frame except its corner credit.
+   spent — hung at the top of the right column beside the words. Nothing is
+   set on any frame except its corner credit.
 
    WHY NOT A FULL-BLEED BAND, which was the first fix tried: a full-bleed
    strip is still 1440px of image, and cover-cropping a 3:2 portrait into
@@ -130,6 +129,64 @@
 
    3. AND THE DOSSIER TURNS AT 1280 rather than wrapping a one-line fact
       to three inside the plate. See that query.
+
+   ── ROUND 11. THE PICTURE WAS DRIVING AND THE WORDS WERE PASSENGERS ──
+
+   This supersedes round 9's two items above. Both of them solved the
+   wrong problem well: they made the record's TWO ROWS internally tidy
+   while leaving the record's height set, twice over, by the right-hand
+   column. Measured at 1440 before this round —
+
+     /pilots/  5808px tall, the tallest page on the site, taller than the
+               homepage, to carry the same four facts /partner/ carries in
+               about 530px. 7843px at 390.
+     the left column held 1184px of dead vertical space in gaps over
+     150px (/partner/, the site at its best, holds 721):
+       253  record 01's last line  →  record 02's number
+       230  record 03's last line  →  record 04's number
+       206  record 02's last line  →  record 03's number
+       174  the layer's own bridge →  record 01's number
+       169  the turn's eyebrow     →  its sentence
+       152  record 02's tagline    →  its own MEASURED BY
+
+   Every one of those is the same defect. The header row was `auto /
+   1fr / auto` with the photograph spanning all three, so the 1fr track
+   was whatever the picture's aspect ratio left over — 107px on three
+   records and 152px on the one whose outcome wrapped shorter. Below it
+   the second grid did it again: a 158px dossier in the left column
+   against a 283px plate in the right, so the words stopped and the
+   record kept going for another 125px. Twice per record, four times
+   over. Whitespace everywhere else on this site is an interval the eye
+   crosses on purpose; here it was a by-product of an image's aspect
+   ratio.
+
+   THE FIX IS NOT A CUT. Every fact in the record is sourced and
+   load-bearing and /pilots/ is the expanded view — it is the page a
+   programme officer reads once she has picked a favourite. What changed
+   is where the objects sit:
+
+     ONE grid, not two. The words run down the left column in a single
+     continuous column — name, dossier, outcome — on ONE declared
+     interval used twice. No track anywhere in the record is sized by
+     the photograph, and no gap in the left column exceeds that interval.
+
+     THE THREE OPEN NEEDS CAME OUT OF THE RIGHT COLUMN. They were a
+     538px-wide stack 257px tall and they were the whole of the second
+     imbalance. They are three one-line facts and they are peers, so
+     they are set across the foot of the record as a row of three with
+     the door at the end of it — which is also the shape /partner/'s
+     table is praised for. The plate, the ground and the brass wipe on
+     the door are unchanged; only the axis is.
+
+   Round 9's claim that "the same shape twice" was the argument the block
+   exists to make does not survive the measurement. The two lists are not
+   the same shape: one is a four-row dossier read down, the other is
+   three peers read across. Drawing them alike cost the record 150px of
+   dead column and bought a rhyme nobody could see, because the two lists
+   were never on screen together in one glance.
+
+   After: no gap over 150px anywhere in the left column of /pilots/, and
+   the record's own intervals are identical on all four.
 */
 import Figure from './Figure.astro';
 
@@ -179,15 +236,40 @@ const needs = [
       <span class="label pd__field">{p.field}</span>
     </p>
 
-    {/* THE HEADER ROW. Three children on one explicit grid, not two
-         nested ones, so the middle track can be a declared interval and so
-         a narrow viewport can put the photograph between the tagline and
-         the outcome — which is the order a reader wants on a phone: name
-         the thing, show the thing, then say what it promises. */}
-    <div class="pd__head">
-      <div class="pd__say-top">
-        <h2 class="display display--head pd__t lines" id={hid}>{p.title}</h2>
-        <p class="pd__tag" data-reveal="120">{p.tagline}</p>
+    {/* THE RECORD, AS ONE TWO-COLUMN COMPOSITION.
+
+         Left: the words, top to bottom, in one continuous run — the name,
+         what is designed, what it is measured by. Right: the photograph.
+         Below both, full width: what is still open, and the door.
+
+         The words are no longer distributed against the picture's height.
+         They are set to their own rhythm and the picture is hung at the
+         top of the column beside them. See the round-11 note above. */}
+    <div class="pd__body">
+      <div class="pd__say">
+        <div class="pd__say-top">
+          <h2 class="display display--head pd__t lines" id={hid}>{p.title}</h2>
+          <p class="pd__tag" data-reveal="120">{p.tagline}</p>
+        </div>
+
+        {/* what is designed */}
+        <div class="pd__group" data-reveal="140">
+          <p class="label label--brass pd__gl">The pilot</p>
+          <dl class="pd__dl" data-seq="90" data-seq-from="40">
+            {proposal.map((r) => (
+              <div data-reveal><dt class="label">{r.t}</dt><dd>{r.v}</dd></div>
+            ))}
+          </dl>
+        </div>
+
+        {/* THE OUTCOME. The single fact a funder is being asked to
+             believe, and the one the Institute promises to measure and
+             share — so it is set at the rung above the tagline and it
+             closes the column. */}
+        <div class="pd__goal" data-reveal="180">
+          <p class="label label--brass">Measured by</p>
+          <p class="bridge bridge--lift bridge--fg pd__goal-t">{p.goal}</p>
+        </div>
       </div>
 
       <div class="pd__plate" data-reveal="60">
@@ -222,52 +304,29 @@ const needs = [
           vig={0.35}
         />
       </div>
-
-      {/* THE OUTCOME, OUT OF THE TABLE. It was row five of a dossier,
-           set at 16px between "where it would run" and nothing. It is
-           the single fact a funder is being asked to believe, and the
-           one the Institute promises to measure and share — so it is set
-           at the rung above the tagline, hung at the foot of the column,
-           and its last line lands on the photograph's bottom edge. */}
-      <div class="pd__goal" data-reveal="180">
-        <p class="label label--brass">Measured by</p>
-        <p class="bridge bridge--lift bridge--fg pd__goal-t">{p.goal}</p>
-      </div>
     </div>
 
-    <div class="pd__cols">
-      {/* ── what is designed ─────────────────────────────────────── */}
-      <div class="pd__col">
-        <p class="label label--brass pd__gl" data-reveal>The pilot</p>
-        <dl class="pd__dl" data-seq="90" data-seq-from="40">
-          {proposal.map((r) => (
-            <div data-reveal><dt class="label">{r.t}</dt><dd>{r.v}</dd></div>
+    {/* ── and what is not ──────────────────────────────────────────
+         The three open needs were a stacked list 538px wide in the right
+         column, 257px tall, and they were the reason the record's right
+         side ran a hundred and fifty pixels past its left. They are three
+         one-line facts and they are peers, so across the foot of the
+         record is where they belong: one glance, one row, and the door at
+         the end of it. */}
+    <div class="pd__foot">
+      <p class="label label--brass pd__gl" data-reveal="60">Where a partner comes in</p>
+      <div class="pd__open on-plate" data-reveal="80">
+        <dl class="pd__dl pd__dl--open">
+          {needs.map((r) => (
+            <div><dt class="label">{r.t}</dt><dd>{r.v}</dd></div>
           ))}
         </dl>
-      </div>
-
-      {/* ── and what is not ──────────────────────────────────────
-           The same list, the same rail, the same row pitch — set down on a
-           plate instead of on the page. The head is a peer of "The pilot"
-           and sits on its line; the plate's top edge sits on the
-           first row's line. Two landmarks, both exact, and between them
-           the reader gets the block's whole argument without reading a
-           word: this much is designed, this much is still open. */}
-      <div class="pd__col">
-        <p class="label label--brass pd__gl" data-reveal="60">Where a partner comes in</p>
-        <div class="pd__open on-plate" data-reveal="80">
-          <dl class="pd__dl pd__dl--open">
-            {needs.map((r) => (
-              <div><dt class="label">{r.t}</dt><dd>{r.v}</dd></div>
-            ))}
-          </dl>
-          <a class="pd__ask" href="/partner/">
-            <span class="pd__ask-t">Partner on this pilot</span>
-            <svg class="arrow pd__arrow" viewBox="0 0 22 10" aria-hidden="true">
-              <path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/>
-            </svg>
-          </a>
-        </div>
+        <a class="pd__ask" href="/partner/">
+          <span class="pd__ask-t">Partner on this pilot</span>
+          <svg class="arrow pd__arrow" viewBox="0 0 22 10" aria-hidden="true">
+            <path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/>
+          </svg>
+        </a>
       </div>
     </div>
   </div>
@@ -281,25 +340,22 @@ const needs = [
     scroll-margin-top: calc(var(--nav-h) + 2.5rem);
 
     /* ── the block's two constants, stated once ──────────────────────
-       --pd-rail  the label column. Every term on both sides of the block
-                  hangs off it, so the reader has ONE left edge for names
-                  and ONE for values, top to bottom.
-       --pd-hold  the floor under the held interval in the header row. The
-                  photograph is normally taller than the words and sets the
-                  row; this guarantees the beat survives a viewport where
-                  it is not. */
+       --pd-rail  the label column. Every term in the record hangs off it,
+                  so the reader has ONE left edge for names and ONE for
+                  values, top to bottom.
+       --pd-inset the open plate's padding. */
     --pd-rail: 10.5rem;
-    --pd-hold: clamp(2.75rem, 5.5vw, 7rem);
-    /* THE INSET. The plate's padding, and — applied as leading space to the
-       list on the page — the reason the two lists' first terms land on ONE
-       line instead of 33px apart. The plate's top EDGE lands on the paper
-       list's box top; the plate's first term lands on the paper list's first
-       term. Two landmarks, both exact, from one number. */
     --pd-inset: clamp(1.35rem, 1.9vw, 1.5rem);
     /* the shared right edge every object takes once the block is stacked */
     --pd-stack: 34rem;
   }
-  .pd + .pd { margin-top: clamp(3rem, 6vw, 6.5rem); }
+  /* The record now ENDS on a bordered plate rather than on a loose last
+     line, and a hard terminator needs less air after it than a soft one.
+     The separation came down accordingly: 86px + the block's own 42px of
+     lead measured 156 from the last value of one record to the number of
+     the next, which was the only interval left in the left column over
+     150. It is 141 now, and it is the same on all three joins. */
+  .pd + .pd { margin-top: clamp(2.6rem, 5vw, 5.5rem); }
 
   .pd__in { padding-top: clamp(1.6rem, 3vw, 2.6rem); }
 
@@ -316,49 +372,36 @@ const needs = [
   .pd__field { margin-left: auto; white-space: nowrap; }
   .pd__brk { display: none; }
 
-  /* ONE pair of columns, used twice: name / picture, then dossier / ask.
-     Both rows share the same track list, so the picture sits exactly above
-     the plate and the words run down one rail. */
-  .pd__head, .pd__cols {
+  /* ── THE BODY: words left, picture right ─────────────────────────
+     One grid, one pair of columns, one row. The left column is a
+     continuous run of type with ONE interval, used twice; the right
+     column is the photograph, hung from the top so its edge lands on the
+     title's. Nothing in the left column is sized by the picture and
+     nothing in the picture is sized by the words. */
+  .pd__body {
+    margin-top: clamp(0.85rem, 1.6vw, 1.3rem);
     display: grid;
     grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr);
     column-gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
   }
-
-  /* THE HEADER ROW, as an explicit three-track grid.
-
-     row 1  the name and the line under it        (auto)
-     row 2  THE HELD INTERVAL                     (>= --pd-hold, takes slack)
-     row 3  the outcome, hung at the foot         (auto)
-
-     The photograph spans all three. Because row 2 is the only flexible
-     track, every pixel the picture is taller than the words goes into ONE
-     declared place, bounded by the tagline above and the outcome below —
-     and because the tagline and the outcome are both set to a fixed line
-     count (see their measures), that place is the same size on all four
-     pilots. */
-  .pd__head {
-    margin-top: clamp(0.85rem, 1.6vw, 1.3rem);
-    grid-template-rows: auto minmax(var(--pd-hold), 1fr) auto;
-    row-gap: 0;
+  /* THE INTERVAL. One value, twice: name → dossier → outcome. It is a
+     declared beat, identical on all four records and independent of how
+     many lines any block happens to wrap to. */
+  .pd__say {
+    display: grid;
+    align-content: start;
+    row-gap: clamp(1.7rem, 3.3vw, 2.9rem);
   }
-  .pd__say-top {
-    grid-column: 1; grid-row: 1;
-    display: grid; gap: clamp(0.7rem, 1.4vw, 1.1rem);
-  }
-  .pd__plate { grid-column: 2; grid-row: 1 / -1; align-self: start; position: relative; }
-  .pd__goal  { grid-column: 1; grid-row: 3; display: grid; gap: clamp(0.55rem, 1.1vw, 0.85rem); }
+  .pd__say-top { display: grid; gap: clamp(0.7rem, 1.4vw, 1.1rem); }
+  .pd__goal { display: grid; gap: clamp(0.55rem, 1.1vw, 0.85rem); }
+  .pd__plate { align-self: start; position: relative; }
 
   .pd__t { margin: 0; line-height: 1.0; letter-spacing: -0.02em; text-wrap: initial; }
-  /* ONE LINE, on all four. Round 9 made the header rows identical by
-     choosing a 30ch measure that broke every tagline to TWO lines. That
-     bought identity with an extra line of prose in each of four blocks,
-     and it bought it fragilely: the identity held only while no tagline
-     crossed 30 or 60 characters. A measure wide enough for the longest of
-     the four (52 characters) sets all four to one line, which is both the
-     shorter reading and the sturdier one — a one-line block cannot wrap
-     differently from its neighbours. The cap still holds the line to the
-     title's own optical width rather than the column's 705px. */
+  /* ONE LINE, on all four. A measure wide enough for the longest of the
+     four taglines (52 characters) sets every one of them to one line,
+     which is both the shorter reading and the sturdier one — a one-line
+     block cannot wrap differently from its neighbours. */
   .pd__tag {
     margin: 0;
     color: var(--fg-mute);
@@ -367,36 +410,21 @@ const needs = [
     max-width: 54ch;
     text-wrap: balance;
   }
-  /* Likewise: 20ch breaks all four outcomes to two lines. The outcome is
-     the block's claim, so it is set one rung above the tagline.
+  /* TWO LINES, on all four — which is what the copy rule at the head of
+     this file says the outcome is, and what 20ch stopped delivering the
+     moment the outcome moved out of a narrow slot and into the full left
+     column: three of the four ran to three lines there. The measure is
+     set to the longest of the four (60 characters), so every one of them
+     breaks once and none of them breaks twice. */
+  .pd__goal-t { margin: 0; max-width: 32ch; }
 
-     The negative bottom margin is an OPTICAL, not a layout, correction:
-     bottom-aligning a text block against a photograph by its box leaves the
-     last BASELINE 12px above the picture's edge, because the box carries the
-     descent and the half-leading below it. The column is meant to end on the
-     same line the picture does, so the box is pulled down by roughly that
-     descent and the baseline lands on the edge. Only true where the two are
-     side by side; released when the block stacks. */
-  .pd__goal-t { margin: 0 0 -0.13em; max-width: 20ch; }
-
-  /* ── the two lists ──────────────────────────────────────────────── */
-  .pd__cols {
-    margin-top: clamp(1.6rem, 3vw, 2.6rem);
-    padding-top: clamp(1.3rem, 2.4vw, 2rem);
-    border-top: 1px solid var(--rule);
-    row-gap: clamp(1.5rem, 3vw, 2.4rem);
-    align-items: start;
-  }
-  /* the two heads are peers and sit on one line; the space under them is
-     the same on both sides, so the plate's top edge lands on the left
-     column's first row */
-  .pd__gl { margin: 0 0 clamp(0.6rem, 1.2vw, 0.9rem); }
+  /* THE GROUP HEADS. The space under a brass head has to be clearly
+     larger than the space inside the field it heads, or "The pilot" reads
+     as a fourth term rather than the name of the three below it. */
+  .pd__gl { margin: 0 0 clamp(1rem, 1.7vw, 1.5rem); }
 
   /* a dossier: term left, value right, on one baseline */
   .pd__dl { margin: 0; display: grid; row-gap: clamp(0.75rem, 1.5vw, 1.15rem); }
-  /* the list on the page wears the plate's inset as leading space, so both
-     lists start on the same line — see --pd-inset */
-  .pd__col > .pd__dl { padding-top: var(--pd-inset); }
   .pd__dl > div {
     display: grid;
     grid-template-columns: minmax(0, var(--pd-rail)) minmax(0, 1fr);
@@ -413,28 +441,43 @@ const needs = [
     text-wrap: pretty;
   }
 
-  /* ── the ask, as an object ──────────────────────────────────────── */
+  /* ── the foot: what is still open, across the record ────────────── */
+  .pd__foot {
+    margin-top: clamp(1.9rem, 3.6vw, 3rem);
+    padding-top: clamp(1.3rem, 2.4vw, 2rem);
+    border-top: 1px solid var(--rule);
+  }
   .pd__open {
     position: relative;
-    /* less its own 1px border, so the first term lands on the paper
-       list's first term to the pixel, not to within one */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: end;
+    /* less its own 1px border on the top edge, so the register inside the
+       plate sits at the same inset as the rules above it */
     padding: calc(var(--pd-inset) - 1px) clamp(1.35rem, 2.6vw, 2rem) clamp(1.2rem, 2.2vw, 1.7rem);
     border: 1px solid var(--rule-soft);
   }
-  /* the rail is the SAME width inside the plate as on the page — a term
-     that wraps to two lines on one side and one on the other is two lists,
-     not one shape twice — so the plate buys the room back from the gutter */
-  .pd__dl--open { column-gap: clamp(0.75rem, 1.5vw, 1.35rem); }
+  /* THREE PEERS, READ ACROSS. Term over value, because the three values
+     are short and a row of three one-line facts is a row, not a list. */
+  .pd__dl--open {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 3vw, 3rem);
+    row-gap: 1.15rem;
+  }
+  .pd__dl--open > div { grid-template-columns: minmax(0, 1fr); row-gap: 0.3rem; }
+  .pd__dl--open dd { max-width: 30ch; }
 
   .pd__ask {
     position: relative;
-    margin-top: clamp(1.2rem, 2.2vw, 1.7rem);
+    align-self: end;
     padding-top: clamp(0.9rem, 1.8vw, 1.3rem);
     border-top: 1px solid var(--rule-soft);
     display: flex; align-items: center; gap: 0.9ch;
     color: var(--fg);
     font-size: var(--step-body);
     text-decoration: none;
+    white-space: nowrap;
   }
   /* the same gesture the card layer uses: a brass hairline wipes along the
      rule the door already sits on, so the two pilot layers rhyme */
@@ -454,11 +497,8 @@ const needs = [
     .pd__ask:hover::before { transform: scaleX(1); transform-origin: left; }
     .pd__ask:hover .pd__arrow { opacity: 1; transform: translateX(0.3rem); }
   }
-  /* The house ring, unmodified. This carried outline-offset: 6px — the
-     only value on the site that was neither base.css's 3px nor the pilot
-     CARD's argued 8px (a ring round a cell rather than round a word).
-     This is a word and an arrow on a rule, which is the case base.css's
-     3px was written for, so it takes it. */
+  /* The house ring, unmodified — base.css's 3px, which is the value
+     written for a word and an arrow on a rule. */
   .pd__ask:focus-visible::before { transform: scaleX(1); transform-origin: left; }
   .pd__ask:focus-visible .pd__arrow { opacity: 1; transform: none; }
 
@@ -468,36 +508,43 @@ const needs = [
     .pd__ask:hover .pd__arrow, .pd__ask:focus-visible .pd__arrow { transform: none; }
   }
 
+  /* ── THE FOOT TURNS IN TWO STAGES ───────────────────────────────
+     Three tracks AND the door need about 1100px of plate. Below that the
+     door drops to its own line under the three — which is where it was
+     before this round, and it keeps its rule and its brass wipe. The
+     three needs themselves hold their row much further down, and only
+     give it up at 1000, where the record has already gone to one column
+     and the plate is capped to the stacked width. */
+  @media (max-width: 1150px) {
+    .pd__open { grid-template-columns: minmax(0, 1fr); }
+    .pd__ask {
+      margin-top: clamp(1.2rem, 2.2vw, 1.7rem);
+      justify-self: start;
+    }
+  }
   /* ── Narrow ─────────────────────────────────────────────────────── */
   @media (max-width: 1000px) {
+    .pd__dl--open { grid-template-columns: minmax(0, 1fr); }
+
     /* one column, and the photograph comes BETWEEN the tagline and the
-       outcome: name the thing, show the thing, then say what it promises.
-       Stacked the other way the picture landed between the outcome and the
-       proposal, which is the one place in the block nothing belongs. */
-    .pd__head, .pd__cols { grid-template-columns: minmax(0, 1fr); }
-    .pd__head {
-      grid-template-rows: auto auto auto;
-      row-gap: clamp(1.5rem, 3.4vw, 2.4rem);
-    }
-    .pd__say-top { grid-column: 1; grid-row: 1; }
-    .pd__plate   { grid-column: 1; grid-row: 2; }
-    .pd__goal    { grid-column: 1; grid-row: 3; }
+       dossier: name the thing, show the thing, then say what it is. The
+       left column releases its own grid so the plate can take its place
+       in the run. */
+    .pd__body { grid-template-columns: minmax(0, 1fr); row-gap: clamp(1.5rem, 3.4vw, 2.4rem); }
+    .pd__say { display: contents; }
+    .pd__say-top { order: 1; }
+    .pd__plate  { order: 2; }
+    .pd__group  { order: 3; }
+    .pd__goal   { order: 4; }
     .pd__tag { max-width: 38ch; }
-    .pd__goal-t { max-width: 26ch; margin-bottom: 0; }
+    .pd__goal-t { max-width: 26ch; }
 
-    /* ONE COLUMN MEANS ONE COLUMN. Stacked, the photograph, the list and
-       the plate are three objects in a row down the page, so they get one
-       right edge between them — otherwise the picture stops at 544px, the
-       list runs on to 705 and the plate stops at 544 again, and the page
-       looks like three different documents. */
-    .pd__plate, .pd__open, .pd__col > .pd__dl { max-width: var(--pd-stack); }
-
-    /* The two lists are now stacked one above the other rather than side by
-       side, so the gap between them is no longer a gutter — it is the only
-       thing telling a reader that "Where a partner comes in" heads a new list and
-       is not a fifth row of the last one. The gutter's 30px could not do
-       that; it was smaller than the space under either head. */
-    .pd__cols { row-gap: clamp(2.5rem, 5.5vw, 3.5rem); }
+    /* ONE COLUMN MEANS ONE COLUMN. Stacked, the photograph, the lists and
+       the plate are objects in a row down the page, so they get one right
+       edge between them — otherwise the picture stops at 544px, the list
+       runs on to 705 and the plate stops at 544 again, and the page looks
+       like three different documents. */
+    .pd__plate, .pd__open, .pd__dl { max-width: var(--pd-stack); }
   }
 
   /* ── THE RAIL, BELOW 700 ────────────────────────────────────────
@@ -506,16 +553,9 @@ const needs = [
      two of the four pilots and broke on the other two, and where it broke
      it dropped the field word onto its own RIGHT-ALIGNED line — a stray
      ENERGY / EDUCATION floating over the serif title with nothing to its
-     left. Measured: rail heights 12 / 35 / 12 / 35, and the gap between
-     PROPOSED and the field word 35 / 9 / 25 / -68px. Four blocks a reader
-     scrolls in ten seconds had three different top-of-block geometries.
-
-     So the break is DECLARED rather than discovered. `.pd__brk` is a
-     zero-height flex item at 100% basis: below 700px the rail is always
-     two lines, always the same two — the number and the partner above,
-     the status and the field below — on all four pilots and at every
-     width down to 320. Nothing hangs right, nothing floats alone, and the
-     separator moves with the break so neither line opens on a dot. */
+     left. So the break is DECLARED rather than discovered: below 700px the
+     rail is always two lines, always the same two, on all four pilots and
+     at every width down to 320. */
   @media (max-width: 700px) {
     .pd__rail { row-gap: 0.42rem; }
     .pd__brk { display: block; flex-basis: 100%; height: 0; }
@@ -527,21 +567,10 @@ const needs = [
   /* ── THE DOSSIER TURNS AT 1280 ──────────────────────────────────
      Term-beside-value needs a value column wide enough for a value. The
      rail is fixed at 10.5rem because the longest term ("Somewhere to run
-     it") measures 165px and both lists must hang off ONE rail — so every
-     pixel the block loses goes out of the value column, and inside the
-     plate that column is 276px at 1440, 190px at 1200 and 136px at 1024.
-     At 136px "One pilot, end to end." is three lines. A one-line fact set
-     as three is no longer a fact; it is a paragraph in a narrow box.
-
-     So below 1280 the term sits OVER its value — in BOTH lists at once,
-     because the two are one shape shown twice and a shape that changes on
-     one side only is two shapes. Above 1280 the dossier reads across;
-     below it, down. Nothing else about the block moves. */
+     it") measures 165px — so every pixel the block loses goes out of the
+     value column. Below 1280 the term sits OVER its value, which is what
+     the open row across the foot does at every width. */
   @media (max-width: 1280px) {
-    /* One column, so the rail is gone and the term sits over its value.
-       The field is the unit: the gap BETWEEN two fields has to be clearly
-       larger than the gap inside one, or the run reads as one grey block of
-       alternating small caps and sentences. */
     .pd__dl { row-gap: 1.15rem; }
     .pd__dl > div { grid-template-columns: minmax(0, 1fr); row-gap: 0.3rem; }
   }

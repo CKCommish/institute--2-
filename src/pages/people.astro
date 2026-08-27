@@ -21,7 +21,15 @@ const people = founders.map((f) => ({
    made the least distinguishing text the loudest text in each record, so
    they are stated once, above the register, and each record then carries
    only what separates the two men. */
-const sharedAffiliation = 'Both are Founding Partners of K. Ventures and of The Lion Forum.';
+/* WAVE 10 JUDGE: `role` is now the prospectus's own office, "Founding
+   Partner, The Lion Forum", printed directly above each name. This bridge
+   therefore stated "The Lion Forum" once and the register repeated it twice
+   60px (1440) / 130px (390) below — three times in one glance, which undoes
+   this bridge's own stated purpose of saying the shared affiliation ONCE.
+   K. Ventures is the only half the bridge still adds, and the prospectus
+   gives it to both men ("FOUNDING PARTNER, K. VENTURES"). Shorter than the
+   old string, so the 34ch .fs__note measure and its two-line set hold. */
+const sharedAffiliation = 'Both are also Founding Partners of K. Ventures.';
 
 /* The micro rung that hands a reader from a 53px name down to a 19px
    credential line, and — set identically in both bays — the thing that makes
@@ -40,7 +48,7 @@ const standing = standingOf(board);
 const boardCount = board.length;
 const founderCount = String(founders.length).padStart(2, '0');
 ---
-<Base title="People" description="The founders and prospective board of the Lion Forum Institute.">
+<Base title="People" description="The two founding partners and the prospective board of the Lion Forum Institute.">
 
   {/* ── Masthead ─────────────────────────────────────────────────── */}
   {/* eyebrow → bridge → display. The bridge is the rung that lets an

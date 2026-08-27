@@ -14,6 +14,41 @@ node tools/blind.mjs progress/shots/<label>/home desktop /tmp/blind-<you>
 
 Use **your own port**. Never `npx astro build` into the shared `dist/`.
 
+## The five gates — run all of them before you report
+
+```bash
+node tools/audit.mjs        # contrast, overflow, heading order, alt text, tap targets, dead links
+node tools/photo-meter.mjs  # type over photographs — both viewports, swept through the frame
+node tools/nojs-meter.mjs   # all 7 routes x 2 viewports with JavaScript OFF
+node tools/perf.mjs         # page weight, LCP, CLS at load and through a full scroll
+node tools/hold-meter.mjs / # the homepage held scene, sampled across its pinned range
+```
+
+These are gates, not diagnostics. A wave is not done until all five are green,
+and "I read the DOM and it looked right" is not one of them.
+
+**Why `nojs-meter` exists.** A defect shipped through eight waves and four
+green meters: the fixed nav's scrim was switched on by a script-written class,
+so with JavaScript disabled the bar had no ground and 86px cream display type
+crossed cream nav links on /forum/. No meter could see it, because no meter ran
+with JavaScript off. A second defect of the same family — the scrim's *colour*
+is also script-written, so without a script its masked tail dragged ink type
+through a dark gradient, down to 1.03:1 on /people/ — was found one wave later
+by the same route. Any rule whose visible state depends on a script-written
+class is invisible to every other tool here.
+
+**Two numbers to quote correctly.** The site's tightest type-over-photograph is
+the 11px "By invitation" eyebrow on the homepage Forum figure: **4.70:1 on
+mobile**, 0.20 above AA, at the bottom of the parallax travel. It was long
+reported as 9.38:1 — photo-meter measured one viewport at one scroll position
+and overstated it by 58%. The next thinnest is **4.79:1**, the 13px brass
+section indices. Quote 4.70, not 9.38.
+
+**A trap worth knowing.** `base.css` sets `html { scroll-behavior: smooth }`,
+so `window.scrollTo` starts an animation. Any meter that scrolls and then waits
+a flat number of milliseconds reads element rects at one offset and pixels at
+another. Scroll with `behavior: 'instant'` and wait for `scrollY` to stop.
+
 ## Where things live
 
 | Path | Owns |

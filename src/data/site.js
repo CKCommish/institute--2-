@@ -310,10 +310,31 @@ export const method = [
 ];
 
 /* ── People ───────────────────────────────────────────────────────── */
+/* THE ROLE LINE IS THE PROSPECTUS'S OWN TITLE, NOT AN INFERENCE.
+   Both records read 'Co-founder' until now, and on /people/ that label was
+   at least immediately qualified by the offices around it. On the HOMEPAGE
+   it stood alone under the headline — a bare "Co-founder" on the Lion Forum
+   Institute's own front page, which asserts that these two men co-founded
+   the Institute. No source says so. refs/PROSPECTUS.txt gives each man
+   exactly one title, identical for both — "FOUNDING PARTNER, K. VENTURES;
+   FOUNDING PARTNER, THE LION FORUM" — and it says the Institute is a major
+   SPONSOR of the Lion Forum. Of the Institute's founding it says only that
+   it is Christopher's "attempt to give back to the country", and about
+   Judd's relationship to founding it, nothing at all. The only support the
+   old label ever had was the heading "### Founders" in refs/BRIEF.md, and
+   the prospectus supersedes the brief.
+   So `role` is now the half of the quoted title that bears on this
+   institute: Founding Partner of the Lion Forum, which the prospectus
+   states of both men in its own words ("Christopher co-founded the Lion
+   Forum"; Judd "is also a founding partner of the Lion Forum"). The other
+   half — K. Ventures — is on /people/, stated once at the bridge rung. The
+   brief allows a person one title line, and this is it. Do not restore
+   "Co-founder", and do not compose a new title for either man out of the
+   Institute's name. */
 export const founders = [
   {
     name: 'Christopher Kennedy McKelvy',
-    role: 'Co-founder',
+    role: 'Founding Partner, The Lion Forum',
     lines: [
       'Founding Partner, K. Ventures',
       'Founding Partner, The Lion Forum',
@@ -323,7 +344,7 @@ export const founders = [
   },
   {
     name: 'Judd Olanoff',
-    role: 'Co-founder',
+    role: 'Founding Partner, The Lion Forum',
     lines: [
       'Founding Partner, K. Ventures',
       'Founding Partner, The Lion Forum',
