@@ -488,11 +488,17 @@ const style = [
          depended on the grade, so it is unchanged: 0.38 + 0.54 lands on the
          same 0.92 the old 0.26 + 0.66 did. Only the closed end deepens. */
       --k: calc(0.38 + 0.54 * var(--open));
+      /* THE PLATEAU IS AS TALL AS THE BEAT STACK. The knee used to be at 24%
+         of the band and the decay was well under way by 50% — which is where a
+         two-line note at 390px actually sits. tools/photo-meter.mjs sampled
+         that shoulder and read the bridge line at 4.17 : 1. The band is not
+         heavier at its foot; the full weight simply reaches as far up the
+         frame as the type does, and hands the picture back above it. */
       background: linear-gradient(0deg,
         rgb(3 9 16 / calc(var(--k) * 0.98)) 0%,
-        rgb(3 9 16 / var(--k)) 24%,
-        rgb(3 9 16 / calc(var(--k) * 0.72)) 50%,
-        rgb(3 9 16 / calc(var(--k) * 0.28)) 76%,
+        rgb(3 9 16 / var(--k)) 34%,
+        rgb(3 9 16 / calc(var(--k) * 0.72)) 58%,
+        rgb(3 9 16 / calc(var(--k) * 0.28)) 80%,
         transparent 100%);
       -webkit-mask-image: linear-gradient(to right, #000 0%, #000 46%, transparent 84%);
       mask-image: linear-gradient(to right, #000 0%, #000 46%, transparent 84%);

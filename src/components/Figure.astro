@@ -855,13 +855,26 @@ const style = [
      stays fully masked: every photograph on the site renders as an empty
      plate. `html.js` is set synchronously in Base.astro's <head>, so its
      absence is a reliable "the engine is not coming" signal — paint the
-     ready state and skip the transition rather than animate into it. */
-  :global(html:not(.js)) .fig__media img { opacity: 1; transform: scale(var(--zoom, 1)); transition: none; }
+     ready state and skip the transition rather than animate into it.
+
+     AND THE READY STATE IS 1.02, NOT 1. The entry animation runs 1.08 → 1.02
+     and STAYS there, so 1.02 is the crop every reader with a script gets, for
+     ever; `scale(var(--zoom, 1))` here landed the no-script reader on a 2%
+     wider crop of every photograph on the site instead — the ready state's
+     opacity but not its scale. Invisible on its own, and found only by
+     diffing the two renders as pictures (tools/nojs-diff.mjs), which is the
+     point of that tool. The wipe variant below already lands on 1: it has its
+     own ready scale and its own reduced-motion rule, and both are 1. */
+  :global(html:not(.js)) .fig__media img { opacity: 1; transform: scale(calc(1.02 * var(--zoom, 1))); transition: none; }
   :global(html:not(.js)) .fig__tint  { opacity: calc(var(--grade) * var(--fig-tint) * var(--tint-k, 1)); transition: none; }
   :global(html:not(.js)) .fig__veil  { opacity: calc(var(--grade) * var(--fig-veil)); transition: none; }
   :global(html:not(.js)) .fig__scrim { opacity: 1; transition: none; }
   :global(html:not(.js)) .fig--wipe  { -webkit-mask-image: none; mask-image: none; transition: none; }
   :global(html:not(.js)) .fig--wipe .fig__plate { transform: none; transition: none; }
+  /* A wipe figure's ready state is 1, not 1.02 — it spends its scale on the
+     mask instead. Same rule as the reduced-motion block above; stated here
+     because the no-script rule two lines up would otherwise hand it 1.02. */
+  :global(html:not(.js)) .fig--wipe .fig__media img { transform: scale(var(--zoom, 1)); }
 
   @media (prefers-reduced-motion: reduce) {
     .fig__media img { transition-duration: 1ms; transform: scale(calc(1.02 * var(--zoom, 1))); }

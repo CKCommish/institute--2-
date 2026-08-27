@@ -14,17 +14,18 @@ node tools/blind.mjs progress/shots/<label>/home desktop /tmp/blind-<you>
 
 Use **your own port**. Never `npx astro build` into the shared `dist/`.
 
-## The five gates — run all of them before you report
+## The six gates — run all of them before you report
 
 ```bash
 node tools/audit.mjs        # contrast, overflow, heading order, alt text, tap targets, dead links
 node tools/photo-meter.mjs  # type over photographs — both viewports, swept through the frame
 node tools/nojs-meter.mjs   # all 7 routes x 2 viewports with JavaScript OFF
+node tools/nojs-diff.mjs    # the same routes compared as PICTURES, script on vs script off
 node tools/perf.mjs         # page weight, LCP, CLS at load and through a full scroll
 node tools/hold-meter.mjs / # the homepage held scene, sampled across its pinned range
 ```
 
-These are gates, not diagnostics. A wave is not done until all five are green,
+These are gates, not diagnostics. A wave is not done until all six are green,
 and "I read the DOM and it looked right" is not one of them.
 
 **Why `nojs-meter` exists.** A defect shipped through eight waves and four
@@ -37,6 +38,20 @@ through a dark gradient, down to 1.03:1 on /people/ — was found one wave later
 by the same route. Any rule whose visible state depends on a script-written
 class is invisible to every other tool here.
 
+**Why `nojs-diff` exists, one wave after that.** A third defect of the same
+family shipped: /institute/'s hub connectors declared `transform: scaleX(0)`
+unconditionally and undid it on a script-written class, so with no script the
+diagram's hub sat unattached to both arms. `nojs-meter` cannot see that and
+never could — a missing 47px hairline breaks no contrast, no overflow and no
+heading rule. `nojs-diff` compares the two renders as pictures: reference is
+scripts-on under reduced motion (the site's own "arrived and still" state),
+under test is scripts-off with NO reduced-motion override, because every
+scene's reduced-motion block force-resolves exactly the states this family
+gets stuck in and normalising both sides with it blinds the tool to its own
+subject. Read its header before changing a threshold. It exempts the fixed
+bar, which is deliberately a different object without a script; that band is
+`nojs-meter`'s, in contrast. **Run both.**
+
 **Two numbers to quote correctly.** The site's tightest type-over-photograph is
 the 11px "By invitation" eyebrow on the homepage Forum figure: **4.70:1 on
 mobile**, 0.20 above AA, at the bottom of the parallax travel. It was long
@@ -48,6 +63,11 @@ section indices. Quote 4.70, not 9.38.
 so `window.scrollTo` starts an animation. Any meter that scrolls and then waits
 a flat number of milliseconds reads element rects at one offset and pixels at
 another. Scroll with `behavior: 'instant'` and wait for `scrollY` to stop.
+**This applies to `tools/shoot.mjs` too, and did not reach it until wave 12** —
+every blind comparison this project ran before then was scored off frames that
+caught our reveals at 30–50% opacity. `progress/gauntlet/w11/blind-desktop/`
+is what that looked like. It now uses the same instant-scroll-and-settle the
+meters do; `SETTLE_MS` overrides the wait.
 
 ## Where things live
 

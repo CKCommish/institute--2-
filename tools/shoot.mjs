@@ -17,6 +17,38 @@ const VIEWS = [
 
 const slug = (p) => (p === '/' ? 'home' : p.replace(/^\/|\/$/g, '').replace(/\//g, '-'));
 
+/* SCROLL WITHOUT ANIMATING, THEN WAIT FOR THE PAGE TO STOP MOVING.
+
+   This tool used to do `window.scrollTo(0, y)` and then wait a flat 1150ms.
+   `base.css` sets `html { scroll-behavior: smooth }`, so that call is not a
+   jump — it is an animation, and 1150ms is a guess about when it lands. It
+   does not land: the frames this tool produced caught our reveals in flight,
+   with whole blocks of type sitting at 30-50% opacity that are fully opaque
+   in the render a reader gets. `progress/gauntlet/w11/blind-desktop/` is the
+   evidence, and every blind comparison this project ran before wave 12 was
+   scored off frames biased that way. AGENTS.md has warned about this trap for
+   meters since wave 8; it was never applied to the screenshotter.
+
+   So: `behavior: 'instant'` to defeat the smooth scroll, then poll scrollY
+   until it has stopped, then hold still long enough for the reveal (dur-3)
+   and the hold's rAF loop to finish. The settle is deliberately generous —
+   this tool shoots a handful of frames, not thousands, and a frame caught
+   early is worth more than the second it saved. */
+const SETTLE_MS = Number(process.env.SETTLE_MS || 2600);
+
+export async function settleAt(page, y) {
+  await page.evaluate((y) => window.scrollTo({ top: y, left: 0, behavior: 'instant' }), y);
+  await page.waitForFunction(
+    () => new Promise((res) => {
+      const a = window.scrollY;
+      requestAnimationFrame(() => requestAnimationFrame(() => res(Math.abs(window.scrollY - a) < 0.5)));
+    }),
+    null,
+    { timeout: 8000 }
+  ).catch(() => {});
+  await page.waitForTimeout(SETTLE_MS);
+}
+
 const b = await launch({ proxy: false });
 for (const v of VIEWS) {
   const ctx = await b.newContext({
@@ -39,13 +71,11 @@ for (const v of VIEWS) {
     const n = Math.max(2, Math.min(v.frames, Math.ceil(h / v.vp.height) + 1));
     for (let i = 0; i < n; i++) {
       const y = Math.round((h - v.vp.height) * (i / (n - 1)));
-      await p.evaluate((y) => window.scrollTo(0, y), y);
-      await p.waitForTimeout(1150);
+      await settleAt(p, y);
       await p.screenshot({ path: path.join(dir, `${v.tag}-${String(i + 1).padStart(2, '0')}.png`) });
     }
     // full page too
-    await p.evaluate(() => window.scrollTo(0, 0));
-    await p.waitForTimeout(400);
+    await settleAt(p, 0);
     await p.screenshot({ path: path.join(dir, `${v.tag}-full.png`), fullPage: true });
     console.log(v.tag, route, 'h=' + h, n + ' frames');
   }
