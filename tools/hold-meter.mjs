@@ -30,6 +30,8 @@ const N = nums[0] || 16;
 const MIN_OP = nums[1] === undefined ? 0.5 : nums[1];
 const vp = tag === 'mobile' ? { width: 390, height: 844 } : { width: 1440, height: 900 };
 
+const TEXT_SEL = 'h1,h2,h3,h4,h5,h6,p,li,a,span,dt,dd,figcaption,time,strong,em,button,label,blockquote,td,th';
+
 const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
 const Y = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
 const Lstar = (y) => (y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y);
@@ -81,7 +83,7 @@ for (let k = 0; k <= N; k++) {
   await page.evaluate((y) => window.scrollTo(0, y), y);
   await page.waitForTimeout(280);
 
-  const [hp, geo] = await page.evaluate((minOp) => {
+  const [hp, geo] = await page.evaluate(([minOp, SEL]) => {
     const vw = innerWidth, vh = innerHeight;
     const clip = (r) => {
       const x = Math.max(0, Math.floor(r.left)), y = Math.max(0, Math.floor(r.top));
@@ -90,7 +92,7 @@ for (let k = 0; k <= N; k++) {
     };
     const held = document.querySelector('[data-hold]');
     const out = [];
-    held.querySelectorAll('h1,h2,h3,h4,p,li,a,span,dt,dd,figcaption,time').forEach((el) => {
+    held.querySelectorAll(SEL).forEach((el) => {
       const t = (el.textContent || '').trim();
       if (!t || el.querySelector('p,li,h1,h2,h3')) return;
       const cs = getComputedStyle(el);
@@ -106,35 +108,58 @@ for (let k = 0; k <= N; k++) {
       out.push({ runs, color: cs.color, size: parseFloat(cs.fontSize), weight: cs.fontWeight, eff, sample: t.slice(0, 30) });
     });
     return [getComputedStyle(held).getPropertyValue('--hp').trim() || '—', out];
-  }, MIN_OP);
+  }, [MIN_OP, TEXT_SEL]);
 
   if (!geo.length) { console.log(`hp ${hp}   (nothing live)`); continue; }
-  /* HIDE THE TYPE, NOT THE SCENE. This used to be `[data-hold] *`, which hid
-     every descendant of the track — the <img>, the grade stack, the ink, the
-     cap — so the re-shot 'backdrop' was flat page ground (L* 3.4) at every
-     sample and every ratio it printed was the ratio against navy. It reported
-     0 failures because it was measuring nothing. Only the TEXT tags come out,
-     the way photo-meter does it, so the photograph and every wash over it
-     stay in the frame. `display:none` rather than `visibility:hidden`, because
-     visibility leaves ::before/::after painted — the bug credit-sweep had.
-     Chrome text (the fixed bar) is hidden too, since it is type in front of
-     the picture; the bar's own scrim is not, since it is backdrop. */
-  const hid = await page.evaluate(() => {
-    const els = [...document.querySelectorAll(TEXT_SEL)];
-    els.forEach((e) => { e.dataset.hmPrev = e.style.display; e.style.setProperty('display', 'none', 'important'); });
-    return els.length;
-  });
+  /* HIDE THE GLYPHS — NOT THE SCENE, AND NOT THE WASH.
+
+     Two bugs lived in this one step. The first: it hid `[data-hold] *`, so
+     the <img>, the grade stack, the ink band and the cap all went with the
+     type and the re-shot "backdrop" was flat page ground (L* 3.4) at every
+     sample. Every ratio it printed was cream-on-navy and its 0 failures
+     meant nothing.
+
+     The second is the one credit-sweep.mjs was bitten by, and hiding the
+     elements at all — by `visibility` or by `display` — walks straight back
+     into it: `.fig__credit` carries its own painted wash as a ::before, and
+     a hidden element's pseudo-elements are hidden with it. Remove the credit
+     to see "the picture behind it" and you have removed the very protection
+     you were measuring. The number comes back pessimistic, which is the
+     safer direction but still wrong, and it hides the fact that the wash is
+     load-bearing.
+
+     So the glyphs are made transparent instead of the elements hidden:
+     nothing moves, every painted layer — photograph, grade, cap, ink, foot,
+     the credit's own wash — stays exactly where it was, and only the ink of
+     the letterforms leaves. Foreground marks that are not type (the brass
+     credit dot, the coda arrow) sit INSIDE the measured runs and would read
+     as backdrop, so those are hidden: they are ink in front of the picture,
+     not ground behind it. */
+  await page.evaluate((sel) => {
+    document.querySelectorAll(sel).forEach((el) => {
+      if (!el.style || !el.dataset) return;   /* SVG-namespaced text tags */
+      el.dataset.hmT = '1';
+      el.style.setProperty('color', 'transparent', 'important');
+      el.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
+      el.style.setProperty('text-shadow', 'none', 'important');
+      el.style.setProperty('text-decoration-color', 'transparent', 'important');
+      el.querySelectorAll('*').forEach((m) => {
+        if (!m.style || !m.dataset || (m.textContent || '').trim()) return;
+        m.dataset.hmM = '1';
+        m.style.setProperty('visibility', 'hidden', 'important');
+      });
+    });
+  }, TEXT_SEL);
   await page.waitForTimeout(140);
   const shot = await page.screenshot();
   const raw = await sharp(shot).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   await page.evaluate(() => {
-    document.querySelectorAll('[data-hm-prev]').forEach((e) => {
-      e.style.removeProperty('display');
-      if (e.dataset.hmPrev) e.style.display = e.dataset.hmPrev;
-      delete e.dataset.hmPrev;
+    document.querySelectorAll('[data-hm-t]').forEach((el) => {
+      ['color', '-webkit-text-fill-color', 'text-shadow', 'text-decoration-color'].forEach((k) => el.style.removeProperty(k));
+      delete el.dataset.hmT;
     });
+    document.querySelectorAll('[data-hm-m]').forEach((m) => { m.style.removeProperty('visibility'); delete m.dataset.hmM; });
   });
-  void hid;
 
   console.log(`hp ${hp}`);
   for (const t of geo) {

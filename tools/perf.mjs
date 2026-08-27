@@ -47,28 +47,50 @@ for (const view of [
       }, 2500);
     }));
 
-    // above-the-fold weight is what actually gates first paint
+    /* CLS AT LOAD IS HALF THE QUESTION. The observer above ran for 2.5s on a
+       page nobody scrolled, so every shift this site could plausibly commit —
+       a lazy <img> arriving without a reserved box, a sticky stage releasing,
+       a reveal that changes height rather than opacity — happened after the
+       meter stopped looking. Swept (0.5vh steps to the foot and back), the
+       current build still reports 0 on all twelve page-views; that is now a
+       measured 0 rather than an untested one. The byte totals are snapshotted
+       BEFORE the sweep so `total` keeps meaning "what a visitor downloads to
+       read the first screen"; what the lazy images cost is reported beside it. */
     const total = Object.values(bytes).reduce((a, n) => a + n, 0);
-    rows.push({ view: view.tag, route, total, ...bytes, requests, ...vitals });
+    const firstScreen = { ...bytes };   /* the listener keeps adding during the sweep */
+    const clsScroll = await page.evaluate(async () => {
+      let cls = 0;
+      try {
+        new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) cls += e.value; })
+          .observe({ type: 'layout-shift', buffered: true });
+      } catch { return -1; }
+      const h = document.documentElement.scrollHeight;
+      for (let y = 0; y < h; y += innerHeight * 0.5) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 200)); }
+      window.scrollTo(0, 0);
+      await new Promise((r) => setTimeout(r, 500));
+      return +cls.toFixed(4);
+    });
+    const lazy = Object.values(bytes).reduce((a, n) => a + n, 0) - total;
+    rows.push({ view: view.tag, route, total, lazy, ...firstScreen, requests, ...vitals, clsScroll });
     await ctx.close();
   }
 }
 await b.close();
 
 const kb = (n) => (n / 1024).toFixed(0).padStart(5) + 'K';
-console.log('view     route          total  image   font    css     js  reqs   FCP   LCP    CLS');
+console.log('view     route          total  image   font    css     js  reqs   FCP   LCP    CLS  CLS+scroll   lazy');
 for (const r of rows) {
   console.log(
     r.view.padEnd(8) + r.route.padEnd(13) +
     kb(r.total) + kb(r.image) + kb(r.font) + kb(r.css) + kb(r.js) +
     String(r.requests).padStart(6) + String(r.fcp).padStart(6) + String(r.lcp).padStart(6) +
-    String(r.cls).padStart(7)
+    String(r.cls).padStart(7) + String(r.clsScroll).padStart(12) + kb(r.lazy).padStart(7)
   );
 }
 const worst = rows.reduce((a, r) => (r.lcp > a.lcp ? r : a), rows[0]);
 const heaviest = rows.reduce((a, r) => (r.total > a.total ? r : a), rows[0]);
-const shifty = rows.filter((r) => r.cls > 0.1);
+const shifty = rows.filter((r) => Math.max(r.cls, r.clsScroll) > 0.1);
 console.log('\nheaviest:', heaviest.view, heaviest.route, (heaviest.total / 1024 / 1024).toFixed(2) + 'MB');
 console.log('slowest LCP:', worst.view, worst.route, worst.lcp + 'ms', worst.lcp > 2500 ? '← over the 2.5s good threshold' : '(good)');
-if (shifty.length) console.log('layout shift over 0.1:', shifty.map((r) => `${r.view}${r.route}=${r.cls}`).join(' '));
-else console.log('layout shift: all routes under 0.1 (good)');
+if (shifty.length) console.log('layout shift over 0.1:', shifty.map((r) => `${r.view}${r.route}=${r.cls}/${r.clsScroll}`).join(' '));
+else console.log(`layout shift: all routes under 0.1 at load AND through a full scroll (worst swept ${Math.max(...rows.map((r) => r.clsScroll))})`);

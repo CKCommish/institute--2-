@@ -115,6 +115,14 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     pointer-events: none;
   }
   .nav.is-scrolled::before { opacity: 1; }
+  /* NO SCRIPT, NO CLASS, NO GROUND. `is-scrolled` is written by the script
+     below; without it `.nav::before` never leaves opacity 0, so the fixed bar
+     spends the whole page with no ground of its own and its links sit
+     directly on whatever scrolls under them. On /forum/ at scrollY ~700 that
+     is the 86px cream word "Forum", and "Pilots" / "People" set cream on
+     cream. The bar cannot ask a script whether it needs a ground when there
+     is no script, so without one it always has it. */
+  :global(html:not(.js)) .nav::before { opacity: 1; }
   /* NOTE on the open sheet: the scrim stays ON. The sheet is fixed at z 99
      and the bar at z 100, so while the menu is open the thing behind the
      bar IS the sheet — ink — and sync() writes ink into --nav-a/--nav-b to

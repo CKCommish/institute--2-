@@ -10,6 +10,56 @@ const srgb = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 
 const lum = ([r, g, b]) => 0.2126 * srgb(r) + 0.7152 * srgb(g) + 0.0722 * srgb(b);
 const ratio = (a, b) => { const [l1, l2] = [lum(a), lum(b)].sort((x, y) => y - x); return (l1 + 0.05) / (l2 + 0.05); };
 
+/* One contrast sample of everything on screen right now. Hoisted out of the
+   per-page evaluate so the sweep below can run it at every scroll step. */
+const SAMPLE_TEXT = () => {
+  const out = [];
+  /* Sample visible text for contrast. THIS RUNS ONCE PER SCROLL STEP,
+     not once per page — see the sweep below. `seen` therefore lives on
+     window, so a rung already measured is not measured again. */
+  const seen = (window.__auditSeen = window.__auditSeen || new Set());
+  document.querySelectorAll('p,li,span,a,h1,h2,h3,dt,dd,figcaption').forEach((el) => {
+    if (!el.textContent.trim()) return;
+    const r = el.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4) return;
+    const cs = getComputedStyle(el);
+    if (cs.visibility === 'hidden' || cs.opacity === '0') return;
+    /* self-only was not enough: a rung inside a faded or hidden ancestor
+       is not on screen, and measuring it invents failures */
+    let a = el.parentElement, dead = false;
+    while (a && a !== document.body) {
+      const ac = getComputedStyle(a);
+      if (ac.visibility === 'hidden' || parseFloat(ac.opacity) === 0) { dead = true; break; }
+      a = a.parentElement;
+    }
+    if (dead) return;
+    /* CHROME AND ANYTHING ELSE THAT FLOATS IS NOT THIS METER'S BUSINESS.
+       This check walks the DOM for a background colour, which is only the
+       truth when the type and its ground scroll together. A fixed bar or a
+       sticky stage passes over whatever happens to be under it — cream one
+       moment, a lit photograph the next — so the DOM answer is a guess.
+       Sweeping the page (below) put the fixed nav over every cream section
+       on the site and produced 20-odd "1.00:1 Lion Forum" reports for type
+       that is in fact legible everywhere. Those surfaces are measured in
+       PIXELS by tools/photo-meter.mjs and tools/credit-sweep.mjs, which is
+       the right instrument for them; silence here is a deferral, not a pass. */
+    let f = el, floats = false;
+    while (f && f !== document.body) {
+      const pos = getComputedStyle(f).position;
+      if (pos === 'fixed' || pos === 'sticky') { floats = true; break; }
+      f = f.parentElement;
+    }
+    if (floats) return;
+    let bg = 'rgba(0, 0, 0, 0)', n = el;
+    while (n && bg === 'rgba(0, 0, 0, 0)') { bg = getComputedStyle(n).backgroundColor; n = n.parentElement; }
+    const key = cs.color + '|' + bg + '|' + cs.fontSize + '|' + cs.fontWeight;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ color: cs.color, bg, size: parseFloat(cs.fontSize), weight: cs.fontWeight, sample: el.textContent.trim().slice(0, 34) });
+  });
+  return out;
+};
+
 const b = await launch({ proxy: false });
 const report = [];
 
@@ -73,27 +123,35 @@ for (const view of [{ tag: 'desktop', vp: { width: 1440, height: 900 } }, { tag:
         }
       });
 
-      // sample visible text nodes for contrast
-      const seen = new Set();
-      document.querySelectorAll('p,li,span,a,h1,h2,h3,dt,dd,figcaption').forEach((el) => {
-        if (!el.textContent.trim()) return;
-        const r = el.getBoundingClientRect();
-        if (r.width < 4 || r.height < 4 || r.top > 4000) return;
-        const cs = getComputedStyle(el);
-        if (cs.visibility === 'hidden' || cs.opacity === '0') return;
-        let bg = 'rgba(0, 0, 0, 0)', n = el;
-        while (n && bg === 'rgba(0, 0, 0, 0)') { bg = getComputedStyle(n).backgroundColor; n = n.parentElement; }
-        const key = cs.color + '|' + bg + '|' + cs.fontSize + '|' + cs.fontWeight;
-        if (seen.has(key)) return;
-        seen.add(key);
-        out.text.push({ color: cs.color, bg, size: parseFloat(cs.fontSize), weight: cs.fontWeight, sample: el.textContent.trim().slice(0, 34) });
-      });
-
       out.docScrollsX = document.documentElement.scrollWidth > document.documentElement.clientWidth + 1;
       const main = document.querySelector('main');
       out.words = main ? main.innerText.trim().split(/\s+/).filter(Boolean).length : 0;
       return out;
     });
+
+    /* THE PAGE IS TALLER THAN ONE SCREEN, AND HALF ITS TYPE IS NOT DRAWN YET.
+       The pass above ran at scrollY 0 and used to carry `r.top > 4000` as a
+       cutoff, which on a 7,572px homepage meant the bottom 47% of the page was
+       never contrast-checked at all. Worse, every `data-reveal` rung on the
+       site sits at opacity 0 until it is scrolled into view, and the opacity
+       guard three lines up skips exactly those — so the reveal system hid the
+       whole site's below-fold type from its own contrast meter. Proved with
+       two probes appended to the built homepage, one plain at y 6941 and one
+       behind `data-reveal`, both at 2.2:1 on their own opaque ground: audit
+       reported 0 issues across 12 page-views with both of them on the page.
+
+       So the sampler is swept down the document and the results merged. It is
+       cheap — the dedupe key means a repeated rung costs one getComputedStyle
+       and nothing else. */
+    data.text = await page.evaluate(SAMPLE_TEXT);
+    for (let sy = view.vp.height * 0.8; sy < 40000; sy += view.vp.height * 0.8) {
+      const done = await page.evaluate((y) => { window.scrollTo(0, y); return y >= document.documentElement.scrollHeight - innerHeight; }, sy);
+      await page.waitForTimeout(320);
+      const extra = await page.evaluate(SAMPLE_TEXT);
+      data.text.push(...extra);
+      if (done) break;
+    }
+    await page.evaluate(() => window.scrollTo(0, 0));
 
     // heading order
     let prev = 0;

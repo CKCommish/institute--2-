@@ -284,15 +284,17 @@ const standing = standingOf(board);
 
   /* THE ROW GIVES UP THE CORNER; THE LABEL DOES NOT GIVE UP ITS REGISTER.
      The head is a spread — count and qualifier at the left rule, "All
-     people" closing on the right. Under 480 the qualifier needs two lines
-     of serif and the link has 67px left, so it set as "ALL" over "PEOPLE":
-     a stacked 11px scrap where the row's right-hand mark should be, hung
-     off the first baseline of a two-line sentence. The register cannot go
-     smaller — 11px is the site's floor and these are the words that qualify
-     sixteen named people — so the spread is what is spent. Below 480 the
-     head stacks: the qualifier takes the whole measure, and the link sits
-     under it on the rail as one line, opening the rule it precedes. The
-     same move the scene's own head makes at 860. */
+     people" closing on the right. 481px is the last width at which the
+     spread holds: measured, the qualifier sets on one line and the link
+     closes the row. Below it the sentence takes two lines, the link is left
+     67px and sets as "ALL" over "PEOPLE" — a stacked 11px scrap where the
+     row's right-hand mark should be, hung off the first baseline of a
+     two-line sentence. The register cannot go smaller: 11px is the site's
+     floor, and these are the words that qualify sixteen named people. So
+     the spread is what is spent. Below 480 the head stacks, and the
+     qualifier — now holding the whole measure — comes back to one line with
+     the link under it on the rail, a single-line tick opening the rule it
+     precedes. The same move the scene's own head makes at 860. */
   @media (max-width: 480px) {
     .people__wall-head { display: block; }
     .people__more { display: inline-block; margin-top: 0.9rem; }
