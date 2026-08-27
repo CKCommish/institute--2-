@@ -394,3 +394,90 @@ Still to decide when they arrive: whether attendees at a private,
 invitation-only convening may be shown by name and face. Governor Inslee on
 stage is plainly fine. The reception and crowd frames put identifiable guests
 in shot, which is a different question from the stage.
+
+### The slots are built and waiting — drop the files in
+
+`/forum/` and the homepage Forum scene now resolve each photographic beat
+against the filesystem **at build time**. Put a file at the path below and it
+appears with its own framing, its own `alt` and its own credit rule; put
+nothing there, as today, and the page renders exactly as it does now — no gap,
+no placeholder, no broken image. Nothing else has to be edited to wire these
+in. Paths and strings live in the `forum.photos` object in `src/data/site.js`.
+
+| slot | file | where it lands | corner label |
+| --- | --- | --- | --- |
+| `lawn` | `public/media/forum-lawn.jpg` | **the /forum/ masthead** and the homepage held scene — replaces the Block Island stand-in in both | `Hyannis Port, Massachusetts` |
+| `stage` | `public/media/forum-stage.jpg` | **the /forum/ plate**, the full-bleed band above the close | none — the branded backdrop says where it is |
+| `podium` | `public/media/forum-podium.jpg` | the room band, between the claim and the ledger | none |
+| `notebook` | `public/media/forum-notebook.jpg` | the room band | none |
+| `reception` | `public/media/forum-reception.jpg` | the room band | none |
+
+**The room band does not exist until one of its three files does.** With one
+file it is a single ~400px plate; with three it is a row of three. It carries
+no page type, no names, and no caption. That is the wave-8 rule restated: the
+size of a frame is part of the claim it makes about the people in it, and
+these are the frames with identifiable guests. Do not promote one of them to
+full bleed.
+
+**Six things to check on arrival, in this order.**
+
+1. **`lawn` — is it the Compound?** The masthead credit says
+   `Hyannis Port, Massachusetts`. It is the first time this site has been able
+   to make that claim with a picture rather than a headline. If the client
+   cannot confirm the frame, set that credit to `''` — an unlabelled lawn at
+   dusk makes no claim on its own — and leave `forum.place` to say where the
+   convening is.
+2. **Every `alt` string was written from a description, not from a picture.**
+   Nobody here has seen these frames. Read each one against the actual file
+   and correct it. An alt text is a claim about a photograph like any other.
+3. **`notebook` and `reception` are not cleared.** The open question above —
+   whether guests at a private convening may be shown by name and face —
+   applies to both. A file on disk renders; do not put one there before that
+   is settled. `stage` and `podium` are public speaking on a public stage.
+4. **No name goes on the page.** `podium` is Governor Inslee and `reception`
+   is Aneesh Chopra; both are recorded here and neither appears in any string
+   the site renders. Naming an attendee is an assertion about who attends,
+   which is the class of claim three fact-checks have already had to strip.
+5. **Retune the framing.** The `focal` values for `lawn` (both the masthead
+   and the homepage hold) and for `stage` are guesses at pictures nobody has
+   seen. The masthead's display stack also returns to the **left rail** on
+   arrival: hanging it right is an answer to the stand-in's empty right half,
+   not a rule. Re-hang it right only after looking at the new frame and
+   finding the same open space.
+6. **Then delete the stand-in.** `public/media/forum.jpg` (and its `.webp` and
+   `@1200` variants) comes off the site once `lawn` and `stage` are both in.
+   It was an honest stand-in for a place we had no picture of; it is not to be
+   kept as decoration. `refs/PHOTO-FACTS.md` says the same.
+
+A slot may also carry a `ratio` if the picture cannot survive the band's 4:5
+crop — the reception frame is the likely one. Set it after looking at the
+photograph, not before.
+
+## /forum/ copy — what the page asserts, and where it comes from
+
+Every string on the page traces to `refs/BRIEF.md`:
+
+- invitation-only convening at the Kennedy Compound, Hyannis Port
+- founders, investors, elected officials
+- the Institute is a lead sponsor
+- it uses the Forum to recruit pilot partners and report results back
+
+Nothing else is asserted. The page answers a fourth question it used to leave
+open — how one might be invited — and answers it with the only two things the
+brief supports: the room is invited, and the Institute is in it.
+
+### Deliberately absent from /forum/, and why
+
+| not on the page | why |
+| --- | --- |
+| dates, a season, a year | the brief gives none |
+| how often the Forum sits | unknown |
+| how many attend | unknown; an unverified count was already stripped from /people/ once |
+| a programme, agenda or session list | invented if written |
+| any attendee's name | naming an attendee asserts who attends; see item 4 above |
+| who issues invitations, and what a sponsor's say over the list is | unknown. "There is no application. The room is invited." is the whole of what can be said |
+| what happens after an inquiry | unknown; the page promises nothing |
+| pilots recruited or results reported at the Forum, in the specific | no partner is signed |
+
+If the client can supply any of the above **in writing**, most of them are one
+short line each and the ledger has room for a fourth row.

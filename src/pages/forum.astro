@@ -1,9 +1,75 @@
 ---
+import fs from 'node:fs';
 import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
 import { forum, site } from '../data/site.js';
 
 const inquire = `mailto:${site.email}?subject=${encodeURIComponent('The Lion Forum')}`;
+
+/* ── THE SLOTS ──────────────────────────────────────────────────────
+   Every photograph on this page is a STAND-IN. The Forum is an
+   invitation-only convening at the Kennedy Compound and we have no picture
+   of it; what runs today is a harbour at dusk on Block Island, chosen
+   honestly and credited accurately. Five real Lion Forum frames exist, the
+   client owns them, and they have not arrived.
+
+   So the page resolves each photographic beat at build time. Drop a file at
+   the path named in `forum.photos` and that beat takes it, with its own
+   framing, its own alt and its own credit rule; drop nothing and the page
+   renders exactly as it does now. There is no empty slot, no broken image
+   and no placeholder anywhere in either state — the room band simply does
+   not exist until there is something to put in it.
+
+   Same existence test Figure runs internally, hoisted here because the PAGE
+   has to know which frame won in order to choose the framing for it. */
+const onDisk = (p) => {
+  if (typeof p !== 'string' || !p.startsWith('/')) return false;
+  try { if (fs.existsSync(new URL(`../../public${p}`, import.meta.url))) return true; } catch { /* build */ }
+  try { return fs.existsSync(`${process.cwd()}/public${p}`); } catch { return false; }
+};
+const P = forum.photos;
+
+/* SLOT 1 — THE MASTHEAD, and the one arrival decision worth understanding.
+
+   The display stack hangs off the RIGHT rail today because THIS photograph
+   has an empty right half — open water and sky for 540px while the sloop and
+   the breakwater keep the left 62%. That is a response to one frame, not a
+   rule, and it is the wrong default for a picture nobody here has seen: a
+   lawn, a flagpole and a harbour could put its subject anywhere. When the
+   real frame lands the stack therefore returns to the LEFT rail, which is
+   where every other page on this site opens and which no composition can
+   collide with badly, and the ramp comes back with it. Re-hang it right only
+   after looking at the picture and finding the same empty half. */
+const mast = onDisk(P.lawn.src)
+  ? { ...P.lawn, hang: 'left', grade: 0.6,
+      focal: '50% 55%', focalSm: '50% 55%',
+      align: 'left', reach: 0.72, rise: 0.62 }
+  : { src: forum.image, alt: '', credit: forum.credit, hang: 'right', grade: 0.6,
+      focal: '40% 50%', focalSm: '26% 50%',
+      align: 'right', reach: 0.60, rise: 0.62 };
+
+/* SLOT 2 — THE PLATE. The stand-in's plate is a hard 3.6x crop because it is
+   the SAME photograph as the masthead and has to arrive as a different
+   subject rather than the same furniture at a longer lens. The stage frame
+   is a different photograph already, so it is shown whole. */
+const plate = onDisk(P.stage.src)
+  ? { ...P.stage, grade: 0.5, grain: 0.85,
+      zoom: 1, focal: '50% 48%', zoomSm: 1.5, focalSm: '50% 48%' }
+  : { src: forum.image, grade: 0.52, grain: 0.85,
+      alt: 'A harbour at dusk: a moored hull, its mast foot, and the near end of the stone breakwater.',
+      credit: forum.credit,
+      zoom: 3.6, focal: '28% 77%', zoomSm: 4.2, focalSm: '28% 76%' };
+
+/* SLOT 3 — THE ROOM. Column-wide plates, no page type on them, no names
+   under them. refs/PHOTO-FACTS.md: scale is part of the claim, and these are
+   the frames with identifiable people in them. Absent today, so §01 runs
+   straight into §02 exactly as it does now.
+
+   The set is cut to one ratio (4/5) so three frames from one evening read as
+   three frames from one evening. A slot may carry its own `ratio` if the
+   picture that actually arrives cannot survive that crop — the reception is
+   the likely one — but change it after looking at the frame, not before. */
+const room = [P.podium, P.notebook, P.reception].filter((f) => onDisk(f.src));
 
 /* The claim turns on two verbs. Setting just those two in the serif italic
    (.em, a base.css primitive) gives one display line two voices, which is
@@ -16,16 +82,41 @@ const claim = forum.line
 {/*
   FIVE BEATS, AND NO TWO OF THEM ARE DRAWN THE SAME WAY.
 
-    1  masthead   the photograph wide, and the ONLY place on this site where
-                   the picture, not the grid, decides where type goes: the
-                   name is set into the frame's empty half
+    1  masthead   the photograph wide. Slot: forum.photos.lawn, standing in
+                   today with the Block Island frame, whose empty right half
+                   is why the name hangs off the right rail
     2  the claim   type only, flush left, nothing beside it
+   (—) the room    THE SIXTH BEAT, AND IT IS NOT IN THE BUILD. One to three
+                   column-wide Lion Forum plates showing the claim above.
+                   Renders only when a file is on disk; there is none
     3  the ledger  the reading size, and the page's first change of axis:
                    three terms hanging right-aligned against three sentences
-    4  the plate   the SAME photograph seen CLOSE — the moored hull, the
-                   buoys, the water — a band shorter than a viewport,
-                   carrying no type at all
-    5  the close   THE PAGE TURNED OVER
+    4  the plate   slot: forum.photos.stage. Standing in today with the SAME
+                   photograph as the masthead seen CLOSE — a band shorter
+                   than a viewport, carrying no type at all
+    5  the close   THE PAGE TURNED OVER — the role on the right, and in the
+                   rail beside it the fourth question answered
+
+  EVERY PHOTOGRAPH HERE IS A STAND-IN AND THE PAGE KNOWS IT. We have no
+  picture of an invitation-only convening at the Kennedy Compound; the client
+  owns five frames of one and has not sent them. Each photographic beat is
+  therefore a NAMED SLOT resolved against the filesystem at build time (see
+  the frontmatter and `forum.photos`): drop the file in, and the masthead,
+  the plate and the room band take it with their own framing, their own alt
+  and their own credit rule. Drop nothing, as today, and the page renders
+  with no gap, no placeholder and no broken image anywhere in it. When the
+  real frames land, refs/PHOTO-FACTS.md says the Block Island stand-in comes
+  OFF the site rather than staying on as decoration.
+
+  THE FOURTH QUESTION. A programme officer arrives wanting to know what this
+  convening is, who is in it, what the Institute's relationship to it is, and
+  how one might be invited. §3 answers the first two, §5's sentence answers
+  the third, and the fourth was never answered at all: the page ended on a
+  mailto whose label did not say whether it was an application. It is
+  answered in §5's rail, in the smallest voice on the section — and it says
+  only what the brief supports, which is that the room is invited and the
+  Institute is in it. Not who writes the list, not how often the Forum sits,
+  not what happens after you write. None of that is known here.
 
   THE FRAME HAD AN EMPTY HALF AND THE PAGE WAS NOT USING IT. The sloop, its
   two masts and the breakwater all live in the left 62% of the masthead; the
@@ -96,18 +187,23 @@ const claim = forum.line
        the name. "Block Island, Rhode Island" describes the PHOTOGRAPH, so it
        sits in the opposite corner in the dim credit register that every
        full-bleed scene on this site uses. See refs/PHOTO-FACTS.md. -->
-  <section class="fh">
-    {/* The credit is not optional on this frame, it is the frame's whole
+  <section class:list={['fh', mast.hang === 'right' && 'fh--hangR']}>
+    {/* The credit is not optional on the stand-in, it is that frame's whole
         problem. The event line below reads as a caption the moment it is the
         only place-name on the picture, and the picture is a harbour on Block
         Island, 200 miles from Hyannis Port. Credit top-right, opposite the
         event line in the foot band: two location strings, two corners, two
-        registers, so a reader cannot collapse them. refs/PHOTO-FACTS.md. */}
-    <Figure src={forum.image} alt="" ratio="auto" grade={0.6}
-            focal="40% 50%" focalSm="26% 50%"
-            parallax={6} scrim="bottom" align="right" reach={0.60} rise={0.62}
+        registers, so a reader cannot collapse them. refs/PHOTO-FACTS.md.
+
+        The lawn frame is the one slot where the two strings agree, and it is
+        still labelled — a corner label on an owned photograph is a location,
+        not an attribution, and this is the claim the page has never been
+        able to make. Confirm the frame is the Compound before shipping it. */}
+    <Figure src={mast.src} alt={mast.alt} ratio="auto" grade={mast.grade}
+            focal={mast.focal} focalSm={mast.focalSm}
+            parallax={6} scrim="bottom" align={mast.align} reach={mast.reach} rise={mast.rise}
             loading="eager"
-            credit={forum.credit} creditPos="top-right"
+            credit={mast.credit} creditPos="top-right"
             class="fh__bg" />
 
     <div class="shell fh__in">
@@ -153,6 +249,40 @@ const claim = forum.line
       </div>
     </div>
   </section>
+
+  <!-- ── THE ROOM. A SLOT THAT IS EMPTY TODAY AND RENDERS NOTHING.
+
+       The claim above says the people who build sit with the people who
+       decide. This is the one beat that could show it, and it can only be
+       shown with photographs the Institute owns. Until a file lands in
+       /media/, this element does not exist in the built HTML at all — the
+       claim runs straight into the ledger the way it does now — and the
+       day one lands it appears here, between the sentence and its
+       explanation, which is where a picture of the room belongs.
+
+       COLUMN-WIDE PLATES, and that is a rule, not a layout preference.
+       refs/PHOTO-FACTS.md: scale is part of the claim a photograph makes
+       about the people in it, and these are the three frames with
+       identifiable guests. They are set at the size of a plate in a page,
+       no page type over them, no names under them, one to three of them
+       in a row. Do not promote one of these to full bleed. -->
+  {room.length > 0 && (
+    <section class="froom" aria-label="The Lion Forum">
+      <div class="shell">
+        <ul class="froom__list" data-seq="140" data-seq-from="40" role="list"
+            style={`--n:${room.length};--nsm:${Math.min(room.length, 2)}`}>
+          {room.map((f) => (
+            <li class="froom__item" data-reveal>
+              <Figure src={f.src} alt={f.alt} ratio={f.ratio || '4 / 5'}
+                      grade={0.5} vig={0.18} scrim="none"
+                      credit={f.credit} creditPos="bottom-left"
+                      sizes="(max-width: 860px) 92vw, 30vw" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 
   <!-- 3 ── THE LEDGER, and the page's one change of axis.
 
@@ -206,12 +336,12 @@ const claim = forum.line
        last five percent of its scale as you scroll it. -->
   <div class="fplate" data-wipe="center-y">
     <div class="fplate__frame" data-settle="0.42">
-      <Figure src={forum.image} alt="A harbour at dusk: a moored hull, its mast foot, and the near end of the stone breakwater."
-              ratio="auto" grade={0.52} grain={0.85}
-              focal="28% 77%" zoom={3.6}
-              focalSm="28% 76%" zoomSm={4.2}
+      <Figure src={plate.src} alt={plate.alt}
+              ratio="auto" grade={plate.grade} grain={plate.grain}
+              focal={plate.focal} zoom={plate.zoom}
+              focalSm={plate.focalSm} zoomSm={plate.zoomSm}
               scrim="bottom-left" ink={0.7} vig={0.25}
-              credit={forum.credit} creditPos="bottom-left"
+              credit={plate.credit} creditPos="bottom-left"
               parallax={5} sizes="100vw" />
     </div>
   </div>
@@ -244,16 +374,47 @@ const claim = forum.line
       <div class="frole__grid">
         <p class="eyebrow frole__brow" data-reveal>The Institute&rsquo;s role</p>
 
+        <!-- THE FOURTH QUESTION, AND THE RAIL THAT WAS EMPTY UNDER IT.
+
+             A programme officer arrives wanting four answers: what this is,
+             who is in it, what the Institute's relationship to it is, and
+             how one might be invited. The ledger takes the first two, the
+             sentence beside this takes the third, and the fourth was simply
+             never answered — the page ended on a mailto whose label did not
+             say whether it was an application.
+
+             It is answered here, in the rail, in the smallest voice on the
+             section, hung at the foot of it so it sits on the CTA's line
+             and the two ends of the diagonal are the quiet fact and the
+             loud door. The left column carried one eyebrow and 700px of
+             cream; the indent is still the composition, the void was not.
+
+             It states only what the brief supports. It does not say who
+             writes the guest list, what a sponsor's say over it is, how
+             often the Forum meets, or what happens after you write. -->
+        <div class="frole__invite" data-reveal="300">
+          <span class="frole__inviteRule" aria-hidden="true"></span>
+          <p class="label frole__inviteT">{forum.invite.term}</p>
+          {forum.invite.lines.map((l) => <p class="frole__inviteL">{l}</p>)}
+        </div>
+
         <div class="frole__body" data-seq="150" data-seq-from="60">
           <h2 class="display display--feature frole__p" id="frole-h" data-reveal>{forum.role}</h2>
           <p class="frole__note" data-reveal="120">{forum.roleNote}</p>
 
+          <!-- ONE DOOR, and it now carries the address it opens. The ask was
+               a verb over a mailto: nothing on the page said where an
+               inquiry went, and a reader who wanted to write from something
+               other than a mail client had nothing to copy. The address is
+               inside the same <a>, one rung down, so this is still a single
+               link and not a second ask 40px under the first. -->
           <a class="frole__cta" href={inquire} data-reveal="240">
             <span class="frole__ctaRule" aria-hidden="true"></span>
             <span class="bridge frole__ctaText">
               {forum.cta}
               <svg class="arrow" viewBox="0 0 22 10" aria-hidden="true"><path d="M16 1l5 4-5 4M21 5H0" stroke="currentColor" stroke-width="1" fill="none"/></svg>
             </span>
+            <span class="label frole__ctaMail">{site.email}</span>
           </a>
         </div>
       </div>
@@ -303,13 +464,17 @@ const claim = forum.line
      photograph's composition, rather than the grid, decides where type goes.
      The scrim is mirrored to match (align="right" on the Figure) so the ink
      is laid where the words actually are and the sloop keeps its light. */
+  /* The default is the rail, like every other page here. `.fh--hangR` is the
+     stand-in's exception and travels with the stand-in: the day the Forum's
+     own frame lands, the class is not emitted and the stack comes home. */
   .fh__lock {
     align-self: end;
-    justify-self: end;
+    justify-self: start;
     width: fit-content;
     max-width: min(100%, 42ch);
     text-align: left;
   }
+  .fh--hangR .fh__lock { justify-self: end; }
 
   /* brass tick — a graphic anchor above the stack, no words spent */
   .fh__tick {
@@ -458,6 +623,26 @@ const claim = forum.line
     --settle-shift: 4vh;
   }
 
+  /* ── The room band ──────────────────────────────────────────────────
+     Absent from the built HTML until a Lion Forum photograph is on disk, so
+     none of this matches today. Column-wide plates, one to three, ranged
+     from the rail and CAPPED — a single frame must not grow to fill the
+     measure, because the cap is the honest scale for a picture of guests at
+     a private convening (refs/PHOTO-FACTS.md) and not a fallback shape. */
+  .froom { padding-block: 0 clamp(1.2rem, 0.8rem + 1.8vw, 2.8rem); }
+  /* The COUNT is a variable, not a media query, because the count is not
+     known until the client sends files. One frame, two or three, the plate
+     stays the same ~400px wide: the cap is on the LIST, so a single picture
+     cannot grow to fill the measure and quietly become the full-bleed frame
+     this band exists to avoid. */
+  .froom__list {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr));
+    gap: clamp(1rem, 2.2vw, 2rem);
+    max-width: min(100%, calc(var(--n, 3) * 26rem));
+    margin: 0; padding: 0; list-style: none;
+  }
+
   /* ── 3. The ledger ──────────────────────────────────────────────── */
   /* The page's one change of axis. .on-panel retunes --rule / --fg-meta for
      the lighter ground; do not paint the background by hand. */
@@ -580,14 +765,44 @@ const claim = forum.line
      flush left five times; here the eyebrow holds a narrow rail and the
      sentence starts at ~34% and runs into the right-hand column the rest of
      the page left empty for 3151px. */
+  /* Two rows now: the rail's eyebrow at the top, its invitation note at the
+     foot, and the sentence spanning both on the right. The indent is
+     unchanged — the display still starts at 34% — but the column beside it
+     is no longer 700px of nothing. */
   .frole__grid {
     display: grid;
     grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr);
+    grid-template-rows: auto minmax(0, 1fr);
     column-gap: clamp(1.25rem, 4vw, 3.25rem);
     padding-top: clamp(1.1rem, 2vw, 1.9rem);
   }
-  .frole__brow { margin: 0; transform: translateY(0.55em); }
-  .frole__body { display: grid; justify-items: start; }
+  .frole__brow { margin: 0; transform: translateY(0.55em); grid-area: 1 / 1; }
+  .frole__body { display: grid; justify-items: start; grid-area: 1 / 2 / 3 / 3; }
+
+  /* THE QUIET END OF THE DIAGONAL. Smallest voice on the section, hung at
+     the bottom of the rail so it sits on the ask's line, with the page's own
+     brass hairline over it — the same mark the CTA uses, at a fifth of the
+     weight, so the two read as one object at two volumes. */
+  .frole__invite {
+    grid-area: 2 / 1;
+    align-self: end;
+    max-width: 30ch;
+    padding-bottom: clamp(0.3rem, 1vw, 0.9rem);
+  }
+  .frole__inviteRule {
+    display: block; height: 1px; width: clamp(28px, 4vw, 46px);
+    background: var(--rule);
+    margin-bottom: clamp(0.8rem, 1.4vw, 1.1rem);
+  }
+  .frole__inviteT { margin: 0 0 0.55rem; }
+  .frole__inviteL {
+    margin: 0;
+    font-size: var(--step-body);
+    line-height: 1.5;
+    color: var(--fg-mute);
+    text-wrap: pretty;
+  }
+  .frole__inviteL + .frole__inviteL { margin-top: 0.45em; }
   /* THE SERIES-BREAKER, used once. --step-feature exists to lift one thing
      out of a set; on this page the set is four beats at head/poster/banner
      and this is the fifth, on the opposite ground, at the rung none of them
@@ -625,6 +840,23 @@ const claim = forum.line
     text-transform: none;
   }
   .frole__ctaText :global(.arrow) { width: 0.72em; align-self: center; transition: transform 520ms var(--ease-out); }
+  /* The address, inside the door, one rung down. It is the .label register,
+     so it can never compete with the verb above it; it lights with the rest
+     of the link rather than being a second thing to click. */
+  /* Lowercase, and not because caps are ugly: micro-caps plus .label's
+     tracking put a 30-character address 4px past the right edge of a 390
+     viewport, and an address is the one string on this site that is written
+     down somewhere else and must match it. Same treatment /partner/ gives
+     it — sans, its own case, allowed to break rather than to overflow. */
+  .frole__ctaMail {
+    color: var(--fg-meta);
+    text-transform: none;
+    letter-spacing: 0.015em;
+    overflow-wrap: anywhere;
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+  .frole__cta:hover .frole__ctaMail,
+  .frole__cta:focus-visible .frole__ctaMail { color: var(--brass); }
   .frole__ctaRule {
     display: block; height: 1px; width: clamp(34px, 5vw, 72px);
     background: var(--brass);
@@ -652,7 +884,11 @@ const claim = forum.line
   @media (max-width: 860px) {
     /* No open half to set into at 390: the lock comes back to the rail, the
        name turns over, and the bar stacks its meta above the rule. */
-    .fh__lock { width: auto; justify-self: stretch; max-width: 100%; }
+    /* Matches `.fh--hangR .fh__lock`'s specificity on purpose: the right-hand
+       set is a desktop answer to a desktop frame's empty half, and a 0,1,0
+       rule here silently lost to it and hung the name off the right edge of
+       a 390 screen. There is no open half at this width on any photograph. */
+    .fh .fh__lock, .fh--hangR .fh__lock { width: auto; justify-self: stretch; max-width: 100%; }
     .fh__bar { grid-template-columns: minmax(0, 1fr) auto; row-gap: 1.1rem; }
     .fh__meta { grid-column: 1 / -1; }
 
@@ -686,11 +922,32 @@ const claim = forum.line
        HANGS right-aligned in a 4.6rem rail and the sentence starts inside
        it. Same axis as §02, taken at a size a phone can pay for, and the
        close is still the only beat below the breakpoint that is indented. */
-    .frole__grid { grid-template-columns: 5.8rem minmax(0, 1fr); column-gap: 0.9rem; }
+    .frole__grid { grid-template-columns: 5.8rem minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 0.9rem; }
     .frole__brow { text-align: right; transform: translateY(0.5em); }
+    .frole__body { grid-area: 1 / 2 / 2 / 3; }
     .frole__p { max-width: 16ch; }
     .frole__note { max-width: 30ch; }
     .frole__cta { margin-top: clamp(1.9rem, 7vw, 2.6rem); }
+    /* A 5.8rem rail cannot hold two sentences. Below the breakpoint the note
+       falls under the ask at full width, still the smallest voice, still the
+       last thing on the cream. */
+    .frole__invite {
+      grid-area: 2 / 1 / 3 / 3;
+      align-self: start;
+      max-width: none;
+      margin-top: clamp(2.2rem, 8vw, 3rem);
+      padding-bottom: 0;
+    }
+
+    /* Two across at most on a phone, so a third frame sits alone at half
+       width rather than doubling in size to fill the row — a contact sheet,
+       not one big picture and two small ones. */
+    .froom { padding-block: 0 clamp(1rem, 4vw, 2rem); }
+    .froom__list {
+      grid-template-columns: repeat(var(--nsm, 2), minmax(0, 1fr));
+      max-width: none;
+      gap: 0.9rem;
+    }
   }
   @media (max-width: 620px) {
     .fh__h { max-width: 7ch; }

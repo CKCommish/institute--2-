@@ -1,6 +1,36 @@
 ---
+import fs from 'node:fs';
 import HeldScene from '../HeldScene.astro';
 import { forum } from '../../data/site.js';
+
+/* THE SAME SLOT /forum/ RESOLVES, RESOLVED HERE TOO.
+
+   refs/PHOTO-FACTS.md: the day the Lion Forum's own photographs land, the
+   Block Island stand-in comes OFF the site — it is not to be kept as
+   decoration. `forum.image` appears in exactly two places, /forum/ and this
+   scene, so if only one of them resolved a slot the removal would be half
+   done and the homepage would keep running a harbour in Rhode Island under
+   the Forum's name after the page about the Forum had stopped.
+
+   The lawn frame is the one that belongs here: the same establishing weight,
+   at the actual place, and it carries the location label the stand-in needs
+   precisely because it is somewhere else. Retune `focal` against the real
+   picture — this hold runs the frame slowly across 1.9 viewports and the
+   value below is a guess at a photograph nobody here has seen. */
+const onDisk = (p) => {
+  if (typeof p !== 'string' || !p.startsWith('/')) return false;
+  try { if (fs.existsSync(new URL(`../../../public${p}`, import.meta.url))) return true; } catch { /* build */ }
+  try { return fs.existsSync(`${process.cwd()}/public${p}`); } catch { return false; }
+};
+const lawn = forum.photos.lawn;
+const shot = onDisk(lawn.src)
+  ? { ...lawn, focal: '50% 55%', focalSm: '50% 55%' }
+  : {
+      src: forum.image,
+      credit: forum.credit,
+      alt: 'A harbour at dusk: moored sailboats inside a stone breakwater under a blue-hour sky.',
+      focal: '52% 52%', focalSm: '46% 52%',
+    };
 ---
 {/*
   The homepage's one Forum scene — and the SITE'S ONE HELD SCENE.
@@ -57,25 +87,26 @@ import { forum } from '../../data/site.js';
   People wall's own head.
 
   The two location strings still do two jobs and still do not share a corner:
-  `forum.place` — the CONVENING — rides the name's beat; the photograph's own
-  credit — Block Island, Rhode Island — is in the opposite corner in the dim
-  credit register — top-right, on the eyebrow's line and the full width of
-  the frame away from the event line at the foot, which is the same diagonal
-  the /forum/ masthead uses. HeldScene's own default is bottom-right, and on
+  `forum.place` — the CONVENING — rides the name's beat; the PHOTOGRAPH's own
+  credit is in the opposite corner in the dim credit register — top-right, on
+  the eyebrow's line and the full width of the frame away from the event line
+  at the foot, which is the same diagonal the /forum/ masthead uses. That
+  separation is load-bearing while the credit reads Block Island, Rhode
+  Island, and it costs nothing on the day it reads Hyannis Port instead. HeldScene's own default is bottom-right, and on
   this frame that put the two location strings in the same foot band, and put
   the credit on water that is lit for the middle two thirds of the hold.
   refs/PHOTO-FACTS.md.
 */}
 <HeldScene
-  src={forum.image}
-  alt="A harbour at dusk: moored sailboats inside a stone breakwater under a blue-hour sky."
+  src={shot.src}
+  alt={shot.alt}
   eyebrow={forum.access}
   headingId="forum-h"
   hold={1.9}
   holdSm={1.6}
-  focal="52% 52%"
-  focalSm="46% 52%"
-  credit={forum.credit}
+  focal={shot.focal}
+  focalSm={shot.focalSm}
+  credit={shot.credit}
   creditPos="top-right"
   noteAs="bridge"
   arc="lift"

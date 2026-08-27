@@ -335,12 +335,85 @@ export const forum = {
       },
     ],
   },
+  /* ── THE FOURTH QUESTION ──────────────────────────────────────────
+     A programme officer arrives wanting four things: what the convening is,
+     who is in it, what the Institute's relationship to it is, and how one
+     might be invited. The ledger answers the first two, `role` answers the
+     third, and until now NOTHING answered the fourth — the page ended on a
+     mailto and left the reader to guess whether it was an application.
+
+     What the brief actually supports is small, and this says only that:
+     the convening is invitation-only (brief), and the Institute is a lead
+     sponsor of it (brief). It therefore states the ONE useful negative — you
+     cannot apply — and names the one thing a reader can actually do. It does
+     NOT say who writes the guest list, what a sponsor's say over it is, how
+     often the Forum meets, or what happens after you write. None of that is
+     known. Do not add a line here that implies a process. */
+  invite: {
+    term: 'Being invited',
+    lines: [
+      'There is no application. The room is invited.',
+      'The Institute is in that room, and an inquiry here reaches it.',
+    ],
+  },
   cta: 'Inquire about the Forum',
+  /* ── THE STAND-IN ─────────────────────────────────────────────────
+     `image` / `credit` are the Block Island frame. It is an honest stand-in
+     for a convening we have no photograph of, and refs/PHOTO-FACTS.md says
+     it comes OFF the site the day the real frames land — it is not to be
+     kept as decoration. Until then, the credit is what stops the event line
+     "Kennedy Compound, Hyannis Port" reading as this photograph's caption.
+     Two location strings, two jobs, two corners. */
   image: '/media/forum.jpg',
-  /* What the PHOTOGRAPH is — a harbour at dusk on Block Island, RI. It is not
-     Hyannis Port and must never be set where it reads as one with `place`.
-     See refs/PHOTO-FACTS.md. */
   credit: 'Block Island, Rhode Island',
+  /* ── THE LION FORUM PHOTOGRAPHS — NAMED SLOTS, NOT YET DELIVERED ──
+     The client owns this photography and it takes NO attribution credit
+     (refs/PHOTO-FACTS.md). Five frames have been described and none has
+     reached the repository. Drop a file at the path below and /forum/ picks
+     it up at build time with no other edit: `lawn` takes over the masthead,
+     `stage` takes over the plate, and any of the last three appear as the
+     room band between the claim and the ledger. Nothing renders while a file
+     is absent. CONTENT-NOTES.md carries the slot table and what to check.
+
+     THE `alt` STRINGS BELOW WERE WRITTEN FROM THE CLIENT'S DESCRIPTION OF
+     PICTURES NOBODY HERE HAS SEEN. Read each one against the actual frame on
+     arrival and correct it; an alt text is a claim about a photograph like
+     any other. They deliberately name no attendee: `podium` is a sitting or
+     former public official speaking and the notes record who, but a name on
+     this page would be an assertion that the Institute has not cleared. */
+  photos: {
+    /* MASTHEAD. The only frame in the set that earns a location label —
+       it is the claim the page has never been able to make with a stand-in.
+       CONFIRM ON ARRIVAL that the frame is the Compound; if the client
+       cannot confirm it, set this credit to '' and the picture makes no
+       claim on its own. */
+    lawn: {
+      src: '/media/forum-lawn.jpg',
+      alt: 'A lawn at dusk, a flagpole, and a harbour of moored boats beyond it.',
+      credit: 'Hyannis Port, Massachusetts',
+    },
+    /* THE PLATE. No label: the branded backdrop says where it is. */
+    stage: {
+      src: '/media/forum-stage.jpg',
+      alt: 'Speakers on stage at the Lion Forum, against the Forum’s backdrop.',
+      credit: '',
+    },
+    podium: {
+      src: '/media/forum-podium.jpg',
+      alt: 'A speaker addressing the Lion Forum from the stage.',
+      credit: '',
+    },
+    notebook: {
+      src: '/media/forum-notebook.jpg',
+      alt: 'A speaker at the Lion Forum, a notebook open in front of them.',
+      credit: '',
+    },
+    reception: {
+      src: '/media/forum-reception.jpg',
+      alt: 'A reception at the Lion Forum in low evening sun.',
+      credit: '',
+    },
+  },
 };
 
 /* The scene reads eyebrow → lead → claim. The lead is the bridge rung: it
