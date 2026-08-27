@@ -35,7 +35,7 @@
   <h1>Decisions</h1>
   <p class="sub">Everything below is something I could not settle for you. Each one is a fact nobody gave me, a judgement about a named real person, or a tradeoff with no correct answer. I have made a recommendation on every one so none of them is a blank page.</p>
   <p class="sub">Where I invented something and then caught it, I say so.</p>
-  <div class="stamp" id="stamp">Updated 27 Aug, 02:18 UTC · loop still running</div>
+  <div class="stamp" id="stamp">Updated 27 Aug, 02:49 UTC · loop still running · wave 6 closed</div>
 
   <h2>Blocking — the site should not go out until these are settled</h2>
 
@@ -160,8 +160,71 @@
     </div>
   </div>
 
+
+  <h2>New overnight — four reviewers read the whole site and none would send it</h2>
+
+  <div class="note" style="border-left-color:var(--red)">
+    <strong>All four returned “would not ship”.</strong> A fact-checker, a foundation programme officer, the craft critic and a sceptical journalist read all seven routes independently. I have already fixed everything that was mine to fix — nine more unsourced claims, listed at the bottom. What follows is what they found that only you can answer.
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">11</span><p class="t">A funder cannot tell what this organisation legally is.</p><span class="tag stop">Blocking</span></div>
+    <div class="body">
+      <p class="q">Zero matches across the built site for “nonprofit”, “501(c)(3)”, fiscal sponsor, founding date, staff beyond the two of you, or any prior delivered work. The programme officer's words: <em>“Diligence cannot start.”</em></p>
+      <dl>
+        <dt>Why it matters</dt><dd>This is the first screen of any funder's checklist, before they read a word about the pilots.</dd>
+        <dt>Need</dt><dd>Legal status, founding date, whether there is a fiscal sponsor, and any prior work you can point at.</dd>
+        <dt>I'd say</dt><dd class="rec">A single quiet line in the footer or on <code>/institute/</code> closes it. It does not need a page.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">12</span><p class="t">K. Ventures is the question you have not answered.</p><span class="tag stop">Blocking</span></div>
+    <div class="body">
+      <p class="q">The site says once, in grey 15px on the fifth page, that you and Judd are Founding Partners of K. Ventures and of The Lion Forum. The reviewer put it plainly: two venture partners run the entity that decides which technologies get public-benefit pilots, and the site never addresses it.</p>
+      <dl>
+        <dt>If unaddressed</dt><dd class="risk">A programme officer will ask whether pilots route to portfolio companies. Silence reads worse than an answer, and they will ask in the meeting rather than in an email.</dd>
+        <dt>Need</dt><dd>Your actual position — a conflicts policy, a firewall, or a straight statement that technology partners are selected independently.</dd>
+        <dt>I'd say</dt><dd class="rec">Say it out loud, briefly, on <code>/institute/</code>. Institutions that name their own conflict are trusted more, not less.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">13</span><p class="t">There is nothing a funder can forward.</p><span class="tag soon">High value</span></div>
+    <div class="body">
+      <p class="q">No one-pager, no PDF, no deck, no phone number, no form. Eight <code>mailto:</code> links to one address is the entire contact surface — and since the site is unlisted, the only thing a supporter can circulate internally is a URL their colleagues cannot open in a docket.</p>
+      <dl>
+        <dt>Need</dt><dd>A decision: is there a leave-behind? The prospectus already exists.</dd>
+        <dt>I'd say</dt><dd class="rec">Put a downloadable PDF behind the CTA. The person you are trying to reach has to sell you to three colleagues who will never see this site.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">14</span><p class="t">Every photograph is somewhere the Institute has no relationship to.</p></div>
+    <div class="body">
+      <p class="q">Eleven frames: Greenville MS, Huntington WV, Block Island RI (twice), Muskingum County OH, Indianapolis, Adrian OR, a US Army track meet in South Korea, and a Dallas boardroom used full-bleed on two pages. All public domain, all honest, all credited — and none of it is yours.</p>
+      <dl>
+        <dt>Note</dt><dd>Your five Forum photographs fix this at the exact point it matters most. Named slots are built and waiting (decision 05).</dd>
+        <dt>Also</dt><dd class="risk">The one label preventing a Kennedy-Compound misreading — “Block Island, Rhode Island” on the homepage — measures 1.65:1 against bright sky. The safeguard is the least legible text on the page. I am fixing that tonight.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="d">
+    <div class="hd"><span class="n">15</span><p class="t">“Measurable” is promised three times and never delivered.</p></div>
+    <div class="body">
+      <p class="q">The pilots hero says “One measurable outcome each. The result is published either way.” Then under <em>Measured by</em>: “Care completed, not just recommended.” “Risk identified early enough to act on.” Those are directions, not measurements — and they are directions because I removed the fabricated numbers that used to sit there.</p>
+      <dl>
+        <dt>I'd say</dt><dd class="rec">Either supply the numbers (decision 04) or soften the promise. Promising measurement and then not measuring is the one combination that reads as evasive rather than early.</dd>
+      </dl>
+    </div>
+  </div>
+
   <div class="note">
-    <strong>What I fixed rather than asking about.</strong> The site rendered blank without JavaScript — every photograph invisible, 21 of 34 blocks permanently hidden — because I had written the hidden states without gating them on JS running. Two of my own measuring tools were wrong: the contrast checker could not parse Chrome's colour format and reported a pass for everything, and it was blind to type sitting on photographs (22 real failures, reported as zero). A photograph's credit described a picture that had been replaced under it. Every one of those is fixed and verified; none needed you.
+    <strong>What I fixed rather than asking about.</strong> Overnight: nine more unsourced claims, found by a fact-checker who called it “a fourth wave of the same failure”. The worst was on <code>/people/</code> — “Advising the pilots we run” set at 48px directly above sixteen portraits, asserting both that the Institute runs pilots it calls proposed, and that sixteen people who have not agreed to serve are currently advising. Also removed: an invented headquarters, “Hyannis Port · Washington, D.C.”, printed in the footer and mobile menu of all seven pages — fourteen impressions of two offices that do not exist, which I wrote in the first Footer commit. Plus “lead sponsor” where your brief says major, a claim that Cardona and Inslee each proposed their own pilot, a page contradicting itself about what a pilot needs, and alt text describing sixteen chairs in a room with twelve. The homepage first screen now carries the word “proposed” at both viewports; it did not before. Earlier: the site rendered blank without JavaScript — every photograph invisible, 21 of 34 blocks permanently hidden — because I had written the hidden states without gating them on JS running. Two of my own measuring tools were wrong: the contrast checker could not parse Chrome's colour format and reported a pass for everything, and it was blind to type sitting on photographs (22 real failures, reported as zero). A photograph's credit described a picture that had been replaced under it. Every one of those is fixed and verified; none needed you.
   </div>
 
   <p class="sub" style="margin-top:40px">Current health: build green · audit 0 issues across 12 page-views · 0 type-over-photograph contrast failures · worst LCP 348ms · layout shift 0 on every route · renders without JavaScript.</p>
