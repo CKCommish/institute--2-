@@ -84,10 +84,17 @@ export function standingOf(board) {
   return {
     put: String(n).padStart(2, '0'),
     putLabel: 'Put forward',
+    /* "Not yet seated", not "none has accepted".
+       `refs/BRIEF.md` says the board is PROSPECTIVE. Prospective supports
+       "not yet seated" — that is what the word means. It does not support a
+       count of who has or has not accepted: accepting an invitation and being
+       seated on a formed board are two different acts, and nobody has told us
+       the first number. The site was asserting it at 67px over sixteen named,
+       identifiable people. Claim only what the source carries. */
     accepted: '00',
-    acceptedLabel: 'Accepted',
-    none: 'None has accepted.',
-    line: `${word} put forward. None has accepted.`,
+    acceptedLabel: 'Seated',
+    none: 'The board is not yet seated.',
+    line: `${word} put forward. The board is not yet seated.`,
   };
 }
 
