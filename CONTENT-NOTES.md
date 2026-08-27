@@ -624,6 +624,83 @@ client: supply the metric, or state plainly when the metric gets set (e.g.
 that it is agreed with the partner before the pilot starts). **Do not invent a
 number for this slot.** The label may be worth changing if neither can be had.
 
+**Wave 15 — closed on the site's side; still open on the client's.** The
+label was the promise, so the label went. `pilots-detail.astro` now reads
+**GOAL**, which is the prospectus's own name for that field and the same word
+the card above it already uses; the four sentences under it are unchanged.
+Nothing on the page now says a metric exists.
+
+The sentence above them went too, and it was the larger error. **"One
+measurable outcome each"** was not in either source. Counted straight off
+`refs/PROSPECTUS.txt`, every Goal paragraph promises more than one thing:
+
+| Pilot | What the prospectus's Goal actually promises |
+| --- | --- |
+| 01 Special Olympics | **two** — better IDD healthcare globally; the dataset made an open resource |
+| 02 Governor Inslee | **three** — expand clean energy; create good jobs; lower energy costs |
+| 03 Butler University | **three** — reduce infant mortality; improve prenatal engagement; a replicable model |
+| 04 Secretary Cardona | **three** — personalised guidance; awareness of high-opportunity jobs; connect students to mobility |
+
+So the count was ours in both directions: no source says *one*, and no source
+says *measurable outcome*. The site's one-line `goal` field per pilot is
+compression under the brief's one-line-per-field cap — it is not, and must not
+be presented as, a claim that a pilot has a single goal.
+
+Replaced in three places with what the prospectus does say ("designed to show
+measurable results in 3 to 12 months"; "We then share those lessons with the
+world"):
+
+- `src/pages/pilots.astro:78` — "Measurable results in months. The lessons go to the world."
+- `src/pages/pilots.astro:116` — "The problem, the approach, and the goal."
+- `src/data/site.js` `pilotTerms` LESSONS — "The lessons from each pilot go to the world."
+
+The client fact is still wanted: a metric, or an honest line about when the
+metric gets set. What has changed is that the page no longer claims to have
+one while not having one.
+
+### 3b. The sweep for siblings — a quantified-sounding summary that is ours
+
+Item 3's claim survived fourteen waves and four fact-checks because it reads
+like a *summary of the content below it* rather than as a fact, and nobody
+fact-checks a summary. All seven routes were walked for that shape: a
+confident count or universal ("one … each", "every", "all", "everything")
+introducing content it claims to characterise. Every hit was checked against
+`refs/PROSPECTUS.txt` directly, not against what another page on this site
+says — the site has agreed with itself while being wrong before.
+
+**Found and fixed**
+
+- `src/pages/404.astro` — "Everything the Institute publishes is below." Over
+  a list of five site routes. No source says the site is the Institute's
+  complete publication record, and the prospectus's own "We then share those
+  lessons with the world" implies publication that is not on this site. Now
+  "The rest of the site is below.", which is what the list under it is.
+
+**Found and cleared** — each traced to a prospectus sentence, all left alone:
+
+- `institute.astro:116` "Every pilot runs the same way." — "For each pilot, we
+  identify a problem, match it with a technology partner, recruit
+  implementation partners, and measure outcomes." A stated uniform method.
+- `institute.astro:36` / `partner.astro:174` "Three under way, one in
+  exploration." — 01–03 read "The Institute **is working with**", 04 reads
+  "The Institute **is exploring**". Counted off the source, not asserted.
+- `pilots.astro:74` "Four active pilots · 2026" — "FOUR ACTIVE PILOTS — 2026",
+  verbatim.
+- `partner.astro:81` / `partner.astro:259` "Every pilot needs money, a
+  technology, and somewhere real to run it." / "Every pilot needs all three."
+  — the prospectus's per-pilot method names a technology partner and
+  implementation partners, and THE MODEL names dedicated pilot funding. The
+  three doors are the source's three, not a rounded number.
+- `people.astro:321` "Titles for identification only" — a disclaimer, claims
+  nothing about content.
+
+**Watched, not changed** — `institute.astro:107` "Neither side can run the
+pilot alone." is an argument, not a count, and the prospectus's "trusted
+intermediary between major technology companies and the institutions,
+communities, and governments doing the work" supports it. Noted here because
+it is the strongest unhedged assertion left on the site; if a future wave
+wants a target, it is this one, and it needs the client rather than an edit.
+
 ### 4. Legal and fiscal status.
 
 `grep` across all seven pages: zero occurrences of 501(c), nonprofit, charity,

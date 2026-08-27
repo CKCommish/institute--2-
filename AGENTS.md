@@ -91,8 +91,15 @@ That last row is the one to learn from. `ink-floor` was built to fix
 photo-meter's blindness to ancestor opacity and it did — its 4.563:1 for the
 homepage eyebrow is right, and it is still the number to quote. But its model
 had one term for what is behind the glyphs and none for what is over them, so
-the nav's 89px scrim tail was a free pass in it exactly as it was in the other
+the nav's scrim tail was a free pass in it exactly as it was in the other
 three, and it was hiding 11px type at **2.745:1** while the gate was green.
+(That tail was quoted here as "89px" for two waves. 89 was one route's
+number generalised: /pilots/ overrides the tail locally, and the site-wide
+reach was 119px desktop / 114 mobile against /pilots/'s 89. The reach any
+route actually has is `--nav-h + --nav-tail`, both of which are fluid and one
+of which a page may override — read it off the element, never off this file.
+Wave 15 made the shape one thing everywhere; the number still varies with the
+viewport.)
 This file used to describe that as a convention — "the band is what is painted
 behind the glyphs" — which is how a hole gets written up as a decision. It was
 a hole.

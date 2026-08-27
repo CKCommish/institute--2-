@@ -70,7 +70,7 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     height: var(--nav-h);
     color: var(--nav-fg, var(--cream));
     --nav-scrim: var(--ink-900);
-    --nav-tail: 3.5rem;
+    --nav-tail: 1.6rem;
     transition: color var(--dur-hover) var(--ease-out);
     pointer-events: none;
   }
@@ -92,9 +92,48 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
   .nav::before {
     content: ''; position: absolute; inset: 0 0 auto 0;
     /* The tail is the fade, and every pixel of it is reach over content the
-       bar is not covering. 5.5rem gave the scrim 89px of tail past a 62px
-       bar; 3.5rem keeps the bar itself fully opaque (the ramp holds solid to
-       64% of the span = 73px) and halves what the tail can paint over. */
+       bar is not covering.
+
+       THE NUMBER THAT SETS ITS SHAPE is not the tail's length, it is the
+       HALF-LIT BAND: the run of pixels where the mask is neither 1 nor 0, so
+       type there is visible AND dimmed. A scrim darkens ink and ground
+       together, so nothing inside that band is legible at any length — the
+       curve ends at 1.0:1, not at some floor. The band's only safe size is
+       therefore one a whole line of type cannot fit inside. The smallest
+       type the site sets is 11.664px meta; if the band is shorter than that,
+       no string is ever fully on screen and fully crushed at once — it is
+       sliced by an edge, which reads as occlusion, which is what a bar is
+       for. If the band is taller, the reader gets a whole grey ghost.
+
+       Measured on the glass by subtraction, 1440x900, "Dallas, Texas" on
+       /institute/, the old 3.5rem tail with the 64% ramp — a 43px band:
+
+         1.053 → 1.148 → 1.277 → 1.455 → 2.160 → 3.216 → 4.604 : 1
+
+       27 pixels of scroll under 4.5:1, more than twice the string's own
+       height, the whole line visible for all of it. That is the defect, and
+       it was on every route: the held-stage hard edge fixed one scene, and
+       /pilots/ had already shortened its own tail by hand for the same
+       reason on another. Both were this rule, discovered twice and applied
+       locally. It belongs here.
+
+       1.6rem past a 63px bar is an 89px span; solid to 88% of it puts the
+       band at 10.7px, under the 11.664px line. Same string, same route,
+       after: 8 pixels of scroll under 4.5:1, and the string is never wholly
+       visible while it is failing. /pilots/ needs no different number; its
+       local override in pilots.astro is now this rule typed twice, and that
+       page's owner should delete it rather than let the two drift.
+
+       THE COST is a crisper edge, and it is smaller than it sounds. Look at
+       the top of the held photograph on the homepage: the 43px band was not
+       reading as softness, it was a grey smear over the first 50px of the
+       picture, and what replaced it is the bar's own bottom with the brass
+       hairline on it. The reduced-motion and no-JS renders of that frame now
+       agree to the hairline, where before the scripted one carried a haze
+       the unscripted one did not. Where the ground below genuinely differs
+       from the bar — a navy band under an ink bar — the step is now visible
+       as a step. That is the trade: the bar reads as an object sitting on
+       the page rather than as weather over it. */
     height: calc(100% + var(--nav-tail));
     background: linear-gradient(
       to bottom,
@@ -104,13 +143,9 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
       var(--nav-b, var(--nav-scrim)) 100%
     );
     -webkit-mask-image: linear-gradient(
-      to bottom, #000 0%, #000 64%,
-      rgba(0,0,0,0.84) 76%, rgba(0,0,0,0.44) 87%, rgba(0,0,0,0.14) 94%,
-      transparent 100%);
+      to bottom, #000 0%, #000 88%, rgba(0,0,0,0.45) 95%, transparent 100%);
     mask-image: linear-gradient(
-      to bottom, #000 0%, #000 64%,
-      rgba(0,0,0,0.84) 76%, rgba(0,0,0,0.44) 87%, rgba(0,0,0,0.14) 94%,
-      transparent 100%);
+      to bottom, #000 0%, #000 88%, rgba(0,0,0,0.45) 95%, transparent 100%);
     opacity: 0; transition: opacity 460ms var(--ease-out);
     pointer-events: none;
   }
@@ -147,8 +182,8 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      does. Its stage is `position: sticky` and one viewport high, so when
      the pin releases the whole stage — photograph, eyebrow, location
      credit, coda link — travels up through the bar's reach together. The
-     tail is 3.5rem of gradient past a 62px bar and it paints IN FRONT of
-     the page, so every string in that stage was dragged through it at
+     tail was then 3.5rem of gradient past a 63px bar and it paints IN
+     FRONT of the page, so every string in that stage was dragged through it at
      full weight. Measured on the glass at 1440x900, two renders per scroll
      offset (the string, then the string hidden), scored row by row so a
      covered row is not confused with a dim one:
@@ -174,8 +209,20 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
      up the tail for the length of that one scene: an opaque band exactly
      its own height, with the progress hairline as its edge, and type
      going under it is covered outright rather than half-lit. Same rule,
-     same variant, second reason. Every other route keeps the soft tail,
-     because nothing on them is held across it. */
+     same variant, second reason.
+
+     ── WHAT WAVE 15 CHANGED ABOUT THE OTHER ROUTES ───────────────────
+     This block used to end "every other route keeps the soft tail, because
+     nothing on them is held across it." That was the scope error. Nothing
+     on them is HELD across it, but everything on them SCROLLS across it,
+     and a scrim crushes scrolling type exactly as hard as held type — it
+     is only over faster. The tail's shape, not the hold, is what decides
+     whether a reader ever sees a whole crushed line; see the half-lit-band
+     note on `.nav::before` above for the number. So the other routes keep
+     a soft tail, but a 10.7px one rather than a 43px one, and this scene
+     still gives its tail up entirely because it is the one place where
+     the type can be stopped inside the bar's reach rather than carried
+     through it. */
   :global(html:not(.js)) .nav::before,
   .nav.is-hardedge::before {
     height: 100%;
@@ -870,11 +917,21 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
          its own type up through the bar on release; while any part of that
          stage is inside the bar's reach the bar drops the tail and takes its
          hard edge, so the type is covered outright instead of half-lit.
-         Gated on the same query the hold itself is gated on: under
-         `reduce` the scene is a stacked layout with no type over the
-         photograph and nothing travels, so the tail stays soft there.
-         Cost: one extra rect per frame, and only on a route that has one. */
-      const hard = !!heldStage && !quietQ.matches && !nav.classList.contains('is-menu')
+
+         NOT gated on `prefers-reduced-motion`, though it was. The stated
+         reason was that under `reduce` the scene is a stacked layout with
+         no type over the photograph and nothing travels. Both halves were
+         false. `.held__fig .fig__credit` is type set ON the photograph in
+         the stacked layout — that is why HeldScene draws `.held__cap` for
+         the static render at all — and it travels through the bar with
+         ordinary scroll, which is the only kind of travel this rule has
+         ever cared about. Measured, desktop, `reduce`, by subtraction:
+         2.717 → 2.090 → 1.526 → 1.094 → 1.014 : 1. The same curve this
+         rule exists to end, on the same scene, in a render the site ships.
+         The query says how the scene is COMPOSED; it says nothing about
+         whether type crosses the bar, and only the second question is this
+         rule's. Cost: one extra rect per frame, on a route that has one. */
+      const hard = !!heldStage && !nav.classList.contains('is-menu')
         && (() => { const r = heldStage.getBoundingClientRect();
                     return r.top < band + tail && r.bottom > 0; })();
       nav.classList.toggle('is-hardedge', hard);
@@ -927,6 +984,9 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(sync); } };
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll, { passive: true });
+    /* Not because the hard edge asks the query any more — it does not, see
+       `hard` below — but because flipping it restacks the held scene, and
+       every rect this function measured is then stale. */
     quietQ.addEventListener?.('change', onScroll);
     sync();
     nav.dataset.sync = '1';

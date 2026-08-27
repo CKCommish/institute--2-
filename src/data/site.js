@@ -283,7 +283,16 @@ export const pilots = [
    The third row used to promise publication "whatever it says" / "either
    way". No source carries that commitment — the prospectus says the lessons
    are shared, not that a null result is reported. The promise is now the
-   sourced one. */
+   sourced one.
+
+   Wave 15: it then read "One measurable outcome each". The prospectus gives
+   each pilot a Goal paragraph promising TWO OR THREE things (01 two; 02, 03
+   and 04 three), so "one each" was ours, not the source's. The row now says
+   only what the prospectus says: "We then share those lessons with the
+   world", and "Each pilot demonstrates, through its own specific use case".
+   The site's one-line-per-pilot `goal` field is compression under the
+   brief's cap — it is not a claim that there is only one goal. Do not
+   reintroduce a count here. */
 export const pilotTerms = [
   {
     key: '3–12',
@@ -298,7 +307,7 @@ export const pilotTerms = [
   {
     key: 'Shared',
     term: 'Lessons',
-    text: 'One measurable outcome each, and the lesson goes to the world.',
+    text: 'The lessons from each pilot go to the world.',
   },
 ];
 
