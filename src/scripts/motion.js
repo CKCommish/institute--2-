@@ -219,6 +219,62 @@ function setVar(el, name, v) {
   el.style.setProperty(name, s);
 }
 
+/* THE TAIL IS THE CODA'S OWN SHARE OF THE FRAME, NOT A CONSTANT.
+
+   It used to read `const tail = coda ? 0.24 : 0.10`. A quarter of every held
+   scene, reserved for whatever happened to sit at the end of it, and owned by
+   nobody — the number was picked once, for a scene that has been rebuilt
+   twice since. On the homepage's Forum scene it books 238px of pinned scroll
+   for a 29px link, which is why that scene keeps ending on a frame with
+   nothing on it: measured, the last quarter of the range carries no display
+   line at all while the ground closes back to navy behind it.
+
+   So the tail is now what the coda actually is. The scene's type is weighed —
+   every beat, plus the coda — and the coda takes the share of the range its
+   own height comes to. A one-line link is not a quarter of a scene, and a
+   coda that grows to a block gets the room a block needs, without anyone
+   editing this file.
+
+     lead   0.09  fixed: the picture has to have arrived before the first
+                  beat is asked to read over it. It is a property of the
+                  ARRIVAL, not of the copy, so it does not scale.
+     beats        equal peers. They are beats — one idea each — and an even
+                  crossfade rhythm is the grammar; a beat is not more
+                  important for wrapping to a third line.
+     tail         the coda's share, floored so a very small coda still
+                  arrives rather than flashing, capped so a very large one
+                  cannot eat the beats.
+
+   AND THE ARC'S CLOSE IS DERIVED TOO. It ran on a second hand-written 0.24,
+   equal to the old tail because both were typed by the same hand on the same
+   afternoon — which is the only reason the rule it served ("the last beat is
+   gone before the ground closes") held. Change the tail and that silently
+   stops being true. The close is now measured from the scene's own shape:
+   the tail, plus the last beat's retire. Nothing is held open over an empty
+   frame, and nothing snaps shut either.
+
+   Measured once per track and re-measured only on a width change: this runs
+   inside the scroll loop and offsetHeight is a layout read. */
+const TAIL_MIN = 0.12;
+const TAIL_MAX = 0.30;
+/* The last quarter-ish of a beat's own span is its retire — the falling half
+   of its envelope. Named because the ground's close is measured against it. */
+const RETIRE = 0.26;
+
+function holdTail(track, beats, coda) {
+  const w = window.innerWidth;
+  if (track.__tailW === w) return track.__tail;
+  track.__tailW = w;
+  /* No coda: the tail's only remaining job is the ground's own close, so it
+     is the floor and nothing else. One number, one meaning. */
+  if (!coda) return (track.__tail = TAIL_MIN);
+  const codaH = coda.offsetHeight;
+  let type = codaH;
+  for (const b of beats) type += b.offsetHeight;
+  const share = type > 0 ? (1 - 0.09) * (codaH / type) : TAIL_MIN;
+  return (track.__tail = Math.max(TAIL_MIN, Math.min(TAIL_MAX, share)));
+}
+
 function runHold(track, vh) {
   const stage = track.__stage || (track.__stage = track.querySelector('[data-hold-stage]'));
   if (!stage) return;
@@ -232,37 +288,56 @@ function runHold(track, vh) {
   if (near !== null && track.__parked === near) return;
   track.__parked = near;
 
-  const arc = track.dataset.arc || 'lift';
-  const rise = ss(p / 0.30);
-  const fall = ss((1 - p) / 0.24);
-  const open = arc === 'fall' ? fall : arc === 'rise' ? rise : Math.min(rise, fall);
-
-  setVar(track, '--hp', p);
-  setVar(track, '--open', open);
-
   const beats = track.__beats || (track.__beats = [...track.querySelectorAll('[data-beat]')]);
   const ticks = track.__ticks || (track.__ticks = [...track.querySelectorAll('[data-beat-tick]')]);
   const coda = track.__coda !== undefined
     ? track.__coda
     : (track.__coda = track.querySelector('[data-coda]'));
+
+  const lead = 0.09;
+  const tail = holdTail(track, beats, coda);
   const n = beats.length;
+  const span = n ? (1 - lead - tail) / n : 0;
+
+  /* THE GROUND LEAVES WITH THE LAST LINE. The close used to run on its own
+     hand-written 0.24, equal to the old tail by coincidence of typing, and
+     the rule it was written to serve was "the last beat is gone before the
+     ground closes". Measured against the tail alone the close came out
+     2.5× faster than the open — the arc stopped exhaling and started
+     slamming. So it is measured from where the last beat BEGINS to leave
+     instead: its own retire, plus the tail behind it. The picture starts
+     going back into the page on the same frame the last display line starts
+     going, and the two are gone together, which is one gesture rather than a
+     departure followed by a wait. */
+  const close = tail + span * RETIRE;
+
+  const arc = track.dataset.arc || 'lift';
+  const rise = ss(p / 0.30);
+  const fall = ss((1 - p) / close);
+  const open = arc === 'fall' ? fall : arc === 'rise' ? rise : Math.min(rise, fall);
+
+  setVar(track, '--hp', p);
+  setVar(track, '--open', open);
+
   if (n) {
-    /* The first beat waits for the picture to have arrived, and the last one
-       is gone before the ground closes: a beat caught in the fade is a beat
-       nobody read. A coda reserves the whole tail for itself, so the link at
-       the end of the scene never shares the frame with a display line. */
-    const lead = 0.09;
-    const tail = coda ? 0.24 : 0.10;
-    const span = (1 - lead - tail) / n;
+    /* The first beat waits for the picture to have arrived; the last one
+       leaves with the ground, which is what `close` above is measured off.
+       The coda then has the tail to itself, so the link at the end of the
+       scene never shares the frame with a display line. */
     for (let i = 0; i < n; i++) {
       const u = (p - (lead + i * span)) / span;
-      const e = u <= 0 || u >= 1 ? 0 : ss(u / 0.30) * ss((1 - u) / 0.26);
+      const e = u <= 0 || u >= 1 ? 0 : ss(u / 0.30) * ss((1 - u) / RETIRE);
       setVar(beats[i], '--be', e);
       setVar(beats[i], '--bu', Math.max(-0.4, Math.min(1.4, u)));
       if (ticks[i]) setVar(ticks[i], '--be', e);
     }
   }
-  if (coda) setVar(coda, '--be', ss((p - (1 - 0.22)) / 0.11));
+  /* The coda starts drawing on the exact frame the last beat's envelope
+     reaches zero — 1 - tail is both — and is fully drawn halfway through the
+     tail. So it never shares the frame with a display line and there is no
+     gap between them either, which the hand-written 0.22 / 0.11 pair left:
+     a sliver of scroll at the end of the beats with nothing drawn on it. */
+  if (coda) setVar(coda, '--be', ss((p - (1 - tail)) / (tail * 0.5)));
 }
 
 /* ── 3. Scroll-linked values: parallax and settle ────────────────── */
@@ -319,6 +394,18 @@ function initScroll() {
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
   frame();
+
+  /* The tail is measured off rendered type, and the first frame can run
+     before Newsreader and Libre Franklin have swapped in — a display line
+     that wraps to two lines in the fallback and three in the real face would
+     weigh the scene wrong for the rest of the session. Drop the cached
+     measurement once the faces are down. */
+  if (holds.length && document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      for (const t of holds) t.__tailW = -1;
+      onScroll();
+    });
+  }
 }
 
 function boot() {

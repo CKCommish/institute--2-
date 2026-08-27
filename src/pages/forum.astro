@@ -95,6 +95,34 @@ const room = [P.podium, P.notebook, P.reception].filter((f) => onDisk(f.src));
 const claim = forum.line
   .replace(/\bbuild\b/, '<em>build</em>')
   .replace(/\bdecide\b/, '<em>decide</em>');
+
+/* ── THE ROOM ARRIVES ONCE, AND IT ARRIVES WHOLE ────────────────────
+   This page used to describe its own room TWICE, 400px apart and at two
+   different scopes. §01's kicker read "Founders, investors, elected
+   officials." and §02's ledger then corrected it to "Members of Congress,
+   senior administration officials and the leadership of the top AI labs,
+   alongside founders and investors."
+
+   Both are the client's own: the prospectus writes the short one under THE
+   LION FORUM and the long one in Judd Olanoff's biography. So this was never
+   a fact problem — it was an ORDER problem. The smaller version arrived
+   first, which meant the page undersold the single best asset the Institute
+   has at the exact moment it introduced it, and then talked itself back up a
+   screen later. A reader who left after §01 left with the short room.
+
+   So the ledger's room row is now the room the page LEADS with, and the
+   ledger does not say it a second time. Which also puts the list directly
+   above the sentence it is supposed to earn: the labs and the founders
+   BUILD, Congress and the administration DECIDE, and the claim underneath is
+   no longer asking anyone to take that on trust.
+
+   This is composition, not copy — every string still lives in
+   src/data/site.js and neither is rewritten here. `forum.who` is the short
+   version and nothing on the site renders it any more; it is the one string
+   to delete the next time that file is open. */
+const roomRow = forum.brief.rows.find((r) => /^the room$/i.test(r.term));
+const who = roomRow ? roomRow.text : forum.who;
+const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
 ---
 {/*
   FOUR BEATS IN THE BUILD, AND NO TWO OF THEM ARE DRAWN THE SAME WAY. Two
@@ -104,7 +132,9 @@ const claim = forum.line
     1  masthead   the photograph wide. Slot: forum.photos.lawn, standing in
                    today with the Block Island frame, whose empty right half
                    is why the name hangs off the right rail
-   01  the claim   type only, flush left, nothing beside it
+   01  the claim   type only, flush left, nothing beside it — and above it
+                   the room named in full, which is the one fact that earns
+                   the claim rather than asserting it
    (—) the room    NOT IN THE BUILD. One to three column-wide Lion Forum
                    plates showing the claim above. Renders only when a file
                    is on disk; there is none
@@ -139,8 +169,9 @@ const claim = forum.line
 
   THE FOURTH QUESTION. A programme officer arrives wanting to know what this
   convening is, who is in it, what the Institute's relationship to it is, and
-  how one might be invited. §02 answers the first two, §03's sentence answers
-  the third, and the fourth was never answered at all: the page ended on a
+  how one might be invited. §01 answers who is in it — in full, at the top,
+  where it belongs — §02 answers what it is, §03's sentence answers the
+  third, and the fourth was never answered at all: the page ended on a
   mailto whose label did not say whether it was an application. It is
   answered in §03's rail, in the smallest voice on the section — and it says
   only what the brief supports, which is that the room is invited and the
@@ -301,7 +332,14 @@ const claim = forum.line
         <p class="eyebrow">The convening</p>
       </div>
 
-      <p class="bridge fsay__who" data-reveal="120">{forum.who}</p>
+      {/* THE ROOM, WHOLE, AND FIRST. It is set in the reading register
+           rather than the bridge one: at 22 words it is a sentence, not a
+           kicker, and at --step-bridge it would stand 3 lines deep at nearly
+           the mass of the claim below it — a supporting line arguing with
+           the thing it supports. 11.7 · 19 · 53 is the beat's ladder now,
+           and the 19 is the same voice the ledger's own rows use, which is
+           the register a fact belongs in on this page. */}
+      <p class="lede fsay__who" data-reveal="120">{who}</p>
 
       <div class="fsay__claim" data-reveal>
         <h2 class="display display--head fsay__p" id="fsay-h" data-settle="0.52" set:html={claim}></h2>
@@ -351,11 +389,21 @@ const claim = forum.line
        This beat is the reading size, and it is the only thing on the page
        that does not begin at the left rail.
 
-       Three entries, one sentence each — the brief's supporting-line limit
-       spent, once, on the page's actual job. The terms hang right-aligned in
-       the left column against the sentences, so the block reads as a ledger
-       and its axis sits near 38% of the measure. Every other beat here opens
+       One sentence per entry — the brief's supporting-line limit spent,
+       once, on the page's actual job. The terms hang right-aligned in the
+       left column against the sentences, so the block reads as a ledger and
+       its axis sits near 38% of the measure. Every other beat here opens
        flush at the rail; this one does not, which is the whole point.
+
+       IT IS TWO ROWS NOW, NOT THREE, AND THE MISSING ONE IS UPSTAIRS. The
+       room row said who is in the room; §01's kicker said it too, smaller,
+       400px earlier. A page that describes its own room twice at two
+       different scopes has not been edited, and the fix is not to pick the
+       shorter one — it is to lead with the room you actually have and then
+       stop. The ledger now answers what the convening IS: its format, and
+       its subject. Who is in it is settled before the claim. The rows are
+       filtered here, not deleted from src/data/site.js: the string is still
+       the client's, still traceable, and still in one place.
 
        It sits on the page ground. It used to be an .on-panel band, but a
        13-point step on a 255 scale is not a tonal event and it was costing
@@ -376,7 +424,7 @@ const claim = forum.line
       </div>
 
       <dl class="fdefs" data-seq="120" data-seq-from="40">
-        {forum.brief.rows.map((r) => (
+        {briefRows.map((r) => (
           <div class="fdef fdef--row" data-reveal>
             <dt class="label fdef__t">{r.term}</dt>
             <dd class="fdef__d">{r.text}</dd>
@@ -451,8 +499,9 @@ const claim = forum.line
 
              A programme officer arrives wanting four answers: what this is,
              who is in it, what the Institute's relationship to it is, and
-             how one might be invited. The ledger takes the first two, the
-             sentence beside this takes the third, and the fourth was simply
+             how one might be invited. §01 takes the room, the ledger takes
+             what it is, the sentence beside this takes the third, and the
+             fourth was simply
              never answered — the page ended on a mailto whose label did not
              say whether it was an application.
 
@@ -660,10 +709,23 @@ const claim = forum.line
     gap: clamp(0.9rem, 1.6vw, 1.5rem);
     padding-top: clamp(0.9rem, 1.5vw, 1.35rem);
   }
-  /* head + bridge are ONE object — the kicker — so the beat is two marks in
+  /* eyebrow + room are ONE object — the kicker — so the beat is two marks in
      a column, not three scattered ones. The interval that matters is the one
-     under them, before the claim. */
-  .fsay__who { margin-top: clamp(0.85rem, 1.5vw, 1.35rem); }
+     under them, before the claim.
+
+     IT NEEDS A MEASURE, AND THE MEASURE IS NEAR THE CLAIM'S. The room runs
+     22 words and this page's shell is 1338px wide; left to run it sets as
+     one 1,100px line and reads as a caption stretched across the page. 54ch
+     breaks it into two ranged lines 800px wide against the claim's 702 — a
+     hundred pixels over, which keeps it a wider, quieter object above a
+     narrower, louder one rather than a second column beside it. Do not pull
+     it in to match the claim exactly: at ~700px it wraps to three lines and
+     96px, which is the claim's own 102px, and two objects of equal mass is
+     not a ladder. */
+  .fsay__who {
+    margin-top: clamp(0.85rem, 1.5vw, 1.35rem);
+    max-width: 54ch;
+  }
   /* The wrapper carries the reveal so the two italic verbs can hang off its
      .is-in; the h2 itself carries the settle. Two elements, two transforms,
      no fight. */
@@ -987,6 +1049,10 @@ const claim = forum.line
     .fh__meta { grid-column: 1 / -1; }
 
     .fsay { padding-block: clamp(2.5rem, 8vw, 3.5rem) clamp(2.75rem, 10vw, 4.5rem); }
+    /* The room is four lines at 390px, not the one-line kicker this interval
+       was set for. A paragraph needs more air under it than a label does
+       before the page's second-largest voice starts. */
+    .fsay__p { margin-top: clamp(2rem, 8vw, 2.75rem); }
     /* Same move as the desktop measure: 13ch was the block at --step-poster,
        17ch is the same block at --step-head. */
     .fsay__p { max-width: 17ch; }

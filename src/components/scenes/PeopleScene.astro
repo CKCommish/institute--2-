@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { founders, board } from '../../data/site.js';
-import { cohortsOf, standingOf, homeBridge } from '../people-cohorts.js';
+import { standingOf, homeBridge } from '../people-cohorts.js';
 
 /* Portrait drop-in slot — same contract as /people/.
    public/media/founder-mckelvy.jpg · founder-olanoff.jpg (or .jpeg/.png/.webp).
@@ -28,11 +28,12 @@ const people = founders.map((f, i) => ({
   portraitSrc: resolvePortrait(f.portrait),
 }));
 
-/* Same three constituencies as /people/, in the same order, so the roster
-   reads the same way in both places. Here they are three runs, not three
-   columns — the homepage gets the shape of the board, the People page gets
-   the board. */
-const cohorts = cohortsOf(board);
+/* One run, in site.js's order, which is the prospectus's order. This scene
+   used to split the sixteen into Policy / Capital / Practice, the same
+   three buckets /people/ carried — invented here, unsupported by any
+   source, and wrong on the titles twice over. The header of
+   people-cohorts.js has the argument. Both pages now show the flat list the
+   prospectus shows, so the two still cannot drift. */
 const standing = standingOf(board);
 ---
 <section class="people scene" id="people" aria-labelledby="people-h">
@@ -78,7 +79,10 @@ const standing = standingOf(board);
       which is a caption; they are the only credential this institute has,
       and one of them ran the Department of Education. They are now a
       full-bleed .on-panel band set at --step-sub, one rung under the claim
-      that asks for them, running the full width of the frame.
+      that asks for them, running the full width of the frame. What is on the
+      band is the sixteen names and nothing else: the three constituency
+      labels that used to head them were claims about the people under them
+      and they are gone from both pages.
 
       It lands at 76% of the scroll. The homepage's only other change of
       ground was the cream at 16%, after which 1,700px of the back half held
@@ -100,12 +104,11 @@ const standing = standingOf(board);
             three, so the qualifier is read at the same glance as the roster
             it qualifies.
 
-            AND IT CARRIES THE ZERO. /people/ now shows all sixteen faces, and
+            AND IT CARRIES THE ZERO. /people/ shows all sixteen faces, and
             the fact that had to survive that — the board is not yet seated — is
             the same fact here, in the same words, out of the same export, so
-            the two pages cannot drift. The headline above keeps "asked": this
-            scene shows names only, and the softer "put forward" is reserved
-            for the page that shows faces, where the claim is bigger. */}
+            the two pages cannot drift. Both places say "put forward", which
+            is the only verb CONTENT-NOTES.md supports. */}
         <p class="people__board-label" data-reveal>
           <span class="index tnum">{standing.put}</span>
           <span class="people__qual">Prospective board. {standing.none}</span>
@@ -114,24 +117,33 @@ const standing = standingOf(board);
       </div>
       <hr class="rule" data-wipe="left" />
 
-      {/* One run per constituency. Each uncovers as a territory rather than
-          fading in with everything else, and every name is one unbreakable
-          unit so a roster never turns back into prose. */}
-      <ul class="people__cohorts">
-        {cohorts.map((c, ci) => (
-          <li data-wipe="left" data-delay={String(160 + ci * 130)}>
-            <span class="label label--brass people__cohort">{c.label}</span>
-            <span class="people__names">
-              {c.people.map((b, i) => (
-                <>
-                  {i > 0 ? ' ' : null}
-                  <span class="people__name">{b.name}{i < c.people.length - 1 && <span class="people__sep" aria-hidden="true">·</span>}</span>
-                </>
-              ))}
-            </span>
-          </li>
+      {/* ONE RUN, NOT THREE. It was three labelled runs — Policy, Capital,
+          Practice — which meant this scene put a brass heading over five
+          named people and told a reader what they do for an institute none
+          of them has joined. The names are the same names; what is gone is
+          the three claims that were sorting them, and the three brass marks
+          that made those claims look like structure.
+
+          It uncovers as one territory, left to right, which is the same
+          gesture the roster on /people/ makes. Every name is one unbreakable
+          unit, so a run of sixteen never wraps mid-name — which is the whole
+          of what the three runs were buying typographically.
+
+          NO SEPARATOR MARK. There was a brass middot between names, carried
+          on the end of each name so a line could not open on one. Three runs
+          of 6 / 5 / 5 each set on a single desktop line, so it never ended
+          one either. One run of sixteen sets on three lines at 1440 and four
+          at 1024, and the mark then hangs in the rag at the end of every
+          line but the last. The gap separates instead, at every width — see
+          the CSS below. */}
+      <p class="people__names" data-wipe="left" data-delay="160">
+        {board.map((b, i) => (
+          <>
+            {i > 0 ? ' ' : null}
+            <span class="people__name">{b.name}</span>
+          </>
         ))}
-      </ul>
+      </p>
     </div>
   </div>
 </section>
@@ -206,22 +218,14 @@ const standing = standingOf(board);
     letter-spacing: -0.008em;
     color: var(--fg);
   }
-  .people__cohorts {
-    list-style: none; margin: 0; padding: 0;
-    display: grid;
-    row-gap: clamp(1.4rem, 2.8vw, 2.4rem);
-    padding-top: clamp(0.5rem, 1.2vw, 1rem);
-  }
-  /* The cohort label hangs above its run rather than beside it, so the names
-     take the whole measure of the frame instead of two-thirds of it. */
-  .people__cohorts li { display: grid; row-gap: 0.5rem; }
-  .people__cohort { line-height: 1; }
   /* THE SIZE IS THE POINT. These sixteen names were set at 19px in a
      right-hand column — a caption for the people the scene's own headline
      asks the reader to weigh. They are set at --step-sub here, one rung
      under the claim above them and the same rank as the two founders'
      names, which is what "put forward to govern the work" actually means. */
   .people__names {
+    margin: 0;
+    padding-top: clamp(0.5rem, 1.2vw, 1rem);
     font-family: var(--serif);
     font-weight: 340;
     font-size: var(--step-sub);
@@ -230,13 +234,23 @@ const standing = standingOf(board);
     color: var(--fg);
     text-wrap: pretty;
   }
-  /* Each name plus its trailing middot is one unbreakable unit, so nothing
-     ever wraps as "Tess deBlanc-" / "Knowles" and no line opens on a
-     separator. */
-  .people__name { display: inline-block; white-space: nowrap; }
-  /* The word space between two units supplies the gap on the right, so the
-     middot is only padded on the left. */
-  .people__sep { color: var(--brass); padding-left: 0.34em; }
+  /* Each name is one unbreakable unit, so nothing ever wraps as
+     "Tess deBlanc-" / "Knowles" and no line opens mid-name. */
+  .people__name { display: inline-block; white-space: nowrap; padding-right: 0.85em; }
+
+  /* THE GAP IS THE SEPARATOR, AT EVERY WIDTH. The brass middot used to be
+     dropped below 861px only, where the run first wrapped; a rule written
+     for three runs that each fitted one desktop line. Sixteen names take
+     three lines at 1440 and four at 1024, and a name-plus-middot unit leaves
+     the mark at the end of every line but the last — 2 to 3 brass ticks
+     hanging in the rag. A separator that separates nothing is not a mark.
+
+     Hanging it off the FOLLOWING name instead only moves the fault to the
+     flush-left rail, where it is worse, and CSS cannot see a line end. So
+     0.85em plus the word space does the work at every width, the way a
+     masthead sets a run of names — and the "16" in the qualifier above is
+     left as the only brass in the scene, which is the same thing the
+     standing rail is on the roster at /people/. */
   .people__more { justify-self: start; }
   @media (hover: hover) {
     .people__more:hover { color: var(--brass); }
@@ -244,7 +258,7 @@ const standing = standingOf(board);
   /* Keyboard parity, outside the hover query — a keyboard exists on touch. */
   .people__more:focus-visible { color: var(--brass); }
   /* If the script never runs, nothing may stay under its mask. */
-  :global(html:not(.js)) .people__cohorts li,
+  :global(html:not(.js)) .people__names,
   :global(html:not(.js)) .people__board .rule { clip-path: none; }
 
   @media (max-width: 860px) {
@@ -262,10 +276,6 @@ const standing = standingOf(board);
     .fd--portrait .fd__row { grid-template-columns: auto minmax(0, 1fr); row-gap: 0.4rem; }
     .fd--portrait .fd__role { grid-column: 2; }
     .fd__role { text-align: left; }
-    .people__cohorts { row-gap: clamp(1.25rem, 4vw, 1.8rem); }
-    /* Once a run takes more than one line the middot starts dangling at
-       line ends, so the separator becomes space instead of a mark. */
-    .people__sep { display: none; }
-    .people__name { padding-right: 0.85em; }
+    /* The separator rule is unconditional now — see the base rule above. */
   }
 </style>

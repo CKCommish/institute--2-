@@ -77,26 +77,42 @@ const shot = onDisk(lawn.src)
   and is now that beat's note; `forum.line` was the body line under the rule
   and is the second beat; `forum.cta` was the link and is the coda. The name
   steps down from --step-poster to --step-head, which is what a beat is — the
-  scene buys 1,890px of held photograph and a navy → lit → navy arc for 33px
+  scene buys 1,755px of held photograph and a navy → lit → navy arc for 33px
   of type, and the ladder still has the hero at 126 and six posters at 86.
 
-  HOW LONG THE HOLD IS, AND WHY IT IS SHORTER THAN IT WAS. It ran at
+  HOW LONG THE HOLD IS, AND WHY IT KEEPS GETTING SHORTER. It ran at
   hold = 1.9, which is a 1.9-viewport pinned range under a 1-viewport stage:
   2,610px at 1440×900, or 30% of an 8,563px homepage and 2.9 screens of
   scrolling, carrying 27 words. Measured with tools/hold-meter.mjs the profile
-  was worse than the total: motion.js gives the beats `lead 0.09` and, with a
-  coda present, `tail 0.24`, so the last quarter of that range — over 400px —
+  was worse than the total: motion.js gave the beats `lead 0.09` and, with a
+  coda present, a hard-coded `tail 0.24`, so the last quarter of the range
   held no display line at all while the lift arc closed the ground back to
   navy behind it. A held scene is the site's one moment that stops; it is not
   a place to keep the reader after the scene has finished happening.
 
-  hold = 1.1 keeps every part of the grammar and cuts the padding: the stage
-  still pins, the push still runs the whole range, the arc still opens and
-  closes, each of the two beats still gets a third of the range to itself
-  (~330px of scroll, more than any reveal on the site), and the tail that
-  carries the coda link is 238px instead of 410. The scene is 1,890px — 2.1
-  screens — and the homepage loses 720px of nothing. holdSm = 1.0 does the
-  same on the phone, where the beats were already tighter.
+  hold = 1.1 cut the total and left the PROPORTION alone: a quarter is a
+  quarter, so the empty tail came down from 410px to 238px and stayed a
+  quarter of the scene. The constant was the actual fault, and it is gone —
+  motion.js now weighs the type in the frame and gives the coda the share of
+  the range its own height comes to (here 29px of link against 261px of beat,
+  which floors at 0.12), and the arc's close is measured off the last beat's
+  own retire rather than off a second hand-written 0.24 that happened to
+  match the first.
+
+  hold = 0.95 is what that leaves. It is arithmetic, not taste: at tail 0.12
+  each of the two beats holds (1 − 0.09 − 0.12) / 2 of the range, so 0.95
+  gives each beat 337px of scroll — the same ~330px the 1.1 build gave them,
+  to the pixel that matters — while the tail carrying the coda link drops
+  from 238px to 103px and the homepage loses another 135px of nothing. The
+  grammar is untouched: the stage pins, the push runs the whole range, the
+  arc opens and closes, each beat still gets more scroll to itself than any
+  reveal on the site. holdSm = 0.85 does the same arithmetic at 390×844,
+  where a beat's span was 283px and still is.
+
+  If a sixth beat or a fatter coda ever lands here, do NOT re-tune these two
+  numbers first. The tail follows the coda on its own now; what `hold` sets
+  is how much scroll a BEAT gets, and 330px is the answer that has survived
+  three passes.
 
   DO NOT FIX THIS BY ADDING BEATS. 27 words is the right number; the homepage
   copy budget is 80–120 words for the whole page (AGENTS.md) and HeldScene's
@@ -125,8 +141,8 @@ const shot = onDisk(lawn.src)
   alt={shot.alt}
   eyebrow={forum.access}
   headingId="forum-h"
-  hold={1.1}
-  holdSm={1.0}
+  hold={0.95}
+  holdSm={0.85}
   focal={shot.focal}
   focalSm={shot.focalSm}
   credit={shot.credit}
