@@ -63,10 +63,22 @@
    The pinned layout is opt-in twice over: it needs `html.js` AND
    `prefers-reduced-motion: no-preference`. The DEFAULT rendering — what a
    reduced-motion reader and a no-JS reader both get — is a plain stacked
-   figure with the beats set below it on the page ground: no sticky, no
-   overlap, and no type on photography at all, so there is no legibility
-   question left to answer. That is a real composition, not a fallback that
-   merely avoids crashing.
+   figure with the beats set below it on the page ground: no sticky and no
+   overlap. That is a real composition, not a fallback that merely avoids
+   crashing.
+
+   IT IS NOT, HOWEVER, "no type on photography at all" — this comment said
+   that for two waves and it was never true. `.held__fig .fig__credit` is set
+   ON the picture in this layout too, which is why `.held__cap` is drawn here
+   (see its rule below). MEASURED, wave-15 judge, by subtraction on the glass
+   at the settled offset with the bar nowhere near it: the homepage credit
+   BLOCK ISLAND, RHODE ISLAND reads 1.13:1 desktop / 1.21:1 mobile under
+   `reduce` against a 4.5 budget. The cap is not buying enough, and this is
+   not a scrim finding — the bar does not reach it. It also is not only an
+   accessibility finding: refs/PHOTO-FACTS.md puts that credit there to stop
+   a Block Island harbour reading as the Kennedy Compound named three lines
+   below it, so a credit nobody can read is a disclaimer that is not doing
+   its job. Do not restore the "no type on photography" claim.
    ------------------------------------------------------------------- */
 import Figure from './Figure.astro';
 
@@ -523,8 +535,14 @@ const style = [
        The 5.5rem is NOT the tail's length and has not been since the tail
        came down to 3.5rem; it is a composed position that happens to have
        been derived from the old one. Do not read it as "the reach plus a
-       gap" — the reach is `--nav-h + --nav-tail` = 118px at 1440x900, and
-       this rail lands at 166px, which is clearance, not coincidence. Nav's
+       gap" — the reach is `--nav-h + --nav-tail`, and this rail is set to
+       clear it, not to coincide with it. STALE FIGURE CORRECTED (wave-15
+       judge): this said 118px, which was true before wave 15 shortened
+       --nav-tail from 3.5rem to 1.6rem. Measured now at 1440x900 the reach
+       is 88.95px (63.36 bar + 25.6 tail) and 83.59px at 390x844, so the
+       5.5rem below is ~29px more clearance than the reach needs. Read it off
+       the element before changing it; do not re-derive it from this comment.
+       Nav's
        sync() now reads --nav-tail rather than retyping it, so the two
        cannot drift the way they did here. */
     :global(html.js) .held__top,

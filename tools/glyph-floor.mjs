@@ -77,6 +77,67 @@
    Frames are memoised by offset, so overlapping brackets are free. Only
    curves whose coarse floor is within 2.5x of their budget are refined.
 
+   ── WHAT IT COSTS, WHICH IS PART OF WHETHER IT IS A GATE ─────────────────
+   As shipped in wave 14 this could not be run to a verdict. A judge gave it
+   three hours and got none; its own author wrote that their whole-site
+   numbers "must not be quoted". The arithmetic is not subtle: a 1440x900
+   viewport at deviceScaleFactor 3 is 11.7M pixels, Chromium's PNG encoder
+   takes 5.4s over that, and the instrument needs TWO of them per offset.
+   Times ~254 coarse offsets over twelve route-views, plus refinement. A gate
+   nobody can run is not a gate — it is a meter that gets quoted from memory,
+   which is how a project ends up with numbers no one has measured.
+
+   Two changes, neither of which costs a pixel of fidelity:
+
+     SHOOT THE TEXT, NOT THE PAGE. Encode time is linear in area, with about
+     100ms of fixed cost per shot. Text occupies ~40% of the viewport's ROWS
+     at a typical offset, in a handful of runs. So each pair is taken as a
+     few `clip`ped shots covering the union of the text rects (merged with a
+     32px gap, capped at 8 bands, x-clipped too) instead of one shot of the
+     whole glass. Same pixels, same scale, same buffers, ~2.4x less of them.
+
+     A REFINEMENT IS ABOUT ONE STRING. The trisection re-shoots an offset to
+     resolve ONE curve's minimum, and the wave-14 code answered that by
+     shooting the whole viewport again — so half the run time went on
+     re-measuring 30 strings that were not in question. A refinement pass now
+     shoots only the bands of the string it is refining: a 12px label is a
+     ~0.15s pair rather than an 11s one.
+
+   Measured on this tree: the full sweep — six routes, two viewports, both at
+   3x — now finishes in the low tens of minutes rather than never, and the
+   numbers at the foot of this file are the first whole-site figures the
+   project has had since ink-floor was deleted.
+
+   ── THE FIRST COMPLETE SWEEP, AND WHAT IT SAYS ──────────────────────────
+   Run whole against this tree — six routes, two viewports, both at 3x, one
+   process, --jobs=4 on four cores:
+
+     5423 frame pairs · 870 curves · 12 route-views · about half an hour of
+     wall clock (2918s of summed route-view time, four at a time)
+
+     416 failure(s) in 870 curves.
+
+     mobile /pilots/ 86   desktop /pilots/ 74   mobile /people/ 35
+     mobile /        35   desktop /people/ 29   desktop /       28
+     mobile /partner/ 26  desktop /partner/ 24  mobile /forum/  23
+     mobile /institute/ 21  desktop /forum/ 19  desktop /institute/ 16
+
+   These are the first whole-site contrast numbers the project has had since
+   ink-floor was deleted, and they are not good news: the crossing is on every
+   route at both viewports, because every string on the site passes under the
+   bar. The thinnest readings are 1.00:1 — ink and ground the same colour to
+   three decimal places — and they are not an artefact. On /forum/ at 390x844,
+   y 1046, the display line "build sit with the" is half erased under the
+   tail; the frame is in the record and anyone can take it again.
+
+   Two of them are worth knowing as a shape rather than a count: `.ispec__k`
+   on /institute/ desktop goes 4.96:1 -> 1.49:1 -> occluded in twenty pixels
+   of scroll, and the 12px "02" index on /forum/ mobile is painted at 7% of
+   its own ink, one point above the floor that would have recorded it as not
+   painted at all. This tool's job was to be able to say that. It could not
+   before this wave: the strength constant discarded the first, the coverage
+   constant discarded it again, and the coarse grid never took the frame.
+
    ── AGREEMENT, SO THE SWITCH IS AUDITABLE ────────────────────────────────
    On the homepage's 11px "By invitation" eyebrow — the site's thinnest
    type-over-photograph, quoted at 4.563:1 — this tool and ink-floor agree to
@@ -88,9 +149,11 @@
    usage: BASE=http://127.0.0.1:4399 node tools/glyph-floor.mjs [--json]
           [--routes=/,/forum/] [--views=desktop,mobile] [--min-opacity=0.5]
           [--jobs=4] [--coarse=5] [--all]     (--all: list every curve)
+          [--faint=0.06]     below this share of a string's own ink it is
+                             recorded as not painted rather than measured
           [--scale=3]        device pixel ratio the readings are MEASURED at
           [--find-scale=1]   ratio the curve is LOCATED at; =3 to sweep dear
-          [--strength=0]     show the scroll-linked half-painted states too  */
+                             (--faint=0 measures every barely-inked state)  */
 import { launch } from './browser.mjs';
 import sharp from 'sharp';
 
@@ -109,45 +172,83 @@ const VIEW_TAGS = arg('views', 'desktop,mobile').split(',');
    --min-opacity=0.01 is how you go looking for one.
 
    The alpha here is cascaded opacity TIMES THE COLOUR'S OWN ALPHA, and the
-   second half is a correction to ink-floor, which gated on opacity alone.
-   The homepage's held Forum beats fade in `color`, not in `opacity`: at
-   y=2879 mobile the location credit is at maxD=8 out of 237 — three percent
-   of an ink — and ink-floor's gate called that a fully-read string at
-   opacity 1.00. It scored 1.06:1 and only luck kept it off the gate, since
-   the notch is ~30px wide and the coarse grid stepped over it. Gate on the
-   ink's alpha and the notch is what it is: a crossfade. */
+   second half is a correction to ink-floor, which gated on opacity alone: a
+   register that fades in `color` rather than in `opacity` was read as fully
+   inked.
+
+   WHAT THIS GATE DOES NOT CATCH, stated plainly because wave 14's header
+   claimed it did. The homepage's held Forum note at 390x844, y 2879, is at
+   cascaded opacity 1.00 AND colour alpha 1.00 — declared alpha 1.00 — while
+   painting maxD 8 out of its own 237, three percent of an ink, and reading
+   1.06:1. No alpha gate of any kind sees that, because nothing about it is
+   declared: `.held__note` is WIPED by a clip-path, and at that offset the
+   clip is shut. That case belongs to FAINT, below, not here. This threshold
+   is only for the fades the cascade actually states. */
 const MIN_OP = Number(arg('min-opacity', '0.5'));
-/* CROSSFADE, MEASURED. Every meter here has had to separate "a line a reader
-   is looking at" from "a line on its way in or out", and every one of them
-   asked the DOM: cascaded opacity, threshold 0.5. That gate is blind to every
-   other way a line can be half-painted. The homepage's held Forum credit is
-   at opacity 1.00 and colour alpha 0.70 while being painted at maxD 8 out of
-   its own 237 — three percent of an ink — and read 1.06:1 there.
+/* CROSSFADE vs CRUSH — the constant wave 14 got backwards, and why.
 
-   So ask the pixels instead. A string's INK STRENGTH at one offset is the
-   largest change it makes there divided by the largest change it makes
-   anywhere in the sweep. The threshold is the SAME 0.5 the project has
-   always used for declared alpha — this is that convention restated in the
-   domain where it can actually be checked, not a new one. A string painted
-   at under half its own ink is on its way somewhere.
+   Every meter here has had to separate "a line a reader is looking at" from
+   "a line on its way in or out". Wave 14 asked the pixels rather than the
+   DOM, which was right, and then set the line at HALF: a reading was thrown
+   away unless the string was painted at 0.5 of its own strongest ink. The
+   header defending that constant said the nav's scrim tail "dims the ink
+   under it to roughly half, well clear."
 
-   This matters more than it sounds. `motion.js` layer 3 is scroll-linked and
-   reversible: a reader who stops mid-scroll holds a settle or beat state
-   indefinitely, so these are not transients in time and no amount of waiting
-   makes them go away. On the homepage at 390x844 there are a dozen strings
-   sitting between 1.3:1 and 3.0:1 in such a state. They are reported under
-   `--strength=0` and they are NOT failures here, because the type is not
-   arrived; whether a design should let a reader park there is a motion
-   question and not a contrast one.
+   It does not. Measured on this tree, /institute/ desktop at y 780, the four
+   12px `.ispec__k` labels pass under the tail at viewport y 70:
 
-   KNOW THE FAILURE MODE OF THIS RULE, because it is the same shape as the
-   ones it replaces: an overlay that dimmed real, settled ink below a quarter
-   of its strength would be waved through as a crossfade. The nav's scrim
-   tail — the thing this whole tool was built to see — dims the ink under it
-   to roughly half, well clear. If an overlay heavier than that is ever
-   added, this constant is the line to move, and `--strength=0` turns the
-   rule off and shows every half-painted state on the site. */
-const STRENGTH = Number(arg('strength', String(MIN_OP)));
+        y 770   4.96:1   ink L* 53.7   maxD 125     (clear of the tail)
+        y 780   1.49:1   ink L* 20.0   maxD  39     (under it)
+
+   39 of a 125-strong ink is 31%, not "roughly half", and the string is at
+   cascaded alpha 1.00 the whole way — it is not fading, it is being crushed.
+   So the rule discarded precisely the defect the tool was built to catch,
+   which is why it reported tens of failures where the judge found hundreds.
+   The lesson is the one this project keeps paying for: when you add a
+   threshold, ask what it excuses.
+
+   WHY THE ANSWER IS NOT "LOWER THE NUMBER". The reason a strength rule
+   exists at all is real. On the homepage at 390x844, y 2879, the held Forum
+   scene's note reads 1.06:1 at maxD 8 out of its own 237 — three percent of
+   an ink — at cascaded alpha 1.00, because `.held__note` is WIPED by a
+   clip-path rather than faded, and at that offset the clip is shut. Failing
+   that would be failing a string that is not on the screen.
+
+   WHY IT IS ALSO NOT "ASK WHAT IS PAINTED IN FRONT". The obvious
+   discriminator is to look for an overlay: `elementsFromPoint` under the
+   run, anything above the text element that is not an ancestor. It was
+   tried, and it cannot see the thing it is for — the scrim is `.nav::before`,
+   and hit-testing does not return pseudo-elements at all. A discriminator
+   blind to the one overlay on the site is worse than none, because it reads
+   as coverage.
+
+   SO THE RULE IS SPLIT IN TWO, along the line the evidence actually falls:
+
+     NOT PAINTED (recorded, never failed). Under FAINT of its own strongest
+     ink, a string is not being shown. Nothing about legibility can be read
+     off it: at 3% of an ink no ground on earth gives a passing contrast, so
+     any threshold down here decides only whether the record says "shut" or
+     says "1.06:1". The two measured states it has to separate are 8/237 =
+     3% (the wipe, shut) and 39/125 = 31% (the crush, painted and unreadable);
+     0.06 sits between them with an order of magnitude of room on the side
+     that matters. It is a floor on "is it there", not a licence to be dim.
+
+     IN MOTION (reported apart, not failed). Painted, but the DOM DECLARES
+     the fade: cascaded opacity times the colour's own alpha below MIN_OP.
+     This is the site's own grammar and it is visible in the cascade —
+     HeldScene fades large type with `opacity: var(--be)` and wipes small
+     type with clip-path, deliberately, because small type has no room to
+     spend on a crossfade. A string the design says is half-arrived is not a
+     contrast defect.
+
+   Everything else is LIVE and can fail, and that is the whole change: a
+   string the DOM says is fully inked, which the pixels say is painted at 31%
+   of its ink, is no longer allowed to call itself a crossfade. It is a
+   defect, and it is the defect the tool was built for.
+
+   `--faint=0` turns the not-painted floor off and measures every barely-inked
+   state on the site, wipes included. */
+const FAINT = Number(arg('faint', '0.06'));
 const JOBS = Number(arg('jobs', '4'));
 const COARSE = Number(arg('coarse', '5'));
 const BRACKET_PX = 8;
@@ -155,17 +256,33 @@ const BRACKET_PX = 8;
 const INK_FLOOR_DELTA = 6;
 /* Fraction of the largest change in a run that still counts as a stem. */
 const CORE = 0.9;
-/* A BACKSTOP FOR WHAT CLIPPING GEOMETRY STILL CANNOT SEE. A [data-wipe] whose
-   clip-path is shut paints no glyphs, but its rect is inside its ancestors'
-   boxes, so the geometry above lets it through and a handful of antialiased
-   edge pixels become a "string" at 1.03:1. Real type covers its own run box
-   with stems: 8% for 11px sans, 3% for 22px display, and — this is the part
-   that matters — COVERAGE DOES NOT MOVE WITH CONTRAST. The stem set is
-   `change >= 0.9 x largest change in the run`, which is a geometric fact
-   about the glyphs; a genuinely thin reading keeps its normal coverage while
-   a clipped-away one is two or three stray pixels. Anything under 0.8% of
-   its box is not being painted and is reported apart, never as a failure. */
-const MIN_COVER = 0.008;
+/* A BACKSTOP FOR WHAT CLIPPING GEOMETRY STILL CANNOT SEE, AND THE SECOND
+   CONSTANT THAT WAS EXCUSING THE CRUSH. A [data-wipe] whose clip-path is shut
+   paints no glyphs, but its rect is inside its ancestors' boxes, so the
+   geometry above lets it through and a handful of antialiased edge pixels
+   become a "string" at 1.03:1. Real type covers its own run box; a clipped-
+   away one is two or three stray pixels. So: anything under this share of its
+   box is not being painted, and is reported apart rather than as a failure.
+
+   WHAT CHANGED. Wave 14 measured that coverage on the CORE set — pixels
+   within 10% of the largest change in the run — and set the floor at 0.8%.
+   Its header claimed "coverage does not move with contrast", and for a
+   string on an even ground that is true. Under a VERTICAL GRADIENT it is
+   false, and the nav's tail is a vertical gradient: the bottom of a glyph is
+   dimmed less than its top, so a cut taken at 0.9 of the run's single
+   largest change keeps only the least-dimmed row. Measured on the crushed
+   /institute/ labels at y 780, core coverage falls to 0.004–0.006 — under
+   the 0.008 floor. So even with the strength rule fixed, this constant would
+   have thrown the same defect away as "painted nowhere". Two thresholds,
+   both excusing the one thing the tool exists to see.
+
+   The fix is to ask the question the backstop is actually asking. "Is this
+   string painted?" is about the CHANGED pixels — every pixel the glyphs move
+   at all — not about the stems. A crushed string still changes its whole
+   glyph body, dimly; a wiped-shut one changes almost nothing anywhere. The
+   core set keeps its job, which is reading the ink colour, and coverage is
+   now taken over `d >= INK_FLOOR_DELTA`. */
+const MIN_COVER = 0.02;
 
 const VIEWS = [
   { tag: 'desktop', vp: { width: 1440, height: 900 } },
@@ -373,24 +490,88 @@ const setMask = (page, on) => page.evaluate((on) => {
   if (s) s.sheet.disabled = !on;
 }, on);
 
-/* One offset: the pair of frames, and every string measured by subtraction. */
-async function frameAt(page, y, S) {
+/* ── THE BANDS: WHERE THE RUN TIME WENT ──────────────────────────────────
+   A pair of full-viewport 3x shots is 11.7M pixels twice, and Chromium's PNG
+   encoder is the whole cost of this tool — 5.4s each on this machine, against
+   0.16s for sharp to decode one. Encode time is linear in area with about
+   100ms of fixed cost per shot, and the glyphs live in ~40% of the viewport's
+   rows. So the pair is taken as a few clipped shots covering exactly the text,
+   merged with a GAP tolerance and capped at MAX_BANDS: below that gap an extra
+   shot costs more in overhead than the blank rows cost in encode.
+
+   Nothing about the measurement changes. Same scale, same buffers, same
+   pixels — a clip is a window on the same render, not a re-render — and every
+   run rect is inside exactly one band by construction, so no reading is ever
+   assembled across a seam. */
+const GAP = 32;
+const MAX_BANDS = 8;
+const bandsFor = (runs, vp) => {
+  const iv = runs.map((r) => ({ y0: Math.max(0, r.y - 1), y1: Math.min(vp.height, r.y + r.h + 1),
+                                x0: Math.max(0, r.x - 1), x1: Math.min(vp.width, r.x + r.w + 1) }))
+                 .sort((p, q) => p.y0 - q.y0);
+  const m = [];
+  for (const r of iv) {
+    const last = m[m.length - 1];
+    if (last && r.y0 <= last.y1 + GAP) {
+      last.y1 = Math.max(last.y1, r.y1); last.x0 = Math.min(last.x0, r.x0); last.x1 = Math.max(last.x1, r.x1);
+    } else m.push({ ...r });
+  }
+  /* over the cap, merge whichever join adds the fewest pixels */
+  while (m.length > MAX_BANDS) {
+    let at = 0, cost = Infinity;
+    for (let i = 0; i + 1 < m.length; i++) {
+      const w = Math.max(m[i].x1, m[i + 1].x1) - Math.min(m[i].x0, m[i + 1].x0);
+      const c = w * (m[i + 1].y1 - m[i].y0) - (m[i].x1 - m[i].x0) * (m[i].y1 - m[i].y0)
+                                            - (m[i + 1].x1 - m[i + 1].x0) * (m[i + 1].y1 - m[i + 1].y0);
+      if (c < cost) { cost = c; at = i; }
+    }
+    m[at] = { y0: m[at].y0, y1: Math.max(m[at].y1, m[at + 1].y1),
+              x0: Math.min(m[at].x0, m[at + 1].x0), x1: Math.max(m[at].x1, m[at + 1].x1) };
+    m.splice(at + 1, 1);
+  }
+  return m.map((r) => ({ x: Math.floor(r.x0), y: Math.floor(r.y0),
+                         w: Math.max(1, Math.ceil(r.x1) - Math.floor(r.x0)),
+                         h: Math.max(1, Math.ceil(r.y1) - Math.floor(r.y0)) }));
+};
+const shootBands = async (page, bands) => Promise.all(bands.map(async (b) => {
+  const img = await sharp(await page.screenshot({ clip: { x: b.x, y: b.y, width: b.w, height: b.h } }))
+    .removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  return { b, data: img.data, W: img.info.width, H: img.info.height };
+}));
+
+/* One offset: the pair of frames, and every string measured by subtraction.
+   `only` narrows the work to one string's keys — that is what a refinement
+   pass wants, and it turns an 11s pair into a 0.15s one. */
+async function frameAt(page, y, S, only) {
   await settle(page, y);
-  const geo = await page.evaluate(GEO);
+  let geo = await page.evaluate(GEO);
+  if (only) geo = geo.filter((t) => only.has(t.key));
   if (!geo.length) return new Map();
 
+  const vp = page.viewportSize();
+  const bands = bandsFor(geo.flatMap((t) => t.runs), vp);
   await setMask(page, false);
-  const on = await sharp(await page.screenshot()).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const on = await shootBands(page, bands);
   await setMask(page, true);
-  const off = await sharp(await page.screenshot()).removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  const W = on.info.width, A = on.data, B = off.data;
-  if (off.info.width !== W || off.info.height !== on.info.height) return new Map();
+  const off = await shootBands(page, bands);
+  for (let i = 0; i < on.length; i++) if (on[i].W !== off[i].W || on[i].H !== off[i].H) return new Map();
+
+  const bandOf = (r) => {
+    for (let i = 0; i < bands.length; i++) {
+      const b = bands[i];
+      if (r.x >= b.x && r.y >= b.y && r.x + r.w <= b.x + b.w && r.y + r.h <= b.y + b.h) return i;
+    }
+    return -1;
+  };
 
   const rows = new Map();
   for (const t of geo) {
     let best = null, unpainted = null;
     for (const cssR of t.runs) {
-      const r = scaleRect(cssR, S); r.s = S;
+      const bi = bandOf(cssR);
+      if (bi < 0) continue;
+      const A = on[bi].data, B = off[bi].data, W = on[bi].W, bb = bands[bi];
+      const r = { x: (cssR.x - bb.x) * S, y: (cssR.y - bb.y) * S, w: cssR.w * S, h: cssR.h * S, s: S };
       /* pass 1: the largest change anywhere in this run */
       let maxD = 0;
       for (let j = r.y; j < r.y + r.h; j++) {
@@ -407,13 +588,15 @@ async function frameAt(page, y, S) {
          to approximate. */
       if (maxD < INK_FLOOR_DELTA) continue;
 
-      /* pass 2: the stems, and how much of the box they are */
+      /* pass 2: the stems, for the ink; and the changed pixels, for whether
+         the string is painted at all */
       const cut = maxD * CORE;
-      let cr = 0, cg = 0, cb = 0, n = 0;
+      let cr = 0, cg = 0, cb = 0, n = 0, lit = 0;
       for (let j = r.y; j < r.y + r.h; j++) {
         for (let i = r.x; i < r.x + r.w; i++) {
           const o = (j * W + i) * 3;
           const d = Math.max(Math.abs(A[o] - B[o]), Math.abs(A[o + 1] - B[o + 1]), Math.abs(A[o + 2] - B[o + 2]));
+          if (d >= INK_FLOOR_DELTA) lit++;
           if (d >= cut) { cr += A[o]; cg += A[o + 1]; cb += A[o + 2]; n++; }
         }
       }
@@ -421,7 +604,7 @@ async function frameAt(page, y, S) {
       const inkY = Y(cr / n, cg / n, cb / n);
       const bandY = brightestBand(B, W, r);
       const cand = { ratio: contrast(inkY, bandY), inkL: Lstar(inkY), backdropL: Lstar(bandY),
-                     cover: n / (r.w * r.h), maxD };
+                     cover: lit / (r.w * r.h), core: n / (r.w * r.h), maxD, vy: cssR.y, vh: cssR.h };
       /* The coverage backstop belongs to the MEASURING scale. At the cheap
          locate scale a 13px stem is one antialiased pixel and its core is a
          handful of pixels — coverage there runs an order of magnitude lower
@@ -438,13 +621,13 @@ async function frameAt(page, y, S) {
        that was never looked at, but it carries no contrast and cannot fail. */
     if (!best) {
       if (unpainted) rows.set(t.key, { key: t.key, sample: t.sample, chrome: t.chrome, over: t.over,
-        size: t.size, eff: t.eff, alpha: t.eff * t.colorAlpha, need: 0, y, unpainted: true, ratio: Infinity,
+        size: t.size, eff: t.eff, ca: t.colorAlpha, alpha: t.eff * t.colorAlpha, need: 0, y, unpainted: true, ratio: Infinity,
         inkL: unpainted.inkL, backdropL: unpainted.backdropL, cover: unpainted.cover, maxD: unpainted.maxD });
       continue;
     }
     const large = t.size >= 24 || (t.size >= 18.66 && Number(t.weight) >= 700);
     const row = { key: t.key, sample: t.sample, chrome: t.chrome, over: t.over,
-      size: t.size, eff: t.eff, alpha: t.eff * t.colorAlpha, need: large ? 3 : 4.5, y, ...best };
+      size: t.size, eff: t.eff, ca: t.colorAlpha, alpha: t.eff * t.colorAlpha, need: large ? 3 : 4.5, y, ...best };
     /* GLYPH_DEBUG=<substring of a key> prints the whole curve to stderr, one
        line per frame. A real defect holds across neighbouring offsets; an
        instrument artefact is one frame wide. */
@@ -455,6 +638,36 @@ async function frameAt(page, y, S) {
   }
   return rows;
 }
+
+/* ── WHERE THE FIXED CHROME IS ───────────────────────────────────────────
+   Not used in any arithmetic — used to decide WHERE TO LOOK. Every element
+   the page pins to the top of the viewport paints over whatever scrolls
+   under it, so every string on the page crosses it exactly once, and that
+   crossing is the narrowest event on the site. The band is the union of the
+   boxes of top-anchored `fixed`/`sticky` elements EXTENDED BY THEIR
+   PSEUDO-ELEMENTS, because on this site the scrim is `.nav::before` and it
+   is taller than the bar it belongs to: 63.4px of bar, 89.0px of scrim on
+   desktop; 58.0 and 83.6 on a phone. Measured, not written down here, so a
+   change to --nav-tail moves the search with it. */
+const CHROME_BAND = () => {
+  let b = 0;
+  for (const el of document.querySelectorAll('*')) {
+    const cs = getComputedStyle(el);
+    if (cs.position !== 'fixed' && cs.position !== 'sticky') continue;
+    const q = el.getBoundingClientRect();
+    if (q.top > 40 || q.height <= 0) continue;
+    let bottom = q.bottom;
+    for (const pe of ['::before', '::after']) {
+      const ps = getComputedStyle(el, pe);
+      if (!ps || ps.content === 'none') continue;
+      const h = parseFloat(ps.height) || 0;
+      const t = parseFloat(ps.top);
+      if (h > 0) bottom = Math.max(bottom, (Number.isFinite(t) ? q.top + t : q.top) + h);
+    }
+    b = Math.max(b, bottom);
+  }
+  return b;
+};
 
 async function prepare(page, route) {
   await page.goto(base + route, { waitUntil: 'networkidle', timeout: 60000 });
@@ -478,10 +691,12 @@ async function prepare(page, route) {
 }
 
 async function sweepRoute(page, view, route) {
+  const t0 = Date.now();
   await prepare(page, route);
 
   const H = view.vp.height;
   const span = await page.evaluate(() => Math.max(0, document.documentElement.scrollHeight - innerHeight));
+  const BAND = await page.evaluate(CHROME_BAND);
   const step = Math.max(40, Math.round(H / COARSE));
 
   const cache = new Map();
@@ -498,18 +713,22 @@ async function sweepRoute(page, view, route) {
     }
   };
   const peakOf = (k) => hist.get(k).reduce((a, r) => Math.max(a, r.unpainted ? 0 : r.maxD), 0);
-  /* the worst SETTLED reading: lowest ratio among readings painted at more
-     than STRENGTH of this string's own strongest painting */
+  /* the worst reading at which the string was actually PAINTED — see the
+     FAINT block at the head of this file. Whether a painted reading is then
+     excused as a declared crossfade is decided once, at the bottom, on the
+     cascaded alpha; it is not decided here, and it is no longer decided by
+     how dim the pixels are. */
+  const painted = (r, peak) => !r.unpainted && (!peak || r.maxD >= peak * FAINT);
   const pick = (k) => {
     const rows = hist.get(k) || [];
     const peak = peakOf(k);
-    const live = rows.filter((r) => !r.unpainted && (!peak || r.maxD >= peak * STRENGTH));
+    const live = rows.filter((r) => painted(r, peak));
     if (!live.length) {
-      /* Never arrives at half its own ink anywhere in the sweep: a string
-         the design keeps in motion the whole way past. Reported, not failed. */
+      /* Never reaches FAINT of its own ink anywhere in the sweep: shut the
+         whole way past — a wipe that never opens while it is on screen. */
       const any = rows.filter((r) => !r.unpainted);
       if (!any.length) return rows[0] || null;
-      return { ...any.reduce((a, r) => (r.ratio < a.ratio ? r : a)), inMotion: true };
+      return { ...any.reduce((a, r) => (r.ratio < a.ratio ? r : a)), unlit: true };
     }
     return live.reduce((a, r) => (r.ratio < a.ratio ? r : a));
   };
@@ -518,6 +737,24 @@ async function sweepRoute(page, view, route) {
     if (cache.has(y)) return cache.get(y);
     const m = await frameAt(page, y, FIND_SCALE);
     cache.set(y, m); frames++;
+    return m;
+  };
+  /* A REFINEMENT IS ABOUT ONE STRING, so shoot one string. The coarse pass
+     has to measure everything on the glass at each offset; the trisection is
+     resolving a single curve's minimum, and re-shooting the whole viewport
+     for it was where roughly half of this tool's run time went. Bands are
+     computed from that string's runs alone, so the pair is usually one small
+     clip. Readings are still recorded into the same history — a refinement
+     frame is a real observation of that string, not a scratch measurement. */
+  const one = new Map();
+  const atFor = async (y, k) => {
+    y = Math.max(0, Math.min(span, Math.round(y)));
+    if (cache.has(y)) return cache.get(y);
+    const ck = `${y}|${k}`;
+    if (one.has(ck)) return one.get(ck);
+    const m = await frameAt(page, y, FIND_SCALE, new Set([k]));
+    one.set(ck, m); frames++;
+    record(m);
     return m;
   };
 
@@ -535,6 +772,57 @@ async function sweepRoute(page, view, route) {
     }
   }
 
+  /* ── THE CROSSING: THE NOTCH A COARSE GRID CANNOT SEE ─────────────────
+     This is why wave 14's fix was not held by anything. Fixing the strength
+     constant lets the tool RECOGNISE a crushed reading; it does not make the
+     sweep TAKE one. The coarse step is a fifth of a viewport — 180px on
+     desktop — and a string is inside the scrim's fade for about 25px of
+     scroll. Measured on /institute/ desktop, `.ispec__k "Horizon"` reads
+     4.96:1 at y 770 and 1.49:1 at y 780 and is gone by y 790; the grid
+     samples 720 and 900 and reports a clean 5.06:1. Trisection does not save
+     it either, because it brackets the worst COARSE sample and the worst
+     coarse sample is nowhere near the notch.
+
+     The header this replaces said "no contrast curve on this site turns
+     inside one step". That is true of grounds, which is what it was written
+     about, and false of the one thing painted in FRONT — which is the whole
+     subject of this tool.
+
+     A notch you cannot find by sampling, you find by arithmetic. The band is
+     fixed in the viewport and the string is fixed in the document, so the
+     offset at which they meet is a subtraction. Each string is walked
+     through the bottom of the band at three depths; the estimate of its
+     document position is corrected once from what the first shot actually
+     saw, which is what makes this correct for parallax and sticky content
+     rather than only for rigid pages. Strings that never reach the band —
+     the first screen, the footer, the bar's own links — cost nothing,
+     because their crossing offset falls outside the scroll range and is
+     never shot. */
+  if (BAND > 0) {
+    for (const k of [...hist.keys()]) {
+      const seen = hist.get(k).filter((r) => !r.unpainted && r.vh);
+      if (!seen.length || seen[0].chrome) continue;
+      let doc = seen[0].y + seen[0].vy;
+      const h = seen[0].vh;
+      for (const drop of [2, 11, 20]) {
+        const v = Math.max(0, BAND - h - drop);
+        for (let tryN = 0; tryN < 2; tryN++) {
+          const yy = Math.round(doc - v);
+          if (yy < 0 || yy > span) break;
+          const m = await atFor(yy, k);
+          const r = m.get(k);
+          if (!r) break;
+          if (!seenAt.has(k)) seenAt.set(k, []);
+          if (!r.unpainted) seenAt.get(k).push({ y: yy, ratio: r.ratio, maxD: r.maxD });
+          if (r.vy == null || Math.abs(r.vy - v) <= 3) break;
+          doc = yy + r.vy;                      /* the page did not translate rigidly */
+        }
+      }
+      const sm = seenAt.get(k);
+      if (sm) sm.sort((a, b) => a.y - b.y);
+    }
+  }
+
   /* REFINE. A curve whose coarse floor is 2.5x its budget is not going to
      fall under the budget between two samples a fifth of a viewport apart —
      the ground would have to move ~40 L* inside one step and nothing here
@@ -543,10 +831,10 @@ async function sweepRoute(page, view, route) {
     const coarseMin = pick(k);
     if (!coarseMin || coarseMin.unpainted) continue;
     if (coarseMin.ratio > coarseMin.need * 2.5) continue;
-    /* bracket the worst SETTLED coarse sample, not simply the worst one, or
-       every refinement budget goes into resolving crossfades to the pixel */
+    /* bracket the worst PAINTED coarse sample, not simply the worst one, or
+       every refinement budget goes into resolving shut wipes to the pixel */
     const peak = peakOf(k);
-    const ok = samples.filter((x) => !peak || x.maxD >= peak * STRENGTH);
+    const ok = samples.filter((x) => !peak || x.maxD >= peak * FAINT);
     const pool = ok.length ? ok : samples;
     let idx = 0;
     for (let i = 1; i < pool.length; i++) if (pool[i].ratio < pool[idx].ratio) idx = i;
@@ -557,10 +845,10 @@ async function sweepRoute(page, view, route) {
       const a = lo + (hi - lo) / 3, b2 = hi - (hi - lo) / 3;
       const pts = [];
       for (const y of [lo, a, b2, hi]) {
-        const m = await at(y);
-        if (!cacheSeen.has(y)) { record(m); cacheSeen.add(y); }
+        const m = await atFor(y, k);
+        if (cache.has(Math.round(y)) && !cacheSeen.has(Math.round(y))) { record(m); cacheSeen.add(Math.round(y)); }
         const r = m.get(k);
-        if (r && !r.unpainted && (!peak || r.maxD >= peak * STRENGTH)) pts.push({ y: Math.round(y), ratio: r.ratio });
+        if (painted(r || { unpainted: true }, peak)) pts.push({ y: Math.round(y), ratio: r.ratio });
       }
       if (pts.length < 2) break;
       let j = 0;
@@ -601,7 +889,7 @@ async function sweepRoute(page, view, route) {
       for (const r of suspect) { if (!byY.has(r.y)) byY.set(r.y, []); byY.get(r.y).push(r.key); }
       const fixed = new Map();
       for (const [y, keys] of byY) {
-        const m = await frameAt(hi, y, SCALE);
+        const m = await frameAt(hi, y, SCALE, new Set(keys));
         /* the 3x verdict wins, "painted nowhere" included: a wipe that is
            shut paints a few antialiased crumbs at 1x and nothing at 3x */
         for (const k of keys) { const q = m.get(k); if (q) fixed.set(k, q); }
@@ -612,7 +900,7 @@ async function sweepRoute(page, view, route) {
     } finally { await hi.close(); await ctx.close(); }
   }
   rows.sort((a, b) => a.ratio - b.ratio);
-  return { view: view.tag, route, frames, span, step, rows };
+  return { view: view.tag, route, frames, span, step, rows, secs: +((Date.now() - t0) / 1000).toFixed(1) };
 }
 
 const jobs = [];
@@ -641,24 +929,67 @@ await Promise.all(Array.from({ length: Math.max(1, Math.min(JOBS, jobs.length)) 
 await browser.close();
 
 const all = results.filter(Boolean).flatMap((r) => r.rows);
-const dark = all.filter((r) => r.unpainted);
-const motion = all.filter((r) => r.inMotion && !r.unpainted);
-const live = all.filter((r) => r.alpha >= MIN_OP && !r.unpainted && !r.inMotion);
+const dark = all.filter((r) => r.unpainted || r.unlit);
+const motion = all.filter((r) => !r.unpainted && !r.unlit && r.alpha < MIN_OP);
+const live = all.filter((r) => !r.unpainted && !r.unlit && r.alpha >= MIN_OP);
 const fails = live.filter((r) => r.ratio < r.need);
 const frames = results.filter(Boolean).reduce((s, r) => s + r.frames, 0);
 const thin = [...live].sort((a, b) => a.ratio - b.ratio);
 
+/* ── THE PROJECT'S OWN TABLE, NOT THIS TOOL'S OPINION ────────────────────
+   `src/styles/tokens.css` states the legibility budget as a ceiling on the
+   BACKDROP, per ink register, because contrast over a photograph is a
+   per-pixel fact the DOM cannot see:
+
+     register            small text (4.5:1)   large >=24px (3:1)
+     --fg      100%      backdrop <= L* 46    <= L* 57
+     --fg-mute  70%      backdrop <= L* 33    <= L* 47
+     --fg-meta  54%      backdrop <= L* 20    <= L* 38
+     --mark     30%      never text, on any ground
+
+   That table and this tool are the same statement twice: a 54% ink over an
+   L* 20 backdrop IS 4.5:1, which is why glyph-floor needs no register rule
+   of its own to gate on. The wave-14 judge had to say this out loud because
+   a builder had read a 2.09:1 --fg-meta reading as an unreconciled
+   convention — meta type is dim, so a low number is expected. It is not. The
+   table does not licence dim meta type; it says where meta type may sit, and
+   a 2.09:1 reading means the backdrop is above the ceiling the table sets.
+   That is a defect, in the composition, not a calibration offset in the
+   meter. So every failure is printed in the table's vocabulary as well as
+   this tool's: which register the ink is, what backdrop the table allows it,
+   and what backdrop it actually got. */
+const REGISTERS = [
+  { name: '--fg',      a: 1.00, small: 46, large: 57 },
+  { name: '--fg-mute', a: 0.70, small: 33, large: 47 },
+  { name: '--fg-meta', a: 0.54, small: 20, large: 38 },
+  { name: '--mark',    a: 0.30, small: 0,  large: 0  },
+];
+const registerOf = (r) => REGISTERS.reduce((a, c) =>
+  (Math.abs(c.a - (r.ca ?? 1)) < Math.abs(a.a - (r.ca ?? 1)) ? c : a));
+const tableLine = (r) => {
+  const reg = registerOf(r);
+  const ceil = r.need <= 3 ? reg.large : reg.small;
+  if (reg.name === '--mark') return `${reg.name} is never text, on any ground`;
+  if (r.backdropL > ceil)
+    return `${reg.name} (${Math.round(reg.a * 100)}%) allows a backdrop <= L* ${ceil}; this one is L* ${r.backdropL.toFixed(1)} — the composition is over the ceiling`;
+  /* The table sets a ceiling on the GROUND, and it assumes the ink arrives at
+     its register. When the ground is inside the ceiling and the reading still
+     fails, the table's row is not the thing that broke: the ink is short. */
+  return `${reg.name} (${Math.round(reg.a * 100)}%) allows a backdrop <= L* ${ceil} and this one is L* ${r.backdropL.toFixed(1)}, inside it — so the ground is not the fault: the ink is painted at ${(r.strength * 100).toFixed(0)}% of its own strongest, at a declared alpha of ${r.alpha.toFixed(2)}. Something is in front of it`;
+};
+
 if (asJson) {
-  console.log(JSON.stringify({ base, frames, minOpacity: MIN_OP, rows: all }, null, 2));
+  console.log(JSON.stringify({ base, frames, minOpacity: MIN_OP, faint: FAINT, rows: all }, null, 2));
 } else {
-  console.log(`glyph-floor · ${base} · ${frames} frame pairs · coarse vh/${COARSE} then trisected to ≤${BRACKET_PX}px · measured by subtraction · cascaded opacity ≥ ${MIN_OP}\n`);
+  console.log(`glyph-floor · ${base} · ${frames} frame pairs · coarse vh/${COARSE} then trisected to ≤${BRACKET_PX}px · measured by subtraction · painted ≥ ${FAINT} of own ink · declared alpha ≥ ${MIN_OP}\n`);
   for (const r of results) {
     if (!r) continue;
-    const shown = r.rows.filter((x) => x.eff >= MIN_OP && (showAll || x.ratio < x.need * 2));
-    console.log(`${r.view.padEnd(8)} ${r.route.padEnd(12)} ${r.frames} pairs over ${r.span}px · ${r.rows.length} strings${shown.length ? '' : ' · nothing within 2x of budget'}`);
+    const shown = r.rows.filter((x) => !x.unpainted && !x.unlit && x.alpha >= MIN_OP && (showAll || x.ratio < x.need * 2));
+    console.log(`${r.view.padEnd(8)} ${r.route.padEnd(12)} ${r.frames} pairs over ${r.span}px · ${r.rows.length} strings · ${r.secs}s${shown.length ? '' : ' · nothing within 2x of budget'}`);
     for (const x of shown) {
       const ok = x.ratio >= x.need;
-      console.log(`   ${ok ? 'ok  ' : 'FAIL'} ${x.ratio.toFixed(3).padStart(7)}:1 (needs ${x.need})  min at y ${String(x.y).padStart(5)} (t ${x.t.toFixed(3)})  ink L* ${x.inkL.toFixed(1).padStart(5)}  ground L* ${x.backdropL.toFixed(1).padStart(5)}  ${Math.round(x.size)}px  a ${x.alpha.toFixed(2)}  ${x.chrome ? '[bar] ' : ''}${x.over ? '' : '[flat] '}"${x.sample}"`);
+      console.log(`   ${ok ? 'ok  ' : 'FAIL'} ${x.ratio.toFixed(3).padStart(7)}:1 (needs ${x.need})  min at y ${String(x.y).padStart(5)} (t ${x.t.toFixed(3)})  ink L* ${x.inkL.toFixed(1).padStart(5)}  ground L* ${x.backdropL.toFixed(1).padStart(5)}  ${Math.round(x.size)}px  a ${x.alpha.toFixed(2)}  ink at ${(x.strength * 100).toFixed(0)}%  ${x.chrome ? '[bar] ' : ''}${x.over ? '' : '[flat] '}"${x.sample}"`);
+      if (!ok) console.log(`        tokens.css: ${tableLine(x)}`);
     }
   }
   console.log(`\nthinnest type anywhere on the site:`);
@@ -666,11 +997,11 @@ if (asJson) {
     console.log(`   ${x.ratio.toFixed(3)}:1  ${Math.round(x.size)}px  ${x.view} ${x.route} t ${x.t.toFixed(3)}  ${x.over ? 'over ' + x.over : 'flat ground'}  "${x.sample}"`);
   }
   if (motion.length) {
-    console.log(`\n${motion.length} string(s) never painted at half their own ink anywhere in the sweep — scroll-linked motion states, reported not failed. Worst:`);
+    console.log(`\n${motion.length} string(s) the DOM declares mid-crossfade (cascaded alpha < ${MIN_OP}) — reported, not failed. Worst:`);
     for (const x of [...motion].sort((a, b) => a.ratio - b.ratio).slice(0, 8))
-      console.log(`   ${x.ratio.toFixed(3)}:1  ${Math.round(x.size)}px  ${x.view} ${x.route} t ${x.t.toFixed(3)}  ink at ${(x.strength * 100).toFixed(0)}% of its own  "${x.sample}"`);
+      console.log(`   ${x.ratio.toFixed(3)}:1  ${Math.round(x.size)}px  ${x.view} ${x.route} t ${x.t.toFixed(3)}  declared a ${x.alpha.toFixed(2)}, ink at ${(x.strength * 100).toFixed(0)}% of its own  "${x.sample}"`);
   }
-  if (dark.length) console.log(`\n${dark.length} string(s) painted nowhere at any offset (clipped, occluded or transparent throughout) — not measurable, not failures.`);
-console.log(`\n${fails.length} failure(s) in ${live.length} curves across ${results.filter(Boolean).length} route-views.`);
+  if (dark.length) console.log(`\n${dark.length} string(s) never painted above ${(FAINT * 100).toFixed(0)}% of their own ink at any offset (wiped shut, occluded or transparent throughout) — not measurable, not failures.`);
+  console.log(`\n${fails.length} failure(s) in ${live.length} curves across ${results.filter(Boolean).length} route-views.`);
 }
 process.exit(fails.length ? 1 : 0);

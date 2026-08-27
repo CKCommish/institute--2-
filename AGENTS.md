@@ -27,11 +27,15 @@ two racing runs reported a phantom failure. It caches each gate's verdict
 against the hash of the source tree AND of the gate's own file, so a re-run
 on an unchanged build is instant; `--fresh` ignores the cache.
 
-`glyph-floor` is now the long pole: it shoots two frames at 3x for every
-offset it samples, and a full twelve route-view sweep is tens of minutes, not
-the four the six-gate suite used to cost. That is the price of the only
-contrast reading on this site that has never been wrong. Narrow it with
-`--routes=` and `--views=` while you work; run it whole before you report.
+`glyph-floor` is the long pole: it shoots two frames at 3x for every offset it
+samples. As it shipped in wave 14 that was about seven minutes a route-view
+and a whole-site sweep nobody ever finished — the wave-14 judge gave it three
+hours and got no verdict, and its author's whole-site numbers were withdrawn.
+It now shoots CLIPPED to the text rather than to the whole glass, and a
+refinement shoots only the string it is refining: the same pixels at the same
+scale, for a fraction of the encode. A full twelve route-view sweep is minutes
+now, not never. Narrow it with `--routes=` and `--views=` while you work; run
+it whole before you report — and now you can.
 
 ```bash
 node tools/audit.mjs        # contrast, overflow, heading order, alt text, tap targets, dead links
@@ -142,21 +146,35 @@ ink reads far lighter than its colour and the brass indices on cream came out
 at 3.67:1 against an arithmetic 4.79 — the tool was reporting the browser's
 antialiasing as ink. At 3x the same string reads 4.761 against that 4.794,
 which is the check that says it is measuring ink and not sampling error. The
-whole sweep runs at 3x, and that is what it costs: about seven minutes a
-route-view. A two-stage shortcut — locate at 1x, re-shoot the argmin at 3x —
+whole sweep runs at 3x. A two-stage shortcut — locate at 1x, re-shoot the argmin at 3x —
 was built and then abandoned, and the reason is worth knowing before anyone
 rebuilds it: the 1x bias is not a constant per string, it depends on the
 ground, so the 1x curve is a different shape with its minimum somewhere else.
 Run that way the tool located the "By invitation" eyebrow at t 0.421 and
 called it 8.50:1. It survives as `--find-scale=1` for a quick look, never for
-a gate. And a reading only
-counts if the string is painted at half its own strongest ink or better;
-below that it is being swapped, not read. That is the project's old
-`--min-opacity 0.5` restated in the domain where it can be checked, and it
-matters because `motion.js` layer 3 is scroll-linked and reversible: a reader
-who stops mid-scroll holds a partial state indefinitely, and no amount of
-waiting settles it. Those states are printed under their own heading and
-`--strength=0` shows them all.
+a gate. And — this one was WRONG, so do
+not argue from the wave-14 text — a reading used to be discarded unless the
+string was painted at HALF its own strongest ink, on the claim that the nav's
+scrim tail "dims the ink under it to roughly half, well clear". Measured, the
+tail takes the `.ispec__k` labels on /institute/ from 4.96:1 to 1.49:1 at 31%
+of their ink, at cascaded alpha 1.00. The rule discarded exactly the defect
+the tool was built for, and a second constant — a coverage floor taken on the
+core set — discarded it again, because a vertical gradient collapses core
+coverage. Both are fixed. A reading is "not painted" only below 6% of its own
+ink (the measured wipe-shut state is 3%, the measured crush 31%), coverage is
+taken over the changed pixels, and the only crossfade excuse left is one the
+CASCADE DECLARES, at alpha < 0.5. Those declared states print under their own
+heading; `--faint=0` shows every barely-inked state on the site.
+
+**And the sweep now goes looking for the crossing.** Fixing that constant lets
+the tool recognise a crushed reading; it does not make a coarse grid take one.
+A string is inside the scrim's fade for about 25px of scroll and the coarse
+step is 180px, so the grid stepped over every crossing on the site — which is
+why nothing in the suite held wave 14's own fix. The band is fixed in the
+viewport and a string is fixed in the document, so the offset where they meet
+is a subtraction: each string is now walked through the bottom of the fixed
+chrome at three depths, with its document position corrected once from what
+the first shot actually saw.
 
 **The number to quote.** The site's tightest ARRIVED type is the 11px
 "By invitation" eyebrow on the homepage Forum figure: **4.563:1 on mobile**,

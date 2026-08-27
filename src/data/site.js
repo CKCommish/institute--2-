@@ -315,7 +315,7 @@ export const pilotTerms = [
 export const method = [
   { index: '01', title: 'Find the problem', text: 'Health, education, workforce, energy.' },
   { index: '02', title: 'Match the partners', text: 'Who builds it. Who runs it.' },
-  { index: '03', title: 'Measure, then publish', text: 'The lesson goes to the world.' },
+  { index: '03', title: 'Measure, then publish', text: 'The lessons go to the world.' },
 ];
 
 /* ── People ───────────────────────────────────────────────────────── */
