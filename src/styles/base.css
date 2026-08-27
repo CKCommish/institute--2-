@@ -23,7 +23,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
-  font-synthesis-weight: none;
+  /* Never let the browser fake a face. Weight synthesis was already off;
+     style synthesis matters now that Libre Franklin italic is deliberately
+     not shipped — if a future rule asks a sans element for italic, it should
+     render upright rather than machine-slanted, which is the tell that
+     separates a typeset page from a rendered one. */
+  font-synthesis: none;
 }
 
 img, video, svg, canvas { display: block; max-width: 100%; }
