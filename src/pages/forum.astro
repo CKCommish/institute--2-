@@ -308,12 +308,50 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
         The lawn frame is the one slot where the two strings agree, and it is
         still labelled — a corner label on an owned photograph is a location,
         not an attribution, and this is the claim the page has never been
-        able to make. Confirm the frame is the Compound before shipping it. */}
+        able to make. Confirm the frame is the Compound before shipping it.
+
+        `creditHold` IS THE FIX FOR HOW LONG IT IS THERE, and the corner is
+        unchanged. Measured on the shipped tree at 1440x900, the credit's box
+        was y 90.4–102.0 against a 63.4px bar: fully swallowed at 38.7px of
+        scroll and never returning, on a 900px hero whose event line stays to
+        y ~741. At 390x844 it went at 56px of 844. The disclaimer was on
+        screen for the first 4% of the photograph and the claim for the rest,
+        which is the wrong way round for the one string on this page that
+        says the harbour is not Hyannis Port.
+
+        The three other corners cannot take it. Bottom-left is the invitation
+        line's, bottom-right is the Scroll cue's, and both of those corners
+        lie on the event line's own band — refs/PHOTO-FACTS.md forbids the
+        credit from sitting adjacent to it, which is the whole reason wave 12
+        moved the event line into the display stack. So the corner is right
+        and the duration was wrong; only the duration changed.
+
+        The credit now holds its place under the bar while the photograph
+        scrolls past it, and `creditClear` is where it yields: 11.5rem is
+        measured off THIS masthead's display block, so the credit stops
+        holding and rides out before it can reach the event line rather than
+        crossing it. Measured after — credit fully occluded at scrollY 670
+        (desktop) / 610 (mobile) against the claim's 750 / 700, so the
+        disclaimer is on screen for 89% / 87% of the claim's life against 5%
+        / 8% before; closest the two strings ever come, 54px / 46px, against
+        the 25.6px this masthead already sets between the event line and its
+        own eyebrow; worst contrast anywhere in the hold, by subtraction at
+        3x, 9.66 : 1 and 10.56 : 1.
+
+        Nothing in the arrangement moved. A full-viewport pixel diff of this
+        page before against after, at 1440x900 and 390x844 under `reduce`,
+        differs by ZERO pixels: the credit lands where it always landed and
+        the masthead spends nothing further. The remaining tail — the last
+        ~80px of the hero's scroll, where the event line is still on screen
+        and the credit has gone — is stated in refs/PHOTO-FACTS.md rather
+        than hidden: closing it means taking the bottom-left corner off the
+        invitation line, which is a second bite out of an arrangement wave 12
+        already half spent. */}
     <Figure src={mast.src} alt={mast.alt} ratio="auto" grade={mast.grade}
             focal={mast.focal} focalSm={mast.focalSm}
             parallax={6} scrim="bottom" align={mast.align} reach={mast.reach} rise={mast.rise}
             loading="eager"
-            credit={mast.credit} creditPos="top-right"
+            credit={mast.credit} creditPos="top-right" creditHold creditClear="11.5rem"
             class="fh__bg" />
 
     <div class="shell fh__in">

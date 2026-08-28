@@ -320,18 +320,39 @@
    rule is stated as a ceiling on the backdrop instead, measured in CIE L*:
 
      register            small text (4.5:1)   large ≥24px (3:1)
-     --fg      100%      backdrop ≤ L* 46     ≤ L* 57
-     --fg-mute  70%      backdrop ≤ L* 33     ≤ L* 47
-     --fg-meta  54%      backdrop ≤ L* 20     ≤ L* 38
+     --fg      100%      backdrop ≤ L* 45     ≤ L* 57
+     --fg-mute  70%      backdrop ≤ L* 32     ≤ L* 46
+     --fg-meta  54%      backdrop ≤ L* 19     ≤ L* 37
      --mark     30%      never text, on any ground
+
+   FIVE OF THESE SIX MOVED DOWN ONE POINT IN WAVE 17, and the reason is worth
+   a line because it is the only kind of error a table like this can make.
+   They were 46/57, 33/47, 20/38 — each rounded to the NEAREST whole L* from
+   the point where the register meets its budget, and five of the six rounded
+   up, which on a ceiling is the wrong way. Only --fg's large ceiling (57)
+   happened to round down and survives. Composited against a neutral ground
+   at the OLD ceiling, --fg read 4.440 : 1, --fg-mute 4.479 and 2.973, and
+   --fg-meta 4.465 and 2.972: a
+   composition sitting exactly where the table said it could sit was already
+   half a percent short of the number the table exists to guarantee. The
+   ceilings are now the largest whole L* that actually clears — --fg 4.605 /
+   3.007, --fg-mute 4.611 / 3.059, --fg-meta 4.548 / 3.045 — so the table is
+   a floor rather than a coin toss. The colours themselves did not change and
+   no pixel on the site moved; the numbers describing them did.
+
+   THE SAME SIX NUMBERS ARE COPIED INTO tools/glyph-floor.mjs (the REGISTERS
+   array, ~line 1017), which is what prints "tokens.css says…" under every
+   failure. That is a second copy of a rule this file owns, and until the two
+   are the same the gate will quote the old ceiling back at you. Move them
+   together.
 
    `node tools/photo-meter.mjs` prints the measured backdrop L* under every
    run of type that sits on a photograph, and the position it sits at. Read
    the ceiling off this table.
 
    The consequence worth knowing before you compose: --fg-meta needs a
-   backdrop below L* 20, and a photograph worth keeping does not stay below
-   L* 20 for long. Micro-labels over photography therefore belong in the
+   backdrop below L* 19, and a photograph worth keeping does not stay below
+   L* 19 for long. Micro-labels over photography therefore belong in the
    scrim's deep zone — the bar strip, or the bottom sixth — and nowhere
    else. Set one in the middle of a frame and it will be unreadable no
    matter how the grade is tuned.

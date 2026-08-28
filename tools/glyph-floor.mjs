@@ -151,6 +151,9 @@
           [--jobs=4] [--coarse=5] [--all]     (--all: list every curve)
           [--faint=0.06]     below this share of a string's own ink it is
                              recorded as not painted rather than measured
+          [--shown=0.5]      below this share of a string's own painted ROWS
+                             it is a sliver at an occlusion edge, not a
+                             reading of the string (--shown=0 measures them)
           [--scale=3]        device pixel ratio the readings are MEASURED at
           [--find-scale=1]   ratio the curve is LOCATED at; =3 to sweep dear
                              (--faint=0 measures every barely-inked state)  */
@@ -283,6 +286,60 @@ const CORE = 0.9;
    core set keeps its job, which is reading the ink colour, and coverage is
    now taken over `d >= INK_FLOOR_DELTA`. */
 const MIN_COVER = 0.02;
+/* ── SHOWN: THE THIRD STATE, AND THE ONE WAVE 16 LEFT ON THE TABLE ───────
+   Wave 16 closed 294 failures and left 110 that nobody could classify. Two
+   people looked at pixels and came back disagreeing: one said the thin-ink
+   strings read fine when you load the page at the reported offset, the other
+   said the near-budget strings are where the false positives are. Measured,
+   both were right about their own stratum and the SAME instrument defect was
+   under both of them.
+
+   THE GAP THIS FILLS. The tool already separated "not painted" (nothing
+   changed) from "in motion" (the cascade declares a fade). The middle case it
+   had no name for is a string that is PARTLY ON THE GLASS: some of its rows
+   are painted and the rest are behind something opaque. Every string on this
+   site passes under the nav bar exactly once, and for the few pixels of
+   scroll while it is halfway under, subtraction sees a sliver of glyph — the
+   descenders below the bar's edge, in the 6px of scrim ramp — and reads a
+   contrast off it. Measured on mobile /pilots/ at y 1670, "Butler University"
+   is a 15px string whose run box is 42 device rows; THREE of them are lit.
+   The other 39 are behind an opaque scrim. The tool reported 1.056:1 for a
+   string that is 93% hidden, at a declared alpha of 1.00, which is why no
+   alpha gate saw it and why the crossfade excuse could not reach it.
+
+   WHY IT IS COUNTED IN ROWS AND RELATIVE TO THE STRING'S OWN BEST. The two
+   things that have to be told apart both make a string dim, and only one is
+   a defect:
+
+     A CRUSH takes the whole body down together. The scrim tail dims every
+     stem of the string at once; every row still changes, so `litRows` stays
+     at its peak and SHOWN stays ~1 however dark it gets. The defect this
+     tool was built for — /institute/'s `.ispec__k` at 31% of its own ink,
+     sitting wholly below the bar in the tail — is at SHOWN 1 and is NOT
+     touched by this rule at any setting of it. That is the test of the
+     constant: it cannot excuse a crush, because a crush is fully shown.
+
+     AN OCCLUSION EDGE takes the string away one row at a time. The bar's
+     opaque box eats it from the top, so `litRows` collapses while the
+     surviving rows keep whatever ink they have. That is not a reading of the
+     string; it is a reading of the part of it that is still out.
+
+   Absolute coverage cannot do this job — it varies with typeface, size and
+   how much of a run box a string's glyphs fill, so any absolute floor is a
+   different rule for every string. Each string's OWN peak row count is the
+   only denominator that means the same thing everywhere: what fraction of
+   itself is reaching the glass here, against the most of itself it ever gets.
+
+   WHAT THIS ONE EXCUSES, stated plainly, because that is the question this
+   project keeps paying for not asking. It excuses ONLY readings where more
+   than half of a string's body is behind something opaque. It cannot excuse
+   dimness, a scrim, a wash, a bad ground, a low-contrast palette or a
+   crossfade — all of those leave the body intact and SHOWN at 1. Measured
+   site-wide the quantity is strongly bimodal (see the foot of this file):
+   the population sits at SHOWN 1, and the bar-edge slivers sit under 0.5,
+   with the band between them nearly empty. `--shown=0` turns it off and
+   measures every sliver on the site. */
+const SHOWN = Number(arg('shown', '0.5'));
 
 const VIEWS = [
   { tag: 'desktop', vp: { width: 1440, height: 900 } },
@@ -320,9 +377,42 @@ const SCALE = Number(arg('scale', '3'));
 /* the cheap scale the curve is LOCATED at, before it is MEASURED at SCALE */
 const FIND_SCALE = Number(arg('find-scale', String(SCALE)));
 const scaleRect = (r, S) => ({ x: r.x * S, y: r.y * S, w: r.w * S, h: r.h * S });
-const brightestBand = (raw, W, r) => {
+/* THE GROUND IS READ ONLY IN ROWS THE GLYPHS THEMSELVES LIGHT, and that is
+   wave 17's correction to this function. `litRows` counts, per device row of
+   the run, how many pixels the glyphs changed there.
+
+   A row inside a text run that the glyphs change in NO pixel is not ground
+   behind the type. It is a row where something OPAQUE is painted in front of
+   the type, and it is the only signature of a foreground object that
+   subtraction gives you for free — the ON and OFF frames are identical there
+   precisely BECAUSE the glyphs are covered. Two measured cases, both of which
+   this window used to average in as if they were the backdrop:
+
+     mobile /institute/ y 771, "Three under way, one in exploration". Device
+     rows 39-41 read L* 93.9 with ZERO lit pixels — a 1px brass rule painted
+     ACROSS the line. Every other row of the run is L* 3.1-3.4, page ink. The
+     9-row window landed on 39..47 and averaged to L* 60.4, so the tool
+     reported 2.603:1 for a string that a reader sees as cream on navy. Read
+     in lit rows only it is L* 3.3 and 16.3:1, which is what it looks like.
+
+     mobile /pilots/ y 1670, "Butler University". Device rows 0-32 of a 42-row
+     run are behind the nav's OPAQUE scrim: zero lit pixels. Rows 30-32 are
+     the bar's own bottom edge at L* 33. The window took 30..38 and called the
+     ground L* 19.5 — three of its nine rows being a surface the string is
+     nowhere near, on the far side of an opaque object.
+
+   The header's old claim that three rows is "the narrowest window a hairline
+   cannot dominate" is FALSE AT 3x, which is the scale the whole sweep runs
+   at: `win` is BAND_ROWS * scale = 9 device rows, and a 1px CSS rule is 3 of
+   them — one third of the window, at 76x the luminance of page ink. It
+   dominated by a factor of ten. The window is not the wrong size; it was
+   looking in the wrong rows. Rows the glyphs do not reach are dropped and the
+   window runs over what is left, so the band is still three CSS pixels of
+   ground and it is now three pixels of ground the type is actually on. */
+const brightestBand = (raw, W, r, litRows) => {
   const rows = [];
   for (let j = r.y; j < r.y + r.h; j++) {
+    if (litRows && !litRows[j - r.y]) continue;
     let s = 0;
     for (let i = r.x; i < r.x + r.w; i++) { const o = (j * W + i) * 3; s += Y(raw[o], raw[o + 1], raw[o + 2]); }
     rows.push(s / r.w);
@@ -592,19 +682,26 @@ async function frameAt(page, y, S, only) {
          the string is painted at all */
       const cut = maxD * CORE;
       let cr = 0, cg = 0, cb = 0, n = 0, lit = 0;
+      const litRows = new Int32Array(r.h);
       for (let j = r.y; j < r.y + r.h; j++) {
         for (let i = r.x; i < r.x + r.w; i++) {
           const o = (j * W + i) * 3;
           const d = Math.max(Math.abs(A[o] - B[o]), Math.abs(A[o + 1] - B[o + 1]), Math.abs(A[o + 2] - B[o + 2]));
-          if (d >= INK_FLOOR_DELTA) lit++;
+          if (d >= INK_FLOOR_DELTA) { lit++; litRows[j - r.y]++; }
           if (d >= cut) { cr += A[o]; cg += A[o + 1]; cb += A[o + 2]; n++; }
         }
       }
       if (!n) continue;
       const inkY = Y(cr / n, cg / n, cb / n);
-      const bandY = brightestBand(B, W, r);
+      const bandY = brightestBand(B, W, r, litRows);
+      /* How much of the string's own body is reaching the glass here — see
+         SHOWN, below. Counted in ROWS, because occlusion at a boundary takes
+         the string away one row at a time while a scrim takes the whole body
+         down together. */
+      let litRowN = 0;
+      for (let j = 0; j < r.h; j++) if (litRows[j]) litRowN++;
       const cand = { ratio: contrast(inkY, bandY), inkL: Lstar(inkY), backdropL: Lstar(bandY),
-                     cover: lit / (r.w * r.h), core: n / (r.w * r.h), maxD, vy: cssR.y, vh: cssR.h };
+                     cover: lit / (r.w * r.h), core: n / (r.w * r.h), litRows: litRowN / r.h, maxD, vy: cssR.y, vh: cssR.h };
       /* The coverage backstop belongs to the MEASURING scale. At the cheap
          locate scale a 13px stem is one antialiased pixel and its core is a
          handful of pixels — coverage there runs an order of magnitude lower
@@ -622,7 +719,7 @@ async function frameAt(page, y, S, only) {
     if (!best) {
       if (unpainted) rows.set(t.key, { key: t.key, sample: t.sample, chrome: t.chrome, over: t.over,
         size: t.size, eff: t.eff, ca: t.colorAlpha, alpha: t.eff * t.colorAlpha, need: 0, y, unpainted: true, ratio: Infinity,
-        inkL: unpainted.inkL, backdropL: unpainted.backdropL, cover: unpainted.cover, maxD: unpainted.maxD });
+        inkL: unpainted.inkL, backdropL: unpainted.backdropL, cover: unpainted.cover, litRows: unpainted.litRows, maxD: unpainted.maxD });
       continue;
     }
     const large = t.size >= 24 || (t.size >= 18.66 && Number(t.weight) >= 700);
@@ -713,16 +810,21 @@ async function sweepRoute(page, view, route) {
     }
   };
   const peakOf = (k) => hist.get(k).reduce((a, r) => Math.max(a, r.unpainted ? 0 : r.maxD), 0);
+  /* The most of its own body this string ever gets onto the glass anywhere in
+     the sweep — the denominator for SHOWN. Like peakOf, it cannot be known
+     until the sweep is over, which is why it lives here and not in frameAt. */
+  const peakRowsOf = (k) => hist.get(k).reduce((a, r) => Math.max(a, r.unpainted ? 0 : (r.litRows || 0)), 0);
   /* the worst reading at which the string was actually PAINTED — see the
      FAINT block at the head of this file. Whether a painted reading is then
      excused as a declared crossfade is decided once, at the bottom, on the
      cascaded alpha; it is not decided here, and it is no longer decided by
      how dim the pixels are. */
-  const painted = (r, peak) => !r.unpainted && (!peak || r.maxD >= peak * FAINT);
+  const painted = (r, peak, peakRows) => !r.unpainted && (!peak || r.maxD >= peak * FAINT)
+    && (!peakRows || (r.litRows || 0) >= peakRows * SHOWN);
   const pick = (k) => {
     const rows = hist.get(k) || [];
-    const peak = peakOf(k);
-    const live = rows.filter((r) => painted(r, peak));
+    const peak = peakOf(k), peakRows = peakRowsOf(k);
+    const live = rows.filter((r) => painted(r, peak, peakRows));
     if (!live.length) {
       /* Never reaches FAINT of its own ink anywhere in the sweep: shut the
          whole way past — a wipe that never opens while it is on screen. */
@@ -861,7 +963,8 @@ async function sweepRoute(page, view, route) {
 
   let rows = [...hist.keys()].map(pick).filter(Boolean)
     .map((r) => ({ ...r, view: view.tag, route, t: span ? r.y / span : 0,
-                   strength: peakOf(r.key) ? r.maxD / peakOf(r.key) : 0 }));
+                   strength: peakOf(r.key) ? r.maxD / peakOf(r.key) : 0,
+                   shown: peakRowsOf(r.key) ? (r.litRows || 0) / peakRowsOf(r.key) : 0 }));
 
   /* ── LOCATE CHEAP, MEASURE DEAR — OFF BY DEFAULT, AND HERE IS WHY ────
      `--find-scale=1` sweeps at 1x and re-shoots only each curve's argmin at

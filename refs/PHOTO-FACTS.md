@@ -227,6 +227,69 @@ The rule this adds to the one above: **a place-name set on a photograph is
 kept honest by its grammar before it is kept honest by its position.** If a
 layout ever needs the event line somewhere else, the string survives the move.
 
+### The credit's POSITION was still wrong after wave 16 fixed its contrast (wave 17)
+
+Wave 16 took this credit from 1.06 : 1 to 8.44 : 1 by paint order. It was
+still leaving the screen after 36 pixels of scroll.
+
+Measured on the shipped tree, `/forum/` masthead, both viewports:
+
+| | credit's box | fixed bar | fully swallowed at | claim gone at |
+|---|---|---|---|---|
+| 1440x900 | y 90.4–102.0 | 63.4px | **38.7px of scroll** | 750px |
+| 390x844  | y 83.3–114.1 | 58px    | **56px of scroll**   | 700px |
+
+The credit was anchored to the TOP of a 100svh frame and never returned. The
+event line — `Held at the Kennedy Compound, Hyannis Port` — is at the FOOT of
+the same frame and stays for another seven hundred pixels. So for all but the
+first ~5% of the time a reader looked at this photograph, the claim was on
+screen and the disclaimer was not. A disclaimer with a shorter life than the
+claim it qualifies is not a disclaimer.
+
+**The corner was not the problem and moving it does not fix it.** All three
+other corners are taken — bottom-left is the invitation line, bottom-right is
+the Scroll cue — and both bottom corners lie on the event line's own band,
+which the section above forbids the credit from joining. On a 390px viewport
+the masthead is a single column, so *every* bottom placement is directly
+adjacent to the event line. The defect was DURATION.
+
+So `Figure` grew `creditHold`: the credit renders as a sticky sibling of the
+figure rather than an absolute child of it, and holds its position under the
+bar while the photograph scrolls past. (It has to be a sibling — `.fig` sets
+`overflow: hidden` and is therefore its own scroll container, and a sticky
+element inside one never moves.) `creditClear` is the second half: the length
+at which it stops holding and rides out, measured off the scene's own display
+block, so the credit yields BEFORE it can meet the event line rather than
+crossing it.
+
+Measured after, `/forum/` with `creditClear="11.5rem"`:
+
+- credit fully occluded at scrollY **670** (desktop) / **610** (mobile);
+  claim fully occluded at 750 / 700. The disclaimer is now on screen for
+  **89% / 87%** of the claim's life, against 5% / 8% before.
+- closest the two strings ever come: **54px** (desktop) / **46px** (mobile),
+  against the 25.6px the masthead already sets between the event line and its
+  own eyebrow. They approach; they never cross.
+- at scroll 0 the credit lands on the same pixels it always did. A
+  full-viewport pixel diff of the page before against after, at 1440x900 and
+  390x844 under `prefers-reduced-motion: reduce`, differs by **zero pixels**;
+  the box is unchanged in all three render modes with JavaScript on and off
+  (sticky is CSS, so no render mode can lose it). The arrangement is
+  untouched. Nothing further was spent out of the masthead that wave 12 half
+  spent already.
+- contrast across the whole hold, by subtraction at 3x: worst **9.66 : 1**
+  (desktop, scrollY 260) and **10.56 : 1** (mobile). Riding down the picture
+  costs it nothing, because the wash travels with the glyphs.
+
+The remaining ~11% is real and is stated here so nobody thinks it is closed:
+in the last ~80px of the hero's scroll the event line is still on screen and
+the credit has gone. Closing it completely means giving the credit the
+bottom-left corner, which means moving `By invitation` out of the foot band —
+a second bite out of this masthead's arrangement, and not worth it for the
+tail of a scroll on which the claim itself is sliding under the bar. When the
+client's own photographs land, `forum.jpg` comes off the site and the whole
+question goes with it.
+
 **When the client's Kennedy Compound photographs land**, none of this has to
 be undone. `forum.place` is true of the convening either way and stays as it
 is; `forum.photos.lawn` already carries its own credit (`Hyannis Port,

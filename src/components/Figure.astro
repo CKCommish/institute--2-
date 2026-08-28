@@ -118,6 +118,42 @@ const {
      the scene's own display type. */
   credit,
   creditPos = 'top-right', // top-right | top-left | bottom-right | bottom-left
+  /* THE CREDIT'S LIFETIME, WHICH IS NOT THE SAME QUESTION AS ITS CORNER.
+
+     A credit anchored to the TOP of a full-bleed scene is pinned to the top
+     of the FRAME, and the frame's top is the first thing a reader scrolls
+     away from. Measured on /forum/ at 1440x900: --nav-h resolves to 63.4px,
+     the credit's box is y 90.4–102.0, so it is fully inside the fixed bar at
+     38.7px of scroll and never comes back. The event line it exists to
+     disambiguate — "Held at the Kennedy Compound, Hyannis Port" — sits at
+     y 770–805 of the same 900px frame and stays for another 700px. For all
+     but the first ~4% of the hero the claim is on screen and the disclaimer
+     is not. (390x844: bar 58px, credit 83.3–114.1, gone at 56px of 844.)
+
+     No corner fixes that. The two bottom corners of this masthead are taken
+     (the invitation line, the Scroll cue) and both sit on the event line's
+     own band, which refs/PHOTO-FACTS.md forbids the credit from joining. The
+     defect is DURATION, so duration is what this changes and nothing else.
+
+     `creditHold` renders the credit as a STICKY sibling of the figure rather
+     than an absolute child of it, so it holds its position under the bar
+     while the photograph scrolls past instead of going under with the frame's
+     top edge. It has to be a sibling: `.fig` sets `overflow: hidden` and is
+     therefore its own scroll container, and a sticky element inside one never
+     moves. `creditClear` below says where it lets go.
+
+     At scroll 0 it lands on the same pixels as the absolute credit did — the
+     arrangement is untouched, only its lifetime. The scene must give it a
+     positioned ancestor of its own height, which every full-bleed scene here
+     already is (`.fig--fill` needs one anyway). */
+  creditHold = false,
+  /* HOW FAR UP FROM THE FOOT OF THE FRAME THE SCENE'S OWN TYPE REACHES.
+     A held credit rides down the picture as the picture scrolls, so left to
+     itself it will eventually arrive at whatever the scene has set in the
+     lower half of the frame and cross it. This is the length at which it
+     stops holding and travels out with the photograph instead — measured off
+     the scene's own display block, not guessed. Ignored unless creditHold. */
+  creditClear = '0px',
   sizes = '100vw',
   class: klass = '',
 } = Astro.props;
@@ -278,7 +314,7 @@ const style = [
       grain and below the credit. */}
   <div class="fig__ink"><slot name="grade" /></div>
 
-  {credit && (
+  {credit && !creditHold && (
     <p class="label fig__credit" data-pos={creditPos}>
       <span class="fig__dot" aria-hidden="true"></span>{credit}
     </p>
@@ -286,6 +322,13 @@ const style = [
 
   <div class="fig__over"><slot /></div>
 </figure>
+{credit && creditHold && (
+  <div class="fig__hold" style={`--credit-clear:${creditClear}`}>
+    <p class="label fig__credit fig__credit--hold" data-pos={creditPos}>
+      <span class="fig__dot" aria-hidden="true"></span>{credit}
+    </p>
+  </div>
+)}
 
 <style>
   .fig {
@@ -846,6 +889,71 @@ const style = [
   .fig--fill .fig__credit[data-pos$='left']  { left: var(--gutter); }
   .fig--fill .fig__credit[data-pos^='top']   { top: calc(var(--nav-h) + clamp(0.9rem, 3vh, 2rem)); }
   .fig--fill .fig__credit[data-pos^='bottom']{ bottom: clamp(1.1rem, 2.4vw, 2.2rem); }
+
+  /* ── the held credit ──────────────────────────────────────────────
+     Same mark, same register, same wash, same corner — a different
+     LIFETIME. See the note on `creditHold` at the head of this file.
+
+     The wrapper is the frame the credit sticks inside: it covers the scene
+     (whose own height is the photograph's) and it is outside `.fig`, whose
+     `overflow: hidden` would otherwise make it a scroll container and pin
+     the sticky element to a box that never scrolls. The <p> then holds its
+     offset under the bar until the wrapper's bottom edge reaches it, and
+     `creditClear` is what sets that edge: the credit yields BEFORE it can
+     reach whatever the scene has written in the lower half of the frame,
+     rather than riding down across it.
+
+     The credit leaves the <figure> element to do this. It was never a
+     <figcaption> and was never programmatically associated with the image,
+     so nothing is lost in the accessibility tree; it stays immediately
+     after the figure in the DOM, in reading order, in the same voice.
+
+     The offsets are copied from the `.fig--fill` corner rules rather than
+     inherited, because the credit is no longer a descendant of `.fig--fill`.
+     They must stay in step with them; at scroll 0 the two land on the same
+     pixels, which is the check. */
+  .fig__hold {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    /* CLIP, NOT HIDDEN, and the difference is the whole mechanism. The
+       credit's wash is deliberately much larger than its glyph box (3.7em
+       across), so it hangs ~47px past the frame's edge and `.fig` used to
+       clip it. Left unclipped here it put 26px of horizontal scroll on
+       /forum/ at 390px, which the audit and the no-JS meter both caught.
+       `overflow: hidden` would clip it and also make this a scroll
+       container, which is exactly what stops a sticky child from moving;
+       `overflow: clip` clips without becoming one. */
+    overflow: clip;
+    display: flex;
+    padding: calc(var(--nav-h) + clamp(0.9rem, 3vh, 2rem)) var(--gutter)
+             max(clamp(1.1rem, 2.4vw, 2.2rem), var(--credit-clear, 0px));
+  }
+  /* The attribute selector is not decoration: the four corner rules above
+     are `.fig__credit[data-pos…]` and would otherwise out-specify these and
+     put the credit back on the frame's corner instead of the reader's. A
+     sticky offset is measured from the SCROLLPORT, so it repeats the
+     wrapper's padding rather than zeroing it — at scroll 0 the natural
+     position and the stuck position are the same pixel, which is what keeps
+     the composition identical. The inline axis is the wrapper's job. */
+  .fig__credit--hold[data-pos] {
+    position: sticky;
+    inset-inline: auto;
+    margin: 0;
+  }
+  .fig__credit--hold[data-pos^='top'] {
+    top: calc(var(--nav-h) + clamp(0.9rem, 3vh, 2rem));
+    bottom: auto;
+  }
+  .fig__credit--hold[data-pos^='bottom'] {
+    bottom: clamp(1.1rem, 2.4vw, 2.2rem);
+    top: auto;
+  }
+  .fig__hold:has(.fig__credit--hold[data-pos$='right']) { justify-content: flex-end; }
+  .fig__hold:has(.fig__credit--hold[data-pos$='left'])  { justify-content: flex-start; }
+  .fig__hold:has(.fig__credit--hold[data-pos^='top'])    { align-items: flex-start; }
+  .fig__hold:has(.fig__credit--hold[data-pos^='bottom']) { align-items: flex-end; }
 
   .fig__dot {
     width: 5px; height: 5px; border-radius: 50%;
