@@ -1211,6 +1211,55 @@ async function sweepRoute(page, view, route) {
         : r));
     } finally { await hi.close(); await ctx.close(); }
   }
+  /* ── EVERY FAILURE IS SHOT THREE TIMES, AND HERE IS THE ONE THAT WASN'T ─
+     Three whole-site sweeps of one unchanged tree returned 0, 1 and 1
+     failures. The curve that moved is desktop /forum/'s 13px `.index` "03",
+     brass-deep on cream: 4.761:1 at almost every offset, and 4.440:1 —
+     under the 4.5 budget — at one. Hand-scanned with `--at`, the same
+     offset gives 4.761 on one invocation and 4.440 on another, and the
+     4.440 could not be reproduced by re-running the identical offset list.
+     It is not a property of the composition. The arithmetic pair is
+     4.794:1 and the tool's own settled reading is 4.761, which is the
+     agreement this file is calibrated on.
+
+     The signature says what went wrong. Across the two readings `maxD` is
+     178 both times — the ink never dimmed — while `cover` goes 0.223 to
+     0.378 and the mean ink lightens 44.1 to 46.0 L*. MORE pixels changed
+     between the ON and OFF frames than there are glyphs, and the extra ones
+     are pale, so they drag the average toward the ground. A subtraction is
+     only a measurement while the ONLY thing that differs between the two
+     frames is the ink; something on the page was still moving when one of
+     them was taken. Real dimming lowers `maxD`. This raised `cover`.
+
+     Rather than hunt one more settling race — this file already waits for
+     quiet twice, and the next race will be somewhere else — the verdict is
+     made to require agreement. A reading under budget is re-shot at its own
+     offset and the MEDIAN of three is kept. This cannot weaken the gate: a
+     composition defect is a function of the scroll offset and reproduces
+     exactly at it. Every real one on this tree does — the /people/ occlusion
+     ramp reads 4.754 / 4.680 / 4.254 / 1.495 to the third decimal on every
+     invocation. Only the artefact fails to reproduce, and only the artefact
+     is voted out. The re-shoots cost two clipped pairs per failing curve,
+     which on a green tree is zero and on a red one is nothing that matters. */
+  const CONFIRM = 2;
+  for (const r of rows) {
+    if (r.unpainted || r.unlit || r.alpha < MIN_OP || r.ratio >= r.need) continue;
+    const seen = [r.ratio];
+    const takes = [r];
+    for (let i = 0; i < CONFIRM; i++) {
+      const m = await frameAt(page, r.y, SCALE, new Set([r.key]));
+      frames++;
+      const q = m.get(r.key);
+      if (!q || q.unpainted) continue;
+      seen.push(q.ratio); takes.push({ ...r, ...q, view: r.view, route: r.route, t: r.t, strength: r.strength });
+    }
+    if (takes.length < 3) continue;
+    takes.sort((a, b) => a.ratio - b.ratio);
+    const med = takes[Math.floor(takes.length / 2)];
+    if (med.ratio !== r.ratio) {
+      Object.assign(r, med, { confirmedFrom: seen.map((x) => +x.toFixed(3)) });
+    }
+  }
   rows.sort((a, b) => a.ratio - b.ratio);
   return { view: view.tag, route, frames, span, step, rows, secs: +((Date.now() - t0) / 1000).toFixed(1) };
 }
@@ -1374,11 +1423,19 @@ if (asJson) {
        A string that is only ever on the glass inside one of those windows
        is therefore in one run's census and not the next's, and a string
        sitting on the FAINT line can be recorded as painted once and shut
-       once. The failure COUNT is the verdict and it is stable on the
-       strings that matter; the total it is quoted against is what this run
-       happened to look at. Said out loud rather than implied. */
+       once.
+
+       THE COUNT USED TO MOVE TOO, AND THAT PART WAS A BUG, NOT SAMPLING.
+       This paragraph once ended "the failure COUNT is the verdict and it is
+       stable on the strings that matter", which nobody had run twice. Run
+       three times, one unchanged tree gave 0, 1 and 1. The curve that moved
+       was desktop /forum/'s "03" and it was an unsettled frame pair, not a
+       composition — see EVERY FAILURE IS SHOT THREE TIMES, above, which is
+       where it is now voted out. The count is stable again BECAUSE of that
+       pass, not because the sweep is deterministic. The DENOMINATOR still
+       is not. */
     console.log(`\n${fails.length} failure(s) in ${live.length} curves across ${done} route-views.`);
-    console.log(`(The count is the verdict. The denominator is this run's census, not a constant of the tree: after the coarse grid the sweep chooses its own offsets from what it has read, so repeat runs of an unchanged tree differ by a curve or two. Quote the failures, not the total.)`);
+    console.log(`(The count is the verdict, and every failure in it was shot three times at its own offset and carried the median. The denominator is not a constant of the tree: after the coarse grid the sweep chooses its own offsets from what it has read, so repeat runs of an unchanged tree differ by a curve or two. Quote the failures, not the total.)`);
   }
 }
 
