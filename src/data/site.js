@@ -498,6 +498,19 @@ export const forum = {
      this page knowing what the convening is, who is in it, and why the
      Institute is there. Three entries, one sentence each — the brief's
      three-supporting-lines limit, spent on the page's one job. */
+  /* DO NOT ADD A FOURTH ROW TO MAKE THIS BLOCK LOOK FULLER. A wave-22 read
+     called §02 the block carrying "the least information per inch of any
+     block on the site". Measured at 1440 in words per vertical inch of
+     rendered block: §02 whole 14.8, its rows alone 18.1 — against /forum/'s
+     own §01 at 10.4 and §03 at 10.0, /404/'s ledger at 12.3 and /partner/'s
+     index at 11.4. §02 is the DENSEST prose block on its own page and above
+     four of the site's others; only the micro-fact rails beat it
+     (/institute/'s cells 26.3, /pilots/'s terms 25.8), and a scalar rail is
+     not the same construction as a sentence ledger. The reading was of the
+     block's dead left margin, which was a layout defect and is fixed in
+     forum.astro. There is no fourth sourced row: CONTENT-NOTES.md lists what
+     is deliberately absent from /forum/ and why, and every item on that list
+     would have to be invented. */
   brief: {
     eyebrow: 'What it is',
     lede: 'A closed room, and a reason for the Institute to be standing in it.',

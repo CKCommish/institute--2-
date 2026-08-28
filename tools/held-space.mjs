@@ -122,13 +122,38 @@ const MEASURE_TOL = 0.985;    /* "reaches both margins of the shell". 1337 of
 
    Each entry was looked at, cropped, at the viewport it is accepted for.
    None of these three is on a file this wave owns; accepting a band is not
-   the same as blessing it, and a wave that wants to close one should. */
+   the same as blessing it, and a wave that wants to close one should.
+
+   AND WHAT AN ENTRY IS KEYED ON. Until wave 23 an entry matched on route and
+   view alone — so it was, itself, an exemption broader than its own reason.
+   Every `why` below names a PLACE ("the break under THE FOUR PILOTS row"),
+   and the place was thrown away: close /partner/'s 188px band and open a
+   170px one anywhere else on that page and it would inherit, silently, a
+   reason written about a different break, with no growth-ceiling trip.
+   The obvious fix — key on `top` — is worse. A band's top moves whenever
+   anything above it changes height, so every entry here would go stale on
+   the next copy edit, and a gate that reddens on an unrelated edit is a gate
+   that stops being run. What is stable about a band is neither its route nor
+   its pixel: it is WHICH TWO THINGS IT SITS BETWEEN. So an entry carries
+   `after` and `before` — the nearest named mark above and below, normalised
+   (lowercased, punctuation dropped, clipped at a whole word near 40 chars),
+   which is the same pair of names the reason is written in. Move the scene
+   400px and the entry still matches; put a different band between different
+   things and it does not. These strings are printed for every accepted band,
+   so a copy edit that breaks one shows the new pair to paste in.
+
+   All three were re-cropped in wave 23, at the viewport each is accepted
+   for, after wave 22's edits to /partner/. All three reasons still describe
+   what is on the page; the two /partner/ heights are unchanged. */
 const ACCEPTED = [
   { route: '/partner/', view: 'desktop', h: 188,
+    after: 'name the pilot and the role a person', before: 'open for 2026',
     why: 'the break under THE FOUR PILOTS row. Its top edge IS a row across the measure — the ask sentence at the left margin, the kicker and its rule at the right — and it fails `ok()` only on GAP_MAX, at the one place on the site where that clause cannot tell a two-corner row from two corners. Below it, OPEN FOR 2026 opens a labelled block.' },
   { route: '/partner/', view: 'mobile', h: 150,
+    after: 'name the pilot and the role a person', before: 'open for 2026',
     why: 'the same break at 390, where the kicker does not set beside the sentence, so the top edge is one short line. Bounded 40px above by the contact rule and immediately below by the OPEN FOR 2026 eyebrow: a scene break, not a stop.' },
   { route: '/', view: 'mobile', h: 61,
+    after: 'inquire about the forum', before: 'people',
     why: 'one --pause and eleven pixels, between the Forum scene\'s cue and the PEOPLE eyebrow. This is the padding between two scenes at the size the scale sets it; there is nothing to put in it that is not already in the scene above or the one below.' },
 ];
 const GROWTH = 1.25;   /* An acceptance is of a band, not of a route. A band
@@ -151,7 +176,14 @@ const collectMarks = `(() => {
   const vis = (el) => { const s = getComputedStyle(el); return s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity) > 0.01; };
   const pinnedOf = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const p = getComputedStyle(n).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };
   let PIN = false;
-  const push = (r, kind) => { if (r && r.width > 0.5 && r.height > 0.5) out.push({ top: r.top + scrollY, bottom: r.bottom + scrollY, left: r.left, right: r.right, kind, pinned: PIN }); };
+  const push = (r, kind, text) => { if (r && r.width > 0.5 && r.height > 0.5) out.push({ top: r.top + scrollY, bottom: r.bottom + scrollY, left: r.left, right: r.right, kind, pinned: PIN, text: text || null }); };
+  /* A NAME for a mark, for anchoring an acceptance. Words, not pixels: a
+     band's top moves whenever anything above it changes height, so a pixel
+     key would go stale on the next copy edit. What does not move is which
+     two things the band sits between. Normalised hard (lowercased, collapsed,
+     clipped) so that punctuation and casing edits do not break an entry. */
+  const nameOf = (t) => { const n = t.replace(/\\s+/g, ' ').trim().toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+    return n.length <= 40 ? n : n.slice(0, 40).replace(/ [^ ]*$/, ''); };
 
   /* type: measured per client rect, so a wrapped paragraph is N line rects
      and a band between two lines of the same <p> is leading, not a band. */
@@ -160,10 +192,17 @@ const collectMarks = `(() => {
     if (!n.nodeValue.trim()) continue;
     const p = n.parentElement; if (!p || !vis(p)) continue; PIN = pinnedOf(p);
     const rg = document.createRange(); rg.selectNodeContents(n);
-    for (const r of rg.getClientRects()) push(r, 'type');
+    /* Name the BLOCK, not the text node. motion.js splits a .lines element
+       into one span per rendered line, so a node value is a line fragment
+       that changes with every rewrap — exactly the instability an anchor
+       must not have. The element carries the whole string in data-text
+       (which is what motion.js re-splits from), so climb to it. */
+    const host = p.closest('[data-text]') || p.closest('p,h1,h2,h3,h4,h5,h6,li,figcaption,blockquote,a,button') || p;
+    const nm = nameOf(host.dataset.text || host.textContent || n.nodeValue);
+    for (const r of rg.getClientRects()) push(r, 'type', nm);
   }
   /* replaced content */
-  for (const el of document.querySelectorAll('img,svg,canvas,video,picture')) if (vis(el)) { PIN = pinnedOf(el); push(el.getBoundingClientRect(), 'image'); }
+  for (const el of document.querySelectorAll('img,svg,canvas,video,picture')) if (vis(el)) { PIN = pinnedOf(el); push(el.getBoundingClientRect(), 'image', nameOf('image ' + (el.getAttribute('alt') || el.getAttribute('aria-label') || (el.currentSrc || el.getAttribute('src') || '').split('/').pop() || el.tagName))); }
   /* rules: a visible border edge, or an <hr>, or a thin painted box */
   for (const el of document.querySelectorAll('*')) {
     if (!vis(el)) continue;
@@ -376,7 +415,29 @@ async function sweepRoute(ctx, base, route, view) {
       : groundOK ? 'composition (change of ground)'
       : margin ? 'composition (margin)'
       : 'HOLE';
+    /* ── WHERE THE BAND IS, IN WORDS ──────────────────────────────────────
+       An acceptance has to be keyed on something, and the two obvious keys
+       are both wrong. Route+view alone is broader than any reason written
+       for it: close /partner/'s 188px band and open a 170px one elsewhere on
+       the page and it inherits a reason about a different break. An exact
+       `top` is narrower than reality: a band's top moves whenever anything
+       above it changes height, so every acceptance would go stale on the
+       next copy edit — the failure mode that stops gates being run.
+       What is stable is which two things the band sits between. So a band is
+       named by the nearest NAMED mark above it and the nearest below it —
+       named meaning text or replaced content, the things a reason can point
+       at. Rules are skipped on purpose: a hairline has no name, and the
+       reasons here already say "under THE FOUR PILOTS row", not "under a
+       rule". If a scene moves 400px the anchor follows it; if a different
+       band opens between different things, it does not match. */
+    const named = dom.marks.filter((m) => m.text && !m.pinned);
+    let above = null, below = null;
+    for (const m of named) {
+      if (m.bottom <= bnd.top + 1 && (!above || m.bottom > above.bottom)) above = m;
+      if (m.top >= bnd.bottom - 1 && (!below || m.top < below.top)) below = m;
+    }
     rows.push({ route, view: view.tag, top: bnd.top, bottom: bnd.bottom, h: bnd.h,
+                after: above ? above.text : '(page start)', before: below ? below.text : '(page end)',
                 dL: +best.dL.toFixed(2), dLat: best.y, full: full ? full.kind : null, margin, verdict });
   }
   return rows;
@@ -429,10 +490,11 @@ all.sort((a, x) => x.h - a.h);
 const usedAcc = new Set();
 for (const r of all) {
   if (r.verdict !== 'HOLE') continue;
-  const i = ACCEPTED.findIndex((a, k) => !usedAcc.has(k) && a.route === r.route && a.view === r.view);
+  const i = ACCEPTED.findIndex((a, k) => !usedAcc.has(k)
+    && a.route === r.route && a.view === r.view && a.after === r.after && a.before === r.before);
   if (i < 0) continue;
   const a = ACCEPTED[i]; usedAcc.add(i); r.acc = a;
-  if (r.h <= a.h * GROWTH) r.verdict = 'accepted';
+  if (r.h <= a.h * GROWTH) { r.verdict = 'accepted'; r.accepted = true; }
   else r.verdict = `HOLE (accepted at ${a.h}px, now ${r.h})`;
 }
 const stale = ACCEPTED.filter((_, k) => !usedAcc.has(k));
@@ -445,8 +507,19 @@ for (const r of all) {
 }
 console.log('─'.repeat(84));
 console.log(`ground floor ${GROUND_FLOOR_L} L* (page→panel, tokens.css THE GROUNDS); full-measure ≥${MEASURE_TOL} of shell.`);
-for (const r of all) if (r.acc) console.log(`accepted: ${r.view} ${r.route} ${r.h}px — ${r.acc.why}`);
-for (const a of stale) console.log(`STALE ACCEPTANCE (not a failure): ${a.view} ${a.route} ${a.h}px is no longer a hole — delete the entry.`);
+for (const r of all) {
+  if (!r.acc) continue;
+  /* print the verdict this band actually has. It used to print "accepted:"
+     unconditionally, so a band whose growth had reverted it to HOLE was
+     announced as accepted four lines under its own failure. */
+  const head = r.accepted ? 'accepted' : `NOT ACCEPTED (grew past ${Math.round(r.acc.h * GROWTH)}px)`;
+  console.log(`${head}: ${r.view} ${r.route} ${r.h}px, between "${r.after}" and "${r.before}" — ${r.acc.why}`);
+}
+/* A hole prints the pair it sits between, because that pair is what an
+   acceptance is keyed on: anyone accepting this band has the two strings to
+   paste in, and anyone reading the failure has where it is in words. */
+for (const r of holes) console.log(`hole: ${r.view} ${r.route} ${r.h}px, between "${r.after}" and "${r.before}"`);
+for (const a of stale) console.log(`STALE ACCEPTANCE (not a failure): ${a.view} ${a.route} ${a.h}px between "${a.after}" and "${a.before}" is no longer a hole there — delete the entry.`);
 console.log(`\n${holes.length} hole(s) in ${all.length} band(s) ≥ one --pause across ${ROUTES.length} routes at ${VIEWS.length} viewport(s), ${usedAcc.size} accepted.`);
 process.exitCode = holes.length ? 1 : 0;
 /* stdout is a pipe under tools/gates.mjs; no process.exit() here — see the

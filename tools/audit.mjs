@@ -131,7 +131,18 @@ for (const view of [{ tag: 'desktop', vp: { width: 1440, height: 900 } }, { tag:
       const clipped = (el) => {
         for (let n = el.parentElement; n && n !== document.documentElement; n = n.parentElement) {
           const o = getComputedStyle(n);
-          if (/hidden|clip|auto|scroll/.test(o.overflowX) || /hidden|clip/.test(o.overflow)) return true;
+          /* hidden and clip ONLY. `auto` and `scroll` were in this test and
+             are not clipping: a scroll container does not hide an overflowing
+             child, it gives it a scrollbar — which is the defect this check
+             hunts, one box in. The comment above says "nothing between it and
+             <html> clips" and the test set aside more than that. One element
+             in src/ does compute to it: Nav.astro's `.menu` sets
+             `overflow-y: auto`, and CSS makes overflow-x compute to `auto`
+             alongside it — verified in the built page, desktop and mobile.
+             It is `display: none` at rest, so this check never walks through
+             it today and no current verdict changes; but with the sheet open
+             the old test would have suppressed a real overflow inside it. */
+          if (/hidden|clip/.test(o.overflowX) || /hidden|clip/.test(o.overflow)) return true;
         }
         return false;
       };

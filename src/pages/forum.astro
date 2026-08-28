@@ -471,10 +471,37 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
        that does not begin at the left rail.
 
        One sentence per entry — the brief's supporting-line limit spent,
-       once, on the page's actual job. The terms hang right-aligned in the
-       left column against the sentences, so the block reads as a ledger and
-       its axis sits near 38% of the measure. Every other beat here opens
-       flush at the rail; this one does not, which is the whole point.
+       once, on the page's actual job. The terms hang in the left column
+       against the sentences, so the block reads as a ledger and its axis
+       sits near 38% of the measure. Every other beat here opens flush at
+       the rail; this one does not, which is the whole point — and the beat
+       that does not open at the rail is the SENTENCE column, not the keys.
+
+       THE KEYS USED TO BE SET RIGHT AND THEY WERE THE ONLY ONES ON THE SITE
+       THAT WERE. Measured at 1440 across every label-and-value construction
+       in the build — /404/'s ledger, /pilots/'s terms, /institute/'s four
+       cells, /pilots/'s detail rows, the masthead cells — every key on every
+       one of them sets flush left in its own column. These three set right,
+       and the nearest counter-example was 300px below them: §03's own
+       eyebrow, the same micro-caps register in the same hanging position on
+       the same page, flush left. The register changed hand between two
+       adjacent beats.
+
+       Right-alignment was also not surviving its own column at this width.
+       It works on the phone, where the rail is 4.6rem and a key set right
+       sits tight against the sentence it belongs to; at 1440 the same
+       declaration ran in a 311px column, so there was nothing for the key to
+       sit tight against. It floated 250px off the rail with no shared left edge
+       (Format at x=304, The subject at 269, What it is at 281 — a ragged left
+       inside a ledger) and the first 250px of every hairline had nothing under
+       it. That is the same defect an earlier wave removed from the right-hand
+       end of these rules, left standing on the left.
+
+       Flush left fixes all three at once and moves nothing else: the sentence
+       axis is still x=403.9, the row heights are unchanged to the tenth of a
+       pixel, and the hairline now has ink at both of its ends — the key at the
+       rail, the numeral at the measure. The change of axis this beat is built
+       on is untouched.
 
        IT IS TWO ROWS NOW, NOT THREE, AND THE MISSING ONE IS UPSTAIRS. The
        room row said who is in the room; §01's kicker said it too, smaller,
@@ -929,8 +956,11 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
     column-gap: clamp(1.25rem, 3vw, 2.6rem);
     align-items: baseline;
   }
+  /* Flush left, which is what every other key on the site does. See the §02
+     comment in the markup for the measurement; do not set this right without
+     also moving §03's eyebrow, /404/'s ledger and /institute/'s cells. */
   .fdef__t {
-    text-align: right;
+    text-align: left;
     margin: 0;
     /* micro caps sit above the x-height of the sentence beside them; drop
        them onto its first baseline rather than onto its box */
@@ -1186,10 +1216,15 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
        2934px. The terms now HANG in the left margin at micro size instead —
        a 4.6rem rail, right-aligned against a narrow sentence measure. That is
        the same decision the desktop makes, taken at a size a phone can pay
-       for. The heading row still stacks: a lede does not belong in 26ch. */
+       for. The heading row still stacks: a lede does not belong in 26ch.
+
+       The keys set flush left here too, and that is not only the site's hand
+       — it is this block's. The heading key above them was already left and
+       the rows were right, so the phone was changing hand inside one ledger
+       across 40px of gap. One left edge now, at x=24, for all three. */
     .fdef { grid-template-columns: 4.6rem minmax(0, 1fr); column-gap: 0.9rem; }
     .fdef__d { max-width: none; }
-    .fdef__t { text-align: right; transform: translateY(0.14em); }
+    .fdef__t { text-align: left; transform: translateY(0.14em); }
     .fbrief__top { grid-template-columns: minmax(0, 1fr); row-gap: 0.7rem; }
     .fbrief__top .fdef__t { text-align: left; transform: none; }
     .fbrief__lede { max-width: 26ch; }
@@ -1206,9 +1241,15 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
        the close borrows the ledger's own mobile move instead: the eyebrow
        HANGS right-aligned in a 4.6rem rail and the sentence starts inside
        it. Same axis as §02, taken at a size a phone can pay for, and the
-       close is still the only beat below the breakpoint that is indented. */
+       close is still the only beat below the breakpoint that is indented.
+
+       The eyebrow sets flush left, matching its own desktop (which was always
+       left) and the 'Being invited' key directly below it (also always left).
+       Only the phone was setting it right, which made this one eyebrow change
+       hand across a breakpoint AND against the key beneath it. The rail, the
+       indent and the compositional break are all unchanged. */
     .frole__grid { grid-template-columns: 5.8rem minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 0.9rem; }
-    .frole__brow { text-align: right; transform: translateY(0.5em); }
+    .frole__brow { text-align: left; transform: translateY(0.5em); }
     .frole__body { grid-area: 1 / 2 / 2 / 3; }
     .frole__p { max-width: 16ch; }
     .frole__note { max-width: 30ch; }

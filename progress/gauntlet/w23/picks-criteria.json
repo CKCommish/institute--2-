@@ -1,0 +1,13 @@
+{
+  "BLINDNESS": "NOT BLIND. Stated plainly because wave 18's record did not. By the time criteria are scored I have looked at 17 pairs and I know which side is which — a navy/cream civic site and a cork-coaster WebGL parody are not confusable. Sides are named by their side in desktop pair-01 purely so the file is checkable against the key; the file is not evidence of naivety, only of order. The per-pair files above ARE order-blind in the sense that matters: they were written before the key was opened.",
+  "sides": "A/B refer to desktop pair-01 sides.",
+  "picks": {
+    "pacing": "A",
+    "whitespace": "B",
+    "type restraint": "B",
+    "motion": "B",
+    "information density": "B",
+    "one-glance comprehension": "B"
+  },
+  "least_held": "motion"
+}

@@ -68,7 +68,7 @@
 
    Not for convenience. The no-script bar is a DIFFERENT OBJECT ON PURPOSE,
    and Nav.astro says so at length: with a script it is always-on past y>24,
-   two-ground, feathered into an 89px tail by a mask, and carrying a scroll
+   two-ground, feathered into a tail by a mask, and carrying a scroll
    progress hairline; with no script it is always on, one ground, and takes
    "a hard edge instead: an opaque band exactly its own height, so type
    sliding under it is covered outright rather than half-lit". That hard edge
@@ -220,8 +220,6 @@ const SLACK = 40;
 const CELL = 8;       /* bin size for de-speckling */
 const CELL_MIN = 3;   /* differing pixels a bin needs to survive */
 const MIN_PX = 32;    /* differing pixels a joined region needs to fire */
-/* Fallback only — the real number is measured off `.nav` per viewport. */
-const NAV_BAND = 160;
 const MAX_BANDS = 7;
 /* Elements with no settled state — see the header. Measured, not hardcoded. */
 const MASK = ['.cue__line'];
@@ -380,8 +378,19 @@ const SKIPS = new Map();
         : parseFloat(tail) || 0;
       return Math.ceil(nav.getBoundingClientRect().height + (Number.isFinite(px) ? px : 0)) + 2;
     }).catch(() => null);
-    SKIPS.set(view.tag, navBand || NAV_BAND);
-    banner.push(`${view.tag}: fixed bar exempt, top ${SKIPS.get(view.tag)}px`);
+    /* NO FALLBACK. This used to read `navBand || NAV_BAND`, with NAV_BAND a
+       hardcoded 160 — and the measured band is 72 desktop, 66 mobile, so the
+       fallback was more than twice the object it stood in for. It arrived
+       silently: the banner printed the same sentence either way, so a run in
+       which the query missed (the selector renamed, the evaluate throwing)
+       would have exempted the top 160px of every frame on every route — 88px
+       of live page beyond the bar — and said only "fixed bar exempt, top
+       160px". An exemption is allowed to be exactly the object its reason
+       names. It is not allowed to widen itself when the measurement fails, so
+       now it stops instead. */
+    if (!navBand) throw new Error(`nojs-diff: could not measure the fixed bar at ${view.tag} — the exempt band is the bar's measured box and there is no guess for it.`);
+    SKIPS.set(view.tag, navBand);
+    banner.push(`${view.tag}: fixed bar exempt, top ${navBand}px (measured: bar box + --nav-tail)`);
   }
   await ctx.close();
 }
