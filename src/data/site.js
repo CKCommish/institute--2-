@@ -103,7 +103,18 @@ export const pilots = [
     index: '01',
     partner: 'Special Olympics',
     title: 'Global Health Data',
-    tagline: 'The largest dataset on IDD health, opened to everyone.',
+    /* WAVE 21. This read "The largest dataset on IDD health, opened to
+       everyone." — the prospectus's GOAL ("make the world's largest IDD
+       health dataset an open resource") written as accomplished fact. The
+       dataset is being gathered; it is not open and it is not yet the
+       largest. The tagline register is the one place this file's own header
+       warns about, because it is compressed enough to look like a label and
+       is rendered on two routes. What replaces it is the approach, which is
+       what is true today: the prospectus says the Institute "is working
+       with Special Olympics to gather health data from Healthy Athletes
+       screenings across the world and develop an open-source dataset". The
+       goal field twelve lines down still carries the aim, correctly. */
+    tagline: 'Screenings from around the world, gathered into one open dataset.',
     field: 'Health',
     problem: 'More than 2 million free screenings since 1997. The next step is follow-up care.',
     approach: 'Gather Healthy Athletes data worldwide into an open-source dataset.',
