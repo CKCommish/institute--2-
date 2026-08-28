@@ -9,9 +9,11 @@ import { method } from '../data/site.js';
    and as the two columns of its own org chart (TECHNOLOGY PARTNERS: AI LABS
    & MODEL DEVELOPERS / FOUNDERS & STARTUPS / TECHNOLOGY COMPANIES;
    IMPLEMENTATION PARTNERS: HEALTH SYSTEMS / UNIVERSITIES / COMMUNITY
-   PARTNERS / GOVERNMENT). This page used to redraw the chart. It now says
-   the prose — the same seven groups, in two sentences whose verbs carry
-   what the chart's two column headings carried. */
+   PARTNERS / GOVERNMENT). This page used to redraw the chart; wave 17
+   replaced it with the prose — the same seven groups, in two sentences
+   whose verbs carry what the chart's two column headings carried. The
+   sentences are unchanged. What changed is where they sit: see the note
+   above .ispec__say. */
 const sides = [
   'Technology companies, founders and AI labs build it.',
   'Health systems, universities, community organizations and government run it.',
@@ -29,7 +31,15 @@ const sides = [
 const spec = [
   { k: 'Horizon', v: '3–12 months' },
   { k: 'Focus', v: 'Health, education, workforce, energy' },
-  { k: 'Partners', v: 'Two sides, one table' },
+  /* THIS CELL USED TO READ "Partners / Two sides, one table" and it was one
+     of five places this page stated its between-ness. It is now the one leg
+     of the hero's own sentence — "a pilot needs money, a technology, and a
+     real place to run" — that the page never answered. The two sentences
+     below the rail answer the technology and the place; nothing answered the
+     money. refs/PROSPECTUS.txt, HOW WE WORK: "We work with major foundations
+     and private technology companies to fund our mission." /partner/ carries
+     the same fact as a door; this states it. */
+  { k: 'Funding', v: 'Foundations and technology companies', href: '/partner/' },
   /* refs/PROSPECTUS.txt: "CURRENT PILOT PIPELINE — FOUR ACTIVE PILOTS —
      2026". This cell said "Four pilots, proposed" and /pilots/ tagged all
      four PROPOSED, which the canonical document contradicts. Both say
@@ -70,33 +80,33 @@ const spec = [
     </div>
   </section>
 
-  {/* The spec, as a rail across the page rather than a card beside it. */}
+  {/* ── The two sides, under the rail ─────────────────────────────
+       The spec rail and the two sentences are ONE scene now. They used to be
+       two, and the second was a full ground change. */}
   <section class="ispec">
-    <dl class="shell ispec__in" data-wipe="left" data-delay="120">
-      {spec.map((s) => (
-        <div class="ispec__c">
-          <dt class="label ispec__k">{s.k}</dt>
-          <dd class="ispec__v">{s.href ? <a class="link tap" href={s.href}>{s.v}</a> : s.v}</dd>
-        </div>
-      ))}
-    </dl>
-  </section>
+    <div class="shell ispec__in">
+      <dl class="ispec__rail" data-wipe="left" data-delay="120">
+        {spec.map((s) => (
+          <div class="ispec__c">
+            <dt class="label ispec__k">{s.k}</dt>
+            <dd class="ispec__v">{s.href ? <a class="link tap" href={s.href}>{s.v}</a> : s.v}</dd>
+          </div>
+        ))}
+      </dl>
 
-  {/* ── The one idea on the page ────────────────────────
-       Two sentences, not a diagram. See the note in the stylesheet. */}
-  <section class="on-panel ibridge" id="bridge">
-    <div class="shell ibridge__in">
-      <p class="eyebrow ibridge__k" data-reveal>The bridge</p>
-      {sides.map((line, i) => (
-        <p class="bridge bridge--fg bridge--lift ibridge__s" data-reveal data-delay={140 + i * 140}>{line}</p>
-      ))}
+      <div class="ispec__say">
+        {sides.map((line, i) => (
+          <p class="bridge bridge--fg bridge--lift ispec__s" data-reveal data-delay={140 + i * 140}>{line}</p>
+        ))}
+      </div>
     </div>
   </section>
 
   {/* ── The page turned over ────────────────────────────────────────
        One sentence, full bleed, on cream. The system keeps exactly one of
-       these per page and this is what it is for: the diagram above states
-       the arrangement, this states why it has to exist. */}
+       these per page and this is what it is for — and it is now the page's
+       ONLY change of ground: the rail scene above names the two sides, this
+       states why neither of them is enough. */}
   <section class="on-cream iclaim">
     <p class="display display--feature iclaim__t shell" data-settle="0.62">Neither side can run the pilot alone.</p>
   </section>
@@ -162,11 +172,36 @@ const spec = [
   @keyframes iheroInk { to { -webkit-mask-size: 100% 190%; mask-size: 100% 190%; } }
   @keyframes iheroIn { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
 
-  /* ── The spec, as a rail ──────────────────────────────────────────
-     Four cells across the full measure under one rule. Horizontal, so the
-     page's second register is not a second column. */
-  .ispec { padding-block: clamp(1.4rem, 2.4vw, 2.4rem) clamp(2.5rem, 4vw, 4rem); }
-  .ispec__in {
+  /* ── The rail, and the two sides under it ────────────────────────
+     Four cells across the full measure under one rule, then the two
+     sentences. Horizontal first, so the page's second register is not a
+     second column.
+
+     THE TWO SENTENCES USED TO BE THEIR OWN SCENE — an .on-panel band between
+     two rules, 444px of desktop screen for two paragraphs, with the right
+     two-thirds of it empty. Before that it was a DIAGRAM, and wave 17 killed
+     the diagram on the argument that the page stated one idea three times in
+     four scenes. The replacement made it five and gave the weakest of the
+     five the strongest container on the page. Counted at the pixels: the
+     hero display states the Institute's POSITION, these two sentences state
+     the MEMBERSHIP (all seven of the prospectus's stakeholder groups, which
+     is the one thing the chart uniquely held), and the cream claim states the
+     NECESSITY. Three registers, three claims, one turn of ground. The two
+     restatements that carried nothing new are gone: the rail's "Two sides,
+     one table", which said in four words what the sentences say in full
+     forty pixels below it, and the band itself.
+
+     Wave 11's proportions rule still governs and is the reason this is not a
+     void: the scene is its content plus its own padding, and nothing here is
+     sized to fill a screen. The prose keeps its --step-sub rung — with no
+     ground to lift it, size is what ranks it above the rail's labels.
+
+     (The one echo left on the page is method rung 02, "Who builds it. Who
+     runs it.", six words 300px below these two sentences. It lives in
+     src/data/site.js, outside this piece's files. See the handoff.) */
+  .ispec { padding-block: clamp(1.4rem, 2.4vw, 2.4rem) clamp(3rem, 2rem + 3vw, 5.5rem); }
+  .ispec__in { display: grid; gap: clamp(2.2rem, 4.4vw, 3.6rem); }
+  .ispec__rail {
     margin: 0;
     display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
     column-gap: clamp(1rem, 2.4vw, 2.6rem);
@@ -181,52 +216,10 @@ const spec = [
   .ispec__v :global(a:hover),
   .ispec__v :global(a:focus-visible) { color: var(--brass); }
 
-  /* ── THE BRIDGE, SAID ───────────────────────────────────
-     This scene was a DIAGRAM: two lists flanking a bordered rectangle
-     labelled "The Institute", joined by rails and brass connectors. It was
-     the only chart on a site whose grammar is photographs and sentences, and
-     it was this page's THIRD statement of one idea in four scenes — the hero
-     IS the bridge photographed (a long table, a flag on the axis, mirrored
-     doors), the cream claim below is "Neither side can run the pilot alone",
-     and the chart sat between them redrawing the prospectus's org chart.
-
-     The comment that stood here defended the composition on the ground that
-     "a left-aligned band cannot say between". True, and beside the point: the
-     photograph one screen up already says between, in the site's own voice.
-     What the chart carried that nothing else on the site carries is the
-     prospectus's two lists of stakeholders. Those survive, as prose. The
-     rectangle, the rails, the connectors, the two column headings and the
-     centred symmetry do not.
-
-     Wave 11 rebuilt this scene's PROPORTIONS — it cut 971px of dead space and
-     grew the diagram from 250px to 302px — and that work is not being undone
-     so much as spent: the band is still exactly its content plus its own
-     padding, which is what that wave established and what kept the two gaps
-     around it from becoming voids again.
-
-     The band stays: .on-panel between two rules is the page's one change of
-     ground, and it still separates the spec rail above from the cream claim
-     below. Only the object inside it changed kind.
-
-     One thing fell out for free. Every part of the diagram had a hidden
-     state gated on `html.js` and released by a script-written `.brg.is-in`,
-     and this scene got that wrong twice — rails once, then the connectors,
-     which shipped declaring `scaleX(0)` unconditionally and left the hub
-     unattached to both arms with no script (it is why `nojs-diff` exists).
-     These are plain `data-reveal` elements now. There is no bespoke hidden
-     state on this page left to get wrong. */
-  .ibridge {
-    border-block: 1px solid var(--rule);
-    padding-block: clamp(3.5rem, 1rem + 5vw, 7rem);
-  }
-  .ibridge__in {
-    display: grid; justify-items: start;
-    gap: clamp(1.4rem, 2.6vw, 2.2rem);
-  }
-  .ibridge__k { margin-bottom: clamp(0.1rem, 0.7vw, 0.5rem); }
+  .ispec__say { display: grid; justify-items: start; gap: clamp(1.2rem, 2.2vw, 1.9rem); }
   /* A measure, so the two sentences read as a stacked pair of blocks rather
      than two rules of type running the full 1200px shell. */
-  .ibridge__s { max-width: 30ch; }
+  .ispec__s { max-width: 30ch; }
 
   /* ── The claim, on cream ──────────────────────────────────────── */
   .iclaim { padding-block: clamp(4rem, 2rem + 6vw, 8rem); }
@@ -262,7 +255,7 @@ const spec = [
   .ledger__p { color: var(--fg-mute); font-size: var(--step-body); max-width: 34ch; }
 
   @media (max-width: 900px) {
-    .ispec__in { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(1rem, 3vw, 1.4rem); }
+    .ispec__rail { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(1rem, 3vw, 1.4rem); }
     .ispec__c { border-top: none; }
     .ispec__v :global(a) { display: inline-block; padding-block: 0.5rem; }
   }
@@ -274,9 +267,9 @@ const spec = [
     .ihero__h { max-width: 100%; }
     .ihero__bridge { max-width: 28ch; }
 
-    .ibridge { padding-block: clamp(2.75rem, 10vw, 4rem) clamp(3.5rem, 12vw, 5rem); }
-    .ibridge__in { gap: clamp(1.2rem, 5vw, 1.8rem); }
-    .ibridge__s { max-width: 24ch; }
+    .ispec { padding-bottom: clamp(2.75rem, 10vw, 4rem); }
+    .ispec__in { gap: clamp(1.8rem, 7vw, 2.6rem); }
+    .ispec__s { max-width: 24ch; }
     .iclaim__t { text-align: left; margin-inline: 0; max-width: 16ch; }
   }
 
