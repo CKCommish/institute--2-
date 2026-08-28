@@ -797,6 +797,70 @@ mailbox, it is the first thing a partner will discover is untrue.
 - The sixteen board one-line titles are unconfirmed.
 - Per-person permission to publish a likeness is unconfirmed, for all sixteen.
 
+## Dropped qualifiers — the wave-22 sweep
+
+A specific defect shape, not over-claims generally: **a rendered string that
+drops a qualifier its own source carries**, in the compressed register where a
+sentence reads as a label rather than a claim. Two were found by the wave-21
+judge; both verified against refs/PROSPECTUS.txt and both fixed.
+
+- **`/partner/`, the Fund it door.** It read "Underwrite a pilot. **We** source,
+  vet, implement and report." The prospectus, HOW WE WORK: "We **help these
+  partners** source, vet, implement, and report on the programs they want to see
+  in the world." The Institute helps the funder do those four things; it does not
+  do them. On the page whose whole job is to say what $2M a year buys, that is
+  the product. Worst of all, the source was quoted **correctly, in a comment four
+  lines above the string**, and the rendered line still overstated. Now: "We
+  **help you** source, vet, implement and report." "these partners" are the
+  reader of that door, so the second person restores the qualifier without
+  authoring anything; the only new word is a verb the source sentence carries.
+  Measured: all three doors are still two lines at 1440 and at 390, identical
+  heights — the fix costs no layout.
+- **`/pilots/`, the terms rail.** It paired the key **`Active`** — a flat scalar
+  at the rail's largest rung — with the caption "Four active pilots for 2026. The
+  fourth is still in exploration." A state contradicted by the second half of its
+  own caption. The prospectus's headline is a **count**, "FOUR ACTIVE PILOTS —
+  2026", and the count is the part nothing disputes; the state is what carries
+  the exception. So the count is now the key and the state moved into the caption
+  where the exception already lives: `PILOTS / Four` · "Active for 2026. The
+  fourth is still in exploration." This is how /partner/ and the homepage's
+  Pilots scene had already resolved the same tension ("Four active pilots for
+  2026" as eyebrow, "Three are under way. The fourth is in exploration." beneath
+  it). Two words shorter, and at 390 the caption now sets on one line instead of
+  two. `src/data/site.js`, `pilotTerms`.
+
+**Swept and clear.** All seven routes, every rendered string, hunting the same
+shape — label, rail key, eyebrow, CTA, dt/dd term, `aria-label`:
+
+- `Hero`'s index label "Four active pilots · 2026" is the prospectus's own
+  headline verbatim, not a compression of a longer qualified sentence. Left.
+- Pilot 04 (`career-pathways`): its `approach` field is declarative where the
+  prospectus says the Institute "is **exploring**" it — but `status: 'Exploring'`
+  is a field of the same record and both `pilots-card` and `pilots-detail` render
+  it beside the approach. The qualifier is not dropped; it is in another column.
+- `PeopleScene`, "Sixteen **put forward** to govern the work." Qualifier carried,
+  and sixteen is the count of PROSPECTIVE BOARD MEMBERS in the prospectus.
+- `/people/` "Prospective board" appears in the on-page index and again as the
+  section eyebrow; the h1 was re-checked against the rule recorded below and
+  still passes it.
+- `/forum/` `role` / `roleNote` / `invite` all carry their hedges already, and
+  the reasoning is in the comments beside them.
+- `model.scale` drops "of new pilots" from "first look across LFI's full
+  pipeline of new pilots". That is a narrowing omission, not a qualifier that
+  changes the claim; the shorter line claims less, not more. Left.
+
+**Found while sweeping, NOT fixed, and worth someone's attention:** the Run it
+door reads "A health system, **district**, university, or agency." The
+prospectus's IMPLEMENTATION PARTNERS are health systems, hospitals & providers,
+universities, community partners (nonprofits & CBOs), and government (local,
+state, federal). "District" is on none of those lists — the nearest source is
+"help **schools** and workforce partners connect students" in pilot 04's Goal.
+It is an authored specific, which is a different and possibly larger defect than
+the two above, but it is not the dropped-qualifier shape this piece was sent
+after and fixing it means replacing one authored word with another. The honest
+version is the diagram's own four: "A health system, university, community
+partner, or agency." Costs one word of length and no line.
+
 ## Two things looked at and deliberately left alone
 
 - **`/people/` h1, "The people accountable for the work."** A prospective board

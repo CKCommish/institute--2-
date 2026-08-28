@@ -28,9 +28,27 @@ const roles = [
      implement, and report on the programs they want to see in the world."
      The four verbs are what a funder gets for the money and they belong on
      the funding door. */
-  { t: 'Fund it', p: 'Underwrite a pilot. We source, vet, implement and report.', a: 'Funding' },
+  /* THE QUALIFIER THE SOURCE CARRIES AND THIS LINE HAD DROPPED.
+     The comment four lines above quotes it correctly — "We HELP THESE
+     PARTNERS source, vet, implement, and report" — and the rendered line
+     said "We source, vet, implement and report", which is the Institute
+     doing the work rather than helping the funder do it. On the page whose
+     job is to say what a Core Partnership buys, that is the product. "these
+     partners" ARE the reader of this door, so the qualifier restores as
+     "help you". No new specific: one verb from the source sentence. */
+  { t: 'Fund it', p: 'Underwrite a pilot. We help you source, vet, implement and report.', a: 'Funding' },
   { t: 'Build it', p: 'Bring the model, the product, or the team.', a: 'Technology' },
-  { t: 'Run it', p: 'A health system, district, university, or agency.', a: 'Somewhere to run it' },
+  /* WAVE 22. This read "A health system, district, university, or agency."
+     "district" is authored — it appears nowhere in refs/PROSPECTUS.txt, whose
+     IMPLEMENTATION PARTNERS are health systems, hospitals and providers,
+     universities, community partners, nonprofits and CBOs, and government at
+     local, state and federal level. It was flagged by a builder and again by
+     a judge and left standing twice, on the reasoning that replacing it means
+     swapping one authored word for another. It does not: "community partner"
+     is the source's own category and it is the one this list was missing.
+     The site already says the sourced thing elsewhere — site.js:283 gives
+     pilot 04's implementation partner as "A school or workforce partner." */
+  { t: 'Run it', p: 'A health system, university, community partner, or agency.', a: 'Somewhere to run it' },
 ];
 const mailto = (subject) =>
   `mailto:${site.email}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}`;

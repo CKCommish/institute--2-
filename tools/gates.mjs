@@ -1,7 +1,7 @@
 /* gates — every gate, one build, one verdict.
 
    ── WHY ──────────────────────────────────────────────────────────────────
-   Six gates cost a builder a serious fraction of a wave, and two things had
+   The suite costs a builder a serious fraction of a wave, and two things had
    started to happen. Wave 12: two builders ran the meters at the same time
    against the same served build and one of them reported a failure that was
    not there. And the wave-12 judge named `nojs-diff`'s 9m14s as the thing
@@ -71,7 +71,7 @@ const srcHash = (() => {
   return h.digest('hex').slice(0, 12);
 })();
 
-/* ── WHY THERE ARE SIX OF THESE, AND WHY FIVE OF THEM WERE NOT ENOUGH ────
+/* ── WHY THERE ARE SEVEN OF THESE, AND WHY FIVE OF THEM WERE NOT ENOUGH ──
    Five of these measure dist/ — the site as it ships. The sixth measures
    `progress/site.html`, which is the only artefact of this project anyone
    outside the repo has ever opened, and which shipped with no motion engine
@@ -140,6 +140,20 @@ const GATES = [
        LAG, after the first full stop, and the truncating pattern dropped the
        one sentence this gate was extended to carry. */
     headline: /\d+ finding\(s\) in [^\n]*/ },
+  /* THE SEVENTH, ADDED IN WAVE 22. It was written in wave 21 and deliberately
+     left out: "it exits 1 on five open bands today, so wiring it in would
+     redden the suite on arrival. That is a named move, not a defect fix."
+     That was right then. What made it wrong was /404 — 354px of nothing at
+     1440 and 158px at 390, the largest band on the site, on the one route a
+     reader reaches by accident — which held-space found, and which shipped
+     through six green gates anyway BECAUSE this list had six entries. A rule
+     with a runner that the suite does not run is a rule that can be green
+     forever while being broken.
+     Its three remaining open bands are now accepted by name inside the tool,
+     with the measurement each was accepted on and a growth ceiling that
+     fails if one changes. Read that list before arguing with this gate. */
+  { name: 'held-space',  cmd: ['tools/held-space.mjs'],  want: /(\d+) hole\(s\)/,     cost: 3,
+    headline: /\d+ hole\(s\) in [^\n]*/ },
   { name: 'perf',        cmd: ['tools/perf.mjs'],        want: /layout shift: all routes under 0\.1/, fail: /layout shift over 0\.1:.*/, cost: 2, headline: /slowest LCP:.*/ },
 ].filter((g) => !ONLY || ONLY.includes(g.name));
 

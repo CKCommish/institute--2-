@@ -4,7 +4,12 @@ import { launch } from './browser.mjs';
 import { measureFrame, settleScroll } from './pixel-contrast.mjs';
 
 const base = process.env.BASE || 'http://127.0.0.1:4399';
-const ROUTES = ['/', '/pilots/', '/institute/', '/forum/', '/people/', '/partner/'];
+/* /404.html is a ROUTE, not an edge case: it is where every bad link lands,
+   and it was the one page this audit never opened. It is served by path
+   because that is the file — sirv resolves `/404` too, but only with
+   `extensions:['html']`, and this tool has to work against the dev server as
+   well. */
+const ROUTES = ['/', '/pilots/', '/institute/', '/forum/', '/people/', '/partner/', '/404.html'];
 const asJson = process.argv.includes('--json');
 
 const srgb = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
@@ -158,6 +163,14 @@ for (const view of [{ tag: 'desktop', vp: { width: 1440, height: 900 } }, { tag:
         }
       });
 
+      /* Every fragment this page can BE the target of. `name` is here because
+         an old-style <a name> is still a valid anchor target and costs one
+         selector to honour. */
+      out.anchors = [
+        ...[...document.querySelectorAll('[id]')].map((el) => el.id),
+        ...[...document.querySelectorAll('a[name]')].map((el) => el.getAttribute('name')),
+      ].filter(Boolean);
+
       out.docScrollsX = document.documentElement.scrollWidth > document.documentElement.clientWidth + 1;
       const main = document.querySelector('main');
       out.words = main ? main.innerText.trim().split(/\s+/).filter(Boolean).length : 0;
@@ -253,12 +266,24 @@ for (const view of [{ tag: 'desktop', vp: { width: 1440, height: 900 } }, { tag:
     if (view.mobile && data.smallTaps.length) issues.push(`small/unnamed targets: ${[...new Set(data.smallTaps)].slice(0, 5).join(' | ')}`);
     if (consoleErrors.length) issues.push(`console: ${[...new Set(consoleErrors)].slice(0, 3).join(' | ')}`);
 
-    report.push({ view: view.tag, route, words: data.words, issues, links: [...new Set(data.links)] });
+    report.push({ view: view.tag, route, words: data.words, issues,
+                  links: [...new Set(data.links)], anchors: [...new Set(data.anchors)] });
   }
   await ctx.close();
 }
 
-// dead internal links
+/* ── DEAD LINKS: THE PATH, AND — SINCE WAVE 22 — THE FRAGMENT ───────────
+   The homepage's "Our answer" pointed at `href="#method"` for eight waves
+   and eight green suites. No id="method" had existed anywhere on the site
+   since wave 13 deleted that scene. It survived because this block resolved
+   `href.split('#')[0]` and threw the fragment away: the PATH was `/`, the
+   path was fine, and the one door the homepage offers after it asks why now
+   went nowhere. A fragment is half of what a link promises and it was the
+   half nothing checked.
+   So a fragment is now resolved against the anchors of the page it names —
+   the page itself for a bare `#x`, the named route for `/route/#x`. Anchors
+   are collected per route above, from `[id]` and `a[name]`.
+   `#` and `#top` are the browser's own scroll-to-top and target nothing. */
 const allLinks = [...new Set(report.flatMap((r) => r.links))].filter((h) => h.startsWith('/'));
 const page = await (await b.newContext()).newPage();
 const dead = [];
@@ -266,6 +291,33 @@ for (const href of allLinks) {
   const u = base + href.split('#')[0];
   const r = await page.goto(u, { waitUntil: 'commit', timeout: 20000 }).catch(() => null);
   if (!r || r.status() >= 400) dead.push(`${href} → ${r ? r.status() : 'error'}`);
+}
+
+/* the anchors each audited route offers, unioned over the views (they are
+   the same markup at both, but a view that failed to load should not delete
+   a target that the other view saw) */
+const anchorsOf = new Map();
+for (const r of report) {
+  const s = anchorsOf.get(r.route) || new Set();
+  for (const a of r.anchors) s.add(a);
+  anchorsOf.set(r.route, s);
+}
+/* `/404.html` is audited by file path; a link would name it `/404`. */
+const norm = (p) => (p === '/404' || p === '/404.html' ? '/404.html' : p.endsWith('/') || p === '' ? p : p + '/');
+for (const r of report) {
+  if (r.view !== 'desktop') continue;          /* markup is per route, not per view */
+  for (const href of r.links) {
+    const i = href.indexOf('#');
+    if (i < 0) continue;
+    const frag = decodeURIComponent(href.slice(i + 1));
+    if (!frag || frag === 'top') continue;
+    const path = href.slice(0, i);
+    const target = path === '' ? r.route : norm(path);
+    if (!path.startsWith('/') && path !== '') continue;   /* external */
+    const have = anchorsOf.get(target);
+    if (!have) { dead.push(`${r.route} → ${href} — fragment target route not audited`); continue; }
+    if (!have.has(frag)) dead.push(`${r.route} → ${href} — no #${frag} on ${target}`);
+  }
 }
 await b.close();
 
@@ -280,6 +332,10 @@ else {
   }
   const home = report.find((r) => r.view === 'desktop' && r.route === '/');
   console.log(`\nhomepage words in <main>: ${home ? home.words : '?'}  (brief allows 80–120 body words; nav/footer excluded, display headlines counted here so expect a higher number — read it as a trend)`);
-  if (dead.length) console.log('\ndead links:\n  ' + dead.join('\n  '));
+  /* DEAD LINKS ARE ISSUES. They were printed here and left out of `bad`,
+     so a dead link — path or fragment — could be on screen in this tool's
+     own output while its verdict line said `0 issue(s)` and gates.mjs read
+     that 0 as green. Nothing in the suite has ever failed on a dead link. */
+  if (dead.length) { bad += dead.length; console.log('\ndead links:\n  ' + dead.join('\n  ')); }
   console.log(`\n${bad} issue(s) across ${report.length} page-views.`);
 }

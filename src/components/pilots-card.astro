@@ -20,7 +20,6 @@
      rail    numeral · sector ............................ status
      who     the partner
      name    the title, one serif rung
-     tag     one line
      problem one line, on its own shared row
      approach                    "
      goal                        "
@@ -51,7 +50,7 @@
       begins on one line, and a funder can read across.
       Because a subgrid's own padding would inset its tracks and undo the
       alignment it exists to get, the rule and the air above it are carried
-      by the first field row and by the tagline's bottom margin instead.
+      by the first field row and by the title's bottom margin instead.
 
    2. THE COLUMN WAS SHOVED LEFT. `padding-right` took 34.5px off every
       cell, so the space between a vertical rule and the text on its left
@@ -68,7 +67,55 @@
       part of the name, it is the state of the pilot, so it now sits where a
       compare column puts a state: the right end of the rail, opposite the
       numeral. One line of partner in every card, identical air under it.
-      The claim is unchanged and still on every card. */
+      The claim is unchanged and still on every card.
+
+   ── WAVE 22: THE TAGLINE WAS THE ROW OUTSIDE THE CONTRACT ──────
+
+   The card carried the pilot's tagline in row 4, and the detail block
+   carries the same string verbatim. Measured at 1440 on the built page,
+   card row to detail row: 937 / 1765 / 2599 / 3410 px. That is the same
+   defect wave 21 removed from /institute/, four times over.
+
+   The tagline is the copy that goes, and the argument is not that the
+   detail matters more. It is that the tagline was already said twice on
+   the CARD, 199px apart, before either layer met the other:
+
+     01  tag  Screenings from around the world, gathered into one open dataset.
+         app  Gather Healthy Athletes data worldwide into an open-source dataset.
+     02  tag  States negotiate the buildout instead of absorbing it.
+         pro  States need better tools to negotiate data center projects.
+     03  tag  Risk found in the data, and acted on.
+         app  AI across the city's maternal health data, plus a targeted intervention.
+     04  tag  Guidance that follows a student from school to work.
+         app  AI guidance on careers, skills and training routes.
+
+   Four for four: the tagline is this card's own PROBLEM or APPROACH row
+   abstracted, sitting one glance above it. A duplicate a reader meets in
+   one screen is worse than one she meets a thousand pixels later, and no
+   fact leaves the ledger with it — the fact is still in the row below.
+   It is also the one line of copy on the card that BRIEF.md's cap does
+   not name (problem / approach / goal, one line each), and the only row of
+   the card that cannot be read ACROSS the four, because it is not a
+   field: there is no term beside it to compare under. Cutting it makes
+   this band more of a ledger, not less.
+
+   In the detail it is structural and it stays: it is the subtitle under
+   the H2 that this card's own anchor lands on, it is the second half of
+   the declared `.pd__say-top` block, and a reader arriving by deep link
+   would otherwise meet a bare name.
+
+   THE GOAL IS ALSO VERBATIM IN BOTH LAYERS — same string, same brass
+   `Goal` label, 932 / 1784 / 2594 / 3404 px apart — and it does NOT
+   move. Neither end can give it up. Here it is one of the three rows the
+   brief's cap names and the third rung of the four-up comparison, which
+   is the whole reason this band exists. There it is what holds the
+   record's left column past its photograph: measured on pilot 01 at
+   1440, the words run to y=2412 and the plate ends at 2323, so cutting
+   the detail's goal (a 113px block plus a 46px interval) would leave the
+   words stopping 71px ABOVE the plate — precisely the imbalance
+   pilots-detail.astro's round 11 was rebuilt to remove. One duplicated
+   pair on this page is removable; the second is load-bearing at both
+   ends, and saying so is cheaper than breaking a column to tidy it. */
 const { pilot: p } = Astro.props;
 ---
 <article class="card">
@@ -92,8 +139,6 @@ const { pilot: p } = Astro.props;
   <h3 class="display display--sub card__t">
     <a class="card__a" href={`#${p.id}`}>{p.title}</a>
   </h3>
-  <p class="card__tag">{p.tagline}</p>
-
   <dl class="card__f">
     <div class="card__row"><dt class="label">Problem</dt><dd>{p.problem}</dd></div>
     <div class="card__row"><dt class="label">Approach</dt><dd>{p.approach}</dd></div>
@@ -114,7 +159,7 @@ const { pilot: p } = Astro.props;
      objects again, which is the thing this layer exists to undo. */
   .card {
     position: relative;
-    /* the eight rows are the PAGE's rows, inherited through the cell: every
+    /* the seven rows are the PAGE's rows, inherited through the cell: every
        card's PROBLEM sits on the same line as every other card's, and so
        does every card's APPROACH and GOAL. The block padding is therefore
        carried as margins on the first and last rows — padding on a subgrid
@@ -148,14 +193,13 @@ const { pilot: p } = Astro.props;
 
   /* Every row is placed by hand. Auto-placement around an explicitly-placed
      three-row field list is correct per spec but not obvious to the next
-     reader, and the whole point of this component is that the eight rows
+     reader, and the whole point of this component is that the seven rows
      are a fixed, shared armature. */
   .card__rail { grid-row: 1; }
   .card__who  { grid-row: 2; }
   .card__t    { grid-row: 3; }
-  .card__tag  { grid-row: 4; }
-  .card__f    { grid-row: 5 / 8; }
-  .card__door { grid-row: 8; }
+  .card__f    { grid-row: 4 / 7; }
+  .card__door { grid-row: 7; }
 
   .card__rail {
     margin: clamp(1.4rem, 2.4vw, 2rem) 0 0;
@@ -191,8 +235,14 @@ const { pilot: p } = Astro.props;
   }
   .card__partner { transition: color var(--dur-hover) var(--ease-out); }
 
+  /* The bottom margin is the air above the field rule. It used to live on
+     the tagline; with the tagline gone it lives here, on the last ordinary
+     item before the list, because the field list below is a subgrid and
+     cannot carry margin without dragging its tracks with it. The value is
+     the tagline's own, so the rule sits the same distance under the name
+     as it sat under the line that has gone. */
   .card__t {
-    margin: clamp(0.95rem, 1.85vw, 1.5rem) 0 0;
+    margin: clamp(0.95rem, 1.85vw, 1.5rem) 0 clamp(1.15rem, 2.2vw, 1.7rem);
     line-height: 1.06;
     letter-spacing: -0.014em;
   }
@@ -213,21 +263,6 @@ const { pilot: p } = Astro.props;
      rather than round a word. */
   .card:has(.card__a:focus-visible) { outline: 1.5px solid var(--brass); outline-offset: 8px; }
 
-  .card__tag {
-    /* the bottom margin is the air above the field rule. It lives here, on
-       an ordinary item in row 4, because the field list below is a subgrid
-       and cannot carry margin without dragging its tracks with it. */
-    margin: 0.6rem 0 clamp(1.15rem, 2.2vw, 1.7rem);
-    max-width: 34ch;
-    color: var(--fg-mute);
-    font-size: var(--step-body);
-    line-height: 1.5;
-    /* balance, not pretty: at a quarter of the page these are two-line
-       sentences, and `pretty` only guards the last line — it let 01 break
-       inside "follow-up", mid-hyphen, which is a legal break point and an
-       ugly one. Balancing splits them at the sense instead. */
-    text-wrap: balance;
-  }
 
   /* PROBLEM · APPROACH · GOAL, stacked, one line each, and — the point of
      the layer — one shared row each across all four cards. Stacked and not
@@ -301,7 +336,7 @@ const { pilot: p } = Astro.props;
   }
 
   @media (max-width: 620px) {
-    .card__tag, .card__f dd { max-width: 44ch; }
+    .card__f dd { max-width: 44ch; }
     /* One card at a time, so there is no row to read across and the three
        fields have to separate themselves. The fluid gap bottoms out at
        11px here, which packs label / line / label / line into one grey

@@ -229,7 +229,14 @@ const base = process.env.BASE || 'http://127.0.0.1:4399';
 const arg = (k, d) => { const a = process.argv.find((x) => x.startsWith(`--${k}=`)); return a ? a.slice(k.length + 3) : d; };
 const asJson = process.argv.includes('--json');
 const showAll = process.argv.includes('--all');
-const ROUTES = arg('routes', process.env.ROUTES || '/,/pilots/,/institute/,/forum/,/people/,/partner/').split(',').filter(Boolean);
+/* `/404.html` is here from wave 22. It was the one route with type on it
+   that no contrast sweep had ever opened — audit's ROUTES stopped at
+   /partner/ and so did this list — and it is where every bad link lands. It
+   is also short, so it costs this sweep a fraction of what a real page does.
+   Written as the file, not `/404`: sirv resolves the extensionless form only
+   with `extensions:['html']`, and this tool has to work against a dev server
+   too. */
+const ROUTES = arg('routes', process.env.ROUTES || '/,/pilots/,/institute/,/forum/,/people/,/partner/,/404.html').split(',').filter(Boolean);
 const VIEW_TAGS = arg('views', 'desktop,mobile').split(',');
 /* Below this DECLARED alpha a string is mid-crossfade rather than being read.
    This is the ONLY place the DOM is still consulted about ink, it is not used

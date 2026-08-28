@@ -311,9 +311,16 @@ export const pilotTerms = [
     text: 'Designed to show measurable results in that window.',
   },
   {
-    key: 'Active',
-    term: 'Status',
-    text: 'Four active pilots for 2026. The fourth is still in exploration.',
+    /* The key used to be 'Active' over the term 'Status' — a flat scalar,
+       set at the largest rung in the rail, contradicted by the second half
+       of its own caption. The prospectus's own headline is a COUNT, "FOUR
+       ACTIVE PILOTS — 2026", and the count is the part nothing disputes;
+       the state is what carries the exception, so the state moves down into
+       the caption where the exception already lives. /partner/ and the
+       homepage's Pilots scene resolve the same tension the same way. */
+    key: 'Four',
+    term: 'Pilots',
+    text: 'Active for 2026. The fourth is still in exploration.',
   },
   {
     key: 'Shared',

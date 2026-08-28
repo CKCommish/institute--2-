@@ -1,6 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
-import { nav } from '../data/site.js';
+
+/* THE DESTINATIONS, WITH WHAT IS AT THEM.
+   This page used to end with five nav words on one line and then a third of
+   a screen of dead navy — 354px at 1440, 158px at 390, the largest band on
+   the site, across which the ground moves 0.28 L*. `held-space.mjs` called
+   it a hole and it was one. It is also the ONE route a reader reaches by
+   accident: they mistyped, or followed a stale link, or were forwarded a URL
+   that moved. A row of five words tells such a reader nothing about which of
+   them to try.
+   So the row is a ledger. Each line is that page's OWN meta description,
+   already on the site and already traced — nothing here is authored for this
+   page. Home's line is the brief's site map for the homepage (mission line,
+   four pilots as cards, the Forum as one scene). */
+const dests = [
+  { href: '/', label: 'Home', line: 'The mission, the four pilots, and the Forum.' },
+  { href: '/institute/', label: 'Institute', line: 'How the Institute works: short pilots, measured outcomes, published results.' },
+  { href: '/pilots/', label: 'Pilots', line: 'Four active pilots for 2026: what each one is, who it is for, and where a partner comes in.' },
+  { href: '/forum/', label: 'Forum', line: 'An annual invitation-only convening at the Kennedy Compound, Hyannis Port.' },
+  { href: '/people/', label: 'People', line: 'Two founding partners, and sixteen names put forward as a prospective board.' },
+];
 ---
 <Base title="Page not found" description="That page does not exist.">
   <section class="nf">
@@ -9,8 +28,14 @@ import { nav } from '../data/site.js';
       <h1 class="display display--poster lines">That page isn’t here.</h1>
       <p class="bridge" data-reveal="220">It may have moved, or it may never have existed. The rest of the site is below.</p>
       <ul class="nf__list" data-seq="90">
-        <li data-reveal><a class="link tap label label--lit" href="/">Home</a></li>
-        {nav.map((n) => <li data-reveal><a class="link tap label label--lit" href={n.href}>{n.label}</a></li>)}
+        {dests.map((d) => (
+          <li data-reveal>
+            <a class="nf__row" href={d.href}>
+              <span class="label label--lit nf__k">{d.label}</span>
+              <span class="nf__v">{d.line}</span>
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   </section>
@@ -31,23 +56,48 @@ import { nav } from '../data/site.js';
   }
   .nf__in { display: grid; gap: clamp(1rem, 2.2vw, 1.75rem); }
   .nf h1 { max-width: 14ch; }
-  /* The rows are .label .label--lit — the house micro register at link
+  /* The keys are .label .label--lit — the house micro register at link
      brightness, the same object the footer's nav row is. This block used to
      restate size, tracking, transform and weight by hand, which is a fourth
      copy of a register base.css already owns. */
   .nf__list {
     list-style: none; margin: 0; padding: clamp(1.5rem, 3vw, 2.5rem) 0 0;
-    display: flex; flex-wrap: wrap; gap: clamp(1rem, 2.6vw, 2.4rem);
-    border-top: 1px solid var(--rule);
+    display: grid;
+    /* A rule at the TOP of the list and one under the last row. The closing
+       rule is not decoration: it is the mark that spans the measure at the
+       bottom edge of whatever margin is left between this page and the
+       footer's call to action, which is what the held-space rule asks of a
+       band's edge. */
+    border-block: 1px solid var(--rule);
   }
-  /* Five 18px destinations wrapped into rows 16px apart is a coin-toss for
-     a thumb — and this is the page you land on when something has already
-     gone wrong. Stack them one per row, and give the row enough pitch that
-     the boxes a.tap grows on a touch screen do not overlap: the links keep
-     an 18px layout height (the tap padding is cancelled by a negative
-     margin), so the pitch IS the row-gap plus 18, and it has to clear the
-     ~50px box. 2.3rem leaves a few pixels of daylight. */
+  .nf__list li + li { border-top: 1px solid var(--rule-soft); }
+  /* The whole row is the link, so the hit box is the row: no .tap needed and
+     no negative margin to cancel. Five 18px destinations wrapped into rows
+     16px apart was a coin-toss for a thumb, and this is the page you land on
+     when something has already gone wrong. */
+  .nf__row {
+    display: grid;
+    grid-template-columns: minmax(7rem, 10ch) minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2.4rem);
+    align-items: baseline;
+    padding-block: clamp(1.1rem, 2.2vw, 1.6rem);
+    text-decoration: none;
+  }
+  .nf__k { padding-top: 0.28em; }
+  .nf__v {
+    font-family: var(--sans);
+    font-size: var(--step-body);
+    font-weight: 330;
+    line-height: 1.4;
+    color: var(--fg-mute);
+    max-width: 46ch;
+    transition: color 460ms var(--ease-out);
+  }
+  @media (hover: hover) {
+    .nf__row:hover .nf__v { color: var(--fg); }
+  }
   @media (max-width: 620px) {
-    .nf__list { flex-direction: column; row-gap: 2.3rem; }
+    .nf__row { grid-template-columns: 1fr; gap: 0.6rem; }
+    .nf__k { padding-top: 0; }
   }
 </style>

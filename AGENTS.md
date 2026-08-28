@@ -14,14 +14,14 @@ node tools/blind.mjs progress/shots/<label>/home desktop /tmp/blind-<you>
 
 Use **your own port**. Never `npx astro build` into the shared `dist/`.
 
-## The six gates — run all of them before you report
+## The seven gates — run all of them before you report
 
 ```bash
-node tools/gates.mjs        # all six, in parallel, one verdict — THIS IS THE WAY TO RUN THEM
+node tools/gates.mjs        # all seven, in parallel, one verdict — THIS IS THE WAY TO RUN THEM
 ```
 
 It builds to its own `dist-gates-<hash>`, serves it on a port the OS hands
-out, and runs the six below in a pool. Nothing is shared, so two builders
+out, and runs the seven below in a pool. Nothing is shared, so two builders
 can run it at the same moment — which is what wave 12 could not do, and why
 two racing runs reported a phantom failure. It caches each gate's verdict
 against the hash of the source tree AND of the gate's own file, so a re-run
@@ -38,7 +38,8 @@ now, not never. Narrow it with `--routes=` and `--views=` while you work; run
 it whole before you report — and now you can.
 
 ```bash
-node tools/audit.mjs        # contrast, overflow, heading order, alt text, tap targets, dead links
+node tools/audit.mjs        # contrast, overflow, heading order, alt text, tap targets, dead links (path AND fragment)
+node tools/held-space.mjs   # every flat band on every route, against the held-space rule
 node tools/glyph-floor.mjs  # EVERY string on the site, contrast measured by subtraction
 node tools/nojs-meter.mjs   # all 7 routes x 2 viewports with JavaScript OFF
 node tools/nojs-diff.mjs    # the same routes compared as PICTURES, script on vs script off
@@ -53,16 +54,43 @@ SHIPPED bundle lags the bundler's current output; that clause is a NOTE and
 cannot fail the gate, so **read it**. If it says BEHIND, regenerate on a
 clean tree with `node tools/bundle.mjs` before you report.
 
-`tools/held-space.mjs` is NOT in the suite — it is a rule with a runner, not
-a gate, and nothing fails when a band opens. Run it by hand when you move a
-scene.
+**`tools/held-space.mjs` IS in the suite as of wave 22, and the reason it was
+not is worth keeping.** Its author left it out deliberately: it exited 1 on
+five open bands, so wiring it in would have reddened the suite on arrival, and
+that is a named move rather than a defect fix. What overturned that was /404 —
+354px of nothing at 1440, 158px at 390, the largest band on the site, on the
+one route a reader reaches by accident — which held-space found and six green
+gates could not, *because this list had six entries*. A rule with a runner the
+suite does not run can be broken and green for ever. Both /404 bands are now
+closed in the page. The three that remain are ACCEPTED BY NAME inside the
+tool, each with the measurement it was accepted on and a growth ceiling that
+fails if it changes; a band that grows past a quarter again its accepted
+height has not been looked at and reddens the gate. Read that list before
+arguing with this gate, and do not add to it without cropping the band first.
 
-These are gates, not diagnostics. A wave is not done until all six are green,
+These are gates, not diagnostics. A wave is not done until all seven are green,
 and "I read the DOM and it looked right" is not one of them.
 
 `tools/photo-meter.mjs` is a DIAGNOSTIC, not a gate: it reports how far each
 photograph's grade sits off the ground, in bands and corners, and it has never
 had a pass/fail threshold. Run it when you change a picture or the grade.
+
+**Why `audit` resolves FRAGMENTS, and why dead links are counted.** The
+homepage's "Our answer" — the one door offered after the page asks why now —
+pointed at `href="#method"` for eight waves and eight green suites, with no
+`id="method"` anywhere on the site since wave 13 deleted that scene. It
+survived because this block resolved `href.split('#')[0]`: the PATH was `/`,
+the path was fine, and the half of the link that says WHERE ON THE PAGE was
+thrown away before anything looked at it. Fragments are resolved now, against
+the anchors (`[id]` and `a[name]`) of the page the link names.
+Two more holes in the same block, both found closing that one, both bigger:
+dead links were PRINTED and then left out of the `bad` count, so a dead link
+could be on screen in audit's own output while its verdict line said
+`0 issue(s)` and gates read that 0 as green — nothing in this suite has ever
+failed on a dead link. And audit's ROUTES stopped at `/partner/`, so /404,
+the page every bad link lands on, was never opened by it at all. Both fixed;
+/404.html is in `audit` and in `glyph-floor` now. It is still not in
+`nojs-diff` or `perf`.
 
 **Why `nojs-meter` exists.** A defect shipped through eight waves and four
 green meters: the fixed nav's scrim was switched on by a script-written class,
@@ -304,9 +332,16 @@ starts and catch a name at opacity 0.54: a settled 5.21:1 photographs as
      that used to stand here, that the largest band was /partner/'s 274px, was
      wrong. /404 is a route, not an edge case: it is where a bad link lands.
 
-  Five bands are open as this is written — /404 and /partner/ at both
-  viewports, and a 61px band on the mobile homepage that is barely over the
-  floor. The tool prints every band with the number it judged it on, so a
+  Wave 19 left five bands open. Wave 22 closed the two on /404 — the page
+  every bad link lands on, which ended in five nav words and then a third of
+  a screen of dead navy — by putting a ledger of destinations in the slot,
+  each line that page's own meta description. The three left (/partner/ at
+  both viewports, and a 61px band on the mobile homepage barely over the
+  floor) are accepted by name in the tool: each is a break BETWEEN TWO
+  SCENES, with a mark one line-box above it and a labelled block opening
+  below. Note what that is not: a size rule. A floor loose enough to pass
+  /partner/'s 188px would have passed /404's 158px, which is the band the
+  wave-21 judge cropped and called a hole. The tool prints every band with the number it judged it on, so a
   verdict can be checked rather than taken. **If you think one of them is
   wrong, say so and show the measurement.** That is how all three of the
   findings above were got, and two of them overturned this file.

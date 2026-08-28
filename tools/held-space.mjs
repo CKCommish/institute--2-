@@ -100,6 +100,46 @@ const MEASURE_TOL = 0.985;    /* "reaches both margins of the shell". 1337 of
                                  for the 51-470 of 51-1389 short mark that
                                  started this. */
 
+/* ── ACCEPTED BANDS, AND WHY THERE IS A LIST AND NOT A NUMBER ───────────
+   This tool became a gate in wave 22. It could not become one while it
+   exited 1 on five bands, and its author was right to say that wiring it in
+   as it stood was a named move and not a defect fix. Two of the five — /404
+   at both viewports, the largest band on the site and the page every bad
+   link lands on — are closed in the page. Three are left, and they are
+   ACCEPTED here, by name, with the measurement each was accepted on. An
+   accepted band still prints, still shows its numbers, and can still fail:
+   see GROWTH below.
+
+   The tempting alternative was a magnitude floor — "a hole under 200px is
+   not a hole" — and it is wrong, by this project's own worked example. The
+   /404 hole at 390 was 158px. A floor loose enough to swallow /partner/'s
+   188 swallows the very band the wave-21 judge cropped and called a third
+   of a screen of dead navy. The difference between these three and that one
+   is not size. It is that each of these sits BETWEEN TWO SCENES, with a mark
+   inside one line-box above it and a labelled block opening below it, and
+   /404's was the page simply stopping. That distinction is not a number, so
+   it is not written as one.
+
+   Each entry was looked at, cropped, at the viewport it is accepted for.
+   None of these three is on a file this wave owns; accepting a band is not
+   the same as blessing it, and a wave that wants to close one should. */
+const ACCEPTED = [
+  { route: '/partner/', view: 'desktop', h: 188,
+    why: 'the break under THE FOUR PILOTS row. Its top edge IS a row across the measure — the ask sentence at the left margin, the kicker and its rule at the right — and it fails `ok()` only on GAP_MAX, at the one place on the site where that clause cannot tell a two-corner row from two corners. Below it, OPEN FOR 2026 opens a labelled block.' },
+  { route: '/partner/', view: 'mobile', h: 150,
+    why: 'the same break at 390, where the kicker does not set beside the sentence, so the top edge is one short line. Bounded 40px above by the contact rule and immediately below by the OPEN FOR 2026 eyebrow: a scene break, not a stop.' },
+  { route: '/', view: 'mobile', h: 61,
+    why: 'one --pause and eleven pixels, between the Forum scene\'s cue and the PEOPLE eyebrow. This is the padding between two scenes at the size the scale sets it; there is nothing to put in it that is not already in the scene above or the one below.' },
+];
+const GROWTH = 1.25;   /* An acceptance is of a band, not of a route. A band
+                          that grows past a quarter again its accepted height
+                          is a different band and has not been looked at, so
+                          it fails. This is the whole difference between
+                          "accepted with a reason" and "silently tolerated".
+                          An accepted band that has GONE prints as stale and
+                          does NOT fail: someone closing a hole must not be
+                          reddened by this file for it. */
+
 /* sRGB byte → L*. The grounds ladder is in L*; byte means are not. */
 const lin = (c) => { const s = c / 255; return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
 const Lstar = (r, g, b) => { const y = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); return y <= 216 / 24389 ? y * 24389 / 27 : 116 * Math.cbrt(y) - 16; };
@@ -346,8 +386,24 @@ async function sweepRoute(ctx, base, route, view) {
 let srv = null, base = process.env.BASE;
 if (!base) {
   const dir = process.env.DIST || 'dist';
-  srv = spawn(process.execPath, ['-e', `import('sirv').then(({default:s})=>{const a=s(${JSON.stringify(dir)},{dev:true,extensions:['html']});import('node:http').then(({createServer})=>createServer((q,r)=>a(q,r,()=>{r.statusCode=404;r.end('nf')})).listen(4471))})`], { cwd: ROOT, stdio: 'ignore' });
-  base = 'http://127.0.0.1:4471';
+  /* THE PORT IS THE OS'S TO CHOOSE, NOT THIS FILE'S.
+     This used to bind 4471 and then POLL 4471 until something answered. When
+     a second builder was already serving on it, the bind failed silently
+     (stdio was 'ignore') and the poll succeeded against THEIR build on the
+     first try — so the tool reported, with no error and no warning, a sweep
+     of somebody else's tree. That is the wave-12 racing-meters defect with a
+     different port number, and gates.mjs already carries the fix: take a port
+     the OS hands out and read it back off the listener. Found while measuring
+     /404 for wave 22, by shooting a page that had just been rebuilt and
+     getting the old pixels twice. */
+  srv = spawn(process.execPath, ['-e', `import('sirv').then(({default:s})=>{const a=s(${JSON.stringify(dir)},{dev:true,extensions:['html']});import('node:http').then(({createServer})=>{const h=createServer((q,r)=>a(q,r,()=>{r.statusCode=404;r.end('nf')}));h.listen(0,'127.0.0.1',()=>console.log(h.address().port))})})`], { cwd: ROOT, stdio: ['ignore', 'pipe', 'inherit'] });
+  const port = await new Promise((res, rej) => {
+    let buf = '';
+    srv.stdout.on('data', (d) => { buf += d; const m = /(\d+)/.exec(buf); if (m) res(Number(m[1])); });
+    srv.on('exit', (c) => rej(new Error(`server exited (${c}) before it named a port`)));
+    setTimeout(() => rej(new Error('server never named a port')), 20000);
+  });
+  base = `http://127.0.0.1:${port}`;
   /* POLL, do not sleep. A flat wait for the child to bind is the same guess
      tools/shoot.mjs was corrected for in wave 12: when it is short the tool
      does not fail, it silently measures the 404 body — a 980px-wide page with
@@ -368,7 +424,19 @@ await b.close();
 if (srv) srv.kill();
 
 all.sort((a, x) => x.h - a.h);
-const holes = all.filter((r) => r.verdict === 'HOLE');
+
+/* apply the accept list — longest band first, one entry per band */
+const usedAcc = new Set();
+for (const r of all) {
+  if (r.verdict !== 'HOLE') continue;
+  const i = ACCEPTED.findIndex((a, k) => !usedAcc.has(k) && a.route === r.route && a.view === r.view);
+  if (i < 0) continue;
+  const a = ACCEPTED[i]; usedAcc.add(i); r.acc = a;
+  if (r.h <= a.h * GROWTH) r.verdict = 'accepted';
+  else r.verdict = `HOLE (accepted at ${a.h}px, now ${r.h})`;
+}
+const stale = ACCEPTED.filter((_, k) => !usedAcc.has(k));
+const holes = all.filter((r) => r.verdict.startsWith('HOLE'));
 console.log(`\nband                                      px    ΔL* at      closed by`);
 console.log('─'.repeat(84));
 for (const r of all) {
@@ -377,7 +445,9 @@ for (const r of all) {
 }
 console.log('─'.repeat(84));
 console.log(`ground floor ${GROUND_FLOOR_L} L* (page→panel, tokens.css THE GROUNDS); full-measure ≥${MEASURE_TOL} of shell.`);
-console.log(`\n${holes.length} hole(s) in ${all.length} band(s) ≥ one --pause across ${ROUTES.length} routes at ${VIEWS.length} viewport(s).`);
+for (const r of all) if (r.acc) console.log(`accepted: ${r.view} ${r.route} ${r.h}px — ${r.acc.why}`);
+for (const a of stale) console.log(`STALE ACCEPTANCE (not a failure): ${a.view} ${a.route} ${a.h}px is no longer a hole — delete the entry.`);
+console.log(`\n${holes.length} hole(s) in ${all.length} band(s) ≥ one --pause across ${ROUTES.length} routes at ${VIEWS.length} viewport(s), ${usedAcc.size} accepted.`);
 process.exitCode = holes.length ? 1 : 0;
 /* stdout is a pipe under tools/gates.mjs; no process.exit() here — see the
    note at the foot of glyph-floor.mjs. */
