@@ -1,0 +1,383 @@
+/* HELD-SPACE — the flat-band rule, executable.
+
+   usage: node tools/held-space.mjs [--routes=/,/404] [--view=desktop|mobile]
+          BASE=http://127.0.0.1:4399 (a server is started if none is given)
+
+   WHY THIS FILE EXISTS. The rule was written in wave 19 as a comment beside
+   `--pause` in tokens.css and swept BY HAND against 33 bands. A hand sweep
+   is not repeatable and it cannot be re-run when a scene moves, so the
+   rule's own verdict ("zero holes remain") had no way to age. It also had a
+   gap that only showed up when someone applied it by hand to a band the
+   author had not: clause 1 admits "a change of ground" and never says HOW
+   BIG a change of ground is.
+
+   ── THE MAGNITUDE FLOOR, AND WHERE IT COMES FROM ────────────────────────
+   It is not a new number. It was already in tokens.css, forty lines below
+   the rule that needed it, under THE GROUNDS:
+
+     (none)     --ink-900   L*  3      .on-panel  --ink-700   L* 15
+     .on-plate  --ink-600   L* 21      .on-cream  --cream     L* 92
+
+   and, in the wave-4 note directly beneath that ladder, the finding that
+   settles this outright:
+
+     "A 6-point step between two large dark fields, seen a screen apart and
+      never side by side, is not a change of ground; it is the same ground
+      with a rounding error."
+     "Page → panel is now 11.5 L*, which is a step a reader registers as a
+      different surface."
+
+   So this project has already decided, on the record, with a measurement
+   behind it, what the smallest thing that counts as a change of ground is:
+   the page→panel step. Anything under it was explicitly named as NOT one.
+   The held-space rule did not need a number invented for it; it needed to
+   cite the number it was already sitting next to.
+
+     GROUND_FLOOR_L = 11.5   // page → panel, the site's smallest real ground
+
+   Measured as a STEP, not a range: the largest L* difference across any
+   single boundary inside or at the edge of the band, taken between the
+   median of the STEP_WIN rows before it and the STEP_WIN rows after. A
+   gradient that crawls the same distance over two hundred rows is not an
+   edge and a reader does not see one — which is exactly the case the hand
+   sweep passed. Row luminance is converted to L* before comparing, because
+   the ladder above is in L* and 8-bit sRGB is not linear: 11.6 → 15.4 in
+   bytes looks like "four points" and is 1.3 L*, a ninth of the floor.
+
+   Clause 1's other two objects (a rule, a line of type spanning the
+   measure) are DOM-measured and unchanged: they are marks, and a mark is
+   present or it is not. Only "a change of ground" is a matter of degree,
+   and only it needed a floor.
+
+   WHAT THIS TOOL STILL DOES NOT DO. It has no ceiling, exactly as the
+   comment in tokens.css says. It measures under reduced motion. It reads
+   the composed page, so a band closed by a mark that reveals late is
+   scored closed. */
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import { launch } from './browser.mjs';
+
+const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const arg = (k, d) => { const a = process.argv.find((s) => s.startsWith(`--${k}=`)); return a ? a.slice(k.length + 3) : d; };
+
+const ROUTES = arg('routes', '/,/pilots/,/institute/,/forum/,/people/,/partner/,/404').split(',').filter(Boolean);
+const VIEWS = [
+  { tag: 'desktop', vp: { width: 1440, height: 900 } },
+  { tag: 'mobile', vp: { width: 390, height: 844 }, mobile: true },
+].filter((v) => !arg('view') || v.tag === arg('view'));
+
+/* ── the constants the rule turns on ─────────────────────────────────── */
+const GROUND_FLOOR_L = 11.0;  /* page→panel. See the header — and one
+                                 correction to it, made by measurement. 11.5
+                                 is the step computed from the TOKEN VALUES
+                                 (L* 3 → 15). What this tool measures is the
+                                 step as it is PAINTED, in the gutters, after
+                                 antialiasing at the boundary row and the
+                                 8-row medians either side of it: every real
+                                 page→panel edge on this site reads 11.05 to
+                                 11.07 (homepage 5658 and 4260, /pilots/ 744,
+                                 mobile / 3815). A floor of 11.5 is therefore
+                                 strictly ABOVE the one step it names as its
+                                 worked example — the rule would reject the
+                                 example it is written from. 11.0 sits just
+                                 under the measured step and well over the
+                                 1.3 L* footer ramp and the 0.28 L* /404
+                                 band, so no verdict in the sweep changes;
+                                 what changes is that the clause can now
+                                 actually fire on a real ground change. */
+const STEP_WIN = 8;           /* rows either side of a boundary. Eight rows is
+                                 under a line of leading, so a real edge is
+                                 fully inside the window and a ramp is not. */
+const GAP_MAX = 0.10;         /* see `ok()` below. */
+const EDGE_WIN = 28;          /* one line-box at display size. */
+const RULE_MIN_L = 1.2;       /* a hairline against its own ground, in L*.
+                                 --rule-soft (cream 8% on the page) is ~1.6. */
+const MEASURE_TOL = 0.985;    /* "reaches both margins of the shell". 1337 of
+                                 1338 at 1440 is 0.9993; the tolerance is loose
+                                 enough for a hairline inset and far too tight
+                                 for the 51-470 of 51-1389 short mark that
+                                 started this. */
+
+/* sRGB byte → L*. The grounds ladder is in L*; byte means are not. */
+const lin = (c) => { const s = c / 255; return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
+const Lstar = (r, g, b) => { const y = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); return y <= 216 / 24389 ? y * 24389 / 27 : 116 * Math.cbrt(y) - 16; };
+const median = (a) => { const s = [...a].sort((x, y) => x - y); return s[s.length >> 1]; };
+
+/* ── marks, from the DOM ─────────────────────────────────────────────── */
+const collectMarks = `(() => {
+  const out = [];
+  const vis = (el) => { const s = getComputedStyle(el); return s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity) > 0.01; };
+  const pinnedOf = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const p = getComputedStyle(n).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };
+  let PIN = false;
+  const push = (r, kind) => { if (r && r.width > 0.5 && r.height > 0.5) out.push({ top: r.top + scrollY, bottom: r.bottom + scrollY, left: r.left, right: r.right, kind, pinned: PIN }); };
+
+  /* type: measured per client rect, so a wrapped paragraph is N line rects
+     and a band between two lines of the same <p> is leading, not a band. */
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n = w.nextNode(); n; n = w.nextNode()) {
+    if (!n.nodeValue.trim()) continue;
+    const p = n.parentElement; if (!p || !vis(p)) continue; PIN = pinnedOf(p);
+    const rg = document.createRange(); rg.selectNodeContents(n);
+    for (const r of rg.getClientRects()) push(r, 'type');
+  }
+  /* replaced content */
+  for (const el of document.querySelectorAll('img,svg,canvas,video,picture')) if (vis(el)) { PIN = pinnedOf(el); push(el.getBoundingClientRect(), 'image'); }
+  /* rules: a visible border edge, or an <hr>, or a thin painted box */
+  for (const el of document.querySelectorAll('*')) {
+    if (!vis(el)) continue;
+    const s = getComputedStyle(el); const r = el.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) continue;
+    PIN = pinnedOf(el);
+    const alpha = (c) => { const m = /rgba?\\(([^)]+)\\)/.exec(c); if (!m) return 0; const p = m[1].split(',').map(Number); return p.length > 3 ? p[3] : 1; };
+    for (const side of ['Top', 'Bottom']) {
+      if (parseFloat(s['border' + side + 'Width']) > 0 && s['border' + side + 'Style'] !== 'none' && alpha(s['border' + side + 'Color']) > 0.02) {
+        const y = side === 'Top' ? r.top : r.bottom;
+        push({ top: y - 1, bottom: y + 1, left: r.left, right: r.right, width: r.width, height: 2 }, 'rule');
+      }
+    }
+    if (el.tagName === 'HR') push(r, 'rule');
+    if (r.height <= 6 && alpha(s.backgroundColor) > 0.02 && el.children.length === 0) push(r, 'rule');
+    /* NOT ::before / ::after. A pseudo-element has no node and no rect, and
+       this house draws most of its hairlines that way — .foot__base's rule
+       is one. They are found in the pixels instead; see findRules(). */
+  }
+  /* --pause is a clamp() with a vw term. A custom property's computed value
+     is the unresolved token stream, so parseFloat on it reads "3.5" (the
+     clamp's first argument) or NaN. Resolve it the only way that is honest:
+     put it on a real element's height and read the used value back. */
+  const pausePx = () => {
+    const d = document.createElement('div');
+    d.style.cssText = 'position:absolute;left:-9999px;top:0;width:1px;height:var(--pause)';
+    document.body.appendChild(d);
+    const h = d.getBoundingClientRect().height;
+    d.remove(); return h;
+  };
+  const shell = document.querySelector('.shell') || document.querySelector('main') || document.body;
+  const sr = shell.getBoundingClientRect(); const ss = getComputedStyle(shell);
+  /* the MEASURE is the shell's content box, not its border box: on a phone
+     the shell runs the full 390 and holds its margins as padding, so the
+     border box would say every mark is short and the gutters would be
+     nothing. */
+  const mL = sr.left + parseFloat(ss.paddingLeft), mR = sr.right - parseFloat(ss.paddingRight);
+  return { marks: out, measure: { left: mL, right: mR, width: mR - mL },
+           height: Math.max(document.documentElement.scrollHeight, document.body.scrollHeight),
+           pause: pausePx() };
+})()`;
+
+async function sweepRoute(ctx, base, route, view) {
+  const page = await ctx.newPage();
+  const url = base + (route === '/404' ? '/404.html' : route);
+  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForTimeout(400);
+  /* scroll the whole page once so anything lazy composes, then return */
+  await page.evaluate(async () => {
+    const h = document.documentElement.scrollHeight;
+    for (let y = 0; y < h; y += 400) { window.scrollTo({ top: y, behavior: 'instant' }); await new Promise((r) => requestAnimationFrame(r)); }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  });
+  await page.waitForTimeout(600);
+
+  const dom = await page.evaluate(collectMarks);
+  const shot = await page.screenshot({ fullPage: true, type: 'png' });
+  await page.close();
+
+  /* ── GROUND, READ IN THE GUTTERS ──────────────────────────────────────
+     Row luminance is sampled ONLY outside the measure. A ground on this
+     site is full-bleed by definition (tokens.css, THE GROUNDS: .on-panel is
+     "full-bleed, edge to edge"; .on-plate, which is not, is an object and
+     not a ground), so the gutter carries every real ground change and
+     carries no type at all.
+     Sampling the full width instead reads the arrival of the first line of
+     type below a band as an 11.4 L* "change of ground" — which is how the
+     first run of this tool passed /404 mobile 1013-1070. Type is a mark and
+     marks are counted in the DOM; letting them in here counts them twice
+     and in the wrong clause. tone-meter.mjs has walked the gutters since
+     wave 4 for the same reason. */
+  const sharp = (await import('sharp')).default;
+  const { data, info } = await sharp(shot).raw().toBuffer({ resolveWithObject: true });
+  const W = info.width, H = info.height, C = info.channels;
+  const cols = [];
+  for (let x = 0; x < W; x++) if (x < dom.measure.left - 3 || x > dom.measure.right + 3) cols.push(x);
+  if (!cols.length) for (let x = 0; x < W; x += 8) cols.push(x);
+  const rowL = new Float64Array(H);
+  for (let y = 0; y < H; y++) {
+    let s = 0;
+    for (const x of cols) { const i = (y * W + x) * C; s += Lstar(data[i], data[i + 1], data[i + 2]); }
+    rowL[y] = s / cols.length;
+  }
+
+  /* ── bands: runs of rows carrying no mark ───────────────────────────── */
+  const covered = new Uint8Array(H);
+  for (const m of dom.marks) {
+    const a = Math.max(0, Math.floor(m.top)), b = Math.min(H - 1, Math.ceil(m.bottom));
+    for (let y = a; y <= b; y++) covered[y] = 1;
+  }
+  const bands = [];
+  for (let y = 0; y < H; y++) {
+    if (covered[y]) continue;
+    let e = y; while (e + 1 < H && !covered[e + 1]) e++;
+    if (e - y + 1 >= dom.pause) bands.push({ top: y, bottom: e + 1, h: e - y + 1 });
+    y = e;
+  }
+
+  /* ── RULES, FROM THE PIXELS ───────────────────────────────────────────
+     A full-measure hairline is the commonest way this site closes a band,
+     and roughly none of them are reachable from the DOM: `--rule` is cream
+     at 14% painted on a ::before, which querySelectorAll cannot see and
+     getBoundingClientRect cannot measure. The first run of this tool called
+     /404 mobile 1013-1070 a hole because of it — there is a rule across the
+     full measure at 1057, plainly visible, closing that band exactly as
+     clause 1 intends.
+     So: a row is a full-measure rule if, across the measure, at least
+     MEASURE_TOL of the sampled columns are lighter than the rows just above
+     and below it by RULE_MIN_L. That is the definition of a hairline and it
+     does not care how it was drawn. `--rule-soft` is cream at 8% over the
+     page ground, which lands ~1.6 L* up; the threshold sits under it. */
+  const mCols = [];
+  for (let x = Math.ceil(dom.measure.left); x <= Math.floor(dom.measure.right) && x < W; x++) if (x >= 0) mCols.push(x);
+  const ruleCols = (y) => {
+    const on = [];
+    if (y < 3 || y >= H - 3) return on;
+    for (const x of mCols) {
+      const at = (yy) => { const i = (yy * W + x) * C; return Lstar(data[i], data[i + 1], data[i + 2]); };
+      const ctx = Math.min(at(y - 2), at(y - 3), at(y + 2), at(y + 3));
+      if (at(y) - ctx >= RULE_MIN_L) on.push(x);
+    }
+    return on;
+  };
+
+  /* the largest ground STEP at or inside a band, in L* */
+  const stepAt = (y) => {
+    const a = [], b = [];
+    for (let i = y - STEP_WIN; i < y; i++) if (i >= 0) a.push(rowL[i]);
+    for (let i = y; i < y + STEP_WIN; i++) if (i < H) b.push(rowL[i]);
+    return a.length && b.length ? Math.abs(median(b) - median(a)) : 0;
+  };
+  const firstBody = Math.min(...dom.marks.filter((m) => !m.pinned).map((m) => m.top));
+  const lastMark = Math.max(...dom.marks.map((m) => m.bottom));
+
+  const rows = [];
+  for (const bnd of bands) {
+    /* clause 1a/1c — the MEASURE IS SPANNED at an edge or inside.
+       Read per ROW, not per object. The rule says "a full-measure object",
+       and the hand sweep read that as one mark wide enough. This site's
+       commonest closing device is not one mark: it is a hairline that stops
+       short so a brass index or a right-aligned kicker can sit at the end of
+       it — `--brass` is documented in tokens.css as being for exactly that,
+       "rules, indices". /forum/ 02, /partner/ THE FOUR PILOTS. Per-object,
+       every one of those is a short mark and closes nothing; the reading
+       that matches the eye is that the ROW reaches both margins.
+       So: union the x-extents of every mark lying in the edge line-box, clip
+       to the measure, and ask whether the union covers it. A single
+       full-measure rule or line of type is the one-object case of the same
+       test, so nothing the old reading closed is opened by this. */
+    const spanned = (lo, hi) => {
+      const iv = dom.marks
+        .filter((m) => m.bottom > lo && m.top < hi)
+        .map((m) => [Math.max(m.left, dom.measure.left), Math.min(m.right, dom.measure.right)]);
+      /* the pixel rules in the same line-box, as intervals */
+      for (let y = Math.max(0, Math.round(lo)); y <= Math.round(hi) && y < H; y++) {
+        const on = ruleCols(y);
+        if (on.length < 8) continue;
+        let a = on[0];
+        for (let i = 1; i <= on.length; i++) {
+          if (i === on.length || on[i] > on[i - 1] + 2) { if (on[i - 1] - a > 6) iv.push([a, on[i - 1]]); a = on[i]; }
+        }
+      }
+      const s2 = iv.filter(([a, b]) => b > a).sort((a, b) => a[0] - b[0]);
+      let cov = 0, at = dom.measure.left, gap = 0, prevEnd = null;
+      for (const [a, b] of s2) {
+        if (prevEnd !== null && a > prevEnd) gap = Math.max(gap, a - prevEnd);
+        prevEnd = Math.max(prevEnd ?? a, b);
+        if (b <= at) continue; cov += b - Math.max(a, at); at = Math.max(at, b);
+      }
+      const L = s2.length ? s2[0][0] : Infinity, R = s2.length ? Math.max(...s2.map((v) => v[1])) : -Infinity;
+      return { cov: +(cov / dom.measure.width).toFixed(3), gap: +(gap / dom.measure.width).toFixed(3),
+               reachL: L <= dom.measure.left + 4, reachR: R >= dom.measure.right - 4 };
+    };
+    let full = null;
+    /* EDGE_WIN is one line-box: the mark that bounds a band and the kicker
+       set beside it share a row but rarely share a pixel row exactly. */
+    const topCov = spanned(bnd.top - EDGE_WIN, bnd.top + 1);
+    const botCov = spanned(bnd.bottom - 1, bnd.bottom + EDGE_WIN);
+    const insideCov = spanned(bnd.top + 1, bnd.bottom - 1);
+    if (process.env.HS_DIAG) console.error(`DIAG ${view.tag} ${route} ${bnd.top}-${bnd.bottom} top=${JSON.stringify(topCov)} bot=${JSON.stringify(botCov)}`);
+    /* SPANNED means: reaches both margins, and is not two marks in opposite
+       corners with the page between them. The gap ceiling is the second
+       thing clause 1 needed and never said. A hairline that stops to let a
+       brass index sit at its end leaves ~5% of the measure open; a headline
+       at the left and a kicker at the right leave 50-60% and do not read as
+       a row at all. GAP_MAX sits between them, at a tenth of the measure —
+       a shade over one --gutter at either viewport, which is the widest
+       deliberate horizontal interval this site sets. */
+    const ok = (c) => c.reachL && c.reachR && c.gap <= GAP_MAX;
+    for (const [c, at] of [[topCov, bnd.top], [insideCov, 'inside'], [botCov, bnd.bottom]]) {
+      if (!full && ok(c)) full = { kind: `row spans measure @${at} (${Math.round(c.cov * 100)}%, gap ${Math.round(c.gap * 100)}%)` };
+    }
+    /* clause 1b — a change of ground, WITH the floor */
+    let best = { y: -1, dL: 0 };
+    for (let y = bnd.top; y <= bnd.bottom; y++) { const d = stepAt(y); if (d > best.dL) best = { y, dL: d }; }
+    const groundOK = best.dL >= GROUND_FLOOR_L;
+    /* clause 2 — a margin */
+    /* clause 2 — a margin. Page end, page start, or the shelf a masthead
+       reserves. "Page start" is not row 0: every route opens with a fixed
+       masthead, so the first mark on the page is always the wordmark and a
+       literal first-mark test would never fire. The margin at the top of an
+       inner page is the one BELOW the masthead and above the first mark of
+       the document proper — that is what `--shelf` is for, and the hand
+       sweep counted it. `firstBody` is the first mark that is not inside a
+       fixed or sticky element. */
+    const margin = bnd.bottom <= firstBody + 2 || bnd.top >= lastMark - 2;
+
+    const verdict = full ? 'composition (full-measure mark)'
+      : groundOK ? 'composition (change of ground)'
+      : margin ? 'composition (margin)'
+      : 'HOLE';
+    rows.push({ route, view: view.tag, top: bnd.top, bottom: bnd.bottom, h: bnd.h,
+                dL: +best.dL.toFixed(2), dLat: best.y, full: full ? full.kind : null, margin, verdict });
+  }
+  return rows;
+}
+
+/* ── run ─────────────────────────────────────────────────────────────── */
+let srv = null, base = process.env.BASE;
+if (!base) {
+  const dir = process.env.DIST || 'dist';
+  srv = spawn(process.execPath, ['-e', `import('sirv').then(({default:s})=>{const a=s(${JSON.stringify(dir)},{dev:true,extensions:['html']});import('node:http').then(({createServer})=>createServer((q,r)=>a(q,r,()=>{r.statusCode=404;r.end('nf')})).listen(4471))})`], { cwd: ROOT, stdio: 'ignore' });
+  base = 'http://127.0.0.1:4471';
+  /* POLL, do not sleep. A flat wait for the child to bind is the same guess
+     tools/shoot.mjs was corrected for in wave 12: when it is short the tool
+     does not fail, it silently measures the 404 body — a 980px-wide page with
+     two words on it, which scores as one enormous hole on every route. */
+  for (let i = 0; i < 100; i++) {
+    try { await fetch(base + '/index.html'); break; } catch { await new Promise((r) => setTimeout(r, 100)); }
+  }
+}
+
+const b = await launch({ proxy: false });
+const all = [];
+for (const view of VIEWS) {
+  const ctx = await b.newContext({ viewport: view.vp, deviceScaleFactor: 1, isMobile: !!view.mobile, hasTouch: !!view.mobile, reducedMotion: 'reduce' });
+  for (const route of ROUTES) all.push(...await sweepRoute(ctx, base, route, view));
+  await ctx.close();
+}
+await b.close();
+if (srv) srv.kill();
+
+all.sort((a, x) => x.h - a.h);
+const holes = all.filter((r) => r.verdict === 'HOLE');
+console.log(`\nband                                      px    ΔL* at      closed by`);
+console.log('─'.repeat(84));
+for (const r of all) {
+  const id = `${r.view} ${r.route} ${r.top}-${r.bottom}`.padEnd(40);
+  console.log(`${id} ${String(r.h).padStart(5)}  ${String(r.dL).padStart(6)} ${String(r.dLat).padStart(6)}   ${r.verdict}`);
+}
+console.log('─'.repeat(84));
+console.log(`ground floor ${GROUND_FLOOR_L} L* (page→panel, tokens.css THE GROUNDS); full-measure ≥${MEASURE_TOL} of shell.`);
+console.log(`\n${holes.length} hole(s) in ${all.length} band(s) ≥ one --pause across ${ROUTES.length} routes at ${VIEWS.length} viewport(s).`);
+process.exitCode = holes.length ? 1 : 0;
+/* stdout is a pipe under tools/gates.mjs; no process.exit() here — see the
+   note at the foot of glyph-floor.mjs. */

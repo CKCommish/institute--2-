@@ -14,14 +14,14 @@ node tools/blind.mjs progress/shots/<label>/home desktop /tmp/blind-<you>
 
 Use **your own port**. Never `npx astro build` into the shared `dist/`.
 
-## The five gates — run all of them before you report
+## The six gates — run all of them before you report
 
 ```bash
-node tools/gates.mjs        # all five, in parallel, one verdict — THIS IS THE WAY TO RUN THEM
+node tools/gates.mjs        # all six, in parallel, one verdict — THIS IS THE WAY TO RUN THEM
 ```
 
 It builds to its own `dist-gates-<hash>`, serves it on a port the OS hands
-out, and runs the five below in a pool. Nothing is shared, so two builders
+out, and runs the six below in a pool. Nothing is shared, so two builders
 can run it at the same moment — which is what wave 12 could not do, and why
 two racing runs reported a phantom failure. It caches each gate's verdict
 against the hash of the source tree AND of the gate's own file, so a re-run
@@ -43,9 +43,21 @@ node tools/glyph-floor.mjs  # EVERY string on the site, contrast measured by sub
 node tools/nojs-meter.mjs   # all 7 routes x 2 viewports with JavaScript OFF
 node tools/nojs-diff.mjs    # the same routes compared as PICTURES, script on vs script off
 node tools/perf.mjs         # page weight, LCP, CLS at load and through a full scroll
+node tools/bundle-gate.mjs  # the offline bundle the CLIENT opens, against the live site
 ```
 
-These are gates, not diagnostics. A wave is not done until all five are green,
+The sixth was missing from this list for three waves, which is part of how
+`progress/site.html` — the file the client actually opens — spent a whole
+wave stale, green and cached. Its verdict line now carries how far the
+SHIPPED bundle lags the bundler's current output; that clause is a NOTE and
+cannot fail the gate, so **read it**. If it says BEHIND, regenerate on a
+clean tree with `node tools/bundle.mjs` before you report.
+
+`tools/held-space.mjs` is NOT in the suite — it is a rule with a runner, not
+a gate, and nothing fails when a band opens. Run it by hand when you move a
+scene.
+
+These are gates, not diagnostics. A wave is not done until all six are green,
 and "I read the DOM and it looked right" is not one of them.
 
 `tools/photo-meter.mjs` is a DIAGNOSTIC, not a gate: it reports how far each
@@ -264,17 +276,40 @@ starts and catch a name at opacity 0.54: a settled 5.21:1 photographs as
   `data-parallax`. Everything must be inert under `prefers-reduced-motion`.
 - **One idea per scroll scene.** If a section needs a second idea, it is two
   scenes or it is cut.
-- **Held space has a rule now, and it is in `tokens.css` beside `--pause`.**
-  Read it before you argue about a flat band, and before you close one.
-  Short form: a band of at least one `--pause` is composition if a
-  FULL-MEASURE object — a rule, a change of ground, or a line of type
-  spanning the measure — sits at an edge or inside it, or if it is a margin
-  (page start, page end, or the fold a masthead reserves). Otherwise it is a
-  hole. A short label naming the section below does NOT close a band. The
-  rule is not a percentage and it is not a size: the largest band on the site
-  (274px, /partner/) is composition and /forum/'s 196px was a hole. Swept
-  against all 33 bands ≥90px on seven routes at both viewports; **zero holes
-  remain**, so the next finding here is a regression, not a backlog item.
+- **Held space has a rule, it is in `tokens.css` beside `--pause`, and it
+  RUNS: `node tools/held-space.mjs`.** Read the rule before you argue about a
+  flat band, and before you close one.
+  Short form: a band of at least one `--pause` is composition if the MEASURE
+  IS SPANNED at an edge of it or inside it — by a rule, a line of type, or a
+  row of marks that reaches both margins with no gap wider than a tenth of
+  the measure — or by a change of ground of at least 11.5 L*, or if it is a
+  margin (page start, page end, or the fold a masthead reserves). Otherwise
+  it is a hole. A short label naming the section below does NOT close a band.
+  The rule is not a percentage and it is not a size.
+
+  Three things the wave-19 hand sweep could not have known, all of which
+  turned up in the first minute of running it:
+
+  1. **Clause 1 had no magnitude floor**, so any gradient at all counted as
+     "a change of ground". The floor is not a new number — tokens.css already
+     carried it forty lines below, under THE GROUNDS: page → panel is 11.5 L*,
+     and the wave-4 note there says in terms that a 6-point step "is not a
+     change of ground; it is the same ground with a rounding error".
+  2. **Most of this site's rules are pseudo-elements**, invisible to any DOM
+     walk, and its commonest closing device is a hairline that stops short so
+     a brass index can sit at the end of it. Neither is one full-measure
+     object. Both are read in the pixels now, and the test is on the ROW.
+  3. **`/404.html` has the largest band on the site and it is a hole** — 354px
+     at 1440, 158px at 390, across which the ground moves 0.28 L*. The line
+     that used to stand here, that the largest band was /partner/'s 274px, was
+     wrong. /404 is a route, not an edge case: it is where a bad link lands.
+
+  Five bands are open as this is written — /404 and /partner/ at both
+  viewports, and a 61px band on the mobile homepage that is barely over the
+  floor. The tool prints every band with the number it judged it on, so a
+  verdict can be checked rather than taken. **If you think one of them is
+  wrong, say so and show the measurement.** That is how all three of the
+  findings above were got, and two of them overturned this file.
 - Never transcribe the prospectus. Facts only, rewritten short.
 - **Comments in markup use `{/* … */}`, never `<!-- … -->`.** Astro ships an
   HTML comment to the browser; it strips a JSX one at build. This repo's

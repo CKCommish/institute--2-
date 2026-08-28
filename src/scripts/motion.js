@@ -239,6 +239,10 @@ function initLines() {
                      by loosening this.
      --bu    per beat, the raw local progress, unclamped at the ends, so a
                      beat can drift continuously while its envelope is flat.
+     --be    ALSO per meter tick — but a different curve, and deliberately.
+                     A tick fills on arrival and does not retire, so the
+                     meter reads duration rather than which beat is lit. See
+                     THE METER LATCHES.
 
    The three arcs are the three honest things a ground can do while a picture
    is held (data-arc on the track):
@@ -395,6 +399,96 @@ const RETIRE = 0.26;
 const BREATH = 0.12;
 const BREATH_LEAD = 0.18;
 
+/* THE METER LATCHES — and this is the seam's other half, not a second breath.
+
+   THE QUESTION THIS ANSWERS. Wave 20 closed the seam's stillness and the
+   judge's verdict was about its CONTENT: "for 25px of scroll there is no
+   display line, no note, no coda, and no tick." Three of those four are the
+   type, and the type cannot be helped — see WHY NOT OVERLAP above, and the
+   costing of a second grid cell in HeldScene. The FOURTH was not the type's
+   problem at all, and nobody had looked at it.
+
+   The tick meter was wired to `env[i]` — the beat's own envelope — so the
+   brass fill rose with a beat and RETIRED with it. Read off the live
+   `.held__tick` at 1440x900, the `--be` that scales the brass bar:
+
+     hp 0.4845   tick 0  0.0001      tick 1  0.0000
+     hp 0.4856   tick 0  0.0000      tick 1  0.0001
+
+   scaleX(0.0001) of a 26px bar is nothing on the glass, and 390x844 reads
+   the same pair on the same frame.
+
+   A duration mark reading zero in the middle of the duration. HeldScene's own
+   comment says the meter exists because it "answers the only question a held
+   scene actually raises: how long is this" — and mid-scene it was answering
+   nothing, then answering it again. That is not a fade, it is a mark that
+   un-tells you what it has already told you.
+
+   SO IT FILLS AND DOES NOT EMPTY. `ss(u / 0.30)` is the envelope's arrival
+   half with the retire term deleted; past `u = 1` it saturates at 1 on its
+   own, so the latch is the absence of code rather than a new rule. The newest
+   filled tick is still the live beat, so the "which beat am I on" reading
+   survives; what is added is "and you have had one already", which is the
+   reading a duration mark is for.
+
+   AND IT READS AHEAD BY BREATH_LEAD, for the same reason the light does. At
+   the seam exactly, an arrival ramp anchored ON the seam is at zero AND
+   stationary — the same turning-point mistake the symmetric dip made. Read
+   ahead by the same 0.18 of a span the ground already uses, the next tick is
+   mid-fill and climbing on the frame the display line is absent from. No new
+   constant: the meter and the ground read the type the same distance ahead.
+
+   MEASURED at the seam, real painted `--be` off the live `.held__tick`:
+
+                       1440x900 (hp 0.4845)   390x844 (hp 0.4852)
+     tick 0   before   0.0001                 0.0000
+              after    1.0000                 1.0000
+     tick 1   before   0.0000                 0.0000
+              after    0.6415                 0.6499
+     brass on frame    none -> 26px           none -> 14px
+
+   WHAT IT DOES NOT DO, and this is the honest half. A hairline is not a
+   proposition. The judge asked whether there is one on screen at every point
+   and the answer is still no — what is on screen at the seam is the eyebrow,
+   the location credit, two hairlines of which one is now lit, and a ground
+   that is moving. This closes one of the four items in that list and leaves
+   the three that are the type. The costing of the alternative is in
+   HeldScene, at the beat stack.
+
+   AND IT MOVES NO METER, WHICH IS THE POINT OF SAYING SO. The seam's motion
+   floor is measured as mean |delta| per pixel over a 10px scroll step across
+   the whole viewport; 26 pixels of hairline against 1,296,000 is 0.002% of
+   the frame and cannot register in a mean. Before and after: 0.781 and 0.786
+   at the seam, 1440x900 — the same number twice, plus noise. The change is
+   for the reader's eye, not for the meter, and the meter says so.
+
+   WHICH LEAVES THE FINDING THIS WAVE ACTUALLY TURNED UP, and it argues
+   against the brief that produced it. Sweeping that same measure across the
+   WHOLE hold rather than across the seam, 45 samples, hp 0.06 to 0.94:
+
+                            1440x900              390x844
+     at the seam (hp 0.485) 0.791                 0.820
+     lowest in the seam band 0.791 at 0.4850      0.803 at 0.4925
+     GLOBAL minimum         0.545 at hp 0.300     0.722 at hp 0.520
+     arrival / exit         2.4-3.2 / 3.4-4.0     2.6-3.6 / 3.4-4.1
+
+   After wave 20's breath, THE SEAM IS NOT THE STILLEST FRAME IN THE SCENE:
+   at both viewports the global floor is elsewhere, and at 1440 the seam runs
+   45% above it. The stillest frames are the beat PLATEAUS — hp 0.30, and the
+   0.54-0.70 stretch — where a display line is fully painted and holding, the
+   ground is flat at `--open` 1.000, and the only thing moving is 0.075 of
+   scale spread over the whole hold.
+
+   So the two criteria pull opposite ways on this scene. The frames that pass
+   "is there a proposition on screen" are the ones that fail "is anything
+   moving", and the frame that fails the first is now among the most active
+   in the hold. A future wave that goes after the seam again is optimising
+   the wrong 25px: the still frames are the ones with the words on them.
+
+   (The seam's 0.820 at 390 is wave 20's own number, reproduced. The 1440
+   figure reads 0.791 here against the 0.820 that wave quoted; same sweep,
+   different sample grid, and the conclusion does not turn on it.) */
+
 function holdTail(track, beats, coda) {
   const w = window.innerWidth;
   if (track.__tailW === w) return track.__tail;
@@ -488,7 +582,13 @@ function runHold(track, vh) {
       const u = (p - (lead + i * span)) / span;
       setVar(beats[i], '--be', env[i]);
       setVar(beats[i], '--bu', Math.max(-0.4, Math.min(1.4, u)));
-      if (ticks[i]) setVar(ticks[i], '--be', env[i]);
+      /* THE METER IS NOT A BEAT. See THE METER LATCHES above: it fills on
+         arrival and does not retire, and it reads the type the same distance
+         ahead the light does. */
+      if (ticks[i]) {
+        const t = (p + BREATH_LEAD * span - (lead + i * span)) / span;
+        setVar(ticks[i], '--be', t <= 0 ? 0 : ss(t / 0.30));
+      }
     }
   }
   /* The coda starts drawing on the exact frame the last beat's envelope

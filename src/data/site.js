@@ -323,10 +323,43 @@ export const pilotTerms = [
 ];
 
 /* ── How the institute works ──────────────────────────────────────── */
+/* THIS LEDGER NOW STATES THE ACT, WHICH THE SITE HAD NEVER STATED ANYWHERE.
+   refs/PROSPECTUS.txt, WHAT WE DO: "For each pilot, we identify a problem,
+   match it with a technology partner, recruit implementation partners, and
+   measure outcomes." Four verbs, in order, and the page whose whole job is
+   the model carried none of them. Two sentences later the same paragraph
+   adds the fifth: "We then share those lessons with the world."
+
+   What it replaced was three rungs of RESTATEMENT, measured on the built
+   page at 1440 and 390:
+     · rung 01's caption, "Health, education, workforce, energy.", was a
+       verbatim duplicate of the spec rail's Focus value ~900px above it on
+       the same route.
+     · rung 02's caption, "Who builds it. Who runs it.", said in six words
+       what the two .ispec__say sentences 300px above say in full — not
+       verbatim (they name all seven stakeholder groups; this named none),
+       but the same two verbs about the same two sides.
+     · only rung 03's caption carried anything the page had not already
+       said, and it said it about the LAST act while the first three went
+       unnamed.
+
+   So the captions go and the rungs carry the verbs. Titles only: there is
+   no second line under any of them because the prospectus does not offer
+   one that is not already elsewhere on this page — the partner rosters are
+   the two sentences above, the window is the rail's Horizon, the focus list
+   is the rail's Focus. A caption invented to fill the slot is the defect
+   this scene was sent back for.
+
+   Each rung is the source's own verb phrase. Do not add an object to one
+   that the prospectus does not give it ("measure outcomes" is measure
+   outcomes; it is not a number, a metric, or a target), and do not restore
+   a caption row. */
 export const method = [
-  { index: '01', title: 'Find the problem', text: 'Health, education, workforce, energy.' },
-  { index: '02', title: 'Match the partners', text: 'Who builds it. Who runs it.' },
-  { index: '03', title: 'Measure, then publish', text: 'The lessons go to the world.' },
+  { index: '01', title: 'Identify a problem' },
+  { index: '02', title: 'Match a technology partner' },
+  { index: '03', title: 'Recruit implementation partners' },
+  { index: '04', title: 'Measure outcomes' },
+  { index: '05', title: 'Share the lessons with the world' },
 ];
 
 /* ── People ───────────────────────────────────────────────────────── */

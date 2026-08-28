@@ -121,9 +121,25 @@ const GATES = [
      committed bundle for liveness. `reads` is below because it SPAWNS
      tools/bundle.mjs rather than importing it, and a cache key that missed
      the bundler would let a broken bundler pass on a stale verdict. */
+  /* `hashes` is progress/site.html because that file IS the shipped
+     subject. `reads` keyed the cache to the BUNDLER and not to the thing
+     bundled, so a newly committed site.html got the previous file's cached
+     verdict — which is how the artefact the client opens sat a whole wave
+     behind, green and cached, with nothing in the suite able to say so.
+     It is `hashes` and not `reads` because `reads` entries are walked as an
+     import graph, and site.html is a megabyte of HTML, not a module. */
   { name: 'bundle',      cmd: ['tools/bundle-gate.mjs'], want: /(\d+) finding\(s\)/, cost: 3,
     reads: ['tools/bundle.mjs'],
-    headline: /\d+ finding\(s\) in [^\n]*\./ },
+    /* Resolved the SAME way the gate resolves it. Hashing the default path
+       while the gate opens SHIPPED_FILE reproduces the exact bug this field
+       was added to close, one level up: caught doing it here, on the first
+       run after the field was added. A cache key must name the file the gate
+       will actually read, not the file it usually reads. */
+    hashes: [process.env.SHIPPED_FILE || 'progress/site.html'],
+    /* Not `[^\n]*\.` — the verdict line now ends with the shipped bundle's
+       LAG, after the first full stop, and the truncating pattern dropped the
+       one sentence this gate was extended to carry. */
+    headline: /\d+ finding\(s\) in [^\n]*/ },
   { name: 'perf',        cmd: ['tools/perf.mjs'],        want: /layout shift: all routes under 0\.1/, fail: /layout shift over 0\.1:.*/, cost: 2, headline: /slowest LCP:.*/ },
 ].filter((g) => !ONLY || ONLY.includes(g.name));
 
@@ -263,11 +279,23 @@ const cacheKey = (g) => {
     h.update(f.slice(ROOT.length));
     h.update(fs.readFileSync(f));
   }
+  /* Non-code inputs: hashed, never walked. A gate whose SUBJECT is a file in
+     the tree must be re-run when that file changes, and only the gate knows
+     which file that is. */
+  for (const f of (g.hashes || [])) {
+    const abs = path.isAbsolute(f) ? f : path.join(ROOT, f);
+    h.update(f).update(fs.existsSync(abs) ? fs.readFileSync(abs) : 'absent');
+  }
   return path.join(cacheDir, h.digest('hex').slice(0, 16) + '.json');
 };
 
+/* 200 was under the length of the shortest verdict line this suite prints,
+   so the runner truncated its own gates — `bundle`'s lag clause, the part
+   that says whether the file the client opens is current, fell off the end
+   of the only line a wave ever quotes. Same defect as the `headline`
+   fragment above, one layer out. */
 const show = (st, g, line, tail) =>
-  console.log(`  ${st.padEnd(5)} ${g.name.padEnd(12)} ${String(line).slice(0, 200).padEnd(78)} ${tail}`);
+  console.log(`  ${st.padEnd(5)} ${g.name.padEnd(12)} ${String(line).slice(0, 420).padEnd(78)} ${tail}`);
 
 async function attempt(g) {
   const t = Date.now();

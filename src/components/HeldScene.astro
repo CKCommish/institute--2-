@@ -139,7 +139,12 @@ const {
      the <h2> instead of a <p>. Nothing about its size or position changes —
      a beat is a beat; this is semantics, not a second display rung. */
   headingId,
-  /* THE METER — one short hairline per beat, the live one drawn in brass.
+  /* THE METER — one short hairline per beat, filled in brass as its beat
+     arrives and NOT emptied afterwards, so the meter reads how far through
+     the scene the reader is rather than which beat happens to be lit. It was
+     wired to the beat's own envelope until wave 21, which meant it read zero
+     at the seam between two beats — a duration mark answering nothing in the
+     middle of the duration. See THE METER LATCHES in motion.js.
      Defaults on at 2+ beats. It is deliberately NOT a numeral: a counter set
      over a photograph is either bright enough to compete with the eyebrow or
      dim enough to fail the legibility budget, and either way it is a fourth
@@ -626,7 +631,52 @@ const style = [
     /* Every beat is anchored to the SAME baseline, in one grid cell, so the
        type fades through in one place instead of hopping around the frame.
        A grid stack rather than absolute positioning, so the beats keep the
-       shell's gutter and max-width like every other column on the site. */
+       shell's gutter and max-width like every other column on the site.
+
+       ONE CELL WAS THE THING NOBODY HAD COSTED, so here is the costing. The
+       seam between two beats carries no display line, and every cheap answer
+       to that runs into this rule: two envelopes open in one cell superimpose
+       two sentences' glyphs rather than crossfading two lines. So the
+       question is whether the cell should be two.
+
+       MEASURED on the homepage Forum scene, 1440x900. The beats are 133px and
+       163px tall; the coda is 29px. Stacked in one cell the band is the
+       TALLER of the two — 163px, from the 54px bottom pad to 217px up the
+       frame, 24% of the viewport. In two cells it is their sum plus the row
+       gap: 133 + 163 + 21.6 = 318px, reaching 372px, 41% of the viewport, a
+       95% deeper band of type. (390x844: 83 + 114 + 20.3 = 217px against
+       114px, on an 84.4px pad — 36% of the viewport against 24%.)
+
+       That is not a layout cost, it is an INK cost, and it lands on the one
+       thing this scene sells. `.held__ink` is 58% of the frame with its full
+       weight held to 34% and handed back to the photograph above that — the
+       plateau is exactly as tall as the beat stack, and the comment on that
+       rule records what happened the last time type sat on its shoulder
+       (tools/photo-meter.mjs, the bridge line at 4.17 : 1). A 372px stack
+       tops out at 71% of a 522px band, where `--k` has already decayed past
+       0.72 toward 0.28. Two cells therefore forces the ink taller and
+       heavier over 41% of a frame whose argument is that the picture is
+       handed back above the words — to buy a crossing where two half-alpha
+       sentences are legible in two places at once, which is not "a
+       proposition on screen" but two propositions half-erased.
+
+       THE OTHER SHAPE, and it is worth recording because it nearly works. A
+       WIPE-THROUGH keeps one cell and one baseline and superimposes nothing
+       by construction: a moving vertical boundary, the arriving line drawn
+       fully inked to its left, the departing line to its right, disjoint
+       regions, fully-inked glyphs on the frame at every offset. It needs no
+       new primitive — the clip-path vector is already here, on the note and
+       the coda. It is dead on the copy, not on the mechanism: the two beats
+       are "The Lion Forum" and "The people who build sit with the people who
+       decide", so mid-crossing the baseline reads "The people who bui|Forum".
+       A chimera, and a different one for every scene this component is ever
+       given. A transition that is only safe for strings nobody has written
+       yet is not a primitive.
+
+       SO THE CELL STAYS ONE, and the seam's price is 337.7px per beat kept
+       whole and a stack that never hops. What was actually available at the
+       seam was not the type at all — it was the meter; see THE METER LATCHES
+       in motion.js. */
     :global(html.js) .held__beats {
       position: absolute;
       left: 0; right: 0; bottom: 0;

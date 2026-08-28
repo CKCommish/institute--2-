@@ -114,7 +114,21 @@ const spec = [
   </section>
 
   {/* ── How a pilot runs ────────────────────────────────────────────
-       A ledger, not a card row: three full-width entries, one rule each. */}
+       A ledger, not a card row: five full-width entries, one rule each, and
+       the five entries are the prospectus's own sequence of verbs. Until
+       wave 21 this was three rungs of caption, two of which restated the
+       rail and the two sentences above them; the scene was the site's
+       weakest and it was sitting on the one fact about the model the page
+       never stated. src/data/site.js carries the sourcing.
+
+       THE HELD-SPACE RULE (src/styles/tokens.css) on what follows it: the
+       flat run between this ledger and the footer's first mark is 180px at
+       1440 and 95px at 390, both over one --pause (118.39 / 56). It is
+       COMPOSITION, not a hole, under clause 1 — the ledger's last rule is a
+       full-measure object (1337px of 1338 at 1440, 348 at 390) lying on the
+       band's top edge — and the footer's glow ramps into it from below.
+       That was already true of the three-rung version; five rungs do not
+       change it. It is not the reason this scene was weak. */}
   <section class="imeth">
     <div class="shell imeth__in">
       <div class="imeth__head">
@@ -126,10 +140,7 @@ const spec = [
         {method.map((m) => (
           <li data-reveal>
             <span class="index ledger__n">{m.index}</span>
-            <div class="ledger__b">
-              <h3 class="ledger__t display display--sub">{m.title}</h3>
-              <p class="ledger__p">{m.text}</p>
-            </div>
+            <h3 class="ledger__t display display--sub">{m.title}</h3>
           </li>
         ))}
       </ol>
@@ -251,10 +262,12 @@ const spec = [
   }
   .ledger li:last-child { border-bottom: 1px solid var(--rule); }
   .ledger li[data-reveal] { --reveal-y: 8px; transition-duration: 440ms, 560ms; }
-  .ledger__n { padding-top: 0.55em; }
-  .ledger__b { display: grid; gap: clamp(0.3rem, 0.7vw, 0.55rem); }
-  .ledger__t { font-weight: 320; }
-  .ledger__p { color: var(--fg-mute); font-size: var(--step-body); max-width: 34ch; }
+  /* Each rung is one line now — the number and the verb, nothing under it.
+     See the note on `method` in src/data/site.js for why there is no caption
+     row: every caption this page could source is already on this page. The
+     number is optically aligned to the single line rather than to a block. */
+  .ledger__n { padding-top: 0.34em; }
+  .ledger__t { font-weight: 320; margin: 0; max-width: 30ch; }
 
   @media (max-width: 900px) {
     .ispec__rail { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: clamp(1rem, 3vw, 1.4rem); }

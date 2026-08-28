@@ -94,7 +94,13 @@ const BASE = process.env.BASE || 'http://127.0.0.1:4399';
 const OUTDIR = process.env.OUTDIR || 'dist';
 const OFFSETS = Number(arg('offsets', '8'));
 const ONLY = arg('only', '');
-const SHIPPED = path.join(ROOT, 'progress/site.html');
+/* SHIPPED_FILE overrides the subject. It exists so the lag check can be
+   proved: point it at an older copy of the bundle and the gate must say how
+   far behind it is. A gate whose new clause has never been seen to fire is
+   a gate that reports "current" for a reason nobody has checked. */
+const SHIPPED = process.env.SHIPPED_FILE
+  ? path.resolve(process.env.SHIPPED_FILE)
+  : path.join(ROOT, 'progress/site.html');
 
 const ROUTES = (arg('routes', '/,/institute/,/pilots/,/forum/,/people/,/partner/')).split(',');
 const VIEWS = [
@@ -257,6 +263,27 @@ const TOL_PCT = 0.6;
    census is reported, not judged. */
 const darkRef = new Map();
 
+/* ── LAG: HOW FAR BEHIND THE SHIPPED BUNDLE IS ────────────────────────────
+   The SHIPPED subject is checked for liveness and not parity, on purpose:
+   `progress/site.html` legitimately trails the tree between refreshes, and a
+   gate that reddens on every component edit is a gate nobody runs. But
+   "deliberately lagging" and "silently, arbitrarily stale" are different
+   states, and until now this gate could not tell them apart — its cache key
+   did not even include the file, so the artefact the client opens sat one
+   wave behind, green and cached, for a whole wave, and nothing in the suite
+   would have told the next builder to regenerate it.
+   So the lag is MEASURED and PRINTED, and it is not a finding. For each
+   route-view the FRESH bundle — built from this run's build, so it is the
+   bundler's current output by construction — leaves a fingerprint of what
+   the page SAYS: character count, heading count, h1, footer, picture count.
+   The shipped bundle is read against it. A difference is not a defect; it is
+   a number of routes whose copy has moved since the file was last written,
+   and it belongs in the one line every wave quotes. Zero means the file the
+   client opens says what the site says today. */
+const freshFp = new Map();
+const lag = [];
+const fpOf = (b) => ({ text: b.text, heads: b.heads, h1: b.h1.replace(/\s+/g, ''), foot: b.foot, imgs: b.imgs });
+
 for (const view of VIEWS) {
   for (const s of subjects) {
     const ctx = await b.newContext({ viewport: view.vp, isMobile: !!view.mobile, hasTouch: !!view.mobile, deviceScaleFactor: 1 });
@@ -301,12 +328,22 @@ for (const view of VIEWS) {
       if (bs.pending) add(s.name, `${view.tag} ${route}`, `${bs.pending} picture(s) never finished loading after a full scroll`);
       if (!bs.text) add(s.name, `${view.tag} ${route}`, 'route is empty of text');
 
-      if (s.compare) darkRef.set(view.tag + route, bs.darkN);
+      if (s.compare) { darkRef.set(view.tag + route, bs.darkN); freshFp.set(view.tag + route, fpOf(bs)); }
 
       if (!s.compare) {
         const bsw = await sweep(page, offsetsFor(await range(page)));
         samples += bsw.length;
         /* SHIPPED: liveness, not parity. */
+        const fp = freshFp.get(view.tag + route), now = fpOf(bs);
+        if (fp) {
+          const moved = [];
+          if (Math.abs(now.text - fp.text) > Math.max(40, fp.text * 0.02)) moved.push(`${now.text} characters against today's ${fp.text}`);
+          if (now.heads !== fp.heads) moved.push(`${now.heads} headings against ${fp.heads}`);
+          if (now.h1 !== fp.h1) moved.push(`h1 "${bs.h1}" against "${fp.h1}"`);
+          if (now.foot !== fp.foot) moved.push('a different footer');
+          if (now.imgs !== fp.imgs) moved.push(`${now.imgs} pictures against ${fp.imgs}`);
+          if (moved.length) lag.push(`${view.tag} ${route}: ${moved.join('; ')}`);
+        }
         const ref = darkRef.get(view.tag + route);
         if (ref === undefined) notes.push(`${view.tag} ${route}: ${bs.darkN} text element(s) below-fold-dark in the shipped bundle, no fresh bundle to read it against — not judged`);
         else if (bs.darkN > ref) add(s.name, `${view.tag} ${route}`, `${bs.darkN - ref} more text element(s) invisible than the bundler produces today: "${bs.dark[0]}"`);
@@ -442,5 +479,14 @@ if (notes.length) console.log(notes.map((n) => '  · ' + n).join('\n'));
 /* Under 200 characters on purpose: gates.mjs prints the first 200 of this
    line and that one line is what every wave quotes. The rule and the
    denominator have to survive the cut. */
-console.log(`${findings.length} finding(s) in ${subjects.map((s) => s.name).join('+')} · ${VIEWS.length * ROUTES.length * subjects.length} subject-route-views, ${samples} settled samples, scalars matched to ${TOL} at ${OFFSETS} shared offsets · ${checked} route-views had motion to compare, ${unchecked} had none: UNCHECKED, not passed.`);
+/* The lag sentence is part of the verdict line and not a finding: it is the
+   difference between a bundle that lags on purpose and one nobody has looked
+   at. It carries the command, because the whole point is that the next
+   builder should not have to work out what to do about it. */
+const lagLine = !subjects.some((s) => !s.compare) ? ''
+  : !freshFp.size ? ' · shipped bundle NOT read against the bundler\'s current output (no fresh bundle in this run) — its age is unknown.'
+  : lag.length ? ` · shipped bundle is BEHIND the bundler's current output on ${lag.length} of ${VIEWS.length * ROUTES.length} route-views (${lag[0]}) — regenerate with \`node tools/bundle.mjs\`. Not a finding: it is allowed to lag, but not silently.`
+  : ' · shipped bundle says what the site says today.';
+console.log(`${findings.length} finding(s) in ${subjects.map((s) => s.name).join('+')} · ${VIEWS.length * ROUTES.length * subjects.length} subject-route-views, ${samples} settled samples, scalars matched to ${TOL} at ${OFFSETS} shared offsets · ${checked} route-views had motion to compare, ${unchecked} had none: UNCHECKED, not passed.${lagLine}`);
+for (const l of lag) console.log(`  lag  ${l}`);
 process.exitCode = findings.length ? 1 : 0;
