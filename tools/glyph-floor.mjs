@@ -908,6 +908,7 @@ for (const view of VIEWS) for (const route of ROUTES) jobs.push({ view, route })
 
 const browser = await launch({ proxy: false });
 const results = new Array(jobs.length);
+const crashed = [];
 let next = 0;
 await Promise.all(Array.from({ length: Math.max(1, Math.min(JOBS, jobs.length)) }, async () => {
   const ctxByTag = new Map();
@@ -921,8 +922,17 @@ await Promise.all(Array.from({ length: Math.max(1, Math.min(JOBS, jobs.length)) 
       }));
     }
     const page = await ctxByTag.get(view.tag).newPage();
+    /* A route-view that throws used to reject the pool and take the whole
+       run's summary with it — the tool printed 168KB of per-route detail and
+       then simply stopped, which is indistinguishable from being killed. Now
+       the failure is CAUGHT AND NAMED, and the run continues.
+       The reason it is recorded rather than swallowed is the more important
+       half: `results.filter(Boolean)` will happily total nine route-views and
+       print a confident number for a twelve-route-view site. A sweep that
+       missed a quarter of the site must not be quotable as a verdict. */
     try { results[i] = await sweepRoute(page, view, route); }
-    finally { await page.close(); }
+    catch (e) { crashed.push({ view: view.tag, route, err: (e && e.message) || String(e) }); }
+    finally { await page.close().catch(() => {}); }
   }
   for (const c of ctxByTag.values()) await c.close();
 }));
@@ -978,8 +988,19 @@ const tableLine = (r) => {
   return `${reg.name} (${Math.round(reg.a * 100)}%) allows a backdrop <= L* ${ceil} and this one is L* ${r.backdropL.toFixed(1)}, inside it — so the ground is not the fault: the ink is painted at ${(r.strength * 100).toFixed(0)}% of its own strongest, at a declared alpha of ${r.alpha.toFixed(2)}. Something is in front of it`;
 };
 
+/* Incompleteness is a property of the RUN, not of the human-readable
+   report, so it is declared before either format is chosen — and on stderr
+   in JSON mode, where a warning inside the document would make it
+   unparseable and a warning omitted would make it a lie. */
+const done = results.filter(Boolean).length;
+const incomplete = done < jobs.length;
+if (incomplete) {
+  for (const c of crashed) console.error(`   ${c.view} ${c.route} — ${c.err}`);
+  console.error(`NO VERDICT — INCOMPLETE SWEEP: ${done} of ${jobs.length} route-views finished.`);
+}
+
 if (asJson) {
-  console.log(JSON.stringify({ base, frames, minOpacity: MIN_OP, faint: FAINT, rows: all }, null, 2));
+  console.log(JSON.stringify({ base, frames, minOpacity: MIN_OP, faint: FAINT, incomplete, routeViews: [done, jobs.length], rows: all }, null, 2));
 } else {
   console.log(`glyph-floor · ${base} · ${frames} frame pairs · coarse vh/${COARSE} then trisected to ≤${BRACKET_PX}px · measured by subtraction · painted ≥ ${FAINT} of own ink · declared alpha ≥ ${MIN_OP}\n`);
   for (const r of results) {
@@ -1002,6 +1023,41 @@ if (asJson) {
       console.log(`   ${x.ratio.toFixed(3)}:1  ${Math.round(x.size)}px  ${x.view} ${x.route} t ${x.t.toFixed(3)}  declared a ${x.alpha.toFixed(2)}, ink at ${(x.strength * 100).toFixed(0)}% of its own  "${x.sample}"`);
   }
   if (dark.length) console.log(`\n${dark.length} string(s) never painted above ${(FAINT * 100).toFixed(0)}% of their own ink at any offset (wiped shut, occluded or transparent throughout) — not measurable, not failures.`);
-  console.log(`\n${fails.length} failure(s) in ${live.length} curves across ${results.filter(Boolean).length} route-views.`);
+  /* ── THE VERDICT, OR AN EXPLICIT REFUSAL TO GIVE ONE ───────────────────
+     "N failure(s)" is the line every runner reads. It is only allowed to be
+     printed when the sweep actually covered the site. If any route-view is
+     missing, the count is a floor on an unknown total, so it is printed in a
+     shape that CANNOT be read as a verdict — no `failure(s)` — and the run
+     says NO VERDICT in its own words. Failed and could-not-tell must not
+     look the same. */
+  if (incomplete) {
+    if (crashed.length) console.log('\n' + crashed.map((c) => `   ${c.view} ${c.route} — ${c.err}`).join('\n'));
+    console.log(`\nNO VERDICT — the sweep is INCOMPLETE: ${done} of ${jobs.length} route-views finished. ${fails.length} failing curves were seen in the ${live.length} that were measured, which is a floor on an unknown total and is not a result. Re-run the missing route-views with --routes= --views=.`);
+  } else {
+    console.log(`\n${fails.length} failure(s) in ${live.length} curves across ${done} route-views.`);
+  }
 }
-process.exit(fails.length ? 1 : 0);
+
+/* ── WHY THIS IS NOT `process.exit()` ─────────────────────────────────────
+   It used to be, and that single call is why this tool was a coin flip
+   inside `gates.mjs` and reliable on its own. `process.exit()` terminates
+   without flushing pending stdout writes. When stdout is a TTY or a file,
+   Node writes SYNCHRONOUSLY and there is nothing pending — run by hand, the
+   summary always appeared. When stdout is a PIPE, as it is for every child
+   `gates.mjs` spawns, writes are ASYNCHRONOUS, and this tool prints upward
+   of 168KB. Everything still in the buffer at the moment of exit is
+   discarded.
+   Measured: 242,929 bytes of output through a pipe delivered 10,690 and
+   stopped mid-line, exit code 1, no signal, no error. Which is precisely
+   what the wave-15 judge saw — every route-view printed, then nothing where
+   the totals should be — and precisely why it looked identical to a gate
+   that had failed. Setting `exitCode` instead lets Node exit on its own
+   once the buffer has drained. The timer is a backstop: if some handle
+   outlives the run, the process still leaves rather than hanging, and it
+   leaves AFTER the write queue is empty. */
+const finish = (code) => {
+  process.exitCode = code;
+  const t = setTimeout(() => process.stdout.write('', () => process.exit(code)), 30000);
+  t.unref();
+};
+finish(incomplete ? 2 : fails.length ? 1 : 0);

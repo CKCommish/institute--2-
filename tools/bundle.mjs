@@ -58,12 +58,45 @@ let css = '';
 for (const f of cssFiles) css += fs.readFileSync(path.join(D, f.replace(/^\//, '')), 'utf8') + '\n';
 css = await inlineUrls(css);
 
-/* ── scripts (Astro already inlines them) ───────────────────────────── */
+/* ── scripts ────────────────────────────────────────────────────────────
+   Astro emits module scripts BOTH ways: small ones inline, and anything
+   over its threshold as <script type="module" src="/_astro/...js">. The
+   sweep below used to match only `<script type="module">` with no
+   attributes, so it silently dropped every EXTERNAL one — which is where
+   motion.js lives (Base.astro's script).
+
+   The bundle therefore shipped with no motion engine at all for as long as
+   this tool has existed. The failure was quiet and specific: the inline
+   script still ran, so the nav still darkened on scroll and the page looked
+   alive — but `initScroll`'s hold loop never existed, so the homepage's held
+   Forum scene pinned for 855px of scroll with `--hp` stuck at 0 and nothing
+   moving. Scrolling a full viewport and seeing a frozen picture is exactly
+   what a reader calls "stuck". `.lines` headlines never split either.
+
+   Two lessons for whoever touches this next. Matching a tag by its opening
+   text and no attributes is a filter, not a match. And the bundle needs a
+   check that it BEHAVES like the site, not merely that it contains the same
+   bytes — see the note at the foot of this file. */
 const scripts = new Map();
 for (const r of ROUTES) {
-  for (const m of read(r.file).matchAll(/<script type="module">([\s\S]*?)<\/script>/g)) {
+  const html = read(r.file);
+  /* inline: <script type="module"> … </script> */
+  for (const m of html.matchAll(/<script type="module">([\s\S]*?)<\/script>/g)) {
     scripts.set(m[1].trim().slice(0, 120), m[1]);
   }
+  /* external: <script type="module" src="/_astro/….js"></script> */
+  for (const m of html.matchAll(/<script type="module"[^>]*\ssrc="([^"]+)"[^>]*>\s*<\/script>/g)) {
+    const src = m[1];
+    const file = path.join(D, src.replace(/^\//, ''));
+    if (!fs.existsSync(file)) {
+      throw new Error(`bundle: module script ${src} not found in dist — the bundle would ship without it`);
+    }
+    const code = fs.readFileSync(file, 'utf8');
+    scripts.set('EXT:' + src, code);
+  }
+}
+if (![...scripts.values()].some((s) => /data-hold-stage/.test(s))) {
+  throw new Error('bundle: no script defines the held-scene loop — motion.js did not make it in');
 }
 
 /* ── chrome + routes ────────────────────────────────────────────────── */

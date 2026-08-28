@@ -32,6 +32,7 @@
    a FAIL: see PASS / FAIL / ERROR below. Exit 0 green, 1 failed, 2 no verdict.
 
    usage: node tools/gates.mjs [--fresh] [--only=audit,glyph-floor] [--pool=3]
+                     [--timeout=75]   minutes before a silent gate is killed
           node tools/gates.mjs --serve      (build + serve, print BASE, hold) */
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
@@ -45,6 +46,7 @@ const has = (k) => process.argv.includes(`--${k}`);
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const POOL = Number(arg('pool', '3'));
 const ONLY = arg('only', '') ? arg('only', '').split(',') : null;
+const TIMEOUT_MS = Number(arg('timeout', '75')) * 60_000;
 
 /* Everything that can change what a gate measures. Not `tools/` wholesale:
    editing one meter should not throw away another meter's cached result. */
@@ -88,25 +90,51 @@ const GATES = [
   { name: 'nojs-meter',  cmd: ['tools/nojs-meter.mjs'],  want: /(\d+) issue\(s\)/,    cost: 4 },
   { name: 'audit',       cmd: ['tools/audit.mjs'],       want: /(\d+) issue\(s\)/,    cost: 3 },
   /* perf has no counted line: it prints its own verdict in words. */
-  { name: 'perf',        cmd: ['tools/perf.mjs'],        want: /layout shift: all routes under 0\.1/, cost: 2, headline: /slowest LCP:.*/ },
+  /* perf is the one gate whose PASS is the presence of a sentence rather
+     than a count of zero, so the absence of that sentence has two possible
+     meanings and needs a second pattern to tell them apart: `fail` is the
+     line perf prints when a route DOES shift. Without it, a real layout
+     shift would be reported as "could not tell", which is the opposite of
+     the point of this runner. */
+  { name: 'perf',        cmd: ['tools/perf.mjs'],        want: /layout shift: all routes under 0\.1/, fail: /layout shift over 0\.1:.*/, cost: 2, headline: /slowest LCP:.*/ },
 ].filter((g) => !ONLY || ONLY.includes(g.name));
 
-/* The child's death is part of its verdict. A meter that is OOM-killed
-   mid-print leaves a truncated stdout with no summary line, which is
-   character-for-character what a meter that CHANGED SHAPE leaves — and
-   wave 15's judge hit exactly that: `glyph-floor` inside the pool stopped
-   after `mobile /partner/` with 168KB of output and no total, while the
-   same tool run alone finished. So capture the signal and the exit code,
-   not just the text. `close` fires with (null, 'SIGKILL') for a kernel
-   OOM kill; that is the one fact that separates "it failed" from
-   "it never got to say". */
+/* THE CHILD'S DEATH IS PART OF ITS VERDICT — and the obvious suspect was
+   the wrong one, so it is written down here.
+   Wave 15's judge saw `glyph-floor` inside this pool stop after
+   `mobile /partner/` with 168KB of output and no total, while the same tool
+   run by hand finished every time. The natural reading is resource
+   contention: two browser-driving gates, four cores, something gets killed.
+   That reading is WRONG, and acting on it would have bought a retry that
+   fails identically. `mobile /partner/` is the LAST of the twelve
+   route-views, so nothing was killed mid-sweep — the sweep finished and the
+   summary was lost.
+   The cause is `process.exit()` in the child. Node writes to a TTY or a file
+   synchronously and to a PIPE asynchronously, and `process.exit()` discards
+   whatever is still queued. Every child here is spawned onto a pipe.
+   Measured with a 242,929-byte child: through a pipe, 10,690 bytes arrived
+   and the stream stopped mid-line, exit code 1, no signal, no error; to a
+   file, all 242,929. That is the coin flip, and it is fixed in the meters
+   themselves — see the note at the foot of `glyph-floor.mjs`.
+   The signal and exit code are still captured, because a killed child IS a
+   real failure mode and it must not read as a FAIL: that distinction is what
+   the rest of this file is for. */
 const run = (cmd, args, env) => new Promise((res) => {
   const ps = spawn(cmd, args, { cwd: ROOT, env: { ...process.env, ...env } });
   let out = '';
+  let timedOut = false;
   ps.stdout.on('data', (d) => { out += d; });
   ps.stderr.on('data', (d) => { out += d; });
   ps.on('error', (e) => res({ code: null, signal: null, spawnError: e.message, out }));
-  ps.on('close', (code, signal) => res({ code, signal, out }));
+  /* A gate that never returns is the third way to have no verdict, and the
+     only one this runner could not previously survive: it would wait for
+     ever and the builder would kill the whole suite. Killed on the clock,
+     it becomes an ERROR like any other, and the retry-alone pass gets a
+     turn at it. `glyph-floor` runs ~28 minutes, so the ceiling is well
+     above it rather than near it — this is a deadlock catcher, not a
+     budget. */
+  const timer = setTimeout(() => { timedOut = true; ps.kill('SIGKILL'); }, TIMEOUT_MS);
+  ps.on('close', (code, signal) => { clearTimeout(timer); res({ code, signal, timedOut, out }); });
 });
 
 /* ── PASS / FAIL / ERROR ─────────────────────────────────────────────────
@@ -128,8 +156,13 @@ function classify(g, r) {
   const m = r.out.match(g.want);
   const n = m ? (m[1] === undefined ? 0 : Number(m[1])) : null;
   if (r.spawnError) return { st: 'ERROR', line: `could not start: ${r.spawnError}` };
+  if (r.timedOut) return { st: 'ERROR', line: `no verdict after ${TIMEOUT_MS / 60000}min — killed. ${outKB(r.out)} of output` };
   if (r.signal) return { st: 'ERROR', line: `killed by ${r.signal} after ${outKB(r.out)} of output — no verdict` };
-  if (!m) return { st: 'ERROR', line: `exit ${r.code}, ${outKB(r.out)} of output, no verdict line matched ${g.want}` };
+  if (!m) {
+    const f = g.fail && r.out.match(g.fail);
+    if (f) return { st: 'FAIL', line: f[0], n: null };
+    return { st: 'ERROR', line: `exit ${r.code}, ${outKB(r.out)} of output, no verdict line matched ${g.want}` };
+  }
   const line = g.headline ? (r.out.match(g.headline) || [''])[0] : m[0];
   if (n === 0 && r.code === 0) return { st: 'PASS', line, n };
   if (n === 0 && r.code !== 0) return { st: 'ERROR', line: `verdict says 0 but the meter exited ${r.code} — ${line}` };
@@ -146,7 +179,10 @@ if (!fs.existsSync(path.join(ROOT, outDir, 'index.html')) || has('fresh')) {
   process.stdout.write(`building ${outDir} … `);
   const t = Date.now();
   const b = await run('npx', ['astro', 'build', '--outDir', outDir]);
-  if (b.code !== 0) { console.log('\n' + b.out); process.exit(1); }
+  /* Same flush rule as the verdict at the foot of this file: dump the build
+     log, set the code, and let Node leave once stdout has drained. A build
+     failure is exactly when you need every line of it. */
+  if (b.code !== 0) { console.log('\n' + b.out); await new Promise((r) => process.stdout.write('', r)); process.exit(1); }
   console.log(`${((Date.now() - t) / 1000).toFixed(1)}s`);
 } else {
   console.log(`build ${outDir} is current (src ${srcHash})`);
@@ -174,9 +210,9 @@ const cacheKey = (g) => path.join(cacheDir, createHash('sha1')
 const show = (st, g, line, tail) =>
   console.log(`  ${st.padEnd(5)} ${g.name.padEnd(12)} ${String(line).slice(0, 78).padEnd(78)} ${tail}`);
 
-async function attempt(g, extra = []) {
+async function attempt(g) {
   const t = Date.now();
-  const r = await run('node', [...g.cmd, ...extra], { BASE });
+  const r = await run('node', [...g.cmd], { BASE });
   const c = classify(g, r);
   return { name: g.name, st: c.st, ok: c.st === 'PASS', n: c.n ?? null, line: c.line,
            secs: +((Date.now() - t) / 1000).toFixed(1), out: r.out };
@@ -209,18 +245,18 @@ await Promise.all(Array.from({ length: Math.min(POOL, GATES.length) }, async () 
   }
 }));
 
-/* ── THE SECOND PASS, AND WHY IT IS SERIAL ───────────────────────────────
-   The pool is why a gate dies. `glyph-floor` holds four Chromium contexts
-   shooting 3x frames; `nojs-diff` holds four more with two pages each; on a
-   four-core box they overlap and the kernel picks one to kill. Standalone,
-   `glyph-floor` finishes every time — the wave-15 judge saw both halves of
-   that and could not close the gap.
-   So a gate that ERRORed is retried ALONE, with nothing else running and
-   with the pool drained. That is slower than the parallel run by exactly
-   the cost of the gate, and it is the difference between a suite that
-   sometimes cannot answer and one that always can. If the retry also
-   ERRORs, the ERROR stands and is reported as an ERROR — an honest "could
-   not tell" is the correct output, and it is not a FAIL. */
+/* ── THE SECOND PASS ──────────────────────────────────────────────────────
+   A gate that gave no verdict is retried once, alone, with the pool drained.
+   Be clear about what this is and is not for. It does NOT fix the truncation
+   that made `glyph-floor` a coin flip — that was the child discarding its own
+   stdout, and it would have truncated identically on a serial retry. It was
+   fixed in the meters. Keeping the retry anyway is cheap and covers the
+   failures that ARE load-shaped: a browser that could not launch, a port that
+   was busy, a machine that was momentarily out of memory because another
+   builder was running their own sweep.
+   If the retry also gives no verdict, the ERROR stands and is reported AS an
+   error. An honest "could not tell" is the correct output. It is not a FAIL,
+   and the exit code says so. */
 const errored = results.map((r, i) => [r, i]).filter(([r]) => r.st === 'ERROR' && !r.cached);
 if (errored.length) {
   console.log(`\n  ${errored.length} gate(s) gave no verdict under pool ${POOL}. Retrying alone, serially:`);
@@ -238,14 +274,22 @@ server.close();
 const errs = results.filter((r) => r.st === 'ERROR');
 const fails = results.filter((r) => r.st === 'FAIL');
 console.log('');
-for (const f of [...errs, ...fails]) console.log(`── ${f.name} (${f.st}) ──\n${f.out.slice(-20000)}`);
+for (const f of [...errs, ...fails]) console.log(`── ${f.name} (${f.st}) ──\n${f.out}`);
 
 /* Three outcomes, three sentences, three exit codes. A caller that greps
    for "FAILED" must not be told that by a run which simply could not see. */
 const wall = `${((Date.now() - t0) / 1000).toFixed(1)}s wall · src ${srcHash}`;
 if (errs.length) {
-  console.log(`NO VERDICT from ${errs.map((r) => r.name).join(', ')} — the suite could not measure ${errs.length === 1 ? 'it' : 'them'}, which is not the same as passing or failing. ${fails.length ? fails.map((f) => `${f.name} ${f.n}` ).join(', ') + ' also FAILED. ' : ''}${wall}`);
-  process.exit(2);
+  console.log(`NO VERDICT from ${errs.map((r) => r.name).join(', ')} — the suite could not measure ${errs.length === 1 ? 'it' : 'them'}, which is not the same as passing or failing. ${fails.length ? fails.map((f) => `${f.name}${f.n == null ? '' : ` ${f.n}`}`).join(', ') + ' also FAILED. ' : ''}${wall}`);
+} else {
+  console.log(`${fails.length ? fails.map((f) => `${f.name}${f.n == null ? '' : ` (${f.n})`}`).join(', ') + ' FAILED' : 'all gates green'} · ${wall}`);
 }
-console.log(`${fails.length ? fails.map((f) => `${f.name} (${f.n})`).join(', ') + ' FAILED' : 'all gates green'} · ${wall}`);
-process.exit(fails.length ? 1 : 0);
+
+/* AND NOT `process.exit()` HERE EITHER, for the reason written at length in
+   `glyph-floor.mjs`. This script reprints every failing gate's whole output
+   — for `glyph-floor` that is upward of 168KB — and then exits. Redirected
+   to a file that is safe, because Node writes to files synchronously. Piped
+   to `tee`, `less` or another agent, it is the same silent truncation that
+   made this suite's headline gate a coin flip, one level up: the verdict is
+   the LAST line printed, so the verdict is the first thing lost. */
+process.exitCode = errs.length ? 2 : fails.length ? 1 : 0;

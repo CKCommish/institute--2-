@@ -470,4 +470,27 @@ else {
   }
   console.log(`\n${findings.length} finding(s) across ${frames} frame-pairs (${ROUTES.length} routes x 2 viewports).`);
 }
-process.exit(findings.length ? 1 : 0);
+
+/* ── WHY THIS IS NOT `process.exit()` ─────────────────────────────────────
+   It used to be, and that single call is why this tool was a coin flip
+   inside `gates.mjs` and reliable on its own. `process.exit()` terminates
+   without flushing pending stdout writes. When stdout is a TTY or a file,
+   Node writes SYNCHRONOUSLY and there is nothing pending — run by hand, the
+   summary always appeared. When stdout is a PIPE, as it is for every child
+   `gates.mjs` spawns, writes are ASYNCHRONOUS, and this tool prints upward
+   of 168KB. Everything still in the buffer at the moment of exit is
+   discarded.
+   Measured: 242,929 bytes of output through a pipe delivered 10,690 and
+   stopped mid-line, exit code 1, no signal, no error. Which is precisely
+   what the wave-15 judge saw — every route-view printed, then nothing where
+   the totals should be — and precisely why it looked identical to a gate
+   that had failed. Setting `exitCode` instead lets Node exit on its own
+   once the buffer has drained. The timer is a backstop: if some handle
+   outlives the run, the process still leaves rather than hanging, and it
+   leaves AFTER the write queue is empty. */
+const finish = (code) => {
+  process.exitCode = code;
+  const t = setTimeout(() => process.stdout.write('', () => process.exit(code)), 30000);
+  t.unref();
+};
+finish(findings.length ? 1 : 0);
