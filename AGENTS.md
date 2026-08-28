@@ -264,6 +264,17 @@ starts and catch a name at opacity 0.54: a settled 5.21:1 photographs as
   `data-parallax`. Everything must be inert under `prefers-reduced-motion`.
 - **One idea per scroll scene.** If a section needs a second idea, it is two
   scenes or it is cut.
+- **Held space has a rule now, and it is in `tokens.css` beside `--pause`.**
+  Read it before you argue about a flat band, and before you close one.
+  Short form: a band of at least one `--pause` is composition if a
+  FULL-MEASURE object — a rule, a change of ground, or a line of type
+  spanning the measure — sits at an edge or inside it, or if it is a margin
+  (page start, page end, or the fold a masthead reserves). Otherwise it is a
+  hole. A short label naming the section below does NOT close a band. The
+  rule is not a percentage and it is not a size: the largest band on the site
+  (274px, /partner/) is composition and /forum/'s 196px was a hole. Swept
+  against all 33 bands ≥90px on seven routes at both viewports; **zero holes
+  remain**, so the next finding here is a regression, not a backlog item.
 - Never transcribe the prospectus. Facts only, rewritten short.
 - **Comments in markup use `{/* … */}`, never `<!-- … -->`.** Astro ships an
   HTML comment to the browser; it strips a JSX one at build. This repo's

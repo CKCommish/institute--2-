@@ -5,7 +5,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 
-const D = 'dist';
+/* `dist` and `progress/site.html` are the defaults, not the only pair:
+   tools/bundle-gate.mjs builds a throwaway bundle out of its own isolated
+   build so it can test the BUNDLER rather than whatever was last committed.
+   Nothing else passes these. */
+const D = process.env.BUNDLE_DIST || 'dist';
+const OUT = process.env.BUNDLE_OUT || 'progress/site.html';
 const ROUTES = [
   { path: '/', file: 'index.html', label: 'Home' },
   { path: '/institute/', file: 'institute/index.html', label: 'Institute' },
@@ -50,12 +55,68 @@ async function inlineUrls(text) {
   return text;
 }
 
-/* ── css ────────────────────────────────────────────────────────────── */
-const cssFiles = [...new Set(
-  ROUTES.flatMap((r) => [...read(r.file).matchAll(/href="(\/_astro\/[^"]+\.css)"/g)].map((m) => m[1]))
-)];
+/* ── css ──────────────────────────────────────────────────────────────
+   Six pages' stylesheets in one document, which is a thing the site never
+   is. Astro scopes component rules with a `data-astro-cid-…` attribute, so
+   those are safe to concatenate: they only ever match their own component.
+   A page's `:global(…)` escapes are not. They ship in that page's own
+   stylesheet, they are loaded by that page alone, and in this file they are
+   loaded by all six at once.
+
+   Three of them were live, and one was doing real damage:
+     forum.css      `.foot .foot__second { display: none !important }`
+                    — /forum/ suppressing the footer's second link. In the
+                    bundle it suppressed it under every route: on mobile the
+                    footer came out 376px against the site's 469.
+     pilots.css     `main:has(.pd) + footer.foot` — true on /pilots/ only, on
+                    the site. Here every route shares one `<main>` and .pd is
+                    always in it, so it was true everywhere.
+     institute.css  `.ihero__bg`.
+
+   Each page-exclusive rule is therefore GUARDED by the route it belongs to:
+   the router writes `html[data-route="/forum/"]` and the guard makes the
+   rule mean on this page what it means on the site. Shared stylesheets
+   (Base, Figure — anything more than one route links) are left exactly as
+   they are, and so is every rule already carrying a cid. */
+const cssRoutes = new Map();
+for (const r of ROUTES)
+  for (const m of read(r.file).matchAll(/href="(\/_astro\/[^"]+\.css)"/g))
+    cssRoutes.set(m[1], (cssRoutes.get(m[1]) || new Set()).add(r.path));
+const cssFiles = [...cssRoutes.keys()];
+
+/* Walk the sheet with a brace counter, prefix the selector of every rule
+   that is not inside @keyframes and does not already carry a cid. Nested
+   at-rules (@media, @supports) are transparent: their inner selectors are
+   the ones that need guarding, not the at-rule itself. */
+function guard(css, scope) {
+  let out = '', i = 0, depth = 0, keyframes = -1;
+  while (i < css.length) {
+    const j = css.indexOf('{', i);
+    if (j < 0) { out += css.slice(i); break; }
+    const head = css.slice(i, j);
+    const closeBefore = (head.match(/}/g) || []).length;
+    depth -= closeBefore;
+    if (keyframes >= 0 && depth <= keyframes) keyframes = -1;
+    const sel = head.slice(head.lastIndexOf('}') + 1).trim();
+    const lead = head.slice(0, head.lastIndexOf('}') + 1);
+    let written = sel;
+    if (/^@keyframes/i.test(sel)) keyframes = depth;
+    else if (!/^@/.test(sel) && keyframes < 0 && sel && !/data-astro-cid/.test(sel) && !/^(html|:root)\b/.test(sel))
+      written = sel.split(',').map((x) => `${scope} ${x.trim()}`).join(',');
+    out += lead + written + '{';
+    depth++;
+    i = j + 1;
+  }
+  return out;
+}
+
 let css = '';
-for (const f of cssFiles) css += fs.readFileSync(path.join(D, f.replace(/^\//, '')), 'utf8') + '\n';
+for (const f of cssFiles) {
+  let sheet = fs.readFileSync(path.join(D, f.replace(/^\//, '')), 'utf8');
+  const only = cssRoutes.get(f);
+  if (only.size === 1) sheet = guard(sheet, `html[data-route="${[...only][0]}"]`);
+  css += sheet + '\n';
+}
 css = await inlineUrls(css);
 
 /* ── scripts ────────────────────────────────────────────────────────────
@@ -103,22 +164,54 @@ if (![...scripts.values()].some((s) => /data-hold-stage/.test(s))) {
 const home = read('index.html');
 const header = '<header' + between(home, '<header', '</header>') + '</header>';
 const menu = (home.match(/<div class="menu"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/) || [''])[0];
-const footer = '<footer' + between(home, '<footer', '</footer>') + '</footer>';
+/* THE FOOTER IS NOT ONE FOOTER. This file used to fold the homepage's
+   footer in once and show it under all six routes. It is not the same on
+   all six: /partner/ ends on "Come to the Forum." and drops the partner
+   call to action, because repeating "Partner on a pilot · Start the
+   conversation" at the foot of the partner page would send a reader to the
+   page they are already on. /forum/ has its own variant too. The bundle was
+   showing the homepage's CTA on both. Each route now carries its own,
+   toggled with the route. */
+const footers = ROUTES.map((r) => ({ path: r.path, html: '<footer' + between(read(r.file), '<footer', '</footer>') + '</footer>' }));
 
 let routesHtml = '';
 for (const r of ROUTES) {
   const html = read(r.file);
   const main = between(html, '<main id="main">', '</main>');
-  routesHtml += `<div class="rt" data-rt="${r.path}" ${r.path === '/' ? '' : 'hidden'}>${main}</div>\n`;
+  /* NOT `hidden` at load — see THE SPLIT MEASURES WHAT IT CAN SEE below.
+     `data-off` is visibility only, so the box is still laid out at its real
+     width and the line splitter can measure it. The router swaps it for a
+     real `hidden` once the motion modules have run. */
+  routesHtml += `<div class="rt" data-rt="${r.path}"${r.path === '/' ? '' : ' data-off'}>${main}</div>\n`;
 }
 
-let body = `${header}\n${menu}\n<main id="main">\n${routesHtml}</main>\n${footer}`;
+const footersHtml = footers.map((f) =>
+  `<div class="ft" data-ft="${f.path}"${f.path === '/' ? '' : ' data-off'}>${f.html}</div>`).join('\n');
+let body = `${header}\n${menu}\n<main id="main">\n${routesHtml}</main>\n${footersHtml}`;
 body = await inlineUrls(body);
 const entify = (t) => t.replace(/[\u0080-\uFFFF]/g, (c) => '&#' + c.codePointAt(0) + ';');
 /* only the markup — data: URIs are ASCII, and script/style get their own escapes */
 body = entify(body);
 
-const out = `<meta charset="utf-8">
+/* THE HEAD IS PART OF THE PAGE, and this file used to write its own two
+   lines of it. It carried a charset and a title and nothing else — no
+   `<meta name="viewport">` — so a phone laid the whole bundle out at the
+   980px fallback width and shrank it to fit: on a 390px viewport the
+   homepage measured 9817px tall against the site's 5463, the hero ran 2120px
+   instead of 844, and every line of type came out at about 40% of its
+   intended size. The client browses this file at both viewports. The site's
+   own head is the only correct answer to what belongs here, so it is COPIED
+   — the <html> open tag and every <meta> the built index.html carries, in
+   its order — rather than written again from memory. Links, scripts, styles
+   and the title are excluded because this file supplies its own. */
+const htmlOpen = (home.match(/<html[^>]*>/) || ['<html lang="en">'])[0];
+const headMeta = (between(home, '<head>', '</head>').match(/<meta[^>]*>/g) || [])
+  .filter((m) => !/charset/i.test(m)).join('\n');
+
+const out = `<!DOCTYPE html>
+${htmlOpen}
+<meta charset="utf-8">
+${headMeta}
 <title>Lion Forum Institute</title>
 <!-- Base.astro sets this in <head> before first paint, and the reveal system
      gates every hidden state on it (html.js / html:not(.js) in base.css,
@@ -129,29 +222,108 @@ const out = `<meta charset="utf-8">
 <script>document.documentElement.classList.add('js');${'</scr' + 'ipt>'}
 <style>${css.replace(/[\u0080-\uFFFF]/g, (c) => '\\' + c.codePointAt(0).toString(16) + ' ')}</style>
 <style>
-  .rt[hidden]{display:none}
+  .rt[hidden],.ft[hidden]{display:none}
+  /* Laid out, measurable, and painting nothing. The routes start here and
+     the router takes them to a real hidden attribute after the modules have
+     split their headlines. */
+  /* overflow:clip as well as visibility. While the routes are held open for
+     measurement the document is all six of them at once, and a single
+     unclipped overflow anywhere in that stack expands the layout viewport
+     on a phone — which would split every headline at the wrong width, the
+     defect this whole arrangement exists to avoid. Belt and braces: no
+     measured divergence was traced to it, and it changes no width inside. */
+  html.js .rt[data-off],html.js .ft[data-off]{visibility:hidden;overflow:clip}
+  /* With no script there is nothing to take data-off back off again, so
+     without this the five routes held open for measurement would be five
+     routes of type a no-JS reader cannot see. No script means no router
+     either, so they collapse to the state the bundle has always had with
+     scripts off: the homepage, and nothing under it. */
+  html:not(.js) .rt[data-off],html:not(.js) .ft[data-off]{display:none}
   html{scroll-behavior:auto}
 </style>
 ${body}
 ${[...scripts.values()].map((s) => '<script type="module">' + s + '</scr' + 'ipt>').join('\n')}
-<script>
+<script type="module">
 /* Client-side routing for the single-file preview. The real site is six
    static HTML pages; this only exists so the whole thing can be browsed
-   from one file. */
+   from one file.
+
+   ── THE SPLIT MEASURES WHAT IT CAN SEE ────────────────────────────────
+   A MODULE, and last, on purpose. It used to be a classic inline script,
+   which runs while the document is still parsing — that is, BEFORE any
+   deferred module — so it hid five of the six routes before motion.js had
+   run. motion.js splits every ".lines" headline into one span per visual
+   line by measuring where the text wraps, and a "display: none" element has
+   no line boxes to measure: every headline on every route but the homepage
+   came out as ONE span holding the whole string.
+
+   On desktop that was a wrong line break. On a 390px viewport it was a
+   route-wide type failure: the un-broken line overflowed horizontally, the
+   layout viewport expanded from 390 to 417 to contain it, and every
+   "clamp(…vw…)" size on the page resolved against the wider viewport —
+   /people/'s h1 came out at 28px where the site sets 36.8px, and the whole
+   route's geometry with it. The client browses this file at both viewports.
+
+   So the routes ship visible-but-"data-off" (visibility only: the boxes are
+   laid out at their real width and paint nothing), and stay that way until
+   the split has run. Being a module and running last is NOT enough on its
+   own: motion.js splits inside "document.fonts.ready.then", which resolves
+   long after the last module has executed. So the collapse to a real hidden
+   attribute waits on the same promise — registered later, so it runs after
+   motion.js's — and on two frames after it. Until then the document is the
+   full six routes tall and paints one. */
 (function () {
   const routes = [...document.querySelectorAll('.rt')];
-  function show(p) {
-    let hit = false;
+  /* Before the split: laid out, invisible. After it: display:none. */
+  let split = false;
+  let at = '/';
+  const footers = [...document.querySelectorAll('.ft')];
+  function place() {
     for (const r of routes) {
-      const on = r.dataset.rt === p;
-      r.hidden = !on;
-      if (on) hit = true;
+      const on = r.dataset.rt === at;
+      if (split) { r.removeAttribute('data-off'); r.hidden = !on; }
+      else { r.hidden = false; if (on) r.removeAttribute('data-off'); else r.setAttribute('data-off', ''); }
     }
-    if (!hit) { routes[0].hidden = false; p = '/'; }
+    /* One footer per route: /partner/ and /forum/ do not carry the
+       homepage's call to action. They are held open exactly as the routes
+       are until the split has run — the footer carries ".lines" headlines
+       too, and measured inside a display:none box they collapsed to one
+       line and cost the foot of the page 85px. */
+    /* The guard every page-exclusive :global rule is scoped to. */
+    document.documentElement.dataset.route = at;
+    /* Parallax is written only for elements within 200px of the viewport, so
+       a value written while the routes were stacked for measurement — or
+       while another route was showing — is simply left behind on an element
+       that has since moved. Clear them; motion.js rewrites each as it comes
+       back into range. */
+    document.querySelectorAll('[style*="--py"]').forEach((el) => el.style.removeProperty('--py'));
+    for (const f of footers) {
+      const on = f.dataset.ft === at;
+      if (split) { f.removeAttribute('data-off'); f.hidden = !on; }
+      else { f.hidden = false; if (on) f.removeAttribute('data-off'); else f.setAttribute('data-off', ''); }
+    }
+  }
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())
+    .then(() => new Promise((res) => requestAnimationFrame(() => requestAnimationFrame(res))))
+    .then(() => { split = true; place(); });
+  /* Belt and braces: if fonts.ready never resolves, the preview must not sit
+     six routes tall for ever. */
+  setTimeout(() => { if (!split) { split = true; place(); } }, 4000);
+
+  function show(p) {
+    let hit = routes.some((r) => r.dataset.rt === p);
+    at = hit ? p : '/';
+    p = at;
+    place();
     /* Reveals are entry-triggered by IntersectionObserver, which never fired
        for a route that was hidden at load. Settle the incoming route so it is
        never stuck invisible. */
-    const vis = routes.find((r) => !r.hidden);
+    const vis = routes.find((r) => r.dataset.rt === at);
+    const foot = footers.find((f) => f.dataset.ft === at);
+    [vis, foot].filter(Boolean).forEach((box) => box.querySelectorAll('[data-reveal],.lines,[data-wipe],[data-settle]').forEach((el) => {
+      el.classList.add('is-in');
+      el.style.removeProperty('clip-path');
+    }));
     vis.querySelectorAll('[data-reveal],.lines,[data-wipe],[data-settle]').forEach((el) => {
       el.classList.add('is-in');
       el.style.removeProperty('clip-path');
@@ -182,6 +354,6 @@ ${[...scripts.values()].map((s) => '<script type="module">' + s + '</scr' + 'ipt
 })();
 </script>`;
 
-fs.mkdirSync('progress', { recursive: true });
-fs.writeFileSync('progress/site.html', out);
-console.log('progress/site.html', (Buffer.byteLength(out) / 1e6).toFixed(2), 'MB ·', assets.size, 'assets inlined');
+fs.mkdirSync(path.dirname(OUT) || '.', { recursive: true });
+fs.writeFileSync(OUT, out);
+console.log(OUT, (Buffer.byteLength(out) / 1e6).toFixed(2), 'MB ·', assets.size, 'assets inlined');

@@ -158,7 +158,57 @@
   /* A held pause. Empty space only reads as confidence when it is bounded
      on BOTH sides by something on the page — a rule, a mark, the next
      line. An empty half-scene that runs out into the viewport edge reads
-     as absence. Use --pause between two marks, never after the last one. */
+     as absence. Use --pause between two marks, never after the last one.
+
+     ── THE HELD-SPACE RULE ────────────────────────────────────────────
+     Whitespace and pacing are the SAME measurement read with opposite
+     signs. We win whitespace and lose pacing, so every argument about a
+     flat band has been fought twice, case by case, and wave 19 ended with
+     two different answers to one measurement on the record. This is the
+     rule, written once, so the next builder inherits it instead of
+     re-deriving it. It was tested against all 33 flat bands ≥ 90px on the
+     seven routes at 1440x900 and 390x844 before it was written down.
+
+     A FLAT BAND is a run of document rows carrying no mark. Judge one only
+     when it is at least one --pause tall (118.39px at 1440, 56px at 390 —
+     read it off the element, it is fluid and it is clamped short on a
+     phone). Below that it is leading, not a band.
+
+     Such a band is COMPOSITION if any ONE of these holds, and a HOLE if
+     none does:
+
+       1. IT IS CLOSED. A full-measure object lies at one of its edges or
+          inside it: a rule, a change of ground, or a line of type that
+          spans the measure. Full-measure means it reaches both margins of
+          the shell — 1337px of 1338 at 1440, 348 at 390. A SHORT MARK DOES
+          NOT CLOSE A BAND, however meaningful. A label that names what is
+          below closes the band only if it runs the measure to reach it.
+       2. IT IS A MARGIN. It is the space after the last mark on the page,
+          or before the first, or the bottom of a fold a masthead
+          deliberately reserves with min-height. A margin is not a seam.
+
+     What the rule REFUSES, and why both refusals cost us something:
+
+     NOT A PERCENTAGE. Wave 18 measured 34.8% of our desktop rows carrying
+     no mark against Oryzo's 3.2% and its own author declined to hand it on
+     as a verdict. He was right: `ours-fair/desktop-34.png` scores 66% flat
+     and is one of the best screens on the site. A ratio cannot tell
+     whitespace from a hole. Do not resurrect it.
+
+     NOT A SIZE. /partner/ 2284-2558 is 274px, the largest band on the
+     site, and it is composition — the navy→cream edge falls inside it at
+     2388, and the screen reads as two closing spaces, one per ground.
+     /forum/'s was a hole at 196px, two-thirds that height, because nothing
+     fell inside it at all. Size predicts nothing; boundedness predicts
+     everything.
+
+     WHERE IT FAILS. It has no ceiling: a full-measure rule would close
+     600px of nothing and the rule would pass it. The largest closed band
+     on the site is 274px, so no ceiling has been needed — if one ever
+     exceeds a viewport, this rule is silent and should not be trusted. And
+     it is measured under reduced motion; under motion a closing rule wipes
+     in late, so a band can be genuinely unbounded for the second before
+     its own edge arrives. */
   --pause: clamp(3.5rem, 2rem + 6vw, 8.5rem);
 
   /* Air between the fixed bar and the first line of an inner page. One value,

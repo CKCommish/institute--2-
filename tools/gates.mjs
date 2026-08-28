@@ -71,7 +71,15 @@ const srcHash = (() => {
   return h.digest('hex').slice(0, 12);
 })();
 
-/* ── WHY THERE ARE FIVE OF THESE AND NOT SEVEN ───────────────────────────
+/* ── WHY THERE ARE SIX OF THESE, AND WHY FIVE OF THEM WERE NOT ENOUGH ────
+   Five of these measure dist/ — the site as it ships. The sixth measures
+   `progress/site.html`, which is the only artefact of this project anyone
+   outside the repo has ever opened, and which shipped with no motion engine
+   at all until wave 19: the client wrote in to say the site was stuck. Five
+   green gates could not see it, because none of them was looking at the file
+   the client opens. That gate is `bundle`; its own header carries the story.
+
+   ── WHY THE CONTRAST METERS ARE ONE AND NOT THREE ────────────────────────
    Wave 14 replaced three overlapping contrast meters with one. `photo-meter`,
    `hold-meter` and `ink-floor` all asked "how much contrast has this type
    got", each with a different compositing model and so a different blind
@@ -105,6 +113,17 @@ const GATES = [
      line perf prints when a route DOES shift. Without it, a real layout
      shift would be reported as "could not tell", which is the opposite of
      the point of this runner. */
+  /* The sixth, and the only one whose subject is not dist/. The client does
+     not open dist/ — they open `progress/site.html`, and it shipped with no
+     motion engine at all until wave 19 because nothing here was looking at
+     it. It folds a bundle out of THIS run's build and compares scroll-driven
+     values against the served site at matched offsets, then checks the
+     committed bundle for liveness. `reads` is below because it SPAWNS
+     tools/bundle.mjs rather than importing it, and a cache key that missed
+     the bundler would let a broken bundler pass on a stale verdict. */
+  { name: 'bundle',      cmd: ['tools/bundle-gate.mjs'], want: /(\d+) finding\(s\)/, cost: 3,
+    reads: ['tools/bundle.mjs'],
+    headline: /\d+ finding\(s\) in [^\n]*\./ },
   { name: 'perf',        cmd: ['tools/perf.mjs'],        want: /layout shift: all routes under 0\.1/, fail: /layout shift over 0\.1:.*/, cost: 2, headline: /slowest LCP:.*/ },
 ].filter((g) => !ONLY || ONLY.includes(g.name));
 
@@ -237,7 +256,10 @@ const localDeps = (entry, seen = new Set()) => {
 };
 const cacheKey = (g) => {
   const h = createHash('sha1').update(srcHash).update(g.name);
-  for (const f of [...localDeps(path.join(ROOT, g.cmd[0]))].sort()) {
+  const roots = [g.cmd[0], ...(g.reads || [])].map((f) => path.join(ROOT, f));
+  const graph = new Set();
+  for (const r of roots) for (const f of localDeps(r)) graph.add(f);
+  for (const f of [...graph].sort()) {
     h.update(f.slice(ROOT.length));
     h.update(fs.readFileSync(f));
   }
@@ -249,7 +271,9 @@ const show = (st, g, line, tail) =>
 
 async function attempt(g) {
   const t = Date.now();
-  const r = await run('node', [...g.cmd], { BASE });
+  /* OUTDIR is the build BASE is serving. Only `bundle` reads it — it has to
+     fold a bundle out of the same build it compares against. */
+  const r = await run('node', [...g.cmd], { BASE, OUTDIR: outDir });
   const c = classify(g, r);
   return { name: g.name, st: c.st, ok: c.st === 'PASS', n: c.n ?? null, line: c.line,
            secs: +((Date.now() - t) / 1000).toFixed(1), out: r.out };

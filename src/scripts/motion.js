@@ -226,8 +226,17 @@ function initLines() {
      --hp    0 → 1   progress through the pinned range. Drives the push-in.
      --open  0 → 1   how far the picture is out of the ground. This is the
                      tonal event: the arc, not the picture, is what changes.
+                     Its plateau also carries THE BREATH — the ground's own
+                     move across the seam where two beats abut and neither is
+                     on the frame. See BREATH below; it is the one thing on
+                     this scene that is moving at that moment.
      --be    per beat, 0 → 1 → 0. The envelope that fades one beat up, holds
-                     it, and retires it before the next arrives.
+                     it, and retires it before the next arrives. That grammar
+                     is not a rule written before anyone measured it: the beats
+                     share one grid cell on one baseline, so overlapping two
+                     envelopes superimposes glyphs rather than crossfading
+                     lines. The seam it leaves is answered by the ground, not
+                     by loosening this.
      --bu    per beat, the raw local progress, unclamped at the ends, so a
                      beat can drift continuously while its envelope is flat.
 
@@ -294,6 +303,98 @@ const TAIL_MAX = 0.30;
    of its envelope. Named because the ground's close is measured against it. */
 const RETIRE = 0.26;
 
+/* THE BREATH — the ground's answer to the seam between two beats.
+
+   THE DEFECT, measured before it was touched. Beat windows ABUT: beat i ends
+   at the exact progress beat i+1 begins, so both envelopes pass through zero
+   on the same frame. Swept at 240 samples on the homepage Forum hold, real
+   painted opacity of `.held__line` (the CHILD — the wrapper reads 1.000
+   everywhere, which is how you get a false clean sweep):
+
+     hp 0.471–0.508   32px at 1440 (27px at 390, hp 0.467–0.504)
+     minimum          0.0008 at hp 0.483 — no display line, and no tick
+     --open           1.000 at both ends and at every sample between
+     push             scale moved 0.00254 across the whole band
+
+   A full viewport of lit harbour carrying an eyebrow and a photo credit,
+   mid-scene, with nothing on it moving. It is the one frame on this site that
+   loses MOTION against the reference: the reference's crossfades also pass
+   through near-empty type, but its subject is rotating through every one of
+   them, so it never owns a frame where the type and the subject are both at
+   rest. That is the whole margin, and it is one frame wide.
+
+   WHY NOT OVERLAP THE ENVELOPES — and the reason is not that line 229 forbids
+   it. The beats are stacked in ONE grid cell on ONE baseline (HeldScene,
+   `.held__beat { grid-area: 1 / 1 }`), and that stack is why the type fades
+   through in one place instead of hopping around the frame. Two envelopes
+   open at once there does not crossfade two lines, it superimposes two
+   sentences' glyphs on each other. Overlap costs the stack first, and the
+   stack is the scene.
+
+   WHY NOT THE PUSH. Re-timing the camera to run fast where the type is absent
+   was costed rather than assumed: at the most aggressive rest ratio that
+   stays monotone it buys the seam 1.78x of its linear share — 0.0049 of
+   scale, about 3px of edge travel across the band. Real, and beneath
+   noticing.
+
+   WHAT ACTUALLY MOVES ON THIS SCENE IS THE LIGHT. `--open` swings the frame
+   about 75 sRGB points end to end; it is the scene's stated event, and
+   `min(rise, fall)` parks it flat at 1.000 across the middle 53% of the
+   range. The seam sits inside that plateau. So the ground takes the frame the
+   type has given up.
+
+   THE SHAPE IS THE WHOLE OF IT, AND THE OBVIOUS SHAPE IS WRONG. A symmetric
+   dip centred on the seam — light easing off as the line goes and returning
+   as the next arrives — was built and measured first. It does not work, for a
+   reason worth keeping: a dip has a turning point, and a symmetric one puts
+   that turning point on the seam. The light is then STATIONARY on exactly the
+   frame the type is absent. Measured as mean |Δ| per pixel over a 10px scroll
+   step at 1440, across the whole viewport:
+
+                          seam floor      beat-plateau floor
+     abutting (before)      0.295              0.521
+     symmetric dip          0.350              0.521
+     led by 0.18 span       0.820              0.524
+
+   The symmetric dip moved the static frame and did not remove it. So the
+   breath is READ AHEAD by BREATH_LEAD of a beat span: the light bottoms out
+   while beat one is still visibly leaving — where the type is moving hardest,
+   so a stationary ground costs nothing — and is RISING through the seam and
+   on into beat two's arrival. Measured across the seam band, `--open` runs
+   0.931 → 0.987 at 1440 and 0.931 → 0.983 at 390, monotone, no turn in it.
+
+   That also fixes an asymmetry nobody had named: beat one is handed to the
+   reader by the opening arc, and beat two was handed to the reader by
+   nothing. Now the ground dips under the departing line and lifts to present
+   the next one, which is punctuation and not decoration.
+
+   IT COSTS NO SCROLL. Each beat keeps its ~338px at 1440; lead, tail, span
+   and close are untouched, and so are the two ends of the arc — measured
+   after, the arrival is still open 0.000 → 0.32 over ~98px and the exit still
+   0.673 → 0.000 over 118px, which is where wave 12's floor lives. It adds no
+   primitive: it is the existing `--open` on the existing grade, and the shape
+   of the dip is the INVERSE OF THE TYPE'S OWN ENVELOPE, so there is no second
+   easing to tune.
+
+   THE TWO NUMBERS.
+     BREATH 0.12       the depth, on the arc's own scale. It reads on the
+                       frame as about 4 sRGB points over the middle half of
+                       the viewport at 1440 (97.9 → 93.8 at the trough) —
+                       less than the arithmetic suggests, because most of what
+                       the dip darkens is already under the ink band. Deeper
+                       reads as a second arc competing with the first;
+                       shallower is not there.
+     BREATH_LEAD 0.18  how far ahead the light reads the type, in beat spans.
+                       It is what turns the dip from symmetric to a hand-off;
+                       the table above is the argument for it.
+
+   `mid` is the gate: 0 outside the beats' own territory, 1 across the
+   interior, ramping over half a beat span, so the arrival and the exit —
+   argued over three waves — are untouched. With one beat there is no seam,
+   `n > 1` is false, and none of this runs. */
+const BREATH = 0.12;
+const BREATH_LEAD = 0.18;
+
 function holdTail(track, beats, coda) {
   const w = window.innerWidth;
   if (track.__tailW === w) return track.__tail;
@@ -344,10 +445,36 @@ function runHold(track, vh) {
      departure followed by a wait. */
   const close = tail + span * RETIRE;
 
+  /* The envelopes are computed before the arc, because the arc now reads
+     them: the ground's breath is the inverse of the type's presence. */
+  const env = track.__env || (track.__env = []);
+  let present = 0;
+  for (let i = 0; i < n; i++) {
+    const u = (p - (lead + i * span)) / span;
+    const e = u <= 0 || u >= 1 ? 0 : ss(u / 0.30) * ss((1 - u) / RETIRE);
+    env[i] = e;
+    if (e > present) present = e;
+  }
+
   const arc = track.dataset.arc || 'lift';
   const rise = ss(p / 0.30);
   const fall = ss((1 - p) / close);
-  const open = arc === 'fall' ? fall : arc === 'rise' ? rise : Math.min(rise, fall);
+  let open = arc === 'fall' ? fall : arc === 'rise' ? rise : Math.min(rise, fall);
+
+  /* THE BREATH. See BREATH above. `mid` confines it to the beats' own
+     territory, so the arrival and the exit are untouched; inside that, the
+     light gives up exactly what the type gives up. */
+  if (n > 1) {
+    const q = p + BREATH_LEAD * span;
+    let ahead = 0;
+    for (let i = 0; i < n; i++) {
+      const u = (q - (lead + i * span)) / span;
+      const e = u <= 0 || u >= 1 ? 0 : ss(u / 0.30) * ss((1 - u) / RETIRE);
+      if (e > ahead) ahead = e;
+    }
+    const mid = ss(((p - lead) / span) * 2) * ss(((1 - tail - p) / span) * 2);
+    open *= 1 - BREATH * mid * (1 - ahead);
+  }
 
   setVar(track, '--hp', p);
   setVar(track, '--open', open);
@@ -359,10 +486,9 @@ function runHold(track, vh) {
        scene never shares the frame with a display line. */
     for (let i = 0; i < n; i++) {
       const u = (p - (lead + i * span)) / span;
-      const e = u <= 0 || u >= 1 ? 0 : ss(u / 0.30) * ss((1 - u) / RETIRE);
-      setVar(beats[i], '--be', e);
+      setVar(beats[i], '--be', env[i]);
       setVar(beats[i], '--bu', Math.max(-0.4, Math.min(1.4, u)));
-      if (ticks[i]) setVar(ticks[i], '--be', e);
+      if (ticks[i]) setVar(ticks[i], '--be', env[i]);
     }
   }
   /* The coda starts drawing on the exact frame the last beat's envelope

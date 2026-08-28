@@ -322,7 +322,24 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
        of the first screen was a dead band holding invisible type. The air
        below now belongs to THIS section (its own bottom margin, bounded by
        the cue), and /pilots/ opens under the fold where it can arrive. */
-    min-height: min(calc(100svh - 2rem), 52rem);
+    /* 52rem → 50rem, and the two rem are the whole finding of the sweep that
+       wrote the held-space rule into tokens.css. The reserve was sized on
+       ITSELF and not on what the next section pays before its first mark.
+       At 1440x900 — the viewport every blind comparison this project runs is
+       shot at — the cap bound at 832, `.pfour` then paid 77px of opening
+       pause, and OPEN FOR 2026 landed at y=909: NINE PIXELS below the fold.
+       So the first screen ended in 208px of nothing and the one object on
+       this route built to answer that (the cue at line 128, added because
+       "the fold gave a reader no signal that the page continued") pointed at
+       a destination the reader could not see. At 50rem the reserve is 800,
+       the eyebrow lands at 877 and clears the fold by 23px — still under it,
+       still static, still below the reveal observer's bottom-12% line at
+       792, so the block that deliberately carries no reveal is unaffected.
+       The 217px band itself is NOT closed and is not meant to be: under the
+       rule it is a margin — the bottom of a reserved fold — and whitespace
+       is a criterion this site wins. What was broken was the signal across
+       it, not the space. */
+    min-height: min(calc(100svh - 2rem), 50rem);
     /* START, not END. The block already carried the house shelf in its
        padding-top and then bottom-aligned its content inside the frame, so
        the first line of this route landed at y=196 on desktop and y=200 on a

@@ -45,7 +45,17 @@ for (const view of VIEWS) {
     if (!resp) { issues.push('navigation failed'); report.push({ view: view.tag, route, issues, rows: [] }); continue; }
     if (resp.status() >= 400 && route !== '/404') issues.push(`HTTP ${resp.status()}`);
     await page.evaluate(() => document.fonts.ready).catch(() => {});
-    await page.waitForTimeout(700);
+    /* 700ms was shorter than the page's own entrance. /forum/ runs a
+       LOAD-TIMED CSS animation with no script in it — `.fh__place` is
+       `animation: fhIn var(--dur-2) ... 380ms` (src/pages/forum.astro:764)
+       and `.fh__cue` the same at 760ms — so the last of them is still
+       running 1520ms after it starts. With scripts off there is no
+       `page.evaluate` to settle on, only a wall clock, and at 700ms this
+       meter was photographing `.fh__place` inside its own delay and
+       reporting a CSS entrance as content invisible without script. That
+       false FAIL was cached into gates.mjs and cost two waves an argument.
+       1700ms clears the longest of them with a margin. */
+    await page.waitForTimeout(1700);
 
     /* Anything still invisible with no script to reveal it is content that
        does not exist for this reader. The reveal system is the usual
