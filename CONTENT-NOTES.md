@@ -225,11 +225,20 @@ Name plus one title line, set in the editorial serif, on a flat navy or cream fi
 better answer than a grey avatar silhouette — and it matches the brief's "name, one title
 line, no paragraph." Do not ship placeholder head shapes.
 
-### Board member portraits
-Same rule. The prospective board is a **grid of names and one-line titles only**. Several
-named people are sitting or former public officials; any photograph of them presented
-inside the Institute's own site would imply an affiliation that does not yet exist. No
-board portraits were sourced and none should be.
+### Board member portraits — SUPERSEDED, do not act on the old rule
+This section used to read: *"Same rule. The prospective board is a grid of names and
+one-line titles only. … No board portraits were sourced and none should be."* **That is
+no longer what the site does, and it must not be used as an instruction to delete
+anything.** The client supplied sixteen headshots of their own and told us to use them;
+`/people/` ships all sixteen. **The one statement of record is "Board portraits —
+provenance, permission, and why the earlier rule was dropped", further down this file.**
+It is the only section here with standing on board likenesses.
+
+The old rule's reasoning was sound when it was written, and the quotation is kept because
+it names a risk that is still live: a photograph of a sitting or former public official
+inside the Institute's own site asserts an affiliation none of them has agreed to. What
+changed is not the risk. What changed is who supplied the files, and what the page now
+says around them.
 
 ### Lion Forum event photography
 No photograph of an actual Lion Forum convening exists in this repo. `forum.jpg` is a
@@ -363,28 +372,88 @@ sixteen portraits of people who have not agreed to serve is the obvious case —
 put Vercel's password protection in front of the deployment. That is a project
 setting, not something this repo can do.
 
-## Board portraits — provenance and the permission gap
+## Board portraits — provenance, permission, and why the earlier rule was dropped
 
-Sixteen headshots were supplied by the client (`Prospectus_document_review.zip`,
-`uploads/Headshots/thumbs/`), one for every name on the prospective board. They
-are processed to a single monochrome treatment at 480×480 and live in
-`public/media/board/`, keyed by surname.
+**This is the single statement of record on board likenesses.** It supersedes the
+"Board member portraits" entry under *Deliberately absent* above, which said no board
+portraits were sourced and none should be. Two sections of this file used to say
+opposite things, and a builder reading only the first one would have deleted sixteen
+files the client sent us. Read this one.
 
-Two things are unresolved and only the client can resolve them:
+### What the site actually does
 
-1. **Permission per person.** Lower stakes than they would be on a public
-   site — a link-shared page is much closer to the prospectus these portraits
-   came from. Still worth a check on two points: several are official portraits
-   of federal and state officials, which usually carry a required photographer
-   credit, and a link that gets forwarded stops being private. Not a blocker;
-   a thing to know.
+`/people/` renders **sixteen identifiable likenesses of real, named public figures, none
+of whom has agreed to serve.** The headshots were supplied by the client
+(`Prospectus_document_review.zip`, `uploads/Headshots/thumbs/`), one for every name on
+the prospectus's PROSPECTIVE BOARD list, and the client has said to use them. They are
+processed to a single monochrome treatment at 480×480 and live in `public/media/board/`,
+keyed by surname.
 
-2. **They have not agreed to serve.** The board is *prospective*. Sixteen
-   portraits in a grid is the strongest possible visual assertion that a board
-   exists, and it will be read that way regardless of the label above it. The
-   page has to carry that qualification structurally. If any of these people
-   has not been asked, showing their face here is a materially bigger claim
-   than showing their name.
+### Why the earlier rule existed
+
+It was written before the files arrived, when the only way to put a face on this page
+would have been to go and find one. Sourcing a press photo or an official portrait of a
+sitting or former public official and placing it inside the Institute's own site would
+have asserted an affiliation that does not exist, on people who had not been asked, using
+images nobody had cleared. "None should be sourced" was the right call **about
+sourcing**. It was never a judgement about files the client owns and hands over, because
+that case did not exist yet. When it did, the rule was overtaken and nobody rewrote it.
+
+### The claim the page makes, and how it is qualified
+
+Sixteen portraits in a grid is the strongest possible visual assertion that a board
+exists, and it will be read that way regardless of the label above it. Showing a face is
+a materially bigger claim than showing a name. So the qualification is carried
+**structurally, not in a footnote**, and the arrangement is load-bearing:
+
+- The page opens on the **empty committee room** — chairs around a long table, nobody in
+  them — and `#board` is anchored on that photograph.
+- **"Sixteen put forward. The board is not yet seated."** is set at `--step-feature`,
+  above the grid. The counter reads **16 PUT FORWARD / 00 SEATED**.
+- **No entry path reaches a face before that sentence.** That is a constraint on the
+  route, not a preference about wording.
+
+One caveat on the counter, recorded because this section calls it load-bearing: at the
+time of writing, the **`00` of `00 SEATED` is the only glyph-floor failure on the site** —
+3.902:1 against a 4.5 need, 12px brass `.index` on cream, mobile `/people/`, fully painted
+at cascaded alpha 1.00. Its sibling `16` reads 4.754:1 at the same class, size and ground,
+which points at the zero's counters rather than at the colour, so this may be instrument
+and not ink. Either way it is a live finding on the one mark that states the board is not
+seated, and it belongs to `src/pages/people.astro` / `tokens.css`, not to this file.
+
+**Do not soften any of it, and do not let a redesign reorder it.** If a change would put
+a portrait above that sentence, the change is wrong.
+
+### Still open, and only the client can close them
+
+1. **Per-person permission to publish a likeness — unconfirmed, for all sixteen.** Lower
+   stakes than on a public site: a link-shared page is much closer in kind to the
+   prospectus these portraits came from. Two things still worth a check — several are
+   official portraits of federal and state officials, which usually carry a required
+   photographer credit, and a link that gets forwarded stops being private. Not a
+   blocker; a thing to know. See *Not a public website* above: if this warrants it, the
+   answer is Vercel password protection, which is a project setting and not something
+   this repo can do.
+
+2. **None of the sixteen has agreed to serve.** That is a fact about the board, not a
+   defect in the page, and it is what the qualification above exists to state.
+
+### If a likeness is withdrawn
+
+If the client withdraws one — or a named person asks not to be shown — the fix is
+mechanical and must be done in this order:
+
+1. Delete that person's file from `public/media/board/`. The grid resolves each portrait
+   against the filesystem at build time, the same way `/forum/`'s photographic slots do,
+   so a missing file renders that person as **name and one title line** with no gap and no
+   placeholder. Do not ship a grey avatar silhouette.
+2. **Leave the name.** The prospectus lists them as put forward; withdrawing a photograph
+   withdraws the likeness, not the fact. Removing the name would change a sourced fact and
+   would silently move the counter.
+3. **The counters do not change.** 16 PUT FORWARD / 00 SEATED counts the prospectus's
+   list, not the portraits on disk. Never let a portrait count drive a board count.
+4. If the client withdraws **all** of them, the earlier rule above becomes operative again
+   on its own terms — and at that point rewrite this section rather than reviving that one.
 
 ## Lion Forum photographs — owned, no credit
 

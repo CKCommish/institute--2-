@@ -111,8 +111,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .bridge--fg { color: var(--fg); }
 
 /* The bridge, lifted one rung to --step-sub. There is a real second sans
-   voice on this site — the hero's lead-in clause, the arms of the bridge
-   diagram on /institute/ — and it was being hand-rolled in three places,
+   voice on this site — the hero's lead-in clause, the two sentences of the
+   bridge scene on /institute/ — and it was being hand-rolled in three places,
    which is how --step-sub ended up rendering in BOTH families and stopped
    being one rung. It is declared once here so the ladder can be read off
    the stylesheet: --step-sub is a SERIF display rung, except through this

@@ -3,8 +3,19 @@ import Base from '../layouts/Base.astro';
 import Figure from '../components/Figure.astro';
 import { method } from '../data/site.js';
 
-const builds = ['Technology companies', 'Founders', 'AI labs'];
-const runs = ['Health systems', 'Universities', 'Community organizations', 'Government'];
+/* The prospectus names its two sides twice: in prose under WHAT WE DO
+   ("leading founders and technology companies, universities and health
+   systems, community partners, and local, state, and federal government")
+   and as the two columns of its own org chart (TECHNOLOGY PARTNERS: AI LABS
+   & MODEL DEVELOPERS / FOUNDERS & STARTUPS / TECHNOLOGY COMPANIES;
+   IMPLEMENTATION PARTNERS: HEALTH SYSTEMS / UNIVERSITIES / COMMUNITY
+   PARTNERS / GOVERNMENT). This page used to redraw the chart. It now says
+   the prose — the same seven groups, in two sentences whose verbs carry
+   what the chart's two column headings carried. */
+const sides = [
+  'Technology companies, founders and AI labs build it.',
+  'Health systems, universities, community organizations and government run it.',
+];
 
 /* The spec used to be a card pinned to the right of the statement. It is now
    a rail: four hairline cells across the full width, directly under the
@@ -71,31 +82,14 @@ const spec = [
     </dl>
   </section>
 
-  {/* ── The one idea on the page ────────────────────────────────────
-       One shared five-row baseline grid: both arms sit on the same rows,
-       both rails run the same length, and the connectors are the last
-       thing to arrive — left arm, right arm, rails, connectors. */}
+  {/* ── The one idea on the page ────────────────────────
+       Two sentences, not a diagram. See the note in the stylesheet. */}
   <section class="on-panel ibridge" id="bridge">
     <div class="shell ibridge__in">
       <p class="eyebrow ibridge__k" data-reveal>The bridge</p>
-      <div class="brg" data-reveal>
-        <span class="brg__rail brg__rail--a" aria-hidden="true"><i></i></span>
-        <p class="label label--brass brg__k brg__k--a" style="--d:0ms">Who builds it</p>
-        <ul class="brg__list brg__list--a" role="list">
-          {builds.map((b, i) => <li class="bridge bridge--fg bridge--lift" style={`--d:${80 + i * 80}ms`}>{b}</li>)}
-        </ul>
-
-        <span class="brg__rail brg__rail--b" aria-hidden="true"><i></i></span>
-        <p class="label label--brass brg__k brg__k--b" style="--d:260ms">Who runs it</p>
-        <ul class="brg__list brg__list--b" role="list">
-          {runs.map((r, i) => <li class="bridge bridge--fg bridge--lift" style={`--d:${340 + i * 80}ms`}>{r}</li>)}
-        </ul>
-
-        <span class="brg__hub on-plate">
-          <span class="brg__dot" aria-hidden="true"></span>
-          <span class="display brg__hub-t">The Institute</span>
-        </span>
-      </div>
+      {sides.map((line, i) => (
+        <p class="bridge bridge--fg bridge--lift ibridge__s" data-reveal data-delay={140 + i * 140}>{line}</p>
+      ))}
     </div>
   </section>
 
@@ -187,142 +181,52 @@ const spec = [
   .ispec__v :global(a:hover),
   .ispec__v :global(a:focus-visible) { color: var(--brass); }
 
-  /* ── THE SPAN ─────────────────────────────────────────────────────
-     The only composition on this site that is not flush-left under a
-     full-width rule: centred, symmetric, bounded, on its own ground, given
-     a whole screen. The institute's entire claim is that it sits BETWEEN
-     two parties, and a left-aligned band cannot say between.
+  /* ── THE BRIDGE, SAID ───────────────────────────────────
+     This scene was a DIAGRAM: two lists flanking a bordered rectangle
+     labelled "The Institute", joined by rails and brass connectors. It was
+     the only chart on a site whose grammar is photographs and sentences, and
+     it was this page's THIRD statement of one idea in four scenes — the hero
+     IS the bridge photographed (a long table, a flag on the axis, mirrored
+     doors), the cream claim below is "Neither side can run the pilot alone",
+     and the chart sat between them redrawing the prospectus's org chart.
 
-     Value is elevation, drawn literally: the band is .on-panel (L* 9) set
-     into the page (L* 3), and the hub is .on-plate (L* 15) resting on it. */
+     The comment that stood here defended the composition on the ground that
+     "a left-aligned band cannot say between". True, and beside the point: the
+     photograph one screen up already says between, in the site's own voice.
+     What the chart carried that nothing else on the site carries is the
+     prospectus's two lists of stakeholders. Those survive, as prose. The
+     rectangle, the rails, the connectors, the two column headings and the
+     centred symmetry do not.
+
+     Wave 11 rebuilt this scene's PROPORTIONS — it cut 971px of dead space and
+     grew the diagram from 250px to 302px — and that work is not being undone
+     so much as spent: the band is still exactly its content plus its own
+     padding, which is what that wave established and what kept the two gaps
+     around it from becoming voids again.
+
+     The band stays: .on-panel between two rules is the page's one change of
+     ground, and it still separates the spec rail above from the cream claim
+     below. Only the object inside it changed kind.
+
+     One thing fell out for free. Every part of the diagram had a hidden
+     state gated on `html.js` and released by a script-written `.brg.is-in`,
+     and this scene got that wrong twice — rails once, then the connectors,
+     which shipped declaring `scaleX(0)` unconditionally and left the hub
+     unattached to both arms with no script (it is why `nojs-diff` exists).
+     These are plain `data-reveal` elements now. There is no bespoke hidden
+     state on this page left to get wrong. */
   .ibridge {
     border-block: 1px solid var(--rule);
     padding-block: clamp(3.5rem, 1rem + 5vw, 7rem);
   }
-  /* No reserved screen. `min-height: min(80svh, 44rem)` put a 704px floor
-     under 327px of content — an 11px eyebrow, a 65px gap and a 250px diagram —
-     and `align-content: center` split the leftover 377px evenly above and
-     below it. Those two halves were the two largest voids anywhere on the
-     site: measured at 1440x900, 350px between the spec rail's last line and
-     the eyebrow, 424px between the hub and the cream claim. The emptiness was
-     a by-product of a floor, not an interval anyone chose, and it made the
-     clearest object on the site read as hesitant rather than as air. The band
-     is now exactly the diagram plus its own padding (882px -> 556px; the two
-     gaps 161px and 235px), and the diagram below has been given some of the
-     height it was standing in. */
   .ibridge__in {
-    display: grid; justify-items: center;
-    gap: clamp(2.4rem, 4.5vw, 4.5rem);
+    display: grid; justify-items: start;
+    gap: clamp(1.4rem, 2.6vw, 2.2rem);
   }
-  .ibridge__k { justify-self: start; }
-  .brg { width: 100%; }
-  .brg {
-    --brg-gap: clamp(1.6rem, 3.2vw, 3.4rem);
-    --hub-w: clamp(13rem, 26vw, 24rem);
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--hub-w) minmax(0, 1fr);
-    grid-template-rows: auto repeat(4, auto);
-    column-gap: var(--brg-gap);
-    /* The rows carry the object now that nothing else is holding the scene
-       open. Four gaps at the old 1.1rem drew a 250px diagram; at 1.9rem they
-       draw 302px, the hub's own padding takes it from 154px to 183px, and the
-       rails spanning `grid-row: 1 / -1` run that much longer. Mobile overrides
-       both row-gap and hub padding below, so the phone is untouched. */
-    row-gap: clamp(0.5rem, 2.4vw, 1.9rem);
-  }
-  .brg[data-reveal] { opacity: 1; transform: none; transition: none; }
-
-  .brg__list { display: contents; }
-  .brg__k, .brg__list li {
-    transition:
-      opacity var(--dur-hover) var(--ease-out) var(--d, 0ms),
-      transform 460ms var(--ease-out) var(--d, 0ms);
-  }
-  .brg.is-in .brg__k, .brg.is-in .brg__list li { opacity: 1; transform: none; }
-
-  .brg__k { grid-row: 1; margin-bottom: clamp(0.5rem, 1.1vw, 0.9rem); }
-  .brg__k--a { grid-column: 1; text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
-  .brg__k--b { grid-column: 3; padding-left: clamp(1rem, 2vw, 1.8rem); }
-
-  /* The two arms are the page's body, not its caption — but they are still a
-     DIAGRAM, and they were set in hand-rolled Libre Franklin Light at
-     --step-head: a 53px sans display voice that exists nowhere else on the
-     site and outshouted the hub it is supposed to point at. .bridge--lift is
-     the one sanctioned sans display rung (base.css says so, and names these
-     arms), so the arms take it. The page's loudest object is now the cream
-     claim below, which is the one thing this page is for. */
-  .brg__list li {
-    list-style: none;
-    line-height: 1.14;
-    max-width: none;
-  }
-  .brg__list--a li { grid-column: 1; text-align: right; padding-right: clamp(1rem, 2vw, 1.8rem); }
-  .brg__list--b li { grid-column: 3; padding-left: clamp(1rem, 2vw, 1.8rem); }
-  .brg__list--a li:nth-child(1), .brg__list--b li:nth-child(1) { grid-row: 2; }
-  .brg__list--a li:nth-child(2), .brg__list--b li:nth-child(2) { grid-row: 3; }
-  .brg__list--a li:nth-child(3), .brg__list--b li:nth-child(3) { grid-row: 4; }
-  .brg__list--a li:nth-child(4), .brg__list--b li:nth-child(4) { grid-row: 5; }
-
-  /* Rails: identical length, drawn top-down, after both arms have landed. */
-  .brg__rail { grid-row: 1 / -1; display: block; width: 1px; }
-  .brg__rail--a { grid-column: 1; justify-self: end; }
-  .brg__rail--b { grid-column: 3; justify-self: start; }
-  .brg__rail i {
-    display: block; width: 1px; height: 100%;
-    background: var(--rule);
-    transform-origin: top;
-    /* scaleY(0) lives in the html.js block below: .brg.is-in is written by
-       the reveal engine, so with JS off the rails must start drawn. */
-    transition: transform 460ms var(--ease-out) var(--d, 0ms);
-  }
-  .brg__rail--a i { --d: 540ms; }
-  .brg__rail--b i { --d: 590ms; }
-  .brg.is-in .brg__rail i { transform: none; }
-
-  /* The hub is an OBJECT: plate ground, edges you could point at, its name in
-     the serif at the poster rung. The two connectors run from each rail and
-     TOUCH it — a half-connected diagram reads as timidity. */
-  .brg__hub {
-    grid-column: 2; grid-row: 1 / -1; align-self: center;
-    position: relative;
-    display: grid; justify-items: center; gap: clamp(0.8rem, 1.5vw, 1.2rem);
-    padding: clamp(1.8rem, 4.2vw, 3.9rem) clamp(1rem, 2vw, 1.8rem);
-    border: 1px solid color-mix(in srgb, var(--brass) 46%, transparent);
-    transition: opacity 460ms var(--ease-out) 640ms;
-  }
-  .brg.is-in .brg__hub { opacity: 1; }
-
-  /* ── The one place the diagram's hidden state is declared ──────────
-     Every part of the bridge arrives on `.brg.is-in`, and only the reveal
-     engine sets that class. Gated on `html.js` (written synchronously in
-     Base.astro's <head>) so a page without JS gets the finished diagram
-     rather than three invisible columns. */
-  html.js .brg__k,
-  html.js .brg__list li { opacity: 0; transform: translate3d(0, 8px, 0); }
-  html.js .brg__hub { opacity: 0; }
-  html.js .brg__rail i { transform: scaleY(0); }
-  .brg__hub::before, .brg__hub::after {
-    content: ''; position: absolute; top: 50%;
-    width: calc(var(--brg-gap) + 1px); height: 1px;
-    background: var(--brass);
-    transition: transform 420ms var(--ease-out) 720ms;
-  }
-  /* Same trap as the rails, one line down, and it had been shipping: the
-     connectors' hidden state was declared unconditionally, so with JavaScript
-     off `.brg.is-in` never arrived and the hub sat unattached to either arm —
-     the exact "half-connected diagram reads as timidity" this block was
-     written to avoid. Origin stays here; only the collapse is gated. */
-  .brg__hub::before { right: 100%; transform-origin: left; }
-  .brg__hub::after { left: 100%; transform-origin: right; }
-  html.js .brg__hub::before, html.js .brg__hub::after { transform: scaleX(0); }
-  .brg.is-in .brg__hub::before, .brg.is-in .brg__hub::after { transform: none; }
-
-  .brg__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brass); }
-  .brg__hub-t {
-    font-size: var(--step-sub);
-    white-space: nowrap; line-height: 1; color: var(--fg); text-align: center;
-  }
+  .ibridge__k { margin-bottom: clamp(0.1rem, 0.7vw, 0.5rem); }
+  /* A measure, so the two sentences read as a stacked pair of blocks rather
+     than two rules of type running the full 1200px shell. */
+  .ibridge__s { max-width: 30ch; }
 
   /* ── The claim, on cream ──────────────────────────────────────── */
   .iclaim { padding-block: clamp(4rem, 2rem + 6vw, 8rem); }
@@ -371,64 +275,13 @@ const spec = [
     .ihero__bridge { max-width: 28ch; }
 
     .ibridge { padding-block: clamp(2.75rem, 10vw, 4rem) clamp(3.5rem, 12vw, 5rem); }
-    /* No forced screen height on a phone: the diagram is the tallest object
-       on the route once it runs vertically. */
-    .ibridge__in { min-height: 0; justify-items: stretch; gap: clamp(1.8rem, 7vw, 2.6rem); }
-    /* The diagram survives the breakpoint. One brass rail runs the full
-       height of the left gutter, both arms hang off it, and the hub is
-       notched onto it — two sides meeting at one point, drawn vertically. */
-    .brg {
-      --brg-gut: clamp(1.4rem, 6vw, 2.2rem);
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: none;
-      row-gap: clamp(0.2rem, 1.2vw, 0.5rem);
-      padding-left: var(--brg-gut);
-    }
-    .brg__rail {
-      position: absolute; left: 0; top: 0; bottom: 0;
-      grid-row: auto; grid-column: auto;
-      justify-self: start;
-    }
-    .brg__rail--b { display: none; }
-    .brg__rail--a i {
-      background: color-mix(in srgb, var(--brass) 58%, transparent);
-      --d: 120ms;
-    }
-    .brg__k, .brg__list li { grid-column: 1; grid-row: auto; text-align: left; }
-    .brg__k--a, .brg__k--b { padding-left: 0; padding-right: 0; }
-    .brg__list--a li:nth-child(n), .brg__list--b li:nth-child(n) {
-      padding-left: 0; padding-right: 0;
-      grid-row: auto; grid-column: 1; text-align: left;
-      text-wrap: initial;
-    }
-    .brg__k--a { order: 1; }
-    .brg__list--a li { order: 2; }
-    .brg__hub { order: 3; }
-    .brg__k--b { order: 4; }
-    .brg__list--b li { order: 5; }
-
-    .brg__hub {
-      grid-column: 1; grid-row: auto;
-      justify-self: start; align-self: auto;
-      margin-block: clamp(1.4rem, 6vw, 2rem);
-      display: inline-flex; align-items: center; justify-content: flex-start; gap: 0.8rem;
-      padding: clamp(0.9rem, 3.4vw, 1.2rem) clamp(1.1rem, 4vw, 1.5rem);
-    }
-    /* The notch: one connector running left, from the hub back to the rail. */
-    .brg__hub::after { content: none; }
-    .brg__hub::before {
-      content: ''; right: 100%; width: var(--brg-gut);
-      transform-origin: right;
-    }
-    html.js .brg__hub::before { transform: scaleX(0); }
-    .brg.is-in .brg__hub::before { transform: none; }
+    .ibridge__in { gap: clamp(1.2rem, 5vw, 1.8rem); }
+    .ibridge__s { max-width: 24ch; }
     .iclaim__t { text-align: left; margin-inline: 0; max-width: 16ch; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .ihero__k, .ihero__bridge { opacity: 1 !important; animation: none !important; }
     .ihero__h { -webkit-mask-image: none; mask-image: none; animation: none !important; }
-    .brg__k, .brg__list li, .brg__hub { opacity: 1 !important; transform: none !important; transition-duration: 1ms !important; }
-    .brg__rail i, .brg__hub::before, .brg__hub::after { transform: none !important; transition-duration: 1ms !important; }
   }
 </style>

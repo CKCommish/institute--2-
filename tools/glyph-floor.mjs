@@ -108,7 +108,9 @@
    numbers at the foot of this file are the first whole-site figures the
    project has had since ink-floor was deleted.
 
-   ── THE FIRST COMPLETE SWEEP, AND WHAT IT SAYS ──────────────────────────
+   ── THE FIRST COMPLETE SWEEP (WAVE 14) — HISTORY, NOT THE CURRENT STATE.
+      The current numbers are in the next block. Kept because the 416 is what
+      the instrument found the first time it could be run to a verdict at all.
    Run whole against this tree — six routes, two viewports, both at 3x, one
    process, --jobs=4 on four cores:
 
@@ -137,6 +139,57 @@
    painted at all. This tool's job was to be able to say that. It could not
    before this wave: the strength constant discarded the first, the coverage
    constant discarded it again, and the coarse grid never took the frame.
+
+   ── THE SWEEP AS OF WAVE 17, AND WHAT IT SAYS ───────────────────────────
+   Run whole against this tree — six routes, two viewports, both at 3x:
+
+     5252 frame pairs · 868 curves · 12 route-views
+
+     0 failure(s) in 868 curves.
+
+   Wave 14 first ran this whole and got 416. Wave 16's geometry work on the
+   nav scrim took that to 110 and stopped there, because nobody could say how
+   many of the 110 were real; two people who both looked at pixels came back
+   disagreeing about which end of the list the false positives were at. They
+   were both right about their own end, and ONE instrument defect was under
+   both: the ground band was chosen without reference to where the ink is.
+   Correcting that (see `brightestBand`) closed 36 of the 110 outright — the
+   near-budget stratum, where a 1px foreground rule was being averaged in as
+   the backdrop. The 73 that survived it were all one thing, and the site-wide
+   numbers say so without any interpretation:
+
+     ALL 73 sat at viewport y 38-56, which is the bottom edge of the nav bar's
+     OPAQUE box, on every route at both viewports. Not one failure anywhere
+     else on the site.
+
+     ALL 73 were at SHOWN <= 0.462 — under half of the string's own body on
+     the glass, the rest behind that opaque box. The worst reading on the site
+     with more than half of itself shown is 4.617:1 against a 4.5 budget.
+
+   So the remaining population was not a set of compositions to fix. It was
+   every string on the site being photographed halfway under the bar. SHOWN
+   names that state and sets it aside, and the count goes to zero.
+
+   THAT NUMBER IS ONLY WORTH ANYTHING IF THE RULE CANNOT EXCUSE THE DEFECT
+   THIS TOOL EXISTS FOR, so it was tested rather than argued. Wave 15's
+   scrim — the mask solid to 0.45 of --nav-h and fading over 70px, the deep
+   half-lit band wave 16 removed — was patched back into a built copy and the
+   gate run against it with SHOWN at 0.5: 93 failures in 181 curves over four
+   route-views, the thinnest at 1.13:1, and they are reported as FAILURES, not
+   set aside, because a scrim dims a string's whole body at once and leaves it
+   fully shown. A crush is at SHOWN 1 by construction. That is the test the
+   constant has to pass and it is reproducible: patch the mask, re-run.
+
+   WHAT IS STILL NOT SEEN, stated so the next wave does not have to find it
+   again. The lit-row rule spots a foreground object by the rows it leaves
+   unchanged, which works because the objects on this site are OPAQUE. A
+   SEMI-transparent object painted across a line still lets the glyphs change
+   pixels under it, so its rows stay lit and it can still be averaged into the
+   ground. Nothing on this tree does that today; the ten or so 4.6-4.8:1
+   readings on the pilot indices carry a ground of L* 93.9 at SHOWN 1.00 and
+   pass, and nobody has yet confirmed by eye whether that L* 93.9 is the
+   ground they sit on or a rule they sit across. It is the next thing to
+   check if this tool is ever quoted within a tenth of budget.
 
    ── AGREEMENT, SO THE SWITCH IS AUDITABLE ────────────────────────────────
    On the homepage's 11px "By invitation" eyebrow — the site's thinnest
@@ -357,8 +410,18 @@ const contrast = (a, b) => { const [x, y] = a > b ? [a, b] : [b, a]; return (x +
    pilot indices for ~15px of scroll and a single-row reading called that
    2.31:1 on a brass numeral whose real ground is L* 3.4 page ink. A hairline
    in front of the type is not the ground behind it, and a band a line of type
-   is read against is never one pixel tall. Three rows is the narrowest window
-   a hairline cannot dominate. */
+   is read against is never one pixel tall.
+
+   "THREE ROWS IS THE NARROWEST WINDOW A HAIRLINE CANNOT DOMINATE" STOOD HERE
+   FOR THREE WAVES AND IS FALSE, in the direction that matters. The window is
+   BAND_ROWS * scale, so at the 3x the whole sweep runs at it is nine DEVICE
+   rows — and a 1px CSS rule is three of them, one full third of the window,
+   at up to 76x the luminance of page ink. Measured on mobile /institute/ at
+   y 771: three rows of L* 93.9 inside a run whose every other row is L* 3.1,
+   averaged to a "ground" of L* 60.4, which made a 16.3:1 string report
+   2.603:1. Widening the window would not have fixed that and narrowing it
+   would have made it worse. The window was never the wrong SIZE; it was
+   looking in the wrong ROWS, and that is what `litRows` corrects. */
 const BAND_ROWS = 3;
 /* AND THE FRAME IS SHOT AT 2x, WHICH IS NOT A DETAIL. A stem of 12px Libre
    Franklin is about one device pixel wide at deviceScaleFactor 1, so it is
@@ -825,6 +888,16 @@ async function sweepRoute(page, view, route) {
     const rows = hist.get(k) || [];
     const peak = peakOf(k), peakRows = peakRowsOf(k);
     const live = rows.filter((r) => painted(r, peak, peakRows));
+    /* AUDITABILITY. A rule that silently drops readings is a rule nobody can
+       argue with, and every constant in this file that went wrong went wrong
+       quietly. So the reading SHOWN set aside is kept on the row: what the
+       curve would have reported with --shown=0, and how much of itself the
+       string had on the glass there. */
+    const slivers = rows.filter((r) => !r.unpainted && (!peak || r.maxD >= peak * FAINT)
+      && peakRows && (r.litRows || 0) < peakRows * SHOWN);
+    const sliver = slivers.length ? slivers.reduce((a, r) => (r.ratio < a.ratio ? r : a)) : null;
+    const withSliver = (x) => (x && sliver && sliver.ratio < x.ratio
+      ? { ...x, sliverRatio: sliver.ratio, sliverShown: sliver.litRows / peakRows, sliverY: sliver.y } : x);
     if (!live.length) {
       /* Never reaches FAINT of its own ink anywhere in the sweep: shut the
          whole way past — a wipe that never opens while it is on screen. */
@@ -832,7 +905,7 @@ async function sweepRoute(page, view, route) {
       if (!any.length) return rows[0] || null;
       return { ...any.reduce((a, r) => (r.ratio < a.ratio ? r : a)), unlit: true };
     }
-    return live.reduce((a, r) => (r.ratio < a.ratio ? r : a));
+    return withSliver(live.reduce((a, r) => (r.ratio < a.ratio ? r : a)));
   };
   const at = async (y) => {
     y = Math.max(0, Math.min(span, Math.round(y)));
@@ -1071,10 +1144,21 @@ const thin = [...live].sort((a, b) => a.ratio - b.ratio);
    meter. So every failure is printed in the table's vocabulary as well as
    this tool's: which register the ink is, what backdrop the table allows it,
    and what backdrop it actually got. */
+/* THE SECOND COPY OF A RULE tokens.css OWNS. These six ceilings are the
+   LEGIBILITY BUDGET table, restated here so a failure can be explained
+   against it. Wave 17 corrected the table: five of the six had been rounded
+   to the NEAREST whole L* and five rounded UP, which on a ceiling is the
+   wrong way — a composition sitting exactly where the table said it could
+   sit read 4.440 : 1 (--fg), 4.479 / 2.973 (--fg-mute), 4.465 / 2.972
+   (--fg-meta), all short of the number the table exists to guarantee. The
+   ceilings below are now the largest whole L* that actually clears (4.605 /
+   3.007, 4.611 / 3.059, 4.548 / 3.045), and they match tokens.css. Until
+   this file and that one move together the gate quotes a ceiling that fails
+   its own budget back at you. If you change one, change both. */
 const REGISTERS = [
-  { name: '--fg',      a: 1.00, small: 46, large: 57 },
-  { name: '--fg-mute', a: 0.70, small: 33, large: 47 },
-  { name: '--fg-meta', a: 0.54, small: 20, large: 38 },
+  { name: '--fg',      a: 1.00, small: 45, large: 57 },
+  { name: '--fg-mute', a: 0.70, small: 32, large: 46 },
+  { name: '--fg-meta', a: 0.54, small: 19, large: 37 },
   { name: '--mark',    a: 0.30, small: 0,  large: 0  },
 ];
 const registerOf = (r) => REGISTERS.reduce((a, c) =>
@@ -1124,6 +1208,12 @@ if (asJson) {
     console.log(`\n${motion.length} string(s) the DOM declares mid-crossfade (cascaded alpha < ${MIN_OP}) — reported, not failed. Worst:`);
     for (const x of [...motion].sort((a, b) => a.ratio - b.ratio).slice(0, 8))
       console.log(`   ${x.ratio.toFixed(3)}:1  ${Math.round(x.size)}px  ${x.view} ${x.route} t ${x.t.toFixed(3)}  declared a ${x.alpha.toFixed(2)}, ink at ${(x.strength * 100).toFixed(0)}% of its own  "${x.sample}"`);
+  }
+  const slivered = live.filter((x) => x.sliverRatio !== undefined && x.sliverRatio < x.need);
+  if (slivered.length) {
+    console.log(`\n${slivered.length} string(s) whose worst reading is a SLIVER at an occlusion edge — under ${(SHOWN * 100).toFixed(0)}% of the string's own painted rows were on the glass, the rest behind something opaque. Set aside, not failed; the curve is reported at its worst FULLY-SHOWN reading instead. Worst:`);
+    for (const x of [...slivered].sort((a, b) => a.sliverRatio - b.sliverRatio).slice(0, 8))
+      console.log(`   ${x.sliverRatio.toFixed(3)}:1 at y ${x.sliverY} with ${(x.sliverShown * 100).toFixed(0)}% of itself shown  ->  reported ${x.ratio.toFixed(3)}:1  ${x.view} ${x.route}  "${x.sample}"`);
   }
   if (dark.length) console.log(`\n${dark.length} string(s) never painted above ${(FAINT * 100).toFixed(0)}% of their own ink at any offset (wiped shut, occluded or transparent throughout) — not measurable, not failures.`);
   /* ── THE VERDICT, OR AN EXPLICIT REFUSAL TO GIVE ONE ───────────────────
