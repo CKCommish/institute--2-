@@ -111,6 +111,24 @@ HALF-LIT BAND — the only number that governs — is 6px in every render mode a
 both viewports. /pilots/'s local override is deleted; the rule is written
 once.)
 
+**"Written once" was not true when wave 16 wrote it, and the route it was
+untrue on was the one carrying the site's thinnest type.** Wave 16 deleted
+/pilots/'s override and checked the band on the routes it had deleted it
+from. `src/pages/forum.astro` carried a SECOND override of the same rule —
+`:global(.nav.is-scrolled)::before { height: calc(var(--nav-h) + 4.4rem) }`
+plus its own fading background — and the shared mask ramps to `transparent
+100%`, where 100% is whatever box that page declares. Measured off the live
+element in all three render modes at both viewports (wave-16 judge): every
+route reported scrim height = --nav-h + 6px, and /forum/ reported 133.75px
+desktop / 128.39px mobile, a HALF-LIT BAND of 70.39px — eight lines of ink,
+against the 8.67px this rule is sized on. Deleting that one block took
+/forum/ from 24 glyph-floor failures to 10 and the whole nojs-diff gate from
+5 findings to 0. THE LESSON IS NOT ABOUT THE NAV: a rule enforced in one
+file and overridable by `:global()` from any page is not written once, and
+neither the gates nor a comment can tell you that. Before believing a
+geometry claim, read the geometry off the element ON EVERY ROUTE — grep for
+`:global(.nav` before you believe it is written once.
+
 **And the quantity that sizes that band is the INK, not the line box.** Two
 waves compared it against 11.664px, the font-size of the site's smallest meta
 label, and passed a band that still crushed whole strings. A reader does not

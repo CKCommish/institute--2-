@@ -589,16 +589,25 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
 </Base>
 
 <style>
-  /* The bar is not this page's to edit, but the hero display and the §01 claim
-     both pass directly under it. Local hardening of the scrim the nav owns. */
-  :global(.nav.is-scrolled)::before {
-    height: calc(var(--nav-h) + 4.4rem);
-    background: linear-gradient(to bottom,
-      var(--nav-scrim, #050D16) 0%,
-      var(--nav-scrim, #050D16) 44%,
-      color-mix(in srgb, var(--nav-scrim, #050D16) 58%, transparent) 72%,
-      transparent 100%);
-  }
+  /* NO LOCAL SCRIM HERE. This page used to override .nav.is-scrolled::before
+     with `height: calc(var(--nav-h) + 4.4rem)` and its own fading background,
+     written when the shared scrim was a long soft tail and this page's hero
+     display and §01 claim passed under it. Wave 16 rebuilt the shared rule —
+     solid to exactly the bar's bottom edge, a ramp of exactly --nav-tail —
+     and sized the ramp against the 8.67px INK extent of a line of type. This
+     override survived that and defeated it on the one route it applies to:
+     the shared mask still holds full strength to --nav-h and then ramps to
+     `transparent 100%`, and 100% was this rule's 4.4rem-taller box, so the
+     half-lit band here was 70.39px at BOTH viewports where every other route
+     had 6px — eight lines of ink deep, on the route carrying the site's
+     thinnest readings. Measured with tools/glyph-floor.mjs, --routes=/forum/
+     --views=desktop,mobile, same tree either side of this one deletion:
+     24 failures (thinnest 1.006:1) before, 10 after. The 14 that closed are
+     the band; the 10 that remain are a different family and are NOT this
+     rule — strings at 8-70% of their own ink with the cascade declaring
+     alpha 1.00 (fade tails the cascade does not declare). Do not expect
+     scrim geometry to move them. The rule lives once, in Nav.astro. If this page ever needs more ground under the bar,
+     change --nav-h, not the scrim's height. */
 
   /* ── 1. The masthead ─────────────────────────────────────────────── */
   .fh {

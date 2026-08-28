@@ -566,12 +566,17 @@ const style = [
        came down to 3.5rem; it is a composed position that happens to have
        been derived from the old one. Do not read it as "the reach plus a
        gap" — the reach is `--nav-h + --nav-tail`, and this rail is set to
-       clear it, not to coincide with it. STALE FIGURE CORRECTED (wave-15
-       judge): this said 118px, which was true before wave 15 shortened
-       --nav-tail from 3.5rem to 1.6rem. Measured now at 1440x900 the reach
-       is 88.95px (63.36 bar + 25.6 tail) and 83.59px at 390x844, so the
-       5.5rem below is ~29px more clearance than the reach needs. Read it off
-       the element before changing it; do not re-derive it from this comment.
+       clear it, not to coincide with it. STALE FIGURE CORRECTED TWICE — the
+       wave-15 judge replaced 118px with 88.95px, and wave 16 shortened the
+       tail again without touching this line. Measured off the live element
+       (wave-16 judge, all three render modes, both viewports): --nav-tail is
+       0.375rem, so the reach is 69.36px at 1440x900 (63.36 bar + 6 tail) and
+       64px at 390x844. The 5.5rem below is therefore ~50px MORE clearance
+       than the reach needs. That is the safe direction and nothing is broken
+       by it, but it is no longer a composed position anyone can defend from
+       the reach — if this rail is re-tuned, tune it as a composition and say
+       so. Read it off the element before changing it; do not re-derive it
+       from this comment.
        Nav's
        sync() now reads --nav-tail rather than retyping it, so the two
        cannot drift the way they did here. */

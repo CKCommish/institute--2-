@@ -119,6 +119,50 @@ lost by making this label do the same job as the other six.
 This is honest, it is what serious editorial sites do, and it adds a layer of
 real texture to a corner that is otherwise empty.
 
+### The homepage credit was being painted out by the scene's own ink (wave 16)
+
+The rule above only works if the label can be READ. On the homepage's held
+Forum scene it could not: `BLOCK ISLAND, RHODE ISLAND` measured **1.06 : 1 at
+390px and 1.98 : 1 at 1440px with motion, 1.79 / 2.28 : 1 under
+`prefers-reduced-motion: reduce` and with JavaScript off** — swept across the
+whole hold, glyph pixels differenced against the same pixels with the glyphs
+made transparent, so every painted layer stayed in place. At that contrast the
+photograph asserts, in pixels, that it is the Kennedy Compound named three
+lines below it.
+
+**The cause was paint order, not weight, and that is the part worth keeping.**
+Every wave that looked at this reached for more ink — `.held__cap` exists
+because of an earlier one — and more ink made it worse. `HeldScene`'s whole
+grade stack (the arc sheet, the bar cap, the foot) was a SIBLING of the figure,
+and `Figure` sets `isolation: isolate`, so nothing outside it can ever paint
+beneath a layer inside it. The scene's ink was landing on top of the credit.
+Measured, the ground under those glyphs was already at 0.006 relative
+luminance — deep — while the cream ink read 0.039–0.079 against the 0.60 the
+same string reads on `/forum/`. The ink was darkening the disclaimer and its
+backdrop in the same proportion, which no amount of it can fix.
+
+`Figure` now has a `grade` slot rendered above its grain and below its credit,
+and `HeldScene` hands its grade stack to it. Nothing about the ink's weight,
+height, position or timing changed — only the order. A full-page pixel diff of
+the homepage before against after, in all three render modes at 1440x900 and
+390x844, changes **no pixel outside the credit's own 230x10 box**; the eyebrow
+`By invitation`, the site's calibration string, is bit-identical and its
+4.563 : 1 stands untouched.
+
+After: the same credit reads **7.68–11.80 : 1** at the settled offsets and its
+worst reading anywhere in the hold is **4.66 : 1** (390px, mid-arc), against
+the 4.5 budget.
+
+**All ten corner credits were then measured the same way** — three render
+modes (motion, `reduce`, no-JS) x two viewports — because they are all
+disclaimers of the same kind. The other nine were already sound and are
+unchanged: the worst of them is `Huntington, West Virginia` at 6.01 : 1 on a
+390px viewport, and the rest sit between 7.3 and 12.7 : 1. Only the held scene
+had the defect, and only because only the held scene paints its own ink over
+its own figure.
+
+If a credit ever measures thin again, **check paint order before opacity.**
+
 ## The Forum scene needs one deliberate decision
 
 **Read this before writing the Forum scene.** The Forum photograph changed in
