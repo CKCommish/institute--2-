@@ -20,7 +20,8 @@
                  handful of cores is where this stopped getting faster.
      CACHE.      A gate's result is keyed by the hash of everything that can
                  change what it measures: the source tree AND the gate's own
-                 file. Re-running against an unchanged build reprints the
+                 code — its entry file and every local module it imports,
+                 transitively. Re-running against an unchanged build reprints the
                  stored verdict in under a second, so "run the gates again
                  before you report" costs nothing when nothing moved.
                  `--fresh` ignores the cache.
@@ -202,10 +203,38 @@ if (has('serve')) {
 
 console.log(`${BASE} · ${GATES.length} gates, pool ${POOL}\n`);
 
-const cacheKey = (g) => path.join(cacheDir, createHash('sha1')
-  .update(srcHash).update(g.name)
-  .update(fs.readFileSync(path.join(ROOT, g.cmd[0])))
-  .digest('hex').slice(0, 16) + '.json');
+/* ── WHAT A GATE'S CACHED VERDICT IS KEYED ON ────────────────────────────
+   The source tree, the gate's name, and THE GATE'S OWN CODE. That last part
+   is the one to get right, and it was two thirds right: it read the entry
+   file and stopped there. Every meter here imports local helpers —
+   `browser.mjs` for the launch flags, `pixel-contrast.mjs` for `audit` and
+   `nojs-meter`'s sampling — and editing one of those changed what the gate
+   MEASURED while leaving its cache key untouched. A gate that can vouch for
+   itself with a stale answer is the failure mode this whole runner exists to
+   prevent, and this project has shipped six defects through green gates.
+
+   So the key walks the gate's local import graph, transitively, and hashes
+   every file in it. Package imports are not followed: `package.json` is
+   already in `srcHash`, and node_modules is not a thing a builder edits
+   mid-wave. It is still not `tools/` wholesale — editing one meter must not
+   throw away another meter's verdict — it is exactly the code that runs. */
+const localDeps = (entry, seen = new Set()) => {
+  const abs = path.resolve(entry);
+  if (seen.has(abs) || !fs.existsSync(abs)) return seen;
+  seen.add(abs);
+  const src = fs.readFileSync(abs, 'utf8');
+  for (const m of src.matchAll(/(?:^|[\s({;])(?:import|export)[^'"\n]*?from\s*['"](\.[^'"]+)['"]|\bimport\s*\(\s*['"](\.[^'"]+)['"]\s*\)/g))
+    localDeps(path.resolve(path.dirname(abs), m[1] || m[2]), seen);
+  return seen;
+};
+const cacheKey = (g) => {
+  const h = createHash('sha1').update(srcHash).update(g.name);
+  for (const f of [...localDeps(path.join(ROOT, g.cmd[0]))].sort()) {
+    h.update(f.slice(ROOT.length));
+    h.update(fs.readFileSync(f));
+  }
+  return path.join(cacheDir, h.digest('hex').slice(0, 16) + '.json');
+};
 
 const show = (st, g, line, tail) =>
   console.log(`  ${st.padEnd(5)} ${g.name.padEnd(12)} ${String(line).slice(0, 78).padEnd(78)} ${tail}`);

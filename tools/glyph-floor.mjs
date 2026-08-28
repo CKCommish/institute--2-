@@ -163,8 +163,18 @@
      else on the site.
 
      ALL 73 were at SHOWN <= 0.462 — under half of the string's own body on
-     the glass, the rest behind that opaque box. The worst reading on the site
-     with more than half of itself shown is 4.617:1 against a 4.5 budget.
+     the glass, the rest behind that opaque box.
+
+   THE SECOND HALF OF THAT PARAGRAPH USED TO READ "the worst reading on the
+   site with more than half of itself shown is 4.617:1 against a 4.5 budget",
+   AND IT WAS A STATEMENT ABOUT THE SWEEP, NOT ABOUT THE SITE. The sweep never
+   sampled a string with between half and all of itself shown: it shot each one
+   clear of the chrome and then three times deep inside it, and stepped over
+   the band where the chrome's edge is crossing the glyphs. Sampled — see THE
+   SHOULDER — that band holds 28 readings under budget on this tree, the worst
+   3.07:1. Every one is the same monotone ramp of a string being sliced by the
+   opaque bar, none of them is a composition, and the threshold that used to
+   admit a few of them and reject the rest is gone: see EDGE_ROWS.
 
    So the remaining population was not a set of compositions to fix. It was
    every string on the site being photographed halfway under the bar. SHOWN
@@ -204,9 +214,11 @@
           [--jobs=4] [--coarse=5] [--all]     (--all: list every curve)
           [--faint=0.06]     below this share of a string's own ink it is
                              recorded as not painted rather than measured
-          [--shown=0.5]      below this share of a string's own painted ROWS
+          [--edge-rows=0]    CSS rows of its own body a string may lose to
+                             the fixed chrome and still be READ; below that
                              it is a sliver at an occlusion edge, not a
-                             reading of the string (--shown=0 measures them)
+                             reading (--edge-rows=99 measures them all)
+          [--shoulder=3]     step of the sweep through the chrome's edge
           [--scale=3]        device pixel ratio the readings are MEASURED at
           [--find-scale=1]   ratio the curve is LOCATED at; =3 to sweep dear
                              (--faint=0 measures every barely-inked state)  */
@@ -308,6 +320,15 @@ const FAINT = Number(arg('faint', '0.06'));
 const JOBS = Number(arg('jobs', '4'));
 const COARSE = Number(arg('coarse', '5'));
 const BRACKET_PX = 8;
+/* Step of the emergence-band sweep, in viewport pixels — see THE SHOULDER. */
+const SHOULDER_PX = Number(arg('shoulder', '3'));
+/* HAND SCAN. `--at=2148,2156,2160,2164` shoots exactly those offsets and
+   nothing else, so a reading quoted in a review can be reproduced pixel for
+   pixel instead of argued about. Pair it with GLYPH_DEBUG=<key substring>,
+   which prints ratio, ink, ground, coverage and litRows for every frame. It
+   is a diagnostic: a run with --at set never covers the site and its totals
+   are not a verdict. */
+const AT = arg('at', '') ? arg('at', '').split(',').map(Number).filter((n) => Number.isFinite(n)) : null;
 /* A changed channel this small is dithering or a rounding edge, not a glyph. */
 const INK_FLOOR_DELTA = 6;
 /* Fraction of the largest change in a run that still counts as a stem. */
@@ -384,15 +405,64 @@ const MIN_COVER = 0.02;
    itself is reaching the glass here, against the most of itself it ever gets.
 
    WHAT THIS ONE EXCUSES, stated plainly, because that is the question this
-   project keeps paying for not asking. It excuses ONLY readings where more
-   than half of a string's body is behind something opaque. It cannot excuse
-   dimness, a scrim, a wash, a bad ground, a low-contrast palette or a
-   crossfade — all of those leave the body intact and SHOWN at 1. Measured
-   site-wide the quantity is strongly bimodal (see the foot of this file):
-   the population sits at SHOWN 1, and the bar-edge slivers sit under 0.5,
-   with the band between them nearly empty. `--shown=0` turns it off and
-   measures every sliver on the site. */
-const SHOWN = Number(arg('shown', '0.5'));
+   project keeps paying for not asking. It excuses ONLY readings where the
+   chrome has taken rows off the string. It cannot excuse dimness, a scrim, a
+   wash, a bad ground, a low-contrast palette or a crossfade — all of those
+   leave the body intact and SHOWN at 1. That is the whole safety argument
+   and it is structural, not a matter of where the number sits: the crush
+   this tool was built for, /institute/'s `.ispec__k` at 31% of its own ink,
+   is at SHOWN 1 and is untouched at any setting.
+
+   ── THE THRESHOLD USED TO BE A HALF, AND THE HALF WAS AN ARTEFACT ──────
+   This constant shipped at 0.5 with a justification that read: measured
+   site-wide the quantity is strongly bimodal, the population sits at SHOWN 1,
+   the bar-edge slivers sit under 0.5, and the band between them is nearly
+   empty. THE BAND WAS EMPTY BECAUSE NOTHING EVER LOOKED IN IT. The sweep
+   sampled each string clear of the chrome and then three times deep inside
+   it (`v = BAND - h - drop`, every drop positive), and never once while the
+   chrome's edge was crossing the glyphs. Sample that band — see THE SHOULDER
+   below — and it is not empty at all: on this tree 28 strings sit in it, on
+   nine of the twelve route-views, every one of them a string being sliced by
+   the opaque bar. Hand-scanned, mobile /people/, the 12px "16":
+
+        rows lit   26   26   26   24   18   15   12    9    6
+        ratio    4.75 4.75 4.68 4.69 4.25 3.14 2.36 1.91 1.50
+
+   There is no notch and no shoulder in that curve. It is a MONOTONE RAMP,
+   and a threshold on a ramp reports whatever is standing where you put it.
+   0.5 reported 4.25:1; 0.4 would report 3.14:1; 0.6 reports 4.68:1. None of
+   those is a fact about the composition — the ground never moves (L* 93.9 to
+   94.0 across the whole ramp) and the surviving ink never dims (maxD 178 to
+   170). What falls is the number of rows, and the rows that survive at the
+   edge are the antialiased bottom curve of a glyph, not its stems.
+
+   So the threshold is not a fraction any more, and it is not a tolerance
+   either: THE ONLY READING OF A STRING IS ONE WITH THE WHOLE OF ITS BODY ON
+   THE GLASS. A one-CSS-row allowance was tried first, on the reasoning that
+   the edge cuts through one row and only that row's reading is a blend. It is
+   not safe, and the counter-example is on this tree: the 15px "*" on the
+   desktop homepage has only 17 device rows of ink in it, so ONE DEVICE ROW is
+   6% of its body — and losing that single row at viewport y 63 takes it from
+   4.681:1 to 3.807:1, because the row the edge takes is the top of its stems.
+   The shorter the glyph, the more a row is worth. There is no allowance that
+   is small enough for an asterisk and large enough to be worth having, so
+   there is no allowance.
+
+   Everything on the ramp below full body is a reading of a fringe and is
+   reported as a sliver, with its number and its offset, under its own
+   heading — set aside in the open, never silently. `--edge-rows=99` turns
+   the rule off and measures every sliver on the site.
+
+   THE COST, so nobody has to rediscover it. This DISCARDS readings, and a
+   rule that discards is a rule that can weaken a gate — which is why it is
+   not argued, it is tested against a live positive control. Wave 15's scrim
+   (mask solid to 45% of the box, tail 4.4rem) patched back into a built copy
+   and the gate re-run over mobile /forum/ and /people/: 19 FAILURES at
+   1.17-1.24:1, "ink at 10%", reported as failures and not set aside, because
+   a crush dims a string's whole body and leaves every row of it lit. Patch
+   the mask, re-run, and this rule has to keep failing them. If it ever stops,
+   it is wrong. */
+const EDGE_ROWS = Number(arg('edge-rows', '0'));
 
 const VIEWS = [
   { tag: 'desktop', vp: { width: 1440, height: 900 } },
@@ -763,8 +833,17 @@ async function frameAt(page, y, S, only) {
          down together. */
       let litRowN = 0;
       for (let j = 0; j < r.h; j++) if (litRows[j]) litRowN++;
+      /* `litRows` is a FRACTION OF THE RUN BOX, and the run box moves: a rect
+         straddling the viewport edge is clipped, so the same fully-shown
+         string reported 0.578 at most offsets and 0.733 at one, and SHOWN —
+         a ratio of two of these — was a ratio with a moving denominator.
+         `inkRows` is the same count in CSS pixels of the string's own body,
+         which is a property of the glyphs and not of the box they were
+         clipped into. That is the quantity occlusion actually eats, and it
+         is what SHOWN is measured on. */
       const cand = { ratio: contrast(inkY, bandY), inkL: Lstar(inkY), backdropL: Lstar(bandY),
-                     cover: lit / (r.w * r.h), core: n / (r.w * r.h), litRows: litRowN / r.h, maxD, vy: cssR.y, vh: cssR.h };
+                     cover: lit / (r.w * r.h), core: n / (r.w * r.h), litRows: litRowN / r.h,
+                     inkRows: litRowN / S, maxD, vy: cssR.y, vh: cssR.h };
       /* The coverage backstop belongs to the MEASURING scale. At the cheap
          locate scale a 13px stem is one antialiased pixel and its core is a
          handful of pixels — coverage there runs an order of magnitude lower
@@ -782,7 +861,7 @@ async function frameAt(page, y, S, only) {
     if (!best) {
       if (unpainted) rows.set(t.key, { key: t.key, sample: t.sample, chrome: t.chrome, over: t.over,
         size: t.size, eff: t.eff, ca: t.colorAlpha, alpha: t.eff * t.colorAlpha, need: 0, y, unpainted: true, ratio: Infinity,
-        inkL: unpainted.inkL, backdropL: unpainted.backdropL, cover: unpainted.cover, litRows: unpainted.litRows, maxD: unpainted.maxD });
+        inkL: unpainted.inkL, backdropL: unpainted.backdropL, cover: unpainted.cover, litRows: unpainted.litRows, inkRows: unpainted.inkRows, maxD: unpainted.maxD });
       continue;
     }
     const large = t.size >= 24 || (t.size >= 18.66 && Number(t.weight) >= 700);
@@ -792,7 +871,7 @@ async function frameAt(page, y, S, only) {
        line per frame. A real defect holds across neighbouring offsets; an
        instrument artefact is one frame wide. */
     if (process.env.GLYPH_DEBUG && t.key.includes(process.env.GLYPH_DEBUG))
-      console.error(`   dbg y=${y} ${t.key} ratio=${row.ratio.toFixed(3)} inkL=${row.inkL.toFixed(1)} bandL=${row.backdropL.toFixed(1)} cover=${row.cover.toFixed(3)} maxD=${row.maxD}`);
+      console.error(`   dbg y=${y} ${t.key} ratio=${row.ratio.toFixed(3)} inkL=${row.inkL.toFixed(1)} bandL=${row.backdropL.toFixed(1)} cover=${row.cover.toFixed(3)} maxD=${row.maxD} litRows=${(row.litRows || 0).toFixed(3)} vy=${row.vy} vh=${row.vh}`);
     const prev = rows.get(t.key);
     if (!prev || prev.unpainted || row.ratio < prev.ratio) rows.set(t.key, row);
   }
@@ -876,14 +955,14 @@ async function sweepRoute(page, view, route) {
   /* The most of its own body this string ever gets onto the glass anywhere in
      the sweep — the denominator for SHOWN. Like peakOf, it cannot be known
      until the sweep is over, which is why it lives here and not in frameAt. */
-  const peakRowsOf = (k) => hist.get(k).reduce((a, r) => Math.max(a, r.unpainted ? 0 : (r.litRows || 0)), 0);
+  const peakRowsOf = (k) => hist.get(k).reduce((a, r) => Math.max(a, r.unpainted ? 0 : (r.inkRows || 0)), 0);
   /* the worst reading at which the string was actually PAINTED — see the
      FAINT block at the head of this file. Whether a painted reading is then
      excused as a declared crossfade is decided once, at the bottom, on the
      cascaded alpha; it is not decided here, and it is no longer decided by
      how dim the pixels are. */
   const painted = (r, peak, peakRows) => !r.unpainted && (!peak || r.maxD >= peak * FAINT)
-    && (!peakRows || (r.litRows || 0) >= peakRows * SHOWN);
+    && (!peakRows || (r.inkRows || 0) >= peakRows - EDGE_ROWS);
   const pick = (k) => {
     const rows = hist.get(k) || [];
     const peak = peakOf(k), peakRows = peakRowsOf(k);
@@ -894,10 +973,10 @@ async function sweepRoute(page, view, route) {
        curve would have reported with --shown=0, and how much of itself the
        string had on the glass there. */
     const slivers = rows.filter((r) => !r.unpainted && (!peak || r.maxD >= peak * FAINT)
-      && peakRows && (r.litRows || 0) < peakRows * SHOWN);
+      && peakRows && (r.inkRows || 0) < peakRows - EDGE_ROWS);
     const sliver = slivers.length ? slivers.reduce((a, r) => (r.ratio < a.ratio ? r : a)) : null;
     const withSliver = (x) => (x && sliver && sliver.ratio < x.ratio
-      ? { ...x, sliverRatio: sliver.ratio, sliverShown: sliver.litRows / peakRows, sliverY: sliver.y } : x);
+      ? { ...x, sliverRatio: sliver.ratio, sliverShown: sliver.inkRows / peakRows, sliverY: sliver.y } : x);
     if (!live.length) {
       /* Never reaches FAINT of its own ink anywhere in the sweep: shut the
          whole way past — a wipe that never opens while it is on screen. */
@@ -934,8 +1013,11 @@ async function sweepRoute(page, view, route) {
   };
 
   const ys = [];
-  for (let y = 0; y <= span; y += step) ys.push(y);
-  if (ys[ys.length - 1] !== span) ys.push(span);
+  if (AT) ys.push(...AT.map((y) => Math.max(0, Math.min(span, y))));
+  else {
+    for (let y = 0; y <= span; y += step) ys.push(y);
+    if (ys[ys.length - 1] !== span) ys.push(span);
+  }
   const seenAt = new Map();
   for (const y of ys) {
     const m = await at(y);
@@ -973,7 +1055,8 @@ async function sweepRoute(page, view, route) {
      the first screen, the footer, the bar's own links — cost nothing,
      because their crossing offset falls outside the scroll range and is
      never shot. */
-  if (BAND > 0) {
+  const docOf = new Map();
+  if (BAND > 0 && !AT) {
     for (const k of [...hist.keys()]) {
       const seen = hist.get(k).filter((r) => !r.unpainted && r.vh);
       if (!seen.length || seen[0].chrome) continue;
@@ -993,6 +1076,59 @@ async function sweepRoute(page, view, route) {
           doc = yy + r.vy;                      /* the page did not translate rigidly */
         }
       }
+      docOf.set(k, { doc, h });
+      const sm = seenAt.get(k);
+      if (sm) sm.sort((a, b) => a.y - b.y);
+    }
+  }
+
+  /* ── THE SHOULDER: WHERE THE THREE DROPS ARE NOT ──────────────────────
+     The walk above was written for the SCRIM CRUSH, and all three of its
+     drops are POSITIVE: `v = BAND - h - drop` puts the string's bottom edge
+     `drop` pixels ABOVE the band's bottom, so at every one of them the whole
+     string is already inside the chrome. The band that is never sampled is
+     the one on the other side of that edge — the string EMERGING, part of it
+     under the opaque bar and part of it on the page. Measured on mobile
+     /people/, the 12px "16":
+
+         v 56   4.680:1   0.578 of its rows lit
+         v 52   4.254:1   0.400          <- fails; the three drops step over it
+         v 51   3.143:1   0.333
+         v 48   1.495:1   0.133          <- the sliver the trisection converges on
+
+     And a trisection cannot be pointed at it. `pick()` throws away everything
+     that has lost rows to the chrome, so the curve the minimiser is
+     walking has a NOTCH punched in it that the minimiser cannot see: aim it
+     at the sliver and the filter deletes the answer, aim it past the sliver
+     and it steps over the shoulder. (Coupling the two — passing `peakRows`
+     into `painted()` in the refinement — was tried by the wave-17 judge and
+     made the gate WEAKER, because the bracket then starts somewhere else and
+     misses the shoulder for a different string.) A notch is not a bracketing
+     problem. It is sampled, densely, or it is not seen.
+
+     So: for every string whose curve comes anywhere near its budget, walk the
+     emergence band at SHOULDER_PX. It is `h + BAND` of travel, a couple of
+     dozen small clipped pairs, and only for strings already under suspicion —
+     the cost lands where the risk is. Measured on this tree it takes the
+     whole-site sweep from about 28 minutes to about 35, with /pilots/ desktop
+     the long pole at 2402 pairs; `gates.mjs` kills a silent gate at 75, so
+     there is room, but not a lot of it. `--shoulder=0` is not a way to make
+     the gate faster — it is a way to make it blind again. */
+  if (BAND > 0 && !AT) {
+    for (const [k, { doc, h }] of docOf) {
+      const cur = pick(k);
+      if (!cur || cur.unpainted) continue;
+      if (cur.ratio > cur.need * 2.5 && !(cur.sliverRatio < cur.need)) continue;
+      if (SHOULDER_PX <= 0) continue;
+      for (let v = BAND; v >= -h; v -= SHOULDER_PX) {
+        const yy = Math.round(doc - v);
+        if (yy < 0 || yy > span) continue;
+        const m = await atFor(yy, k);
+        const r = m.get(k);
+        if (!r) continue;
+        if (!seenAt.has(k)) seenAt.set(k, []);
+        if (!r.unpainted) seenAt.get(k).push({ y: yy, ratio: r.ratio, maxD: r.maxD });
+      }
       const sm = seenAt.get(k);
       if (sm) sm.sort((a, b) => a.y - b.y);
     }
@@ -1002,7 +1138,7 @@ async function sweepRoute(page, view, route) {
      fall under the budget between two samples a fifth of a viewport apart —
      the ground would have to move ~40 L* inside one step and nothing here
      moves a tenth of that. */
-  for (const [k, samples] of seenAt) {
+  for (const [k, samples] of (AT ? [] : seenAt)) {
     const coarseMin = pick(k);
     if (!coarseMin || coarseMin.unpainted) continue;
     if (coarseMin.ratio > coarseMin.need * 2.5) continue;
@@ -1037,7 +1173,7 @@ async function sweepRoute(page, view, route) {
   let rows = [...hist.keys()].map(pick).filter(Boolean)
     .map((r) => ({ ...r, view: view.tag, route, t: span ? r.y / span : 0,
                    strength: peakOf(r.key) ? r.maxD / peakOf(r.key) : 0,
-                   shown: peakRowsOf(r.key) ? (r.litRows || 0) / peakRowsOf(r.key) : 0 }));
+                   shown: peakRowsOf(r.key) ? (r.inkRows || 0) / peakRowsOf(r.key) : 0 }));
 
   /* ── LOCATE CHEAP, MEASURE DEAR — OFF BY DEFAULT, AND HERE IS WHY ────
      `--find-scale=1` sweeps at 1x and re-shoots only each curve's argmin at
@@ -1189,7 +1325,7 @@ if (incomplete) {
 if (asJson) {
   console.log(JSON.stringify({ base, frames, minOpacity: MIN_OP, faint: FAINT, incomplete, routeViews: [done, jobs.length], rows: all }, null, 2));
 } else {
-  console.log(`glyph-floor · ${base} · ${frames} frame pairs · coarse vh/${COARSE} then trisected to ≤${BRACKET_PX}px · measured by subtraction · painted ≥ ${FAINT} of own ink · declared alpha ≥ ${MIN_OP}\n`);
+  console.log(`glyph-floor · ${base} · ${frames} frame pairs · coarse vh/${COARSE}, the chrome crossing walked and its shoulder swept every ${SHOULDER_PX}px, then trisected to ≤${BRACKET_PX}px · measured by subtraction · painted ≥ ${FAINT} of own ink · declared alpha ≥ ${MIN_OP}\n`);
   for (const r of results) {
     if (!r) continue;
     const shown = r.rows.filter((x) => !x.unpainted && !x.unlit && x.alpha >= MIN_OP && (showAll || x.ratio < x.need * 2));
@@ -1211,7 +1347,7 @@ if (asJson) {
   }
   const slivered = live.filter((x) => x.sliverRatio !== undefined && x.sliverRatio < x.need);
   if (slivered.length) {
-    console.log(`\n${slivered.length} string(s) whose worst reading is a SLIVER at an occlusion edge — under ${(SHOWN * 100).toFixed(0)}% of the string's own painted rows were on the glass, the rest behind something opaque. Set aside, not failed; the curve is reported at its worst FULLY-SHOWN reading instead. Worst:`);
+    console.log(`\n${slivered.length} string(s) whose worst reading is a SLIVER at an occlusion edge — the fixed chrome had taken part of the string's own body off the glass${EDGE_ROWS ? ` (more than ${EDGE_ROWS} CSS row(s))` : ''}, the rest of it behind something opaque. Set aside, not failed; the curve is reported at its worst FULLY-SHOWN reading instead. Worst:`);
     for (const x of [...slivered].sort((a, b) => a.sliverRatio - b.sliverRatio).slice(0, 8))
       console.log(`   ${x.sliverRatio.toFixed(3)}:1 at y ${x.sliverY} with ${(x.sliverShown * 100).toFixed(0)}% of itself shown  ->  reported ${x.ratio.toFixed(3)}:1  ${x.view} ${x.route}  "${x.sample}"`);
   }
@@ -1227,7 +1363,22 @@ if (asJson) {
     if (crashed.length) console.log('\n' + crashed.map((c) => `   ${c.view} ${c.route} — ${c.err}`).join('\n'));
     console.log(`\nNO VERDICT — the sweep is INCOMPLETE: ${done} of ${jobs.length} route-views finished. ${fails.length} failing curves were seen in the ${live.length} that were measured, which is a floor on an unknown total and is not a result. Re-run the missing route-views with --routes= --views=.`);
   } else {
+    /* ── THE DENOMINATOR IS A CENSUS, NOT A CONSTANT ──────────────────
+       Two runs of the same tree reported 853 curves and 852, 71 failures
+       and 70, and a headline that quotes a total to the curve implies a
+       precision this sweep does not have. It is SAMPLING, not a bug, and
+       the mechanism is in the design: after the deterministic coarse grid
+       the sweep is ADAPTIVE — the crossing walk, the shoulder sweep and the
+       trisection all choose their offsets from what the previous frames
+       read, and those readings carry the browser's own antialiasing noise.
+       A string that is only ever on the glass inside one of those windows
+       is therefore in one run's census and not the next's, and a string
+       sitting on the FAINT line can be recorded as painted once and shut
+       once. The failure COUNT is the verdict and it is stable on the
+       strings that matter; the total it is quoted against is what this run
+       happened to look at. Said out loud rather than implied. */
     console.log(`\n${fails.length} failure(s) in ${live.length} curves across ${done} route-views.`);
+    console.log(`(The count is the verdict. The denominator is this run's census, not a constant of the tree: after the coarse grid the sweep chooses its own offsets from what it has read, so repeat runs of an unchanged tree differ by a curve or two. Quote the failures, not the total.)`);
   }
 }
 

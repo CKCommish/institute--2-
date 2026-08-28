@@ -1,0 +1,4 @@
+committed 2026-08-28T04:36:36Z
+fcc3674971c053a4c805b9f50bc73ec0da4d0e90e2fad4581d8e8db1886d3091  /home/user/institute--2-/progress/gauntlet/w18/picks-desktop.json
+1e634cabc52d1ffacea19666b672a9648a3aff8081069b2ca7fded73cfc75df3  /home/user/institute--2-/progress/gauntlet/w18/picks-mobile.json
+5be385e1a7b56b01a88b68427deaae3e8219fa2b14c4ead3d482d9a05e56b1f1  /home/user/institute--2-/progress/gauntlet/w18/picks-criteria.json

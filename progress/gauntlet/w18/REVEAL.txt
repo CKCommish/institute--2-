@@ -1,0 +1,28 @@
+revealed 2026-08-28T04:36:44Z
+--- desktop
+pair 01: picked B → OURS
+pair 02: picked B → REFERENCE
+pair 03: picked A → OURS
+pair 04: picked A → OURS
+pair 05: picked A → OURS
+pair 06: picked B → REFERENCE
+pair 07: picked A → OURS
+pair 08: picked A → OURS
+pair 09: picked B → REFERENCE
+pair 10: picked B → OURS
+---
+per-pair: ours won 7 of 10
+identification: correct
+VERDICT: OURS WINS
+--- mobile
+pair 01: picked A → OURS
+pair 02: picked A → OURS
+pair 03: picked B → OURS
+pair 04: picked B → OURS
+pair 05: picked B → OURS
+pair 06: picked B → OURS
+pair 07: picked A → OURS
+---
+per-pair: ours won 7 of 7
+identification: correct
+VERDICT: OURS WINS
