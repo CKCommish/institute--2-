@@ -43,7 +43,19 @@ const dests = [
 
 <style>
   .nf {
-    min-height: 78svh;
+    /* NO min-height. It was 78svh, and it was a second reserve under the
+       same gap, invisible at the viewport everything here is measured on.
+       With `align-content: start` every pixel of the stretch lands BELOW the
+       content, on top of the tail below and the footer's reserve below that.
+       It binds whenever 78svh exceeds this section's natural height (968px
+       at 1440 after the tail change), i.e. above about 1241px of viewport:
+       at 1440x1400 the crossing measured 308.8px — 18.4% of a 1680px route,
+       WORSE than the 259.6px this file was opened to fix, and unreachable
+       from the 1440x900 and 390x844 boundaries every gate here samples.
+       It also bought nothing it was there for: the document is 1556px at
+       1440 with the footer in it, so it scrolls at every viewport height
+       this rule could fire at, and the footer was never going to float.
+       Removed; the crossing is 185.0px at 1440x900 AND at 1440x1400. */
     display: grid;
     /* The house shelf, like every other inner page: --head-pad under the bar,
        content starting on it. This page hand-rolled its own top pad and then
@@ -52,7 +64,29 @@ const dests = [
        something has already gone wrong was also the one that did not look
        like the rest of the site. */
     align-content: start;
-    padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(4rem, 9vw, 8rem);
+    /* THE TAIL, AND WHY IT IS NOT THE HOUSE TAIL.
+       This was clamp(4rem, 9vw, 8rem) — 128px at 1440, 64px at 390, the
+       LARGEST last-section tail on the site — and the footer reserves
+       133.6px on top of it (Footer.astro, .foot padding-block start). Those
+       two constants stack, and the sum is what a reader crosses: 259.6px
+       between the list's closing rule at 914.8 and the WORK WITH US eyebrow
+       at 1176.4, on a 1630px route. That is 15.9% of the shortest page on
+       the site, against 3.3-7.0% on the five other routes that carry the
+       same footer reserve (measured mark-to-mark at 1440x900, scripts on,
+       reduced motion: / 208.8, /institute/ 214.0, /forum/ 188.9,
+       /people/ 206.1, /404 259.6 — the spread is the SECTION tails, 0 to
+       128px, not the footer constant, which is identical on all five).
+       So the constant that is wrong here is this one, not the shared one:
+       moving the footer's would shift all five by the same amount and leave
+       /404 the outlier it is. And this page has the most definite ending on
+       the site — a hairline across the full measure, the list's own bottom
+       border — after which less reserve is owed, not more. 53.4px at 1440
+       puts the crossing at 185.0px, just inside /forum/'s 188.9: the
+       tightest of the five, which is right for the shortest route.
+       At 390 it is 32px, and the crossing 94.0px against 126.0px. Both
+       re-measured after the change on the same boundary as the numbers
+       above: mark-to-mark, scripts on, reduced motion. */
+    padding-block: calc(var(--nav-h) + var(--head-pad)) clamp(2rem, 1rem + 2.6vw, 3.5rem);
   }
   .nf__in { display: grid; gap: clamp(1rem, 2.2vw, 1.75rem); }
   .nf h1 { max-width: 14ch; }

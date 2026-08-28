@@ -133,7 +133,9 @@ green at the time.
 
 That last row is the one to learn from. `ink-floor` was built to fix
 photo-meter's blindness to ancestor opacity and it did — its 4.563:1 for the
-homepage eyebrow is right, and it is still the number to quote. But its model
+homepage eyebrow lands in the right place, though it never said how it
+aggregated ink and ground; see **The number to quote** below, which restates
+that reading on a boundary you can re-run. But its model
 had one term for what is behind the glyphs and none for what is over them, so
 the nav's scrim tail was a free pass in it exactly as it was in the other
 three, and it was hiding 11px type at **2.745:1** while the gate was green.
@@ -249,16 +251,63 @@ is a subtraction: each string is now walked through the bottom of the fixed
 chrome at three depths, with its document position corrected once from what
 the first shot actually saw.
 
-**The number to quote.** The site's tightest ARRIVED type is the 11px
-"By invitation" eyebrow on the homepage Forum figure: **4.563:1 on mobile**,
-0.06 above AA, at t≈0.275 of the held scene's pinned range. It has been
-misquoted twice, each time by a meter that did not sample densely enough —
-9.38 at one viewport and one scroll position, then 4.70 on a 16-sample sweep.
-`ink-floor` floored it at 4.569 and `glyph-floor` reads 4.503 by subtraction;
-the gap is the browser's own antialiasing, and both say the same thing, which
-is that the margin on the site's thinnest type is a rounding error and not a
-cushion. Anyone touching `--k`, the ink knee, or the cap in the held scene is
-caught by `glyph-floor`.
+**The number to quote, and the boundary it is quoted on.** The site's
+tightest ARRIVED type is the 11px `By invitation` eyebrow on the homepage
+Forum figure (`.eyebrow.held__brow`), and its floor is where every wave has
+said it is: the bright plateau of the held picture, mobile.
+
+Seven readings have been quoted for it — 4.503, 4.558, 4.563, 4.567, 4.569,
+4.617, 4.70 — and read as a disagreement that is alarming. It is not one.
+They agree on the offset and differ on how the ink and the ground are
+AGGREGATED, which no wave stated. So state it:
+
+> **4.61 : 1** by `glyph-floor` itself, at 390x844, scripts on, motion
+> default, on a clean checkout of HEAD `04dc1a7` served by
+> `tools/preview.mjs`. Floor at scrollY **2755** of 4619, ink L* 93.8 over a
+> backdrop band of L* 44.9 — the bright plateau of the held picture, which is
+> t≈0.275 of the pinned range, exactly where every wave has said it is.
+> Reproduce it with
+> `GLYPH_DEBUG="By invitation" BASE=… node tools/glyph-floor.mjs --routes=/ --views=mobile`
+> and read the curve on stderr; the headline line is not this number, see
+> below.
+>
+> A second, independent sampler — same viewport at devicePixelRatio 3, the
+> page swept every 20px with `behavior: 'instant'`, ink taken as the mean
+> luminance of pixels the glyphs moved by >0.6 of the frame's own maximum
+> delta and ground as the mean of the rest of the string's box plus a 2px
+> margin — floors at **4.64 : 1** over scrollY 2940–3040. Same place, same
+> answer, 0.03 apart.
+
+Change how ink and ground are aggregated and you move the last digit or two:
+a wider ink threshold pulls antialiased edge pixels into the ink and the
+ratio falls toward 4.50; a darkest-row band rather than a box mean raises it.
+**That spread, 4.50 to 4.70, is the whole of the historical disagreement** —
+not one of those waves was measuring a different place, and none of them said
+how it aggregated. What all of them agree on is the only thing the number is
+for: the margin on the site's thinnest type is a rounding error, not a
+cushion. Anyone touching `--k`, the ink knee, or the cap in the held scene
+re-measures on the terms above and writes the new number here with them.
+
+`ink-floor`'s 4.569 is **not re-runnable** — `tools/ink-floor.mjs` is gone
+from the tree; only its readings survive, here and in `glyph-floor.mjs`'s
+header. Treat it as history, not as a second opinion. The "this tool and
+ink-floor agree to within a few thousandths" line in that header is likewise
+unverifiable now, and 4.569 against 4.503 is 66 thousandths, not a few.
+
+**AND `glyph-floor` DOES NOT PRINT WHAT IT MEASURED FOR THIS STRING.** Its
+report line reads `ok 16.224:1 … min at y 3380` while its own per-offset
+curve, above, holds 4.610 at y 2755, 4.673 at 2881, 4.804 at 3042 and 5.250
+at the foot. 16.224 is neither the minimum of that curve nor near it. Two
+elements on `/` carry the text `By invitation` at 11px — the held eyebrow
+`.eyebrow.held__brow` and `.foot__second-k` in the footer — and the tool keys
+a curve on `text.slice(0,34)|fontSize` (line ~712), so they share one slot;
+that is where to start, but the mechanism is NOT yet established and this
+note does not claim it. What IS established: **on the site's calibration
+string the gate's headline is 3.5x safer than the gate's own samples.** So do
+not read a green `glyph-floor` as cover for the held eyebrow, do not quote
+16.224 for it anywhere, and read the curve with `GLYPH_DEBUG` when it
+matters. Left open deliberately — this is a gate, and re-cutting a gate is a
+named move, not a repair to fold into a discipline pass.
 
 **A trap worth knowing.** `base.css` sets `html { scroll-behavior: smooth }`,
 so `window.scrollTo` starts an animation. Any meter that scrolls and then waits

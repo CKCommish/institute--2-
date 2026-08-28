@@ -209,7 +209,28 @@ const collectMarks = `(() => {
     const s = getComputedStyle(el); const r = el.getBoundingClientRect();
     if (r.width < 1 || r.height < 1) continue;
     PIN = pinnedOf(el);
-    const alpha = (c) => { const m = /rgba?\\(([^)]+)\\)/.exec(c); if (!m) return 0; const p = m[1].split(',').map(Number); return p.length > 3 ? p[3] : 1; };
+    /* ALPHA, AND THE CLASS OF MARK THAT HAS BEEN INVISIBLE HERE SINCE
+       WAVE 21 (git log -S on this line), TWO OF THEM AS A GATE.
+       This used to read only the legacy comma form 'rgba(r, g, b, a)'. Every
+       '--rule' and '--rule-soft' on this site is a 'color-mix()', and a
+       computed color-mix resolves to 'color(srgb 0.949 0.929 0.890 / 0.14)'
+       — no match, alpha 0, border SKIPPED. So the commonest closing device
+       in this house was absent from the DOM pass on every route. It was not
+       absent from the verdicts, because findRules() finds hairlines in the
+       PIXELS — but a pixel rule is not added to 'covered', so it can close a
+       band and cannot SPLIT one. That is how /404 desktop printed ONE 286px
+       band, position 1 in this table, when what is on the page is 26px of
+       leading (888-914), a full-measure rule at 914, and 258px of ground
+       under it (916-1174). Measured at 1440x900, scripts on, reduced motion.
+       Read the alpha slot of the modern syntaxes too. */
+    const alpha = (c) => {
+      if (!c || c === 'transparent' || c === 'none') return 0;
+      const mod = /\\/\\s*([0-9.]+%?)\\s*\\)/.exec(c);   /* rgb(… / a), color(srgb … / a), oklch(… / a) */
+      if (mod) return mod[1].endsWith('%') ? parseFloat(mod[1]) / 100 : parseFloat(mod[1]);
+      const leg = /rgba?\\(([^)]+)\\)/.exec(c);
+      if (leg) { const p = leg[1].split(',').map(Number); return p.length > 3 ? p[3] : 1; }
+      return /^(color|rgb|hsl|hwb|oklch|oklab|lab|lch)\\(|^#/.test(c) ? 1 : 0;
+    };
     for (const side of ['Top', 'Bottom']) {
       if (parseFloat(s['border' + side + 'Width']) > 0 && s['border' + side + 'Style'] !== 'none' && alpha(s['border' + side + 'Color']) > 0.02) {
         const y = side === 'Top' ? r.top : r.bottom;
@@ -411,7 +432,16 @@ async function sweepRoute(ctx, base, route, view) {
        fixed or sticky element. */
     const margin = bnd.bottom <= firstBody + 2 || bnd.top >= lastMark - 2;
 
-    const verdict = full ? 'composition (full-measure mark)'
+    /* Print WHERE the closing mark is, not just that there is one. The
+       table's neighbouring column is the largest ground STEP and its y, and
+       with the closing y withheld the two fused: the wave-23 judge read
+       /404's dL* row (0.29 L* at 1163, which closes nothing — it is a
+       hundredth of the floor) as the mark that closed the band, and
+       concluded the closing mark belonged to the block below the gap. It is
+       at 914, the list's own bottom rule, at the band's top edge. A verdict
+       that cannot be re-measured from its own line is the defect this whole
+       wave is about. */
+    const verdict = full ? `composition (${full.kind})`
       : groundOK ? 'composition (change of ground)'
       : margin ? 'composition (margin)'
       : 'HOLE';

@@ -281,9 +281,33 @@ function setVar(el, name, v) {
    coda that grows to a block gets the room a block needs, without anyone
    editing this file.
 
-     lead   0.09  fixed: the picture has to have arrived before the first
-                  beat is asked to read over it. It is a property of the
-                  ARRIVAL, not of the copy, so it does not scale.
+     lead   0.09  fixed, and NOT for the reason this line gave for three
+                  waves. It read "the picture has to have arrived before the
+                  first beat is asked to read over it — a property of the
+                  ARRIVAL". That is a contrast claim and it is false. The
+                  beats sit in a band at the FOOT of the frame, under the
+                  foot ink, and that band gets DARKER as the arc opens:
+                  differenced glyph-against-backdrop on the homepage hold at
+                  1440x900, DSF 2, the ground under the first display line
+                  reads rgb(19,24,36) at hp 0.10 and rgb(10,16,26) at hp
+                  0.30. The line's own measured contrast over it — 1.01:1 at
+                  hp 0.10, 4.69:1 at 0.15, 16.32:1 at 0.30 — tracks the
+                  line's OPACITY and nothing else. The arc is not what the
+                  beat is waiting for, so `lead` cannot be justified by it.
+
+                  What `lead` actually buys is a compositional pause: the
+                  picture lands, and then it is spoken over. Keep it for
+                  that, and argue it as that. Measured, lead 0.05 moves the
+                  arrival's typeless band from 95px to 60px of the 855px
+                  range (swept at 5px, so each figure is +/-5px) and widens
+                  each beat's span from 340px to 355px (arithmetic, not
+                  swept: span = (1 - lead - tail) / n). It costs the seam
+                  one sample step — the band with no display line went 25px
+                  to 30px at the same 5px resolution — and costs the coda
+                  and the contrast floors nothing. A real but small trade,
+                  and the pause is the thing being traded. See the
+                  wave-24 sweep in scenes/ForumScene.astro for why it was
+                  measured and not taken.
      beats        equal peers. They are beats — one idea each — and an even
                   crossfade rhythm is the grammar; a beat is not more
                   important for wrapping to a third line.

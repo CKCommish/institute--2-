@@ -500,17 +500,45 @@ export const forum = {
      three-supporting-lines limit, spent on the page's one job. */
   /* DO NOT ADD A FOURTH ROW TO MAKE THIS BLOCK LOOK FULLER. A wave-22 read
      called §02 the block carrying "the least information per inch of any
-     block on the site". Measured at 1440 in words per vertical inch of
-     rendered block: §02 whole 14.8, its rows alone 18.1 — against /forum/'s
-     own §01 at 10.4 and §03 at 10.0, /404/'s ledger at 12.3 and /partner/'s
-     index at 11.4. §02 is the DENSEST prose block on its own page and above
-     four of the site's others; only the micro-fact rails beat it
-     (/institute/'s cells 26.3, /pilots/'s terms 25.8), and a scalar rail is
-     not the same construction as a sentence ledger. The reading was of the
-     block's dead left margin, which was a layout defect and is fixed in
-     forum.astro. There is no fourth sourced row: CONTENT-NOTES.md lists what
-     is deliberately absent from /forum/ and why, and every item on that list
-     would have to be invented. */
+     block on the site". It is the opposite — but the figure that used to
+     stand here, "§02 whole 14.8", had no stated boundary and the wave-23
+     judge could not reproduce it on any. So the boundary is stated first and
+     the numbers second.
+
+     BOUNDARY. Chromium at 1440x900, scripts ON, prefers-reduced-motion:
+     reduce, the block scrolled to centre with behavior 'instant' and settled
+     900ms. WORDS are the whitespace-separated tokens of every rendered text
+     node inside the block that is not within [aria-hidden="true"] and not
+     display:none / visibility:hidden. HEIGHT is taken two ways, because the
+     ranking depends on which you take: BOX is the block element's own border
+     box (getBoundingClientRect); INK is the union of Range.getClientRects()
+     over those same text nodes — first glyph top to last glyph bottom, no
+     padding. An inch is 96 CSS px. Selectors are named so this re-runs.
+
+       block                        sel            words  INK/in  BOX/in
+       /forum/   §02 whole          .fbrief          52   16.1     9.9
+       /forum/   §02 rows           .fdefs           34   27.0    18.1
+       /forum/   §01                .fsay            32   10.7     7.6
+       /forum/   §03                .frole           57   13.3     9.6
+       /404/     ledger             .nf__list        64   15.2    12.3
+       /partner/ index              .pindex          62   13.1    11.4
+       /institute/ cells            .ispec__rail     23   32.9    26.3
+       /pilots/  terms              .terms           32   26.1    25.9
+
+     On BOTH boundaries §02 is the densest prose block on its own page, and
+     that is the claim this instruction rests on. The site-wide half is
+     boundary-dependent and was never flagged as such: on INK §02 also beats
+     the ledger and the index, on BOX those two beat it, because §02 carries
+     more section padding than they do. Only the micro-fact rails beat it on
+     both, and a scalar rail is not the same construction as a sentence
+     ledger. (Wave 22's own figures — 18.1, 12.3, 11.4, 26.3, 25.8 — all
+     reproduce on BOX, so BOX was its unstated boundary; 14.8, 10.4 and 10.0
+     came from wave 23 and reproduce on neither.)
+
+     The wave-22 reading was of the block's dead left margin, which was a
+     layout defect and is fixed in forum.astro. There is no fourth sourced
+     row: CONTENT-NOTES.md lists what is deliberately absent from /forum/ and
+     why, and every item on that list would have to be invented. */
   brief: {
     eyebrow: 'What it is',
     lede: 'A closed room, and a reason for the Institute to be standing in it.',

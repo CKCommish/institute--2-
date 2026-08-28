@@ -203,11 +203,21 @@
 
    ── AGREEMENT, SO THE SWITCH IS AUDITABLE ────────────────────────────────
    On the homepage's 11px "By invitation" eyebrow — the site's thinnest
-   type-over-photograph, quoted at 4.563:1 — this tool and ink-floor agree to
-   within a few thousandths. They must: on a string with nothing painted in
-   front of it, "observed ink" and "correctly modelled ink" are the same
-   quantity. Where they disagree, something is painted in front, and this one
-   is right.
+   type-over-photograph — this tool and ink-floor were said to "agree to
+   within a few thousandths". THAT CLAIM IS RETIRED, on two counts. The
+   readings it compared were 4.569 (ink-floor) and 4.503 (this tool), which
+   is 66 thousandths, not a few; and tools/ink-floor.mjs is no longer in the
+   tree, so the comparison cannot be re-run by anyone. What survives is the
+   REASON, which is still sound: on a string with nothing painted in front of
+   it, "observed ink" and "correctly modelled ink" are the same quantity, so
+   the two methods should land close. Where they disagree, something is
+   painted in front, and this one is right.
+
+   On the same string, note what this tool's own curve does versus what it
+   PRINTS: the curve holds 4.610 at scrollY 2755 on / at 390x844, and the
+   report line for it reads 16.224:1. See AGENTS.md, "The number to quote".
+   Do not quote this tool's headline for that eyebrow until that is chased
+   down; read the curve with GLYPH_DEBUG="By invitation".
 
    usage: BASE=http://127.0.0.1:4399 node tools/glyph-floor.mjs [--json]
           [--routes=/,/forum/] [--views=desktop,mobile] [--min-opacity=0.5]

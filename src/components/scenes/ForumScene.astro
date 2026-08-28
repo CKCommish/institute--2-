@@ -131,9 +131,15 @@ const shot = onDisk(lawn.src)
     type of some kind. THREE bands carry no display line, 252px in all (30%,
     and 30% at 390 too, where the range is 717px):
 
-      0–98px      hp 0.000–0.115   the arrival. `open` is still 0.33 here,
-                                   so the ink band the type is set on has
-                                   not arrived either. This one is right.
+      0–98px      hp 0.000–0.115   the arrival. This note used to defend it
+                                   with "`open` is still 0.33 here, so the
+                                   ink band the type is set on has not
+                                   arrived either". Wave 24 measured that
+                                   and it is false — the beat band gets
+                                   DARKER as the arc opens. The band is
+                                   still the right call, for a different
+                                   reason; see WAVE 24 below and the `lead`
+                                   note in motion.js.
       406–440px   hp 0.475–0.515   THE SEAM, and the judge did not find it.
                                    The beats abut — beat one's window ends
                                    where beat two's begins — so both
@@ -156,6 +162,71 @@ const shot = onDisk(lawn.src)
     Under `prefers-reduced-motion: reduce` there is no pin at all — the
     track is 1396px stacked and every string is on the page at once — so
     none of this describes what a reduced-motion reader sees.
+
+  WAVE 24 — THE NUMBER THE WAVE WAS LAUNCHED ON WAS A ONE-ELEMENT READING,
+  AND THE RAMP IS AT ITS CEILING. The wave-23 judge instrumented this scene
+  and reported the payload "LIT (>=0.9) = 19.0% of the arc", naming `lead`
+  0.09 and the `ss(u / 0.30)` ramp as the cause and a "5:1 dark-before vs
+  dark-after" asymmetry. Re-swept: 172 samples at 5px across the 855px
+  range, 1440x900, behavior:'instant', 1000ms initial settle and 60ms per
+  sample, reading the computed opacity of the CHILD `.held__line`.
+
+    This scene has TWO `.held__line` elements. The judge's curve is beat
+    TWO alone. Beat two by itself reproduces their table to the sample —
+    >=0.9 19.5%, >=0.5 26.8%, >0 39% against their 19.0 / ~24 / ~38. Their
+    own cited cause is inconsistent with their own data: `lead` is 0.09, and
+    a curve that is flat at zero until hp 0.45 is a second beat waiting for
+    a first, not a lead.
+
+    What the READER has, max over the visible display lines, same sweep:
+
+      display line >= 0.9   43.0%      >= 0.5   56.4%
+      display line >  0     78.5%      any type (line|note|coda) > 0  90.1%
+
+    AND 43.0% IS THE CEILING, not a shortfall. Integrate this scene's own
+    envelope — two beats, lead 0.09, tail 0.12, rise ss(u/0.30), retire
+    0.26 — at 100k samples and the maximum possible is 43.4% at >=0.9 and
+    56.9% at >=0.5. We are within 0.4 points of both. There is no slack in
+    the ramp to recover. The only levers that move this number are a third
+    beat (forbidden: 27 words is the copy budget, and HeldScene's own note
+    caps beats at three) or a squarer envelope — which is the crossfade
+    itself, the one thing refs/MOTION-FINDINGS.md nominated this scene to
+    have.
+
+    THE ASYMMETRY IS NOT 5:1. Bands with no display line (<0.05), same
+    sweep, with the maximum ink of any OTHER type in each band:
+
+      0–90px      arrival   other type ink 0.05   <- the one real hole
+      405–425px   seam      other type ink 0.03   <- 25px, ground moves
+      745–855px   exit      other type ink 1.00   <- the coda, at full ink
+
+    So dark-with-no-type-at-all is 95px before and 0px after. The exit is
+    written, by the coda, because motion.js derives the tail from the coda's
+    own height. The arrival is not, because `lead` is a constant with no
+    counterpart element — that is the honest statement of the asymmetry, and
+    it is 95px on 855, one wheel notch, not four-fifths of anything.
+
+    LEAD 0.05 WAS BUILT AND SWEPT, AND NOT TAKEN. It moves the arrival band
+    to 60px and lifts >=0.9 to 45.3%, costs the seam one 5px step, and takes
+    nothing from any beat. It was reverted because 35px of an 855px scene is
+    not worth spending the pause in which the picture lands before it is
+    spoken over — this scene's entire thesis — and because "make it fade
+    faster" is the move that would have to be made again next wave. The
+    falsified contrast rationale for `lead` is corrected in motion.js; the
+    number is unchanged and now argued as what it is.
+
+    CONSTRAINTS RE-MEASURED ON THIS BUILD, all surviving: the wave-12 floor
+    reads --floor 0.72 with the arc still swinging --open 0.000 to 1.000;
+    the wave-17 sticky credit is above 9:1 differenced glyph-against-pill at
+    all 21 samples of the arc at both viewports (the recorded range is
+    7.67–11.80:1); wave 19's spans are 335px per beat at 1440 and 280/285px
+    at 390, swept at 5px; wave 20's breath has --open running 0.941 → 0.975
+    across the seam rather than flat at 1.000; wave 21's meter latch shows
+    0.000 retreat on both ticks after peak. The eyebrow "By invitation"
+    measures 6.40:1 at 1440 and 5.44:1 at 390 at its worst frame — by the
+    core-15%-of-differenced-pixels method used here, which is optimistic
+    against the full-band method that recorded 4.58:1, so these two numbers
+    are not comparable and neither is a floor for the other.
 
   WHY `hold` IS NOT THE LEVER FOR IT. All three bands are proportions of the
   range fixed in src/scripts/motion.js — `lead` 0.09, `TAIL_MIN` 0.12, and
