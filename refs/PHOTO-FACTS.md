@@ -285,3 +285,33 @@ The credit is a location, like the other Highsmith frames:
 not a claim that the Institute works there. `alt` stays `''`: the scene's
 sentence is the content and there is no subject an assistive reader is owed a
 description of.
+
+## Pending arrival — the client's own Lion Forum photographs
+
+These six have been shown to me in the conversation but have never arrived as
+files. Pasted images reach the model as pictures, not as files on disk; only
+a real attachment lands in the uploads folder, which is why the sixteen board
+headshots got here (they were inside `Prospectus_document_review.zip`) and
+these have not. Recorded here from looking at them, so that whoever imports
+them is not guessing at captions afterwards, and so no caption is authored
+from the slot name.
+
+Describe only what is visible in the frame. Nothing below is sourced from
+either document; none of it may become a claim about the Institute.
+
+| slot | what the frame actually shows |
+|---|---|
+| `stage` | Two men in armchairs on a low stage, glass side table with two water bottles between them. Backdrop is a large blue screen carrying the repeated LION FORUM wordmark over a pale line-drawing of a domed/columned building. One man is laughing; the other is mid-gesture. A plant is out of focus in the foreground. |
+| `podium` | Two men seated in armchairs, one in a grey jacket with his back three-quarters to camera, one in navy. The screen behind carries a headshot and the line "Head of Healthcare, Anthropic". An American flag is blurred across the left foreground. |
+| `notebook` | A woman speaking, pen in hand, an open notebook on her lap; the interviewer's back is to the camera in the left foreground. Same blue LION FORUM backdrop with the columned-building graphic. |
+| `reception` | An outdoor reception at golden hour under an open blue sky. A crowd in LION FORUM lanyards. In the foreground a man whose badge reads ANEESH CHOPRA is talking with a white-haired man in glasses. **Aneesh Chopra is on the prospective board list** — if this frame is used anywhere near the roster, the site must not let it imply he has accepted a seat. |
+| `lawn` | A woman in a pale blue dress, back to camera, standing on mown grass looking out at a harbour full of moored sailboats. A clipped hedge at the left, a path curving in at the right, low sun casting a long shadow. This is the frame intended to replace the Block Island stand-in. |
+| `founders` | The two founders in an office: one seated on a desk in a white shirt, one standing in a navy suit. On the wall, a framed newspaper front page — THE SUN, "Kennedy Holds Strong Lead Over Nixon". A small US flag in a desk tidy, grey filing cabinets, a glass partition and city window behind. |
+
+**The one rule that matters when they land.** Do not caption any of these with
+a place name unless the place is known. The lawn frame is the only one that
+may plausibly carry "Hyannis Port, Massachusetts", and only if the client
+confirms it — a harbour of moored boats is not self-identifying, which is the
+whole reason this file exists. Until then a credit that names no place is
+correct and a credit that guesses one is the exact defect this document was
+written to prevent.
