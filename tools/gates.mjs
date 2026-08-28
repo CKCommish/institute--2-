@@ -87,7 +87,15 @@ const srcHash = (() => {
    and is a diagnostic now, with no threshold to gate on. */
 const GATES = [
   { name: 'nojs-diff',   cmd: ['tools/nojs-diff.mjs'],   want: /(\d+) finding\(s\)/,  cost: 9 },
-  { name: 'glyph-floor', cmd: ['tools/glyph-floor.mjs'], want: /(\d+) failure\(s\)/,  cost: 9 },
+  /* The COUNT is the pass/fail, but on its own it is the number the wave-18
+     judge misread: glyph-floor's 0 is a verdict under a reading rule
+     (--edge-rows), and sub-budget readings it sets aside as slivers are
+     part of what that 0 means. The tool says so in its own verdict line
+     as of wave 19; this row used to reprint only the matched `want`
+     fragment, so the ONE line every wave actually quotes dropped the
+     rule and the census again. `headline` reprints the whole sentence. */
+  { name: 'glyph-floor', cmd: ['tools/glyph-floor.mjs'], want: /(\d+) failure\(s\)/,  cost: 9,
+    headline: /\d+ failure\(s\) in [^\n]*\./ },
   { name: 'nojs-meter',  cmd: ['tools/nojs-meter.mjs'],  want: /(\d+) issue\(s\)/,    cost: 4 },
   { name: 'audit',       cmd: ['tools/audit.mjs'],       want: /(\d+) issue\(s\)/,    cost: 3 },
   /* perf has no counted line: it prints its own verdict in words. */
@@ -237,7 +245,7 @@ const cacheKey = (g) => {
 };
 
 const show = (st, g, line, tail) =>
-  console.log(`  ${st.padEnd(5)} ${g.name.padEnd(12)} ${String(line).slice(0, 78).padEnd(78)} ${tail}`);
+  console.log(`  ${st.padEnd(5)} ${g.name.padEnd(12)} ${String(line).slice(0, 200).padEnd(78)} ${tail}`);
 
 async function attempt(g) {
   const t = Date.now();

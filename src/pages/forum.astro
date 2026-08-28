@@ -771,13 +771,24 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
      other two on the site. */
 
   /* ── 2. The claim ────────────────────────────────────────────────── */
-  /* The pause at the foot of this beat is bounded on both sides — the claim
-     above it, the ledger's rule and numeral below it — which is the only way
-     held space reads as confidence instead of as a hole. It used to be
-     bounded by the plate; the bound is what matters, not which beat supplies
-     it, and a rule with a numeral on its end is a harder stop than a
-     photograph's top edge. */
-  .fsay { padding-block: clamp(3rem, 2rem + 4.4vw, 6.5rem) var(--pause); }
+  /* THE PAUSE AT THE FOOT OF THIS BEAT WAS PAID TWICE, AND `--pause`'s own
+     rule in tokens.css says why that is wrong: "use --pause between two
+     marks, never after the last one." The claim IS the last mark in this
+     section, and `.fbrief` already pays a full top pause before the 02 rule.
+     Measured on the built page at 1440, reduced motion: 118.4px here +
+     77.76px there = 196px of flat navy between the claim's full stop and the
+     02 rule, with no rule and no ground change inside it — the one seam on
+     this route that is a hole rather than composition. The seam one beat
+     earlier, hero → 01, is 95.36px and is the same kind of seam; this one was
+     twice it. The bottom is now a closing space, not a second pause, and the
+     seam lands at ~101px, in line with the one above it.
+     THE OTHER TWO /forum/ BANDS ARE NOT THIS AND ARE NOT TOUCHED: the 195px
+     below "Technology's role…" changes ground to cream inside itself at
+     y=1906, and the 111px below the email does the same at y=2478. A flat
+     band that ends in a rule or a change of ground is composition; whitespace
+     is a criterion this site WINS, and it is this same measurement read with
+     the opposite sign. Close the hole, not the held space. */
+  .fsay { padding-block: clamp(3rem, 2rem + 4.4vw, 6.5rem) clamp(0.75rem, 1.6vw, 1.75rem); }
   /* THE MEASURED ROW. The page's width was carrying nothing: 14 of 29 marks
      began at the same x and a 460px column on the right was empty for the
      whole scroll. The beat numerals are the one element here whose job is

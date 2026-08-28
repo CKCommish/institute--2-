@@ -29,12 +29,16 @@ const scene = {
 };
 
 /* The one quieter door the brief allows, set two ranks below the ask so it
-   can never read as a second focal point. */
-const second = { k: forum.access, t: 'Inquire about the Lion Forum', href: '/forum/' };
+   can never read as a second focal point. It is NULL on /forum/, because a
+   door labelled "Inquire about the Lion Forum" pointing at /forum/ is the
+   page you are standing on: on that one route it was a no-op dressed as a
+   second destination. No copy is added to replace it — the ask above it is
+   the scene, and the route row below still carries two live doors. */
+const second = isHere('/forum/') ? null : { k: forum.access, t: 'Inquire about the Lion Forum', href: '/forum/' };
 
 /* The base row is a close, not a second header: two destinations, chosen so
    they never repeat the page you are on or either door above them. */
-const skip = coda ? [coda.href] : [cta.href, second.href];
+const skip = coda ? [coda.href] : [cta.href, second?.href].filter(Boolean);
 const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).slice(0, 2);
 ---
 <footer class:list={['foot', { 'foot--coda': !!coda }]}>
@@ -65,10 +69,12 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
         </span>
       </a>
 
-      <a class="foot__second" href={second.href} data-reveal="380">
-        <span class="label foot__second-k">{second.k}</span>
-        <span class="foot__second-t">{second.t}</span>
-      </a>
+      {second && (
+        <a class="foot__second" href={second.href} data-reveal="380">
+          <span class="label foot__second-k">{second.k}</span>
+          <span class="foot__second-t">{second.t}</span>
+        </a>
+      )}
     </div>
   )}
 

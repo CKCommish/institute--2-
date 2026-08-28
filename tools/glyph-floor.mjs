@@ -461,7 +461,51 @@ const MIN_COVER = 0.02;
    1.17-1.24:1, "ink at 10%", reported as failures and not set aside, because
    a crush dims a string's whole body and leaves every row of it lit. Patch
    the mask, re-run, and this rule has to keep failing them. If it ever stops,
-   it is wrong. */
+   it is wrong.
+
+   ── WAVE 19: THE CENSUS, BECAUSE "0" HAD BEEN READ AS AN ABSENCE ──────
+   The wave-18 judge reproduced one sub-budget reading by hand — mobile
+   /people/, the "00" index at 3.902:1 — and reported that the gate's 0 was a
+   setting of this constant rather than a clean tree. Half of that is right
+   and the half that is right is now in the headline and the verdict line:
+   wave 17 ran a FRACTION-of-body threshold (`--shown=0.5`) and wave 18 runs
+   this whole-body rule, so "1 in 854" and "0 in 852" are one tree under two
+   rules, and neither report said which rule it was quoting. Both lines now
+   name the rule and carry the set-aside count, so the next reader cannot
+   make that mistake without ignoring the sentence.
+
+   The other half — that a partly-occluded reading is a defect being hidden —
+   does not survive the census. Run over mobile /people/ (1050 pairs, 405s),
+   the sliver heading printed TWENTY-ONE readings, and the worst of them is
+   the judge's own string:
+
+        1.182:1 at y 2165 with 12% shown   "00"        -> reported  4.670:1
+        1.191:1 at y 2165 with 11% shown   "16"        -> reported 16.632:1
+        1.357:1 at y 2165 with 12% shown   "Seated"    -> reported 16.510:1
+        1.386:1 at y   72 with 11% shown   "People"    -> reported 16.653:1
+
+   3.902 is not a floor and not a fact about that string's composition. It is
+   one point on the ramp the SHOULDER block plots, and the same string keeps
+   falling to 1.182:1 as the bar eats it. If a sliver were a defect, then the
+   "People" page heading — cream on navy, 16.653:1 with its whole body on the
+   glass — would be a 1.386:1 failure, and so would every other string on the
+   site, because every string passes under the bar exactly once. A rule that
+   fails an unimpeachable composition on every route is not a stricter rule,
+   it is a broken one.
+
+   So the answer to "is a partly-occluded string a defect" is no, and it is
+   the same answer the project already gave in wave 15: WHOLLY VISIBLE AND
+   WHOLLY CRUSHED. A reader watching a heading slide under the bar sees it
+   being taken away, which is what a fixed bar is for; a reader looking at a
+   crushed string sees a string they are meant to read and cannot. This rule
+   separates exactly those two, it cannot excuse the second (a crush is at
+   SHOWN 1 by construction, and the patched-scrim positive control above
+   still fails), and the readings it sets aside are printed with their
+   numbers, their offsets and their share of body — not buried.
+
+   WHAT IS NOT SETTLED. The set-aside count is a census of the whole sweep,
+   so it moves with the sweep's own sampling; quote the slivers, not the
+   total, exactly as with the failure denominator below. */
 const EDGE_ROWS = Number(arg('edge-rows', '0'));
 
 const VIEWS = [
@@ -1092,9 +1136,18 @@ async function sweepRoute(page, view, route) {
      /people/, the 12px "16":
 
          v 56   4.680:1   0.578 of its rows lit
-         v 52   4.254:1   0.400          <- fails; the three drops step over it
+         v 52   4.254:1   0.400          <- the three drops step over it
          v 51   3.143:1   0.333
          v 48   1.495:1   0.133          <- the sliver the trisection converges on
+
+     THE ANNOTATION ON THE SECOND ROW USED TO READ "<- fails", AND IT WAS
+     WRONG FROM THE MOMENT EDGE_ROWS SHIPPED. Not one of those four rows can
+     fail: all four have lost body to the opaque bar, so all four are slivers
+     and none is a reading. They are on this ramp for one reason — to show
+     that there is no notch in it and therefore nothing a bracketing
+     minimiser can find. The wave-18 judge read that "fails" literally and
+     reported the same string's 3.902:1 as a defect the gate was hiding, and
+     the annotation is why. See the wave-19 census under EDGE_ROWS.
 
      And a trisection cannot be pointed at it. `pick()` throws away everything
      that has lost rows to the chrome, so the curve the minimiser is
@@ -1113,7 +1166,28 @@ async function sweepRoute(page, view, route) {
      whole-site sweep from about 28 minutes to about 35, with /pilots/ desktop
      the long pole at 2402 pairs; `gates.mjs` kills a silent gate at 75, so
      there is room, but not a lot of it. `--shoulder=0` is not a way to make
-     the gate faster — it is a way to make it blind again. */
+     the gate faster — it is a way to make it blind again.
+
+     WHAT IT ACTUALLY BOUGHT, MEASURED (wave 19), because the wave-18 judge
+     asked and nobody had a number. Mobile /people/, same tree, same build:
+
+        --shoulder=3   1050 pairs   405.2s   0 failures   21 slivers
+        --shoulder=0    433 pairs   207.1s   0 failures    9 slivers
+
+     Twice the time, and everything it added was a sliver — set aside by
+     EDGE_ROWS the moment it was taken. On this route-view the sweep pays for
+     itself in nothing but a fuller census. THAT IS NOT A LICENCE TO DELETE
+     IT, and the reason is one route-view: the emergence band also contains
+     the offsets where a SHORT string sits wholly below the opaque box and
+     inside the tail — fully shown and crushed, which is the defect this tool
+     exists for and which the three fixed drops can miss for a string whose
+     body is shorter than the drop spacing. The only thing that settles it is
+     the positive control: patch wave 15's scrim back into a built copy and
+     run both settings over mobile /forum/ and /people/. If --shoulder=0
+     still fails those 19 curves at 1.17-1.24:1, the sweep is buying nothing
+     and its 35 minutes should go. That control is a named moment's work and
+     it was not spent this wave; the default is unchanged until someone
+     spends it. Do not drop the sweep on the table above alone. */
   if (BAND > 0 && !AT) {
     for (const [k, { doc, h }] of docOf) {
       const cur = pick(k);
@@ -1374,7 +1448,7 @@ if (incomplete) {
 if (asJson) {
   console.log(JSON.stringify({ base, frames, minOpacity: MIN_OP, faint: FAINT, incomplete, routeViews: [done, jobs.length], rows: all }, null, 2));
 } else {
-  console.log(`glyph-floor · ${base} · ${frames} frame pairs · coarse vh/${COARSE}, the chrome crossing walked and its shoulder swept every ${SHOULDER_PX}px, then trisected to ≤${BRACKET_PX}px · measured by subtraction · painted ≥ ${FAINT} of own ink · declared alpha ≥ ${MIN_OP}\n`);
+  console.log(`glyph-floor · ${base} · ${frames} frame pairs · coarse vh/${COARSE}, the chrome crossing walked and ${SHOULDER_PX > 0 ? `its shoulder swept every ${SHOULDER_PX}px` : 'ITS SHOULDER NOT SWEPT (--shoulder=0)'}, then trisected to ≤${BRACKET_PX}px · measured by subtraction · painted ≥ ${FAINT} of own ink · declared alpha ≥ ${MIN_OP} · READ ONLY WITH ITS WHOLE BODY ON THE GLASS (--edge-rows=${EDGE_ROWS})\n`);
   for (const r of results) {
     if (!r) continue;
     const shown = r.rows.filter((x) => !x.unpainted && !x.unlit && x.alpha >= MIN_OP && (showAll || x.ratio < x.need * 2));
@@ -1395,6 +1469,7 @@ if (asJson) {
       console.log(`   ${x.ratio.toFixed(3)}:1  ${Math.round(x.size)}px  ${x.view} ${x.route} t ${x.t.toFixed(3)}  declared a ${x.alpha.toFixed(2)}, ink at ${(x.strength * 100).toFixed(0)}% of its own  "${x.sample}"`);
   }
   const slivered = live.filter((x) => x.sliverRatio !== undefined && x.sliverRatio < x.need);
+  const sliverWorst = slivered.length ? slivered.reduce((a, x) => (x.sliverRatio < a.sliverRatio ? x : a)) : null;
   if (slivered.length) {
     console.log(`\n${slivered.length} string(s) whose worst reading is a SLIVER at an occlusion edge — the fixed chrome had taken part of the string's own body off the glass${EDGE_ROWS ? ` (more than ${EDGE_ROWS} CSS row(s))` : ''}, the rest of it behind something opaque. Set aside, not failed; the curve is reported at its worst FULLY-SHOWN reading instead. Worst:`);
     for (const x of [...slivered].sort((a, b) => a.sliverRatio - b.sliverRatio).slice(0, 8))
@@ -1434,7 +1509,7 @@ if (asJson) {
        where it is now voted out. The count is stable again BECAUSE of that
        pass, not because the sweep is deterministic. The DENOMINATOR still
        is not. */
-    console.log(`\n${fails.length} failure(s) in ${live.length} curves across ${done} route-views.`);
+    console.log(`\n${fails.length} failure(s) in ${live.length} curves across ${done} route-views${slivered.length ? `, with ${slivered.length} sub-budget reading(s) SET ASIDE as slivers${sliverWorst ? ` (worst ${sliverWorst.sliverRatio.toFixed(3)}:1 at ${(sliverWorst.sliverShown * 100).toFixed(0)}% shown)` : ''} under --edge-rows=${EDGE_ROWS}` : ''}.`);
     console.log(`(The count is the verdict, and every failure in it was shot three times at its own offset and carried the median. The denominator is not a constant of the tree: after the coarse grid the sweep chooses its own offsets from what it has read, so repeat runs of an unchanged tree differ by a curve or two. Quote the failures, not the total.)`);
   }
 }

@@ -114,6 +114,51 @@ const shot = onDisk(lawn.src)
   is how much scroll a BEAT gets, and 330px is the answer that has survived
   three passes.
 
+  AND THE WAVE-18 FINDING AGAINST THIS SCENE, MEASURED. It was scored MOTION
+  to Oryzo on the reading that the beat below "is at effective opacity 0 for
+  494px of the 855px pinned range", and that held-exit.png carries "no
+  proposition anywhere on the screen" — "dark for four-fifths of itself".
+  Swept at 200 samples across the pinned range, at 1440x900 and 390x844:
+
+    The 494px is real and it means nothing. Beat two's window is
+    (lead + span, 1 - tail) = 0.391 of the range, so it is lit for 338px and
+    unlit for 517px — which is the arithmetic of HAVING TWO BEATS, not a
+    fault. Beat one is on the screen for the first half of the range. The
+    question is what the READER has, not what one beat has.
+
+    What the reader has. Every frame of the 855px carries the photograph,
+    the eyebrow and the credit chip. 70% carries a display line; 83% carries
+    type of some kind. THREE bands carry no display line, 252px in all (30%,
+    and 30% at 390 too, where the range is 717px):
+
+      0–98px      hp 0.000–0.115   the arrival. `open` is still 0.33 here,
+                                   so the ink band the type is set on has
+                                   not arrived either. This one is right.
+      406–440px   hp 0.475–0.515   THE SEAM, and the judge did not find it.
+                                   The beats abut — beat one's window ends
+                                   where beat two's begins — so both
+                                   envelopes are at zero together, at the
+                                   TOP of the arc with the picture fully
+                                   open. It is the worse exhibit of the two.
+      735–855px   hp 0.860–1.000   the exit. Only the first 17px is empty;
+                                   the coda link is drawn across the other
+                                   103px. This is held-exit.png, and the
+                                   coda on it is the scene's own door.
+
+    Under `prefers-reduced-motion: reduce` there is no pin at all — the
+    track is 1396px stacked and every string is on the page at once — so
+    none of this describes what a reduced-motion reader sees.
+
+  WHY `hold` IS NOT THE LEVER FOR IT. All three bands are proportions of the
+  range fixed in src/scripts/motion.js — `lead` 0.09, `TAIL_MIN` 0.12, and
+  the abutting beat windows. `hold` scales the range, so it scales the dark
+  bands and the beat spans BY THE SAME FACTOR: there is no value of it that
+  shortens the 98px arrival without taking the same 12% off each beat. Cut
+  the arrival to 83px and a beat drops from 338px to 284px. That trades the
+  number this scene is built on for a band that costs the reader less than
+  one wheel notch to cross. The fix, if the seam is ever worth fixing, is
+  one constant in motion.js and it is not in this file.
+
   DO NOT FIX THIS BY ADDING BEATS. 27 words is the right number; the homepage
   copy budget is 80–120 words for the whole page (AGENTS.md) and HeldScene's
   own note says two beats is usually right. The complaint was pixels per word,
