@@ -28,8 +28,8 @@
    ── HOW A GATE PASSES ────────────────────────────────────────────────────
    Most of these tools do not set an exit code; they print a counted summary
    line. So each gate declares the pattern its verdict is on, and a gate
-   whose pattern does not match is FAILED, not passed — an unreadable verdict
-   is the one failure mode a runner must never wave through.
+   whose pattern does not match is not passed. It is an ERROR, distinct from
+   a FAIL: see PASS / FAIL / ERROR below. Exit 0 green, 1 failed, 2 no verdict.
 
    usage: node tools/gates.mjs [--fresh] [--only=audit,glyph-floor] [--pool=3]
           node tools/gates.mjs --serve      (build + serve, print BASE, hold) */
@@ -91,13 +91,51 @@ const GATES = [
   { name: 'perf',        cmd: ['tools/perf.mjs'],        want: /layout shift: all routes under 0\.1/, cost: 2, headline: /slowest LCP:.*/ },
 ].filter((g) => !ONLY || ONLY.includes(g.name));
 
+/* The child's death is part of its verdict. A meter that is OOM-killed
+   mid-print leaves a truncated stdout with no summary line, which is
+   character-for-character what a meter that CHANGED SHAPE leaves — and
+   wave 15's judge hit exactly that: `glyph-floor` inside the pool stopped
+   after `mobile /partner/` with 168KB of output and no total, while the
+   same tool run alone finished. So capture the signal and the exit code,
+   not just the text. `close` fires with (null, 'SIGKILL') for a kernel
+   OOM kill; that is the one fact that separates "it failed" from
+   "it never got to say". */
 const run = (cmd, args, env) => new Promise((res) => {
   const ps = spawn(cmd, args, { cwd: ROOT, env: { ...process.env, ...env } });
   let out = '';
   ps.stdout.on('data', (d) => { out += d; });
   ps.stderr.on('data', (d) => { out += d; });
-  ps.on('close', (code) => res({ code, out }));
+  ps.on('error', (e) => res({ code: null, signal: null, spawnError: e.message, out }));
+  ps.on('close', (code, signal) => res({ code, signal, out }));
 });
+
+/* ── PASS / FAIL / ERROR ─────────────────────────────────────────────────
+   This runner used to have two states, and a project that has shipped six
+   defects through green gates cannot afford a red whose meaning is
+   ambiguous. Three states now, and only the first is green:
+
+     PASS   the verdict line matched and its count is zero.
+     FAIL   the verdict line matched and its count is not zero. A NUMBER.
+            This is the meter working — the site is what is wrong.
+     ERROR  the meter did not deliver a verdict at all. Killed by a signal,
+            failed to spawn, or exited having printed no line the gate
+            recognises. The site may be perfect or ruined; this run cannot
+            tell you which, and it must not be reported as if it could.
+
+   ERROR is never cached: a result that means "ask again" is the one result
+   it would be wrong to remember. */
+function classify(g, r) {
+  const m = r.out.match(g.want);
+  const n = m ? (m[1] === undefined ? 0 : Number(m[1])) : null;
+  if (r.spawnError) return { st: 'ERROR', line: `could not start: ${r.spawnError}` };
+  if (r.signal) return { st: 'ERROR', line: `killed by ${r.signal} after ${outKB(r.out)} of output — no verdict` };
+  if (!m) return { st: 'ERROR', line: `exit ${r.code}, ${outKB(r.out)} of output, no verdict line matched ${g.want}` };
+  const line = g.headline ? (r.out.match(g.headline) || [''])[0] : m[0];
+  if (n === 0 && r.code === 0) return { st: 'PASS', line, n };
+  if (n === 0 && r.code !== 0) return { st: 'ERROR', line: `verdict says 0 but the meter exited ${r.code} — ${line}` };
+  return { st: 'FAIL', line, n };
+}
+const outKB = (s) => `${(Buffer.byteLength(s) / 1024).toFixed(0)}KB`;
 
 const outDir = `dist-gates-${srcHash}`;
 const cacheDir = path.join(ROOT, '.gate-cache');
@@ -128,6 +166,22 @@ if (has('serve')) {
 
 console.log(`${BASE} · ${GATES.length} gates, pool ${POOL}\n`);
 
+const cacheKey = (g) => path.join(cacheDir, createHash('sha1')
+  .update(srcHash).update(g.name)
+  .update(fs.readFileSync(path.join(ROOT, g.cmd[0])))
+  .digest('hex').slice(0, 16) + '.json');
+
+const show = (st, g, line, tail) =>
+  console.log(`  ${st.padEnd(5)} ${g.name.padEnd(12)} ${String(line).slice(0, 78).padEnd(78)} ${tail}`);
+
+async function attempt(g, extra = []) {
+  const t = Date.now();
+  const r = await run('node', [...g.cmd, ...extra], { BASE });
+  const c = classify(g, r);
+  return { name: g.name, st: c.st, ok: c.st === 'PASS', n: c.n ?? null, line: c.line,
+           secs: +((Date.now() - t) / 1000).toFixed(1), out: r.out };
+}
+
 const results = new Array(GATES.length);
 let next = 0;
 const t0 = Date.now();
@@ -136,34 +190,62 @@ await Promise.all(Array.from({ length: Math.min(POOL, GATES.length) }, async () 
     const i = next++;
     if (i >= GATES.length) break;
     const g = GATES[i];
-    const key = createHash('sha1')
-      .update(srcHash).update(g.name)
-      .update(fs.readFileSync(path.join(ROOT, g.cmd[0])))
-      .digest('hex').slice(0, 16);
-    const cacheFile = path.join(cacheDir, `${key}.json`);
-    if (!has('fresh') && fs.existsSync(cacheFile)) {
-      const c = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+    const cacheFile = cacheKey(g);
+    /* A cached record from before PASS/FAIL/ERROR existed carries only
+       `ok`, and its false could mean either — which is the very ambiguity
+       this runner now exists to remove. Those entries are not readable, so
+       they are re-run rather than believed. */
+    const c = !has('fresh') && fs.existsSync(cacheFile)
+      ? JSON.parse(fs.readFileSync(cacheFile, 'utf8')) : null;
+    if (c && c.st) {
       results[i] = { ...c, cached: true };
-      console.log(`  ${c.ok ? 'PASS' : 'FAIL'}  ${g.name.padEnd(12)} ${String(c.line).padEnd(52)} (cached)`);
+      show(c.st, g, c.line, '(cached)');
       continue;
     }
-    const t = Date.now();
-    const r = await run('node', [...g.cmd], { BASE });
-    const m = r.out.match(g.want);
-    /* An unreadable verdict fails. A summary line that stopped matching means
-       the meter changed shape, and "no match" must never read as "clean". */
-    const ok = !!m && (m[1] === undefined ? true : Number(m[1]) === 0) && r.code === 0;
-    const line = m ? (g.headline ? (r.out.match(g.headline) || [''])[0] : m[0]) : 'no verdict line matched';
-    const rec = { name: g.name, ok, line, secs: +((Date.now() - t) / 1000).toFixed(1), out: r.out };
-    fs.writeFileSync(cacheFile, JSON.stringify(rec));
+    const rec = await attempt(g);
+    if (rec.st !== 'ERROR') fs.writeFileSync(cacheFile, JSON.stringify(rec));
     results[i] = rec;
-    console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${g.name.padEnd(12)} ${String(line).padEnd(52)} ${rec.secs}s`);
+    show(rec.st, g, rec.line, `${rec.secs}s`);
   }
 }));
+
+/* ── THE SECOND PASS, AND WHY IT IS SERIAL ───────────────────────────────
+   The pool is why a gate dies. `glyph-floor` holds four Chromium contexts
+   shooting 3x frames; `nojs-diff` holds four more with two pages each; on a
+   four-core box they overlap and the kernel picks one to kill. Standalone,
+   `glyph-floor` finishes every time — the wave-15 judge saw both halves of
+   that and could not close the gap.
+   So a gate that ERRORed is retried ALONE, with nothing else running and
+   with the pool drained. That is slower than the parallel run by exactly
+   the cost of the gate, and it is the difference between a suite that
+   sometimes cannot answer and one that always can. If the retry also
+   ERRORs, the ERROR stands and is reported as an ERROR — an honest "could
+   not tell" is the correct output, and it is not a FAIL. */
+const errored = results.map((r, i) => [r, i]).filter(([r]) => r.st === 'ERROR' && !r.cached);
+if (errored.length) {
+  console.log(`\n  ${errored.length} gate(s) gave no verdict under pool ${POOL}. Retrying alone, serially:`);
+  for (const [, i] of errored) {
+    const g = GATES[i];
+    const rec = await attempt(g);
+    rec.retried = true;
+    if (rec.st !== 'ERROR') fs.writeFileSync(cacheKey(g), JSON.stringify(rec));
+    results[i] = rec;
+    show(rec.st, g, rec.line, `${rec.secs}s (alone)`);
+  }
+}
 server.close();
 
-const failed = results.filter((r) => !r.ok);
+const errs = results.filter((r) => r.st === 'ERROR');
+const fails = results.filter((r) => r.st === 'FAIL');
 console.log('');
-for (const f of failed) console.log(`── ${f.name} ──\n${f.out}`);
-console.log(`${failed.length ? failed.map((f) => f.name).join(', ') + ' FAILED' : 'all gates green'} · ${((Date.now() - t0) / 1000).toFixed(1)}s wall · src ${srcHash}`);
-process.exit(failed.length ? 1 : 0);
+for (const f of [...errs, ...fails]) console.log(`── ${f.name} (${f.st}) ──\n${f.out.slice(-20000)}`);
+
+/* Three outcomes, three sentences, three exit codes. A caller that greps
+   for "FAILED" must not be told that by a run which simply could not see. */
+const wall = `${((Date.now() - t0) / 1000).toFixed(1)}s wall · src ${srcHash}`;
+if (errs.length) {
+  console.log(`NO VERDICT from ${errs.map((r) => r.name).join(', ')} — the suite could not measure ${errs.length === 1 ? 'it' : 'them'}, which is not the same as passing or failing. ${fails.length ? fails.map((f) => `${f.name} ${f.n}` ).join(', ') + ' also FAILED. ' : ''}${wall}`);
+  process.exit(2);
+}
+console.log(`${fails.length ? fails.map((f) => `${f.name} (${f.n})`).join(', ') + ' FAILED' : 'all gates green'} · ${wall}`);
+process.exit(fails.length ? 1 : 0);
