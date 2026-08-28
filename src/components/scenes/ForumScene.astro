@@ -228,6 +228,37 @@ const shot = onDisk(lawn.src)
     against the full-band method that recorded 4.58:1, so these two numbers
     are not comparable and neither is a floor for the other.
 
+  WAVE 25 — THE PLATE DOES TRANSFORM, AND THE CROSS-FADE IS BLOCKED ON
+  FILES. Costed, not built. The wave-24 judge reported that "the held plate
+  does not transform at all — opacity 1.000 and scale 1.0207" at four
+  offsets, and read refs/MOTION-FINDINGS.md line 59 as an unmet criterion.
+  Re-measured settled, fresh context per offset, one instant jump, 1500ms
+  settle, reading `.fig__media` rather than the `<img>` inside it: the plate
+  runs 1.00002 -> 1.07500 at 1440x900 and 1.00001 -> 1.07496 at 390x844,
+  continuous, which is `--push` 0.075 doing exactly what it says. The 1.0207
+  is Figure's own static overscan and is flat by design. Opacity 1.000 is
+  also by design: the arc is a separate ink sheet, and fading the photograph
+  itself would show page ground through it — the failure `floor` 0.72 exists
+  to stop.
+
+  Line 59 is in that file's ORYZO column, describing a WebGL coaster
+  rotating. Line 77 is the row that translates it for us. Read as the
+  criterion it is, that translation table stands at four of five rows built
+  here and measured on this commit; the fifth, the cross-fade, needs two
+  Forum photographs and `public/media/` holds exactly one — the Block Island
+  stand-in, which refs/PHOTO-FACTS.md says comes OFF the site the day the
+  real frames land. They have never landed as files.
+
+  DO NOT BUILD IT ON THE STAND-IN. When the real set arrives the blocking
+  problem is editorial, not technical: `lawn` carries a location credit and
+  the interior frames carry none by rule, so a cross-fade inside one held
+  frame must either swap a place-name mid-scene or run the scene uncredited.
+  And it would land on top of BREATH — both answer the seam, both by moving
+  the picture where the type does not. The full costing, with the pixel
+  travel, the two static render modes where there is no cross-fade axis at
+  all, and the measurement showing the push is contrast-neutral on the
+  eyebrow's 0.11 of headroom, is in refs/MOTION-FINDINGS.md under "Wave 25".
+
   WHY `hold` IS NOT THE LEVER FOR IT. All three bands are proportions of the
   range fixed in src/scripts/motion.js — `lead` 0.09, `TAIL_MIN` 0.12, and
   the abutting beat windows. `hold` scales the range, so it scales the dark

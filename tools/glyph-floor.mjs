@@ -689,6 +689,32 @@ const GEO = () => {
     return 1;
   };
 
+  /* A CURVE HAS TO BELONG TO ONE ELEMENT. The key was `text|fontSize`, and
+     that is not an identity: this site sets the same 11px label in more than
+     one place on nearly every route, and every such pair shared one slot in
+     the sweep's history. What that does to a reading is not a rounding
+     error. The homepage's `.eyebrow.held__brow` "By invitation" and the
+     footer's `.foot__second-k` "By invitation" are both 11px, so both wrote
+     into one curve; the footer's copy gets more of its own body onto the
+     glass, and SHOWN is measured against the best `inkRows` the SLOT ever
+     saw, so every reading of the eyebrow — the site's thinnest type, and the
+     one number this project quotes — fell under the sliver rule and was
+     dropped from `live`. The slot then reported the footer's floor, 16.224:1
+     at y 3380, as the minimum of a curve whose own samples hold 4.610 at
+     2755. The MAXIMUM, printed as the minimum, 3.5x on the wrong side.
+
+     So the key carries WHERE the text node is, as the chain of child indices
+     from <html> plus the node's index inside its parent. The DOM does not
+     change under a scroll, so it is stable across the frames of a sweep,
+     which is the only property the key needs; `sample` is unchanged, so
+     every printed line reads exactly as before. */
+  const pathOf = (el, t) => {
+    const p = [];
+    for (let n = el; n && n !== document.documentElement; n = n.parentElement)
+      p.push([...n.parentNode.children].indexOf(n));
+    return `${p.reverse().join('.')}#${[...el.childNodes].indexOf(t)}`;
+  };
+
   const out = [];
   const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let t = walk.nextNode(); t; t = walk.nextNode()) {
@@ -719,7 +745,7 @@ const GEO = () => {
     const over = figs.find((f) => !(big.x + big.w < f.box.x || big.x > f.box.x + f.box.w
                                 || big.y + big.h < f.box.y || big.y > f.box.y + f.box.h));
     out.push({
-      key: `${str.slice(0, 34)}|${Math.round(parseFloat(cs.fontSize))}`,
+      key: `${str.slice(0, 34)}|${Math.round(parseFloat(cs.fontSize))}|${pathOf(el, t)}`,
       sample: str.slice(0, 34), runs: rects, eff, colorAlpha: alphaOf(cs.color),
       chrome: !!el.closest('header,nav,[data-nav]'),
       over: over ? over.src : '',
@@ -1016,7 +1042,27 @@ async function sweepRoute(page, view, route) {
   /* The most of its own body this string ever gets onto the glass anywhere in
      the sweep — the denominator for SHOWN. Like peakOf, it cannot be known
      until the sweep is over, which is why it lives here and not in frameAt. */
-  const peakRowsOf = (k) => hist.get(k).reduce((a, r) => Math.max(a, r.unpainted ? 0 : (r.inkRows || 0)), 0);
+  /* AND IT IS TAKEN CLEAR OF THE CHROME, which is wave 25's correction and
+     is the reason the eyebrow was still printing its maximum after the key
+     was made unique. Measured, mobile / `.eyebrow.held__brow` "By
+     invitation": every sample that has the string in open glass reads
+     litRows 0.556 of its box — 4.610 at y 2755 through 9.018 at 1859 — and
+     ONE sample, at y 3380 with the string 22px down the viewport and so
+     inside the fixed bar's own band, reads 0.600. That one row is not more
+     of the string's body; it is the same body against the bar's dark scrim,
+     where the subtraction lights one more antialiased row. Taken as the
+     denominator it made every open-glass reading of that string 1 CSS row
+     short of its own peak, so --edge-rows=0 set the whole curve aside and
+     the report printed the one surviving sample, 16.224:1 — the maximum,
+     labelled the minimum, on the thinnest type in the house.
+     A maximum of the string's own body cannot be a sample taken while the
+     string is under the thing that occludes it; the rule the denominator
+     serves is about occlusion, so the denominator is taken outside it.
+     Strings that live in the bar (`chrome`) never leave it: they keep every
+     sample, and where nothing qualifies `peakRows` is 0 and the SHOWN rule
+     is inert by its own `!peakRows` guard, exactly as before. */
+  const peakRowsOf = (k) => hist.get(k).reduce((a, r) => Math.max(a,
+    r.unpainted || (BAND > 0 && !r.chrome && r.vy != null && r.vy < BAND) ? 0 : (r.inkRows || 0)), 0);
   /* the worst reading at which the string was actually PAINTED — see the
      FAINT block at the head of this file. Whether a painted reading is then
      excused as a declared crossfade is decided once, at the bottom, on the

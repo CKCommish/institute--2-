@@ -52,7 +52,41 @@
    WHAT THIS TOOL STILL DOES NOT DO. It has no ceiling, exactly as the
    comment in tokens.css says. It measures under reduced motion. It reads
    the composed page, so a band closed by a mark that reveals late is
-   scored closed. */
+   scored closed.
+
+   ── WHICH EDGE CLOSES A BAND, AND WHY THE RULE DOES NOT NEED TO CARE ────
+   Clause 1 accepts a full-measure row at EITHER edge or inside, and the
+   wave-23 judge objected to one half of that: a band closed at its BOTTOM is
+   closed by a mark the reader has not reached yet, so at the moment of
+   crossing there is nothing there. Wave 24 answered that the instance was
+   misattributed (it was, to /404, where the closing mark is at the top) and
+   did not check the class. The class is real: three bands on this site are
+   closed at their bottom edge and nowhere else. All three, measured at 390:
+
+     /forum/  1158-1234, closed @1234 — 76px
+     /        3754-3818, closed @3818 — 64px
+     /partner/ 2894-2956, closed @2956 — 62px
+
+   The distinction does not need writing into the rule, for two reasons,
+   both measured rather than argued.
+   FIRST, WHAT CLOSES THEM. None of the three is closed by a line of body
+   type belonging to the next block. /forum/'s closer is a full-measure
+   hairline carrying the brass index 02, above WHAT IT IS; /partner/'s is
+   .foot__base's own rule; and / 3754-3818 also passes clause 1b on its own
+   — 11.05 L* at 3815, over the 11.0 floor — because the mark at its bottom
+   is the panel edge, a change of ground. A scene-break rule is the site's
+   named closing device (tokens.css, --rule), not a block "not yet reached".
+   SECOND, THE ONE THING THAT WOULD MAKE IT BITE. The objection has force
+   only where a reader can hold the whole band on screen with no closer in
+   it. The largest of the three is 76px against an 844px viewport — 9%. The
+   band and its closing mark are co-visible at every scroll position that
+   shows any of the band, at both gated viewports, and the largest crossing
+   anywhere on the site (211px, /institute/ desktop) is 23% of 900. There is
+   no band on this site where the objection could fire.
+   So: no distinction, and no magnitude floor either — AGENTS.md settled that
+   one and a floor loose enough to reopen it is worse than this. If a
+   bottom-closed band ever grows past the viewport it is in, it stops being
+   this case; the `closed by @<y>` column names the edge, so it can be seen. */
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -466,7 +500,42 @@ async function sweepRoute(ctx, base, route, view) {
       if (m.bottom <= bnd.top + 1 && (!above || m.bottom > above.bottom)) above = m;
       if (m.top >= bnd.bottom - 1 && (!below || m.top < below.top)) below = m;
     }
-    rows.push({ route, view: view.tag, top: bnd.top, bottom: bnd.bottom, h: bnd.h,
+    /* ── THE CROSSING, WHICH IS NOT THE BAND HEIGHT ─────────────────────
+       This table ranked by `h` for three waves, and `h` is the wrong
+       quantity to rank by the moment a band is closed @inside. A band's
+       interior carries no DOM mark by construction, so an interior closer is
+       never a DOM mark: it is something found in the PIXELS — a hairline
+       drawn on a pseudo-element, or the edge of a full-bleed ground — and
+       neither is added to `covered`, so it can close a band and cannot split
+       one. So /partner/ desktop 2253-2526 printed as one 273px band and led
+       the table, when 273px is not a distance anyone crosses: the cream
+       panel opens 102px in (90.46 L*, at 2352), and the two runs are 102 and
+       167. A "band" that changes ground halfway is two bands.
+       Ranking by `h` therefore reports a number no reader experiences, and
+       it got into a wave report as "the site's worst band".
+       So split every band at every interior row that spans the measure —
+       the same `ok(spanned())` test the verdict uses, so the two cannot
+       disagree — and rank by the LARGEST run. That is the honest number: the
+       furthest a reader travels between two marks.
+       WHAT THIS DELIBERATELY DOES NOT CHANGE. Verdicts, the acceptance keys,
+       and GROWTH still read `h`. All three accepted bands have zero interior
+       cuts, so crossing == h on every one of them and no acceptance was made
+       on the wrong quantity — checked, not assumed. Making the gate itself
+       turn on the crossing would be a rule change, and the band that really
+       wants it is the one whose pixel rule should have SPLIT it. That is a
+       larger job than a ranking. */
+    const cuts = [];
+    for (let y = bnd.top + 1; y < bnd.bottom - 1; y++) {
+      if (!ok(spanned(y - 1, y + 1))) continue;
+      if (cuts.length && cuts[cuts.length - 1][1] >= y - 2) cuts[cuts.length - 1][1] = y;
+      else cuts.push([y, y]);
+    }
+    const segs = []; let segAt = bnd.top;
+    for (const [ca, cb] of cuts) { segs.push(ca - segAt); segAt = cb; }
+    segs.push(bnd.bottom - segAt);
+    const sub = Math.max(...segs);
+
+    rows.push({ route, view: view.tag, top: bnd.top, bottom: bnd.bottom, h: bnd.h, sub, segs,
                 after: above ? above.text : '(page start)', before: below ? below.text : '(page end)',
                 dL: +best.dL.toFixed(2), dLat: best.y, full: full ? full.kind : null, margin, verdict });
   }
@@ -514,7 +583,9 @@ for (const view of VIEWS) {
 await b.close();
 if (srv) srv.kill();
 
-all.sort((a, x) => x.h - a.h);
+/* Ranked by the CROSSING, not by the band height — see "THE CROSSING" above.
+   They differ only where a pixel hairline closes a band from inside. */
+all.sort((a, x) => x.sub - a.sub || x.h - a.h);
 
 /* apply the accept list — longest band first, one entry per band */
 const usedAcc = new Set();
@@ -529,14 +600,17 @@ for (const r of all) {
 }
 const stale = ACCEPTED.filter((_, k) => !usedAcc.has(k));
 const holes = all.filter((r) => r.verdict.startsWith('HOLE'));
-console.log(`\nband                                      px    ΔL* at      closed by`);
-console.log('─'.repeat(84));
+console.log(`\nband                                  cross    px    ΔL* at      closed by`);
+console.log('─'.repeat(96));
 for (const r of all) {
-  const id = `${r.view} ${r.route} ${r.top}-${r.bottom}`.padEnd(40);
-  console.log(`${id} ${String(r.h).padStart(5)}  ${String(r.dL).padStart(6)} ${String(r.dLat).padStart(6)}   ${r.verdict}`);
+  const id = `${r.view} ${r.route} ${r.top}-${r.bottom}`.padEnd(36);
+  /* the split is printed AFTER the verdict so the columns stay columns: a
+     band whose crossing is not its height says so on its own line. */
+  const split = r.segs.length > 1 ? `  [${r.segs.join(' + ')}]` : '';
+  console.log(`${id} ${String(r.sub).padStart(5)} ${String(r.h).padStart(5)}  ${String(r.dL).padStart(6)} ${String(r.dLat).padStart(6)}   ${r.verdict}${split}`);
 }
-console.log('─'.repeat(84));
-console.log(`ground floor ${GROUND_FLOOR_L} L* (page→panel, tokens.css THE GROUNDS); full-measure ≥${MEASURE_TOL} of shell.`);
+console.log('─'.repeat(96));
+console.log(`ground floor ${GROUND_FLOOR_L} L* (page→panel, tokens.css THE GROUNDS); full-measure ≥${MEASURE_TOL} of shell; cross = largest run between marks, which is what a reader crosses.`);
 for (const r of all) {
   if (!r.acc) continue;
   /* print the verdict this band actually has. It used to print "accepted:"

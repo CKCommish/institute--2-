@@ -478,6 +478,14 @@ const style = [
        protection that stops covering the thing it was placed over.
        (`parallax` must stay 0 on a held figure — it writes --py into this
        same transform, and the two would fight.) */
+    /* MEASURE THIS ELEMENT, NOT THE `<img>` INSIDE IT. The wave-24 judge
+       read the img's computed transform, found a flat 1.0207 at four
+       offsets, and reported that the held plate "does not transform at all".
+       That 1.0207 is Figure's own static overscan; the push is here, on the
+       media layer, for the reason the paragraph above gives. Re-measured
+       settled, fresh context per offset: 1.00002 -> 1.07500 at 1440x900 and
+       1.00001 -> 1.07496 at 390x844, continuous across the hold. Costing:
+       refs/MOTION-FINDINGS.md, "Wave 25". */
     :global(html.js) .held :global(.held__fig .fig__media) {
       transform: scale(calc(1 + var(--push) * var(--hp)));
       transform-origin: var(--held-origin);

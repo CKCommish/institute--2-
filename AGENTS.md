@@ -68,6 +68,25 @@ fails if it changes; a band that grows past a quarter again its accepted
 height has not been looked at and reddens the gate. Read that list before
 arguing with this gate, and do not add to it without cropping the band first.
 
+**And read the CROSS column, not the px column, before quoting a band.** The
+table used to rank by band height, and a band closed from INSIDE — by a
+hairline on a pseudo-element, or by the edge of a full-bleed ground, neither
+of which the DOM pass can see, so neither can split a band — is not a distance
+anyone crosses. /partner/ desktop printed 273px and led the table; it is 102px
+of navy, the cream panel edge, and 167px of cream. Half the bands on this site
+are split that way. Ranked by the largest run between two marks, the site's
+worst crossing is /institute/ desktop 2394-2605 at 211px, then /partner/
+desktop 687-875 at 188 (accepted), then /404 desktop at 182 — and /forum/'s
+188px band, quoted as the second worst, is 86 + 98. Verdicts, the acceptance
+keys and the growth ceiling still read the band height; all three accepted
+bands have no interior closer, so the two numbers are identical on every one
+of them, and no acceptance was made on the wrong quantity. A band closed at
+its BOTTOM edge is genuinely closed: the three on this site are 76, 64 and
+62px against an 844px viewport, each closes on a rule or a change of ground
+rather than on body type, and the objection could only bite on a band taller
+than the viewport it is in. Both measurements are in the header of
+`held-space.mjs`.
+
 These are gates, not diagnostics. A wave is not done until all seven are green,
 and "I read the DOM and it looked right" is not one of them.
 

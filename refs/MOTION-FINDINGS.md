@@ -89,3 +89,117 @@ photograph is the most evocative asset the Institute has, or the hero.
 
 Verify any pinned scene at 390×844 and under `prefers-reduced-motion`, and check
 that type over the held image still clears 4.5:1.
+
+---
+
+## Wave 25 — line 59 is not a criterion, and four of the five rows ship
+
+Added after a costing pass, not a build. Nothing above this rule was changed;
+the line numbers the record quotes still point where they pointed.
+
+**The wave-24 judge read this file's two halves as one list.** It reported
+that line 59 ("the subject transforms continuously") is NOT met and that
+line 77 ("cross-fade to a second photograph inside the held frame") is
+UNBUILT, and concluded that "the held plate does not transform at all —
+opacity 1.000 and scale 1.0207 at hp 0.000, 0.090, 0.516 and 1.000".
+
+Both halves of that are wrong, and they are wrong in different ways.
+
+**1. The scale reading was taken off the wrong element.** `HeldScene` puts
+the push on `.fig__media`, deliberately and with a comment saying why — the
+figure's own treatment (bar band, vignette, credit) must not scale with the
+picture. The `<img>` inside it carries a static overscan of ~1.0207 which is
+Figure's, not the hold's, and it is flat by design. Re-measured on
+commit 3898783, fresh context per offset, `scroll-behavior: auto`, one
+instant jump, 1500ms settle, reading `.fig__media`:
+
+| hp | 1440×900 | 390×844 |
+| --- | --- | --- |
+| 0.000 | 1.00002 | 1.00001 |
+| 0.090 | 1.00677 | 1.00680 |
+| 0.250 | 1.01879 | 1.01872 |
+| 0.516 | 1.03870 | 1.03868 |
+| 0.750 | 1.05625 | 1.05625 |
+| 1.000 | 1.07500 | 1.07496 |
+
+That is `--push` 0.075 running its full range, continuously, at both
+viewports. In rendered pixels the plate grows **1482×1001 → 1579×1066 at
+1440×900** and **401×937 → 428×999 at 390×844** across the hold. The judge's
+own four sample points are in that table; the element was the fault.
+
+The plate's *opacity* is indeed 1.000 throughout, and that is the design.
+The arc is a separate ink sheet (`--open`, measured 0.000 → 0.994 → 0.000
+across the same sweep). Fading the photograph itself would show page ground
+through it, which is the failure `floor = 0.72` was set to stop.
+
+**2. Line 59 is in the Oryzo column. Line 77 is our answer to it.** Line 59
+sits under "The grammar, read off the frames" — it describes a WebGL coaster
+rotating through three faces. The table under "The 2D translation" is where
+this file says what *we* build, and it maps that exact row to line 77. A
+photograph cannot rotate; that is why the translation exists. **Holding the
+site to line 59 literally is holding it to the renderer the brief forbids.**
+
+Read as the criterion it actually is, the translation table stands at four
+of five rows built, all measured on this commit:
+
+| row | ours | state |
+| --- | --- | --- |
+| 74 fixed canvas → sticky full-bleed | `.held__stage`, 855px pinned range at 1440, 717px at 390 | **built** |
+| 75 camera push → scroll-linked scale | `--push` 0.075, 1.00002 → 1.07500 | **built** |
+| 76 environment darkening → scroll-linked grade | `--open` 0.000 → 0.994 → 0.000 | **built** |
+| 77 rotation → cross-fade to a second photograph | — | **blocked, see below** |
+| 78 text beats fading through | two beats, ~338px of scroll each at 1440 | **built** |
+
+**3. Row 77 is blocked on files that do not exist.** The homepage hold and
+`/forum/` both resolve `forum.photos.lawn` and both fall back to
+`forum.jpg` — Old Harbor, Block Island — because `public/media/` contains
+`forum.jpg`, `forum.webp` and their `@1200` variants and **nothing else**.
+The six Lion Forum frames are recorded under "Pending arrival" in
+`refs/PHOTO-FACTS.md`: they have been seen in conversation and have never
+landed as files. A cross-fade needs two Forum photographs and the site owns
+one, which is a stand-in that `refs/PHOTO-FACTS.md` says comes *off* the site
+the day the real set arrives. Row 77 cannot be built now by anyone, at any
+budget, and a version of it built on the stand-in plus a second public-domain
+harbour would be the caption defect that file exists to prevent.
+
+**4. When the files do land, the decision is not "add a cross-fade".** It is
+whether the cross-fade *replaces* `BREATH`. Both answer the same defect — the
+seam at hp ≈ 0.485, where two abutting beat windows pass through zero
+together — and both answer it the same way, by moving the picture where the
+type does not. Shipping both puts two events on the stillest frame in the
+hold. Costed in this project's terms, row 77 also carries:
+
+- **the credit.** `lawn` carries `Hyannis Port, Massachusetts` *and only if
+  the client confirms the frame*; `stage`, `podium`, `notebook` and
+  `reception` carry `''` by rule, because the branded backdrop says where
+  they are. A cross-fade inside one held frame must therefore either swap a
+  location label mid-scene — a place-name that changes under one picture is
+  exactly the caption reading `refs/PHOTO-FACTS.md` was written against — or
+  run the scene uncredited, which breaks that file's own corner-credit rule.
+  This is the blocking problem, and it is editorial, not technical.
+- **two render modes where it does nothing.** Under
+  `prefers-reduced-motion: reduce` and with JavaScript off, the track is
+  1396px stacked, `--open` is 1, both beats and the coda are at opacity 1 and
+  the plate's transform is the identity — measured. There is no pin and so no
+  cross-fade axis at all. A second plate must be omitted from that layout
+  entirely, or it is bytes those readers pay for and never see.
+- **CLS: none, if built inside the pin.** Both plates would be absolute at
+  `inset: 0` in a stage that already has a fixed height, and the stacked
+  layout is untouched. `perf`'s threshold is 0.1 and this would not approach
+  it. The cost is bundle, not shift.
+- **the eyebrow's 0.11 is not what pays for it.** The house's tightest
+  reading, 4.61:1 at 390×844, is this scene's "By invitation". Its backdrop
+  is set by the arc, not by the plate: sampled with the glyph colour blanked
+  (not hidden) at hp 0.10/0.30/0.50/0.70/0.90, mean backdrop luminance runs
+  0.078 / 0.135 / 0.138 / 0.138 / 0.104 at 390. Forcing `--push` to 0.20 —
+  nearly three times the shipped value — moves the worst frame to 0.136, a
+  hair *safer*, and changes the spread by 0.006. **Scale is contrast-neutral
+  on this scene.** Whatever row 77 costs, it does not cost the 0.11.
+
+**The recommendation, and it is to build nothing.** The plate transforms.
+Four of the five rows this file actually specifies for us are built and
+measured. The fifth is blocked on photographs that have never arrived, and
+would land on top of a wave-20 decision that already answers the same defect.
+The gap the blind reads keep finding is not in this scene's plate — the
+payload is lit 43.0% of the arc against a 43.4% analytic ceiling — and no
+amount of moving the picture changes a number that is already at its maximum.
