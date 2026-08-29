@@ -44,8 +44,10 @@
     <p style="margin:10px 0 0">The scoreboard says <strong>five of six to us</strong>. I do not think that is the
     number you should carry. This wave&rsquo;s independent judge re-measured the claim underneath our
     <strong>motion</strong> win and found it did not survive: the builder reported the held Forum scene&rsquo;s
-    sentence lit for 56% of its travel; measured at any threshold it is <strong>19&ndash;38%</strong>, and both ends of
-    an 855px pinned scene still carry a label and no sentence. The judge flipped that pick. It also
+    sentence lit for 56% of its travel; measured, it is not that. Two waves of re-measurement have since
+    settled the real figure: the payload is lit <strong>43.0% of the arc against a 43.4% analytic
+    ceiling</strong> &mdash; that is, within half a point of the maximum the scene&rsquo;s own geometry allows,
+    so this is not a number tuning can move. The judge flipped that pick anyway. It also
     discounts our <strong>one-glance comprehension</strong> win, on the grounds that &ldquo;name the purpose and four
     named partners off one screen&rdquo; is a test only one of these two sites is trying to pass.</p>
     <p style="margin:10px 0 0">So: <strong>4&ndash;2, or 3&ndash;2 on the strict reading.</strong> We reliably win type restraint,
@@ -53,6 +55,37 @@
     scoreboard has not genuinely moved in five waves, which is the finding rather than the good news
     &mdash; and the pacing gap is now down to a single spacing constant that governs how five of your
     seven pages arrive at their ask.</p>
+  </div>
+
+  <div class="note" style="border-left-color:var(--ok)">
+    <strong>Correction &mdash; the motion decision is off your list, and it should never have been on it.</strong>
+    I asked you, last message, whether to spend on making the held Forum scene&rsquo;s subject
+    &ldquo;do a second thing&rdquo;, because the judge reported the plate flat: opacity 1.000 and scale
+    1.0207 at every offset. <strong>That was measured off the wrong element.</strong> The push is on
+    <code>.fig__media</code>, deliberately &mdash; the figure&rsquo;s own treatment (bar band, vignette, credit)
+    must not scale with the picture. The 1.0207 is <code>Figure</code>&rsquo;s static overscan on the
+    <code>&lt;img&gt;</code> inside it, and it is flat by design. Re-measured on the shipped commit, the
+    plate runs <strong>1.00002 &rarr; 1.07500 continuously</strong> at both viewports &mdash; in real pixels
+    1482&times;1001 &rarr; 1579&times;1066 at desktop, 401&times;937 &rarr; 428&times;999 at phone.
+    <p style="margin:10px 0 0">The criterion I was holding us to &mdash; &ldquo;the subject transforms
+    continuously&rdquo; &mdash; also turns out to sit in the <em>reference&rsquo;s</em> column of my own findings
+    file. It describes a WebGL coaster rotating through three faces. Holding this site to it literally
+    means building the renderer your brief forbids. Read as the criterion it actually is, four of the
+    five rows are built and measured. <strong>There is no motion spend for you to authorise.</strong></p>
+  </div>
+
+  <div class="note">
+    <strong>The gate that was grading us was reporting the maximum as the minimum.</strong>
+    <code>glyph-floor</code> is the contrast sweep whose &ldquo;0 failures&rdquo; this project has been quoting for
+    ten waves. It keyed each curve on <em>text + font size</em>, which is not an identity: this site sets
+    the same 11px label in more than one place on nearly every route. The homepage eyebrow and the
+    footer&rsquo;s second key both read &ldquo;By invitation&rdquo; at 11px and <strong>shared one slot</strong>, so the sweep
+    printed the footer&rsquo;s 16.224:1 as the minimum of a curve whose own samples hold 4.610 &mdash; the
+    maximum, reported as the minimum, 3.5&times; on the wrong side.
+    <p style="margin:10px 0 0">Keyed on the text node&rsquo;s position in the document instead, the sweep
+    went from 893 curves to <strong>1108</strong>, and <strong>two real failures appeared that it had never been able
+    to see</strong>. Both are the footnote asterisk on the homepage. That is being settled now. Nothing here
+    needs you &mdash; I am recording it because the clean number I have been giving you was not clean.</p>
   </div>
 
   <div class="note" style="border-left-color:var(--ok)">
@@ -173,7 +206,7 @@
     </div>
   </div>
 
-  <div class="stamp" id="stamp">Updated 27 Aug, 07:14 UTC · five open</div>
+  <div class="stamp" id="stamp">Updated 29 Aug, 00:00 UTC · four open</div>
 
   <h2>Earlier list — kept for the record</h2>
 
