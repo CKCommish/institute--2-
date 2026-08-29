@@ -244,10 +244,44 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
         <p class="bridge model__lead" data-reveal="90">{model.lead}</p>
       </div>
 
+      {/* WAVE 25. THE SERIES-BREAKER WAS SPENT ON A PRICE.
+           tokens.css keeps --step-feature for one thing a page is FOR, and
+           this route gave it to "$2 million" — a total, at 86px, over two
+           columns of 16px explanation and a line of fine print. That is the
+           pricing-tier form, and it was named as the reason this page has
+           nothing worth keeping: a tier can be compared, but it cannot be
+           quoted, and nobody screenshots a number they could have guessed.
+
+           The number is not diminished, it is placed. It holds --step-head,
+           the same rung as the four pilot titles 900px above it, so it is
+           still the second-largest object on the route and still the figure
+           four reviewers asked this site for. What takes the breaker is the
+           sentence underneath — see the sourcing note on `model.claim` in
+           site.js, which derives every clause of it from `lead` and `split`
+           and introduces no fact.
+
+           The order is the argument, and it climbs: what a Core Partnership
+           is (26px) → what it costs (53) → what happens to it (67) → the
+           two halves that prove it (16). It ends on the line rather than
+           opening on the price, which is the same ladder the three doors
+           below use — the thing you press is the last rung, not the first.
+           `model.scale` is untouched and stays where it was. */}
       <div class="model__figure" data-reveal="150">
-        <span class="display display--feature model__amount">{model.amount}</span>
+        <span class="display display--head model__amount">{model.amount}</span>
         <span class="model__cadence">{model.cadence}</span>
       </div>
+
+      {/* THE BREAK IS DECLARED, NOT DISCOVERED. The two clauses want one
+           line each — that is the shape of the sentence — and no measure can
+           deliver it: "Half builds the Institute. Half" sets to 798px and
+           the second clause to 910px at 1440, so any width that holds the
+           second clause also holds the first plus a stray "Half", and
+           `balance` prefers 798/777 for the same reason. Measured, not
+           guessed. So the clauses are two blocks, and below ~1000px they
+           wrap inside themselves like any other line. */}
+      <p class="display display--feature model__claim" data-settle="0.62">
+        {model.claim.split(/(?<=\.)\s+/).map((l) => <span>{l}</span>)}
+      </p>
 
       <ol class="model__split" data-seq="110" data-seq-from="60">
         {model.split.map((part) => (
@@ -944,6 +978,15 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
   .model__lead { max-width: 46ch; }
   .model__figure { display: flex; align-items: baseline; gap: 0.6ch; }
   .model__amount { line-height: 0.92; letter-spacing: -0.028em; }
+  /* TWO LINES, ON PURPOSE, AND THE MEASURE DECIDES WHERE. The two clauses
+     are within four characters of each other, so a measure cut just under
+     the pair breaks at the full stop and sets one half per line — which is
+     the shape the sentence is: two halves of one commitment. Left on the
+     page's own rail with everything else. The gap above it is the section's
+     own (`.model__in`); it needs no interval of its own, because the figure
+     it answers is the thing directly above it. */
+  .model__claim { margin: 0; line-height: 1.06; }
+  .model__claim > span { display: block; max-width: 24ch; text-wrap: pretty; }
   .model__cadence {
     font-size: var(--step-lede, 1.19rem);
     color: var(--fg-mute);

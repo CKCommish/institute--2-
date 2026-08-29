@@ -33,13 +33,37 @@ const scene = {
    door labelled "Inquire about the Lion Forum" pointing at /forum/ is the
    page you are standing on: on that one route it was a no-op dressed as a
    second destination. No copy is added to replace it — the ask above it is
-   the scene, and the route row below still carries two live doors. */
+   the scene, and the route row below reaches /forum/ in any case. */
 const second = isHere('/forum/') ? null : { k: forum.access, t: 'Inquire about the Lion Forum', href: '/forum/' };
 
-/* The base row is a close, not a second header: two destinations, chosen so
-   they never repeat the page you are on or either door above them. */
-const skip = coda ? [coda.href] : [cta.href, second?.href].filter(Boolean);
-const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).slice(0, 2);
+/* THE ROUTE ROW — every route, every page, in one fixed order.
+
+   What it was: `nav.filter(not-here && not-a-door-above).slice(0, 2)` — a
+   rotating two-item slice whose contents depended on which doors the ask
+   band happened to be showing. Measured at 1440 and 390: the slice always
+   resolved to [Institute, Pilots], because the two doors above always took
+   Forum and Partner out of the list — so /people/ was out of footer reach
+   on four of the seven routes (/, /forum/, /partner/, /404), and the three
+   that were complete (/institute/, /pilots/, /people/) were complete only
+   because the page you were standing on happened to free a slot.
+   Completeness was an accident of the slice, not a decision.
+
+   What the slice did NOT do, contra one reading of it: strand /forum/ and
+   /partner/ on the homepage. Both are reachable from the homepage close —
+   they are the two doors in the band above. /people/ was the only loss.
+
+   It matters most where there is least: at 390px the bar's links AND the
+   pill are display:none (Nav.astro, the 860px query) and the only route
+   control is a burger that needs JavaScript. With script off, on a phone,
+   this row is the site's entire navigation.
+
+   So it is now the same object as the bar: the five destinations, always,
+   in nav order plus the ask, at the house .label rung — not a slice, not a
+   mega-footer, not a new type scale. The current page stays in the row and
+   is marked, exactly as the bar marks it, so the row does not move under a
+   reader who is walking the site. Home is the wordmark to its left, which
+   has always been a link. */
+const footNav = [...nav, cta];
 ---
 <footer class:list={['foot', { 'foot--coda': !!coda }]}>
   {!coda && <span class="foot__glow" aria-hidden="true"></span>}
@@ -86,7 +110,9 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
       <Mark tone="quiet" class="foot__id tap" />
       <nav class="foot__nav" aria-label="Footer">
         {footNav.map((n) => (
-          <a href={n.href} class="label foot__nav-a">{n.label}</a>
+          <a href={n.href}
+             class:list={['label', 'foot__nav-a', { 'is-here': isHere(n.href) }]}
+             aria-current={isHere(n.href) ? 'page' : undefined}>{n.label}</a>
         ))}
       </nav>
       <span class="label foot__fine tnum">© {year} {site.name}</span>
@@ -206,6 +232,15 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
   }
   .foot__nav-a:hover,
   .foot__nav-a:focus-visible { color: var(--fg); }
+  /* Marked, not removed. The bar's own device for the page you are on:
+     no second colour, no rule, no weight change — the brass index the
+     rest of the site uses to say "here". */
+  .foot__nav-a.is-here { color: var(--fg); }
+  .foot__nav-a.is-here::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 4px; margin-inline-end: 0.55em;
+    vertical-align: 0.18em; background: var(--brass);
+  }
 
   @media (max-width: 860px) {
     .foot { gap: clamp(2.4rem, 9vw, 4rem); }
@@ -217,6 +252,9 @@ const footNav = nav.filter((n) => !isHere(n.href) && !skip.includes(n.href)).sli
       margin-top: clamp(2rem, 8vw, 2.8rem); padding-bottom: 0;
     }
     .foot__row { gap: 0.6rem 1.4rem; }
+    /* Five words will not sit beside a 178px wordmark at 390. Own line,
+       one wrap at most, same rung. */
+    .foot__nav { flex: 1 0 100%; gap: 0.55rem 1.15rem; margin-top: 0.2rem; }
     .foot__row > :nth-child(3) { margin-left: 0; }
     .foot__fine { flex: 1 0 100%; }
     .foot--coda { gap: clamp(4rem, 14vw, 6rem); padding-block-start: clamp(3.5rem, 13vw, 5rem); }

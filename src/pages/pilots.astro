@@ -74,8 +74,16 @@ const grades = {
       <p class="eyebrow phead__eyebrow" data-reveal>Four active pilots · 2026</p>
       {/* the rung between an 11px label and the poster line: without it the
            display type reads as merely large */}
+      {/* WAVE 25. This carried BOTH clauses of the prospectus's model —
+           "Measurable results in months. The lessons go to the world." — at
+           19px, as a rung between an 11px label and the poster line. The
+           second clause is the largest claim this institute makes and it was
+           furniture. It is now the page's turn, at --step-feature, 760px
+           below (see .pturn). What stays here is the promise this page can
+           keep locally; what is paid at the turn is what the four of them
+           are for. The two halves are never on screen together. */}
       <p class="bridge phead__bridge" data-reveal="90">
-        Measurable results in months. The lessons go to the world.
+        Measurable results in months.
       </p>
       <h1 class="display display--poster phead__h lines">Proof, one problem at a time.</h1>
 
@@ -128,15 +136,42 @@ const grades = {
   </section>
 
   {/* ── THE TURN ─────────────────────────────────────────────────────
-       The page's one change of ground, spent on the hinge between the two
-       layers: above it, four summaries; below it, four dossiers. Full
-       bleed, one sentence, and the sentence is the contents of everything
-       that follows. */}
+
+       WAVE 25. THIS PAGE HAD NO SERIES-BREAKER, AND THAT IS THE WHOLE
+       DIAGNOSIS. tokens.css: "--step-feature exists to be used ONCE on a
+       page... Four identical blocks at --step-head is a metronome; three at
+       --step-head and one at --step-feature is a rhythm." /pilots/ ran
+       86 (the h1) · 53 · 53 · 53 · 53 (four dossier titles) · 34 (this
+       turn) and never once used the rung the scale keeps for the one thing
+       a page is FOR. Every other route spends it: /institute/ on "Neither
+       side can run the pilot alone.", /people/ on "Sixteen put forward. The
+       board is not yet seated.", /forum/ on its role note. Measured, the
+       missing moment on this route was not a hole in a column — it was an
+       unused rung, and the reviewer's "four near-identical slabs" is what a
+       metronome sounds like from outside.
+
+       The rung goes HERE and not at the foot, because this is already the
+       page's one change of ground, full bleed, with a table above it and
+       four dossiers below — the hinge, and the site's other two turns sit on
+       exactly such a hinge. What it used to carry was a CONTENTS LINE ("What
+       each one is, who it is for, and where a partner comes in.") set at
+       --step-sub: the page's best 241px spent naming the labels of the
+       blocks directly beneath it, which those blocks already carry in brass.
+       Nothing is lost by cutting it — it survives verbatim as this route's
+       meta description, which is where a table of contents belongs.
+
+       What it carries now was already on the page: the second clause of the
+       masthead bridge, refs/PROSPECTUS.txt's own "We then share those
+       lessons with the world". No new fact, no new colour, no new size — the
+       rung existed and was empty. Set alone, on the page's own rail, with
+       the h1 ("Proof, one problem at a time.") 1,500px above it, the two
+       lines are the whole model: one problem at a time, and then everybody
+       gets it. The eyebrow is gone: a label over a claim makes the claim a
+       section head. /institute/'s turn carries no eyebrow either. */}
   <section class="pturn on-cream">
     <div class="shell pturn__in">
-      <p class="eyebrow" data-reveal>In detail</p>
-      <p class="display display--sub pturn__b" data-settle="0.62">
-        What each one is, who it is for, and where a partner comes in.
+      <p class="display display--feature pturn__b" data-settle="0.62">
+        The lessons go to the world.
       </p>
     </div>
   </section>
@@ -283,9 +318,13 @@ const grades = {
   }
 
   /* ── The turn into the detail layer ────────────────────────────── */
-  .pturn { padding-block: clamp(2.5rem, 5vw, 4.25rem); }
-  .pturn__in { display: grid; gap: clamp(0.7rem, 1.4vw, 1.1rem); }
-  .pturn__b { max-width: 34ch; margin: 0; line-height: 1.12; }
+  /* The band grew with the type it holds: a 67px line needs more room above
+     and below it than a 34px one, or the change of ground reads as a stripe
+     rather than as a pause. The measure is set to break nothing — the line
+     is 28 characters and holds on one line at every width down to 320. */
+  .pturn { padding-block: clamp(3.25rem, 6.4vw, 5.75rem); }
+  .pturn__in { display: grid; }
+  .pturn__b { max-width: 30ch; margin: 0; line-height: 1.05; text-wrap: initial; }
 
   /* the first dossier lands off a cream edge: it needs its own shelf */
   .pturn + :global(.pd) { padding-top: clamp(2.25rem, 4.5vw, 4rem); }

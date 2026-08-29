@@ -37,6 +37,39 @@ export const model = {
     { amount: '$1M', name: 'Dedicated pilot funding',
       text: 'Deployed across the pilot opportunities the partner selects.' },
   ],
+  /* WAVE 25 — THE ONE LINE, AND EVERY WORD OF IT IS ALREADY ABOVE.
+     /partner/ spent --step-feature, the series-breaker, on "$2 million" —
+     a total set at 86px over two columns of fine print, which is the
+     pricing-tier form and was named as such. A total is not a claim: every
+     institution asking for money has one, and a reader already knows what
+     two million looks like. What they do not know, and what this
+     prospectus actually offers, is that the commitment arrives HALVED and
+     the partner directs the second half. So the rung moves off the number
+     and onto the sentence, and the number keeps --step-head, where it is
+     still the second-largest thing on the route.
+
+     SOURCING, clause by clause, because this is a new string on a page of
+     old ones:
+       "Half"                  arithmetic on this object's own `split` —
+                               $1M and $1M of `amount` $2 million — and it
+                               is stated inside the frame `lead` sets, "A
+                               TYPICAL annual Core Partnership". It makes no
+                               claim about any other level; `scale`, three
+                               lines down, is what governs those.
+       "builds the Institute"  `lead`, verbatim: commitments "both BUILD
+                               THE INSTITUTE and fund the pilots they choose
+                               to support". Also `split[0]`.
+       "funds the pilots       `lead`, verbatim, moved to the second person
+        you choose"            the three doors on this route already use
+                               ("We help YOU source, vet, implement and
+                               report"). `split[1]` is the same fact in the
+                               prospectus's own words: "Deployed across the
+                               pilot opportunities the partner selects."
+     No figure, interval, instrument or name is introduced. If the client
+     ever changes the split off 50/50, this line is the first thing that
+     has to go — it is the only string on the site that reads the two
+     halves against the whole. */
+  claim: 'Half builds the Institute. Half funds the pilots you choose.',
   scale: 'Partnership levels scale with the size of the annual commitment. The largest Core Partners get first look across the full pipeline.',
 };
 
