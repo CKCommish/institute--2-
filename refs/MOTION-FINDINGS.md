@@ -1,5 +1,45 @@
 # What the reference actually does — measured, not inferred
 
+> ## WITHDRAWN, 29 Aug: THE QUANTITIES BELOW CAME FROM A CAPTURE THAT COULD NOT
+> ## MOVE THE REFERENCE PAGE. Read this box before any number in this file.
+>
+> `oryzo.ai` clamps wheel delta. Measured from scroll 0, one `mouse.wheel`: a
+> delta of 100 moves 99px, 500 moves 298, 1860 moves 498, 5000 moves 698. Every
+> event is capped near 200px whatever is asked, and `scrollTo(0, 30000)` is
+> overridden back to 700. The old `capture-motion.mjs` fired one wheel of `step`
+> per frame and assumed the page had moved by `step`.
+>
+> The reference's document is **56,691px**. Thirty frames actually walked
+> **90 → 5,879px — 10.4% of the page, every frame inside the opening scene.**
+> Our site scrolls natively and was never affected: our thirty frames covered
+> 5,700 of 5,708 scrollable px, 86% of the document. Two sequences sampling the
+> same px/frame across documents differing by an order of magnitude, and only
+> one side was ever measured.
+>
+> **So every claim in this file about how long the reference holds its subject
+> is withdrawn**, including "roughly fifteen consecutive frames — about two and
+> a half viewport heights" at line 59 and everything that rests on it. Six waves
+> of blind motion judgement compared our whole site against a tenth of the
+> reference's opening scene.
+>
+> **Corrected, both re-captured with the fixed tool:** ours holds **5 of 30**
+> frames inside an 855px pin (4.6/30 at 390); the reference's opening scene
+> occupies **4 of 30** before the page moves on to a face, a magazine cover, a
+> keyboard, a thermal render. By the metric two judges used to say we never hold
+> a picture, **we hold more frames than the site they were comparing us to.**
+>
+> What survives: the *structural* idea — hold the visual, move the type over it —
+> is sound, was drawn correctly, and shipped. In absolute travel our hold is 0.95
+> viewport-heights against the reference's opening ≥6.5; that is a real and
+> separate fact, and it is not why the judges missed our held scene. They missed
+> it because the strips they were handed made a 63-viewport-height document look
+> like one endless scene.
+>
+> The tool now drives to a scroll target with a stall guard and records actual
+> `scrollY` per frame into `behaviour.json`. Any future reading of this file
+> should re-derive rather than quote.
+
+
 The Oryzo stills in `refs/oryzo/` were captured by scrolling to a position and
 waiting three seconds for everything to settle. For a scroll-driven site that
 records the one thing that matters least. `tools/capture-motion.mjs` fixes this:
