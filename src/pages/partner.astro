@@ -321,10 +321,42 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
            fully open, so a focus ring on the first or last door — 1.5px at
            3px offset — was being sliced by the mask that revealed it. The
            columns now have somewhere to put a ring. */}
-      <div class="proles__wrap" data-wipe="left" data-delay="120">
+      {/* A MASK THAT TRAVELS THROUGH A WORD IS A DEFECT, NOT A GESTURE.
+           The two notes above are the record of a wipe being tuned — moved
+           off the centre anchor, then off the <ol> — and the thing being
+           tuned was not fixable by anchoring. One hard vertical edge over
+           --dur-4 across three columns of type is never BETWEEN words; it is
+           inside one. Measured on the shipped build with the homepage
+           sampler, per WORD box: some word in this scene was cut mid-glyph
+           for 567ms of the 1500 at 1440x900 and 450ms at 390x844 — and at
+           390 the three doors stack, so a single edge shears ELEVEN words in
+           one frame, "01 / Fund / Underwrite / vet, / 02 / Build ...". The
+           longest single cuts are 117ms desktop and 133ms mobile
+           ("community", "somewhere"), above the ~90ms wheel-tick at which a
+           frame stops being a flicker and starts being read. Less severe
+           than the homepage run (1033ms) or /institute/'s rail (982ms), and
+           still a defect of the same kind: a truncated word is not a late
+           word, it is a different word.
+
+           Same fix as PeopleScene.astro and the rail — read that comment for
+           the three rejected alternatives; the site has one answer to this
+           and consistency is worth more than a fourth pattern. `data-seq` on
+           the wrap ranks the three doors, each fades over --dur-1, and
+           `--reveal-y: 0` keeps the scene's "nothing moves" — three tall
+           columns each translating 14px on their own clock is not the
+           gesture this scene had.
+
+           WHAT IS LOST: three doors opening outward as one continuous
+           uncovering, left to right. What is kept is the order and the
+           direction; what is gone is the shear. The 6px and 3.4rem of slack
+           below are now INERT — there is no clip to escape — but they are
+           left in place because they are exactly cancelled by the negative
+           margin, and the notes on them are the reason nobody re-anchors
+           this mask a third time. */}
+      <div class="proles__wrap" data-seq="140" data-seq-from="120">
         <ol class="proles__list">
           {roles.map((r, i) => (
-            <li>
+            <li data-reveal>
               <a class="door" href={mailto(`${r.a} — a 2026 pilot`)} data-door>
                 <span class="door__rule" aria-hidden="true"></span>
                 <span class="index door__n">{String(i + 1).padStart(2, '0')}</span>
@@ -715,7 +747,8 @@ const optic = (t) => `--optic:${OPTIC[(t || '').trim()[0]] ?? 0}em`;
     display: grid; grid-template-columns: repeat(3, 1fr);
     gap: clamp(1.75rem, 3.4vw, 3.4rem);
   }
-  .proles__list li { display: grid; }
+  /* --reveal-y: 0 — the wipe this replaces moved nothing; see the markup. */
+  .proles__list li { display: grid; --reveal-y: 0px; }
 
   /* ── A door ───────────────────────────────────────────────────────
      The whole column is the target: rule, numeral, verb, line and the verb

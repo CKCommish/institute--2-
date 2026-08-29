@@ -87,9 +87,33 @@ const spec = [
        two, and the second was a full ground change. */}
   <section class="ispec">
     <div class="shell ispec__in">
-      <dl class="ispec__rail" data-wipe="left" data-delay="120">
+      {/* A MASK THAT TRAVELS THROUGH A WORD IS A DEFECT, NOT A GESTURE.
+           Same finding as the homepage people run (PeopleScene.astro carries
+           the full argument and the three rejected alternatives; this is the
+           same fix, not a second pattern). This rail was one
+           `data-wipe="left"`: one hard vertical edge crossing four cells of
+           type over --dur-4. Measured on the shipped build with the same rAF
+           sampler over the live clip-path, per WORD box: some word in the
+           rail was cut mid-glyph for 982ms of the 1500 at 1440x900 and 917ms
+           at 390x844, and because the wipe eases out, the crawl at the end
+           parks the edge INSIDE one word for a long time — "exploration"
+           held half-drawn for 500ms at 1440, "one" for 367ms at 390, where
+           six words were sheared in a single frame. At 390 the rail is two
+           columns, so the one edge cuts two rows of value text at once.
+
+           So the four cells become four arrival units: `data-seq` on the
+           rail ranks them, each `.ispec__c` fades over --dur-1. Opacity is
+           the only variable that cannot produce a partial shape.
+           `--reveal-y: 0` because the wipe moved nothing and this borrows
+           the vector for its alpha alone — four grid cells each translating
+           on their own clock is a jitter the rail never had.
+
+           WHAT IS LOST, plainly: one ledger uncovering left to right as a
+           single territory. Order is what that gesture carried and the
+           stagger keeps order; the shear it also carried is what went. */}
+      <dl class="ispec__rail" data-seq="110" data-seq-from="120">
         {spec.map((s) => (
-          <div class="ispec__c">
+          <div class="ispec__c" data-reveal>
             <dt class="label ispec__k">{s.k}</dt>
             <dd class="ispec__v">{s.href ? <a class="link tap" href={s.href}>{s.v}</a> : s.v}</dd>
           </div>
@@ -220,7 +244,9 @@ const spec = [
     column-gap: clamp(1rem, 2.4vw, 2.6rem);
     border-top: 1px solid var(--rule);
   }
-  .ispec__c { padding-top: clamp(0.7rem, 1.2vw, 1.1rem); display: grid; gap: 0.45rem; align-content: start; }
+  /* --reveal-y: 0 — see the note on the rail in the markup. The vector is
+     borrowed for its alpha; nothing in this rail ever moved. */
+  .ispec__c { padding-top: clamp(0.7rem, 1.2vw, 1.1rem); display: grid; gap: 0.45rem; align-content: start; --reveal-y: 0px; }
   .ispec__k { white-space: nowrap; }
   .ispec__v {
     margin: 0; font-size: var(--step-lede);
