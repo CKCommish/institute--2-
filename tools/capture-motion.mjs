@@ -80,11 +80,45 @@ const h = await p.evaluate(() => document.documentElement.scrollHeight);
 const FRAMES = 30;
 const step = Math.round((h - vp.height) / FRAMES);
 const bufs = [];
+const ys = [];
+
+/* WHY THIS IS A LOOP AND NOT ONE `mouse.wheel(0, step)`.
+   Until wave 26 this shot one wheel event per frame with a delta of `step`
+   and assumed the page moved by it. On a site that CLAMPS wheel delta that
+   assumption is silently false, and the reference is such a site: measured
+   on oryzo.ai, a single wheel of 500 settles at 298px, of 1860 at 498px and
+   of 5000 at 698px — every event is capped at roughly 200px of travel — and
+   `window.scrollTo(0, 30000)` is overridden back to 700. So thirty frames at
+   a nominal step of 1860 walked 5879px of a 56691px document: 10% of the
+   page, all of it inside the opening scene. THAT is where "the reference
+   holds one subject for 25 of 30 frames" came from. It was never a hold; it
+   was a capture that could not move the page, and six waves of motion
+   judgement rest on those strips. Our own site is native-scrolling and was
+   never affected, which is exactly what made the comparison asymmetric: our
+   thirty frames covered 86% of our document and the reference's covered 10%
+   of its own.
+   The fix is to DRIVE to a scroll target rather than to assume one, with a
+   stall guard so a genuinely trapped page ends the sweep instead of hanging.
+   `ys` is written into behaviour.json so any later reading can check where
+   the frames actually landed instead of trusting the nominal step. */
+const WHEEL = 180;                        // under every clamp we have measured
 for (let i = 0; i < FRAMES; i++) {
-  await p.mouse.wheel(0, step);           // real wheel events — drives smooth-scroll libs
+  const target = Math.min(step * (i + 1), h - vp.height);
+  let stall = 0;
+  for (let k = 0; k < 400; k++) {
+    const y = await p.evaluate(() => window.scrollY);
+    if (y >= target - 8) break;
+    await p.mouse.wheel(0, Math.min(WHEEL, target - y));
+    await p.waitForTimeout(25);
+    const after = await p.evaluate(() => window.scrollY);
+    if (after - y < 2) { if (++stall > 6) break; } else stall = 0;
+  }
   await p.waitForTimeout(90);             // sample mid-transition, NOT settled
+  ys.push(Math.round(await p.evaluate(() => window.scrollY)));
   bufs.push(await p.screenshot());
 }
+probe.frames = { docHeight: h, viewport: vp.height, nominalStep: step, scrollY: ys };
+fs.writeFileSync(path.join(out, 'behaviour.json'), JSON.stringify(probe, null, 2));
 await b.close();
 
 for (let s = 0; s < Math.ceil(FRAMES / 10); s++) {

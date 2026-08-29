@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
+import { maskIdentity, TOP } from './mask-identity.mjs';
 
 const [ourDir, tag = 'desktop', outDir = 'progress/blind'] = process.argv.slice(2);
 if (!ourDir) { console.error('need <ourShotsDir>'); process.exit(1); }
@@ -35,9 +36,13 @@ for (let i = 0; i < n; i++) {
   const right = flip ? a : b;
   key.push({ pair: i + 1, left: flip ? 'reference' : 'ours', right: flip ? 'ours' : 'reference', leftFile: left, rightFile: right });
 
+  /* BLIND MEANS BLIND. Both sides lose the same top fraction before they are
+     resized, because the reference stamps a wordmark there and so do we.
+     See tools/mask-identity.mjs for the measurement and for what the crop
+     costs a judge. */
   const [lb, rb] = await Promise.all([
-    sharp(left).resize({ width: W }).toBuffer(),
-    sharp(right).resize({ width: W }).toBuffer(),
+    maskIdentity(sharp, await sharp(left).resize({ width: W }).toBuffer()),
+    maskIdentity(sharp, await sharp(right).resize({ width: W }).toBuffer()),
   ]);
   const lm = await sharp(lb).metadata();
   const rm = await sharp(rb).metadata();
@@ -53,3 +58,4 @@ for (let i = 0; i < n; i++) {
 }
 fs.writeFileSync(path.join(outDir, '.key.json'), JSON.stringify(key, null, 2));
 console.log(`${n} blind pairs → ${outDir}/pair-01..${String(n).padStart(2, '0')}.png`);
+console.log(`identity mask: top ${(TOP * 100).toFixed(0)}% cropped from BOTH sides (nav + wordmark). Disclose this to the judge.`);
