@@ -290,6 +290,18 @@ AGGREGATED, which no wave stated. So state it:
 > and read the curve on stderr; the headline line is not this number, see
 > below.
 >
+> **SUPERSEDED AS THE SITE'S TIGHTEST STRING, wave 30.** 4.61 remains the
+> correct reading for this eyebrow and everything above still holds. It is no
+> longer the smallest number on the site: `.frole__ctaMail`, the address under
+> the CTA on /forum/ section 03, measures **4.597 : 1** under this same
+> aggregation — ink L* 45.0 on ground L* 93.9, the dark-on-cream inverse of the
+> reading above. It clears the 4.5 floor and the gate is green, so nothing was
+> changed; but any wave that needs "the tightest arrived type on this site"
+> should reach for /forum/'s address, not this eyebrow. Its neighbour
+> `.frole__inviteT` reads 4.743 at the same rung and size, so the register is
+> sound and darkening the address would invent a palette value. Full working is
+> in the comment beside the element in `src/pages/forum.astro`.
+>
 > A second, independent sampler — same viewport at devicePixelRatio 3, the
 > page swept every 20px with `behavior: 'instant'`, ink taken as the mean
 > luminance of pixels the glyphs moved by >0.6 of the frame's own maximum
