@@ -216,8 +216,20 @@
    On the same string, note what this tool's own curve does versus what it
    PRINTS: the curve holds 4.610 at scrollY 2755 on / at 390x844, and the
    report line for it reads 16.224:1. See AGENTS.md, "The number to quote".
-   Do not quote this tool's headline for that eyebrow until that is chased
-   down; read the curve with GLYPH_DEBUG="By invitation".
+   Do not quote this tool's headline for that eyebrow; read the curve with
+   GLYPH_DEBUG="By invitation".
+
+   THE MECHANISM WAS CHASED DOWN IN WAVE 25 AND IT IS NOT THE ONE THAT WAS
+   WRITTEN HERE. It was recorded as the shared `text|fontSize` key — two
+   elements carrying "By invitation" at 11px sharing one slot. That key WAS
+   broken, and it is fixed below (GEO), and fixing it changed the reported
+   minimum on 13 curves site-wide, by as much as 12 points: mobile /partner/
+   "03" was printing 16.662:1 and is 4.618:1, desktop /partner/ "02" 16.563
+   -> 4.632, mobile /pilots/ "Funding" 16.636 -> 5.114. 893 curves became
+   1108: 215 elements on this site had no curve of their own at all. But the
+   eyebrow was NOT one of the 13 — with a unique key it still printed
+   16.224:1, measured. That defect lives in peakRows, and the whole of it,
+   with the site-wide consequence of correcting it, is at `peakRowsOf`.
 
    usage: BASE=http://127.0.0.1:4399 node tools/glyph-floor.mjs [--json]
           [--routes=/,/forum/] [--views=desktop,mobile] [--min-opacity=0.5]
@@ -1042,27 +1054,49 @@ async function sweepRoute(page, view, route) {
   /* The most of its own body this string ever gets onto the glass anywhere in
      the sweep — the denominator for SHOWN. Like peakOf, it cannot be known
      until the sweep is over, which is why it lives here and not in frameAt. */
-  /* AND IT IS TAKEN CLEAR OF THE CHROME, which is wave 25's correction and
-     is the reason the eyebrow was still printing its maximum after the key
-     was made unique. Measured, mobile / `.eyebrow.held__brow` "By
-     invitation": every sample that has the string in open glass reads
-     litRows 0.556 of its box — 4.610 at y 2755 through 9.018 at 1859 — and
-     ONE sample, at y 3380 with the string 22px down the viewport and so
-     inside the fixed bar's own band, reads 0.600. That one row is not more
-     of the string's body; it is the same body against the bar's dark scrim,
-     where the subtraction lights one more antialiased row. Taken as the
-     denominator it made every open-glass reading of that string 1 CSS row
-     short of its own peak, so --edge-rows=0 set the whole curve aside and
-     the report printed the one surviving sample, 16.224:1 — the maximum,
-     labelled the minimum, on the thinnest type in the house.
-     A maximum of the string's own body cannot be a sample taken while the
-     string is under the thing that occludes it; the rule the denominator
-     serves is about occlusion, so the denominator is taken outside it.
-     Strings that live in the bar (`chrome`) never leave it: they keep every
-     sample, and where nothing qualifies `peakRows` is 0 and the SHOWN rule
-     is inert by its own `!peakRows` guard, exactly as before. */
-  const peakRowsOf = (k) => hist.get(k).reduce((a, r) => Math.max(a,
-    r.unpainted || (BAND > 0 && !r.chrome && r.vy != null && r.vy < BAND) ? 0 : (r.inkRows || 0)), 0);
+  /* AND THE MAXIMUM IS TAKEN OVER EVERY SAMPLE, INCLUDING SAMPLES TAKEN
+     INSIDE THE CHROME'S OWN BAND — WHICH IS WHERE THE 16.224 COMES FROM.
+     Wave 25 was sent after the shared key (fixed above) on the belief that
+     the collision was the mechanism. It is not: with the key made unique the
+     homepage eyebrow STILL printed 16.224:1 at y 3380. Its curve, mobile /,
+     `.eyebrow.held__brow` "By invitation", GLYPH_DEBUG:
+
+       y 1859-2535  ratio 8.8-9.0   litRows 0.556  vy 826..164
+       y 2755       ratio 4.610     litRows 0.556  vy 164     <- the floor
+       y 2881       4.673 · 3042 4.804 · 3211 7.811, all litRows 0.556
+       y 3380       ratio 16.224    litRows 0.600  vy 22      <- inside the bar
+
+     Every sample with the string in open glass lights 0.556 of its box; the
+     ONE sample with the string 22px down the viewport — inside the fixed
+     bar's band — lights 0.600. That extra row is not more of the string's
+     body, it is the same body against the bar's dark scrim, where
+     subtraction catches one more antialiased row. Taken as peakRows it puts
+     every open-glass reading one CSS row under its own peak, so --edge-rows=0
+     sets the whole curve aside and the report prints the one survivor: the
+     maximum of the curve, labelled its minimum, on the thinnest type here.
+
+     THE FIX IS ONE LINE AND IT IS DELIBERATELY NOT SHIPPED, because it
+     re-cuts a rule waves 17-19 argued and it turns this gate red on readings
+     nobody has adjudicated. Measured, whole site, both viewports:
+
+       peakRowsOf ignoring samples with (!r.chrome && r.vy < BAND)
+         -> eyebrow reports 4.610:1 at y 2755, the number AGENTS.md quotes
+         -> 2 failure(s) in 1108 curves (was 0), slivers 359 -> 362
+         -> both failures are mobile / "*" — `.why__ast` 3.054:1 at y 1043
+            and `.why__note-ast` 3.816:1 at y 1102, both at vy=58 with vh 13
+            and 16, i.e. STRADDLING the bar's bottom edge (~64px on mobile).
+            Both are brass-deep #7E6431 on cream #F2EDE3, 4.794:1 by
+            arithmetic, and both read 4.66-4.74 at every one of the nine
+            offsets where they are in open glass. What drops them is the
+            scrim: maxD falls 178 -> 140 while litRows holds at 0.308, so the
+            chrome DIMS these glyphs without taking a row off them and the
+            sliver rule — which is written on rows — cannot see it.
+
+     So the next wave inherits a stated question, not a number: a string in
+     the scrim's fade is set aside when the scrim CLIPS it and read when the
+     scrim DIMS it, and those should not be two different rules. Settle that
+     first; the denominator is a one-line change after it. */
+  const peakRowsOf = (k) => hist.get(k).reduce((a, r) => Math.max(a, r.unpainted ? 0 : (r.inkRows || 0)), 0);
   /* the worst reading at which the string was actually PAINTED — see the
      FAINT block at the head of this file. Whether a painted reading is then
      excused as a declared crossfade is decided once, at the bottom, on the

@@ -132,9 +132,57 @@ import { whyNow, whyNowLead } from '../../data/site.js';
     --settle-origin: 0% 100%;
   }
 
-  /* Footnote mark, hung off the end of the claim and answered under it. */
+  /* Footnote mark, hung off the end of the claim and answered under it.
+
+     THE TIE IS INK, NOT BRASS, AND IT IS A MEASUREMENT THAT SAYS SO.
+     Both marks were `var(--brass)`. On this scene `.on-cream` maps
+     `--brass` to `--brass-deep` (#7E6431), which against `--cream`
+     (#F2EDE3) is 4.79:1 ARITHMETIC — the tightest colour pair on the
+     site, and the whole of the headroom a brass mark on cream can ever
+     have. At rest these two measured 4.657:1 (13px, mobile), 4.744:1
+     (14px, mobile) and 4.601:1 (15px, desktop) by glyph-floor. All three
+     pass 4.5, and all three pass it by a tenth. That is marginal by
+     design, not by accident, and it is why nothing else on the site
+     lands here: no other brass mark on cream is this small.
+
+     What made it fail is the second half. An asterisk at 13px carries
+     FOUR CSS ROWS OF INK. The fixed bar's half-lit band is SIX — the
+     scrim's mask is solid to 58px and transparent at 64px, measured off
+     `.nav.is-scrolled::before` on this page at 390x844 — and that band
+     was sized against 8.67px, the ink of the site's smallest label
+     ("Special Olympics" on /pilots/; see AGENTS.md). A mark with four
+     rows of ink is smaller than the ramp that takes it away, so it does
+     not slide under the bar being cut row by row like every other string
+     on the site: it goes under WHOLE AND HALF-LIT. Measured on mobile /
+     by subtraction, the 13px mark with its entire body still on the
+     glass and not one row lost:
+
+         scrollY   1039   1041   1043   1045
+         box top     62     60     58     56   (viewport px)
+         ratio    4.646  4.446  3.054  1.895
+
+     1043 is the last offset at which the whole mark is visible; 1045 is
+     already a sliver and glyph-floor sets it aside. 3.054:1 is therefore
+     a real reading of a wholly-visible, wholly-crushed mark — exactly the
+     state that gate exists to fail, and the 14px twin does the same thing
+     at 1102 (3.816:1). The gate is right. Its `SHOWN` rule cannot excuse
+     this and must not be taught to: "the string's ink is shorter than the
+     ramp" would have excused wave 15's 39px ramp swallowing whole
+     headings, which is that rule's own positive control.
+
+     So the fix is a colour decision, forced by measurement. `--fg` is
+     `--ink-900` here: 16.268:1 at rest, and 7.427:1 at scrollY 1043 —
+     the same wholly-visible, wholly-crushed offset that read 3.054 in
+     brass — because the same cream wash over near-black ink lands far
+     higher than it does over brass. The 14px twin goes 3.816 -> 7.619
+     at its own last full-body offset. The mark keeps its job — the tie
+     is carried by position, the superscript and the answering `*` under
+     it — and the brass register is still in the scene, on the arrow
+     beside the note. That arrow is a stroke, not a glyph, so glyph-floor
+     does not measure it and this note makes no claim about it; what it
+     claims is measured above. */
   .why__ast {
-    color: var(--brass);
+    color: var(--fg);
     font-size: 0.34em;
     vertical-align: 0.88em;
     margin-left: 0.1em;
@@ -165,7 +213,8 @@ import { whyNow, whyNowLead } from '../../data/site.js';
       transform 640ms var(--ease-out) var(--reveal-delay, 0ms),
       color var(--dur-hover) var(--ease-out);
   }
-  .why__note-ast { font-family: var(--serif); font-size: 1.3em; color: var(--brass); line-height: 1; }
+  /* Ink, not brass, for the reason written over `.why__ast` above. */
+  .why__note-ast { font-family: var(--serif); font-size: 1.3em; color: var(--fg); line-height: 1; }
 
   /* Direction, not decoration: the footnote points into the scene that
      answers it. The house arrow turned a quarter — the site has ONE arrow. */
