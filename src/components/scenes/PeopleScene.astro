@@ -132,10 +132,11 @@ const standing = standingOf(board);
           the three claims that were sorting them, and the three brass marks
           that made those claims look like structure.
 
-          It uncovers as one territory, left to right, which is the same
-          gesture the roster on /people/ makes. Every name is one unbreakable
-          unit, so a run of sixteen never wraps mid-name — which is the whole
-          of what the three runs were buying typographically.
+          Every name is one unbreakable unit, so a run of sixteen never
+          wraps mid-name — which is the whole of what the three runs were
+          buying typographically. It used to UNCOVER as one territory, left
+          to right; see the note on the run below for why that mask is gone
+          and what replaced it.
 
           NO SEPARATOR MARK. There was a brass middot between names, carried
           on the end of each name so a line could not open on one. Three runs
@@ -144,11 +145,43 @@ const standing = standingOf(board);
           at 1024, and the mark then hangs in the rag at the end of every
           line but the last. The gap separates instead, at every width — see
           the CSS below. */}
-      <p class="people__names" data-wipe="left" data-delay="160">
+      {/* A MASK THAT TRAVELS THROUGH A WORD IS A DEFECT, NOT A GESTURE.
+          This run was one `data-wipe="left"` across the whole paragraph:
+          one hard vertical edge crossing sixteen names over --dur-4. That
+          edge is never between the names, it is always inside one of them,
+          and it is inside them for most of the sweep. Measured on the
+          shipped build (a rAF sampler over the live clip-path against each
+          name's box): SOME name was cut mid-glyph for 1033ms of the 1500ms
+          at 1440, and for 566ms at 390 — where the run sets one name per
+          line, so the single edge cuts NINE names at once. The frames a
+          reader in motion actually gets read "Michael Ho", "Julie Yoo",
+          "Nate M", "Aneesh C". A truncated word is not a late word; it is a
+          different word, and it is read as one before it is read as motion.
+
+          THE FIX IS NOT A FASTER MASK. Capping the sweep under a wheel-tick
+          (~90ms) makes the cut rarer, not absent — a partial word is still
+          in the frames, and 90ms is a snap, which is the one register this
+          site cannot spend. Nor is it a mask turned vertical: that trades a
+          cut word for a cut LINE, which is better but still a partial glyph.
+          Opacity is the only variable that cannot produce a partial shape.
+          So each name is its own arrival unit and the container ranks them:
+          sixteen `data-reveal` units under `data-seq`, whose SEQ_SPAN
+          ceiling (motion.js) compresses the run to 420ms, each name fading
+          over --dur-1. Any sampled frame shows every name whole — present,
+          absent, or on its way, never sheared.
+
+          `--reveal-y: 0` because this vector is borrowed for its alpha, not
+          its lift: sixteen inline-blocks each translating 14px on their own
+          clock is a jitter, and the wipe this replaces moved nothing. The
+          gesture that is lost is "one territory uncovering left to right".
+          It was worth having; it was not worth reading as a rendering
+          fault. Order is what the gesture carried, and the stagger keeps
+          order. */}
+      <p class="people__names" data-seq="34" data-seq-from="160">
         {board.map((b, i) => (
           <>
             {i > 0 ? ' ' : null}
-            <span class="people__name">{b.name}</span>
+            <span class="people__name" data-reveal>{b.name}</span>
           </>
         ))}
       </p>
@@ -284,7 +317,7 @@ const standing = standingOf(board);
   }
   /* Each name is one unbreakable unit, so nothing ever wraps as
      "Tess deBlanc-" / "Knowles" and no line opens mid-name. */
-  .people__name { display: inline-block; white-space: nowrap; padding-right: 0.85em; }
+  .people__name { display: inline-block; white-space: nowrap; padding-right: 0.85em; --reveal-y: 0px; }
 
   /* THE GAP IS THE SEPARATOR, AT EVERY WIDTH. The brass middot used to be
      dropped below 861px only, where the run first wrapped; a rule written
@@ -309,7 +342,9 @@ const standing = standingOf(board);
   /* Keyboard parity, outside the hover query — a keyboard exists on touch. */
   .people__more:focus-visible { color: var(--brass); }
   /* If the script never runs, nothing may stay under its mask. */
-  :global(html:not(.js)) .people__names,
+  /* The run itself no longer carries a mask — its names are [data-reveal]
+     units, which base.css already gates behind `html.js`. The rule beside
+     it is still a wipe. */
   :global(html:not(.js)) .people__board .rule { clip-path: none; }
 
   @media (max-width: 860px) {

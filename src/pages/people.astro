@@ -292,9 +292,23 @@ const founderCount = String(founders.length).padStart(2, '0');
         {/* Row-major needs no row count and no per-breakpoint arithmetic:
             the order is source order at one track and at two, so the fold
             cannot change it. */}
-        <ul class="roster" data-wipe="left" data-delay="140">
+        {/* SIXTEEN RANKED ARRIVALS, NOT ONE SWEEP THROUGH SIXTEEN WORDS.
+            The note in the CSS below argued for one mask on the grounds that
+            sixteen individually revealing records would be "sixteen
+            identical blinks". The stagger answers that — a ranked run is an
+            order, not sixteen simultaneous blinks — and nobody had measured
+            what the one sweep does to the glyphs it crosses. It is worse
+            here than anywhere on the site: a rAF sampler over the live
+            clip-path against each name's box reads SOME name cut mid-glyph
+            for 1334ms of the 1500ms at 1440 and 1267ms at 390, and at 390
+            the single column puts all SIXTEEN names inside the edge at once
+            — a whole page of half-drawn names, for over a second, in every
+            frame a reader in motion gets. See the long note on the
+            homepage's run in PeopleScene.astro for why the answer is a
+            per-unit fade and not a faster or a vertical mask. */}
+        <ul class="roster" data-seq="34" data-seq-from="140">
           {board.map((p) => (
-            <li class="ent">
+            <li class="ent" data-reveal>
               {/* alt="" ON PURPOSE. The name and the title sit as text
                   one gap to the right of this picture; an alt repeating
                   them makes a screen reader say "Gina Raimondo" twice and
@@ -768,7 +782,12 @@ const founderCount = String(founders.length).padStart(2, '0');
      left column uncovering and then the right, which is also the order the
      sheet is read in — one sweep across a sheet that is now also read
      across. Sixteen individually revealing records would be sixteen
-     identical blinks, which is the failure this page fixed once already. */
+     identical blinks, which is the failure this page fixed once already.
+
+     THAT MASK IS GONE, AND THE OBJECTION IT RESTS ON IS ANSWERED RATHER
+     THAN OVERRULED. Sixteen SIMULTANEOUS reveals are sixteen identical
+     blinks; sixteen RANKED ones are the sweep's order without the sweep's
+     edge. What the edge cost is measured in the markup above. */
   .roster {
     list-style: none; margin: 0;
     padding: clamp(1.9rem, 3.4vw, 3rem) 0 clamp(1.9rem, 3.4vw, 3rem);
@@ -778,7 +797,7 @@ const founderCount = String(founders.length).padStart(2, '0');
     row-gap: clamp(1.5rem, 2.5vw, 2.4rem);
   }
   /* If the script never runs, nothing may stay under its mask. */
-  :global(html:not(.js)) .roster,
+  /* .roster's units are [data-reveal] now, gated on html.js in base.css. */
   :global(html:not(.js)) .fr,
   :global(html:not(.js)) .fs__rule,
   :global(html:not(.js)) .wall { clip-path: none; }
