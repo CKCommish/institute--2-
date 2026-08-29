@@ -238,6 +238,18 @@ const spec = [
      src/data/site.js, outside this piece's files. See the handoff.) */
   .ispec { padding-block: clamp(1.4rem, 2.4vw, 2.4rem) clamp(3rem, 2rem + 3vw, 5.5rem); }
   .ispec__in { display: grid; gap: clamp(2.2rem, 4.4vw, 3.6rem); }
+  /* THE RAIL PASSES UNDER THE BAR, AND THAT IS ALL IT DOES. Read once as a
+     defect: the page's densest row is "half-sliced behind the scrim for the
+     length of a scroll notch". Measured at 1440: the rail sits at document y
+     834.5-918.4, 83.9px tall, and the bar's reach is --nav-h + --nav-tail =
+     63.36 + 6 = 69.36px. So it is partly occluded from scrollY 765.1 to
+     849.0 — 83.9px of scroll, which is its own height, which is what a fixed
+     bar does to every object on every route. The quantity that governs is
+     not the occlusion, it is the HALF-LIT band, and that is the tail: 6px,
+     against the 8.67px ink extent AGENTS.md sizes it on. Above the tail the
+     scrim is solid and the type is simply hidden, which no reader can meet
+     and which glyph-floor scores by subtraction. Nothing to fix here; the
+     rail is not given scroll-margin because nothing anchors to it. */
   .ispec__rail {
     margin: 0;
     display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));

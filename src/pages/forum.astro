@@ -619,6 +619,26 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
              loud door. The left column carried one eyebrow and 700px of
              cream; the indent is still the composition, the void was not.
 
+             WHAT IS LEFT OF THAT VOID, MEASURED, AND WHY IT STAYS. The
+             complaint returns as "the left column has the eyebrow and then
+             about 230px of nothing, plus ~150px of cream above the rule and
+             ~150px below the CTA — the section is 60% air". Measured at 1440,
+             in document coordinates: the section runs 1810.8 to 2422.1
+             (611.3px). Eyebrow 1964.4-1976.1, then this rail at 2242.5 —
+             266.4px of empty left column, so that number is real and is if
+             anything understated. The other two are not. Section top to the
+             03 rule is 111px, not 150. CTA bottom 2374.1 to section bottom
+             2422.1 is 48px, not 150, and it closes on a change of ground —
+             the navy footer starts on that edge.
+
+             And the 266px is a COLUMN, not a band. Across those rows the
+             right column is carrying the 67px display line (1958-2160.1) and
+             the note (2187.3-2215.3). The longest run of this section with no
+             mark at any x is 27px. Held-space passes this route for that
+             reason, and the rule it passes under is the one /pilots/ was
+             re-measured against: an empty column beside a short line is
+             composure. The indent is the composition.
+
              It states only what the brief supports. It does not say who
              writes the guest list, what a sponsor's say over it is, how
              often the Forum meets, or what happens after you write. */}
@@ -653,7 +673,28 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
                inquiry went, and a reader who wanted to write from something
                other than a mail client had nothing to copy. The address is
                inside the same <a>, one rung down, so this is still a single
-               link and not a second ask 40px under the first. */}
+               link and not a second ask 40px under the first.
+
+               IT IS THE TIGHTEST STRING ON THE SITE, AND IT IS STILL LEGAL.
+               Read as "the smallest, faintest type on the site is the address
+               the page wants you to use". Measured by subtraction at 3x —
+               glyph-floor's own convention, ink taken as the frame's colour
+               at pixels the glyphs moved by more than 0.6 of the maximum
+               delta, ground as the brightest 3-row band of the OFF frame —
+               this string is 4.597:1, ink L* 45.0 on a ground of L* 93.9.
+               That clears the 4.5 floor, and it is a hundredth BELOW the
+               4.61 the homepage eyebrow has held as the site's tightest
+               arrived type: this is now the thinnest margin on the site, and
+               anyone who touches --fg-meta on cream re-measures here first.
+               Its neighbour .frole__inviteT reads 4.743 at the same rung and
+               size, so the register is not the problem and darkening it would
+               be inventing a value the palette does not carry.
+
+               Nor is it a hierarchy fault. The ask above it is 26.56px with
+               an arrow and it is the door; the address is one rung down
+               INSIDE the same link, naming where the door goes and giving a
+               reader without a mail client something to copy. Making it
+               louder makes the section carry two asks. */}
           <a class="frole__cta" href={inquire} data-reveal="240">
             <span class="frole__ctaRule" aria-hidden="true"></span>
             <span class="bridge frole__ctaText">

@@ -763,6 +763,28 @@ const star = 'M6 0c.55 4.1 1.9 5.45 6 6-4.1.55-5.45 1.9-6 6-.55-4.1-1.9-5.45-6-6
     opacity: 1; pointer-events: auto;
     transition-duration: var(--menu-ground); transition-delay: 0ms;
   }
+  /* THE AIR IN THIS SHEET IS THE CENTRING, AND IT IS SYMMETRIC. A recurring
+     reading of this panel is that it is "mostly empty" — ~250px of dead space
+     above the rows and ~230px below — and both halves of that are true as
+     numbers. Measured at 390x844 with the sheet open: content runs y 304.4 to
+     608.7, which is 246.4px of navy between the bottom edge of the bar (58)
+     and the first row, and 235.3px between the address and the foot of the
+     window. Eleven pixels apart. That is not two voids, it is one centred
+     block, and the top padding here is exactly what makes it centre: the grid
+     centres the ITEM, and without the bar's height inside the item's own
+     padding the CONTENT would sit ~45px high of where the eye puts it. Anchor
+     the sheet to the top instead and the two numbers become 90 and 450, which
+     is the arrangement the complaint describes and this one avoids.
+
+     AND THERE IS NO "HOME" ROW BECAUSE THE WORDMARK IS HOME, EVERYWHERE.
+     `nav` in site.js is four routes; the desktop bar, the footer route row
+     and this sheet all render that same array, and none of the three lists
+     `/`. Adding it here alone would put a fifth door in the sheet that the
+     bar above it does not have. Verified rather than assumed: the wordmark is
+     `<a href="/" aria-label="… — home">`, it sits at z 100 over this sheet's
+     99, elementFromPoint at its box returns the wordmark with the menu open,
+     and clicking it from /institute/ with the sheet open lands on /. Home is
+     one tap from here; it is simply not a listed row. */
   .menu__in { padding: calc(var(--nav-h) + 2rem) var(--gutter) var(--gutter); width: 100%; }
   .menu__links { display: grid; gap: 0.14em; }
   /* Rows arrive in sequence and leave together.

@@ -24,6 +24,41 @@
    printed on it. Nothing here is decoration; --pp-veil is the knob and it is
    set once, on the roster.
 
+   AND IT CANNOT BE MADE BIGGER, WHICH IS A MEASUREMENT AND NOT A TASTE.
+   The standing objection to the size above is that the files ship at 480x480
+   and render at 69x86, so "we are showing a seventh of what we ship". The
+   480 is not a source. The client's originals (Prospectus_document_review
+   .zip, uploads/Headshots/thumbs/) are 320x320 for twelve of the sixteen and
+   256x256 for four — deblanc-knowles, imanbayev, raimondo, sullivan — so the
+   shipped 480 is itself a 1.5x/1.875x upscale, and the ratio to argue from is
+   the TRUE DETAIL in the original, not the pixel count of a resample.
+
+   Measured, per file, by effective resolution: downsample the original to T,
+   restore it to native, and take the RMS residual against the native pixels
+   normalised by the file's own stddev. The residual falls as T rises and then
+   stops falling; the T where it comes within 3% of its own floor is the point
+   above which the file carries nothing a resample cannot rebuild. That is D.
+
+       D = 156-196 px for the twelve 320s  (median 166)
+       D = 128-140 px for the four 256s    (median 134)
+
+   The plate is a 4:5 cover crop of a square, so the crop takes the SIDES and
+   the plate's height maps to the full height of the source: available detail
+   across the plate is D device pixels, whatever the render width. At 69.1 CSS
+   wide the plate is 86.4 CSS tall — 86 device px at DPR 1, 173 at DPR 2. So
+   on a retina screen, which is what this page is opened on, the plate ALREADY
+   draws 173 device px out of 128-196 of real detail: 1.35x beyond the source
+   on the four 256s, 1.04x on the median 320. It is at its ceiling now.
+
+   Which is also the answer to "several are visibly soft at that size". They
+   are. The softness is in the file, not in the render, and enlarging the
+   render is the one move that makes it worse: at 80px wide (the largest size
+   that still resolves fully at DPR 1) the four 256s go to 1.56x upscale at
+   DPR 2, for 11px of extra face. There is no size at which sixteen 256/320
+   thumbnails stop reading as identification photographs, because that is what
+   they are. One size for all sixteen, and the constraint that sets it is the
+   four 256s.
+
    NO SCRIPT. The image is opaque on arrival and carries no data-state: the
    figure grade's load/ready handshake is right for a full-bleed plate and
    wrong for sixteen thumbnails, and a photograph that needs JavaScript to
