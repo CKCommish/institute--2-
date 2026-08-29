@@ -78,14 +78,23 @@
     <strong>The gate that was grading us was reporting the maximum as the minimum.</strong>
     <code>glyph-floor</code> is the contrast sweep whose &ldquo;0 failures&rdquo; this project has been quoting for
     ten waves. It keyed each curve on <em>text + font size</em>, which is not an identity: this site sets
-    the same 11px label in more than one place on nearly every route. The homepage eyebrow and the
-    footer&rsquo;s second key both read &ldquo;By invitation&rdquo; at 11px and <strong>shared one slot</strong>, so the sweep
-    printed the footer&rsquo;s 16.224:1 as the minimum of a curve whose own samples hold 4.610 &mdash; the
-    maximum, reported as the minimum, 3.5&times; on the wrong side.
+    the same 11px label in more than one place on nearly every route, and every such pair shared one slot.
+    Separately, it took each curve&rsquo;s peak over every sample <em>including ones caught inside the fixed
+    bar&rsquo;s own band</em>, where measuring-by-subtraction picks up one extra antialiased row. Between them
+    those two faults printed <strong>16.224:1 as the minimum of a curve whose own samples hold 4.610</strong>
+    &mdash; the maximum, reported as the minimum, 3.5&times; on the wrong side, on the thinnest type here.
     <p style="margin:10px 0 0">Keyed on the text node&rsquo;s position in the document instead, the sweep
-    went from 893 curves to <strong>1108</strong>, and <strong>two real failures appeared that it had never been able
-    to see</strong>. Both are the footnote asterisk on the homepage. That is being settled now. Nothing here
-    needs you &mdash; I am recording it because the clean number I have been giving you was not clean.</p>
+    went from 893 curves to <strong>1108</strong> &mdash; 215 elements on this site had no curve of their own at
+    all &mdash; and the reported minimum moved on 13 curves by as much as 12 points. <strong>Two real failures
+    appeared that it had never been able to see.</strong> Both are the footnote asterisk on the homepage,
+    and both are now fixed.</p>
+    <p style="margin:10px 0 0"><strong>I gave you the wrong explanation for this once, and the record should
+    show it.</strong> I first told you the shared key was the cause. It was not: with a unique key the eyebrow
+    still printed 16.224. Only the second fault explains that number. It puts every open-glass reading one row
+    under its own peak, so the whole curve is set aside and the report prints its single survivor &mdash; the
+    maximum, labelled the minimum. The one-line correction is argued in the code and <em>deliberately not
+    shipped</em>, because it re-cuts a rule three earlier waves settled and would turn the gate red on readings
+    nobody has adjudicated. Nothing here needs you.</p>
   </div>
 
   <div class="note" style="border-left-color:var(--ok)">
