@@ -37,9 +37,30 @@ function initSeq() {
       const up = el.parentElement && el.parentElement.closest('[data-reveal], [data-wipe]');
       return !(up && parent.contains(up));
     });
+    /* THE STAGGER HAS A CEILING NOW, AND THE CEILING IS WHY.
+       `step` is written per container and nothing ever bounded the PRODUCT.
+       /forum/'s room list is data-seq="140" over 7 rows, so the last row
+       waited 840ms before its 420ms fade even began; /institute/'s ledger is
+       110 x 6 from 60. Measured (base.css, the block above [data-reveal]),
+       a reader wheeling at 430px per 90ms is four to nine screens past the
+       row by then, so the tail of every long list on this site was never
+       painted for anyone in motion — the arrival deficit on /pilots/ mobile
+       ran to 83.2%.
+       A stagger is a rank, not a queue: what it has to do is say "these
+       arrive in this order", and order survives compression. So the run is
+       compressed to fit SEQ_SPAN, which is --dur-1, one arrival: past about
+       five children the step shrinks rather than the run growing. Short
+       lists — two, three, four rows, which is most of them — are under the
+       ceiling already and are not touched at all, so the authored 90 and 110
+       still mean what they meant. `from` is kept whole and outside the span
+       because it is an offset against a NEIGHBOUR (a head above the list),
+       not part of the list's own rhythm. */
+    const SEQ_SPAN = 420;
+    const span = (kids.length - 1) * step;
+    const s2 = span > SEQ_SPAN ? SEQ_SPAN / (kids.length - 1) : step;
     kids.forEach((child, i) => {
       if (child.dataset.delay === undefined && !parseInt(child.dataset.reveal, 10)) {
-        child.dataset.delay = String(from + i * step);
+        child.dataset.delay = String(Math.round(from + i * s2));
       }
     });
   });
@@ -63,7 +84,21 @@ function initReveals() {
         io.unobserve(e.target);
       }
     },
-    { rootMargin: '0px 0px -12% 0px', threshold: 0.01 }
+    /* THE TRIGGER LEADS THE VIEWPORT RATHER THAN TRAILING IT.
+       This was -12%: a block began arriving only once its top had climbed to
+       88% of the viewport, i.e. once it was already on screen. Every
+       millisecond of the arrival was therefore spent in front of the reader,
+       which is fine standing still and is exactly wrong in motion — see the
+       deficit table in base.css. +14% starts the clock one seventh of a
+       screen BELOW the fold (126px desktop, 118px mobile), so a block that
+       scrolls into view has already spent ~100ms of its --dur-1 arriving and
+       crosses the fold inked rather than blank.
+       It does not cost the slow reader the arrival: at reading speed the
+       block is still visibly lifting when it enters, because the transform
+       leg is --dur-3 and only the ink has moved on. And it cannot fire on
+       something the reader will never reach — a positive bottom margin only
+       extends the root box downward, in the direction of travel. */
+    { rootMargin: '0px 0px 14% 0px', threshold: 0.01 }
   );
 
   items.forEach((el) => {
@@ -95,7 +130,12 @@ function runWipes(vh) {
   for (let i = pendingWipes.length - 1; i >= 0; i--) {
     const el = pendingWipes[i];
     const r = el.getBoundingClientRect();
-    if (!stuck && (r.bottom < 0 || r.top > vh * 0.88)) continue;
+    /* 1.14, not 0.88, and for the reveal observer's reason exactly: a wipe
+       is the longest arrival on the site (--dur-4, 1500ms) and /partner/'s
+       three doors are one. Starting it a seventh of a screen early is the
+       difference between a reader meeting an opened panel and meeting the
+       navy it opens over. */
+    if (!stuck && (r.bottom < 0 || r.top > vh * 1.14)) continue;
     el.classList.add('is-in');
     pendingWipes.splice(i, 1);
     /* the compositor only needs the hint while the mask travels */
