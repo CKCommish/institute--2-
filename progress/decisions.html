@@ -37,24 +37,55 @@
   <p class="sub">Where I invented something and then caught it, I say so.</p>
 
   <div class="note">
-    <strong>Where the site stands against your reference &mdash; the honest number.</strong>
-    I have run the blind forced-pick comparison against <a href="https://oryzo.ai/">oryzo.ai</a> four times now.
-    Both sites captured as scroll frames, compared unlabelled, picks committed to disk with hashes
-    and a timestamp before anyone is told which is which.
-    <p style="margin:10px 0 0">The scoreboard says <strong>five of six to us</strong>. I do not think that is the
-    number you should carry. This wave&rsquo;s independent judge re-measured the claim underneath our
-    <strong>motion</strong> win and found it did not survive: the builder reported the held Forum scene&rsquo;s
-    sentence lit for 56% of its travel; measured, it is not that. Two waves of re-measurement have since
-    settled the real figure: the payload is lit <strong>43.0% of the arc against a 43.4% analytic
-    ceiling</strong> &mdash; that is, within half a point of the maximum the scene&rsquo;s own geometry allows,
-    so this is not a number tuning can move. The judge flipped that pick anyway. It also
-    discounts our <strong>one-glance comprehension</strong> win, on the grounds that &ldquo;name the purpose and four
-    named partners off one screen&rdquo; is a test only one of these two sites is trying to pass.</p>
-    <p style="margin:10px 0 0">So: <strong>4&ndash;2, or 3&ndash;2 on the strict reading.</strong> We reliably win type restraint,
-    information density and whitespace. <strong>Pacing we have lost in every run since the first.</strong> The
-    scoreboard has not genuinely moved in five waves, which is the finding rather than the good news
-    &mdash; and the pacing gap is now down to a single spacing constant that governs how five of your
-    seven pages arrive at their ask.</p>
+    <strong>Where the site stands against your reference &mdash; the honest number, restated.</strong>
+    Seven forced-pick comparisons against <a href="https://oryzo.ai/">oryzo.ai</a> have now been run, both
+    sites captured as scroll frames and picks hashed to disk before the key is opened.
+    <p style="margin:10px 0 0"><strong>The last two both scored 3&ndash;3.</strong> We reliably win
+    <strong>type restraint, information density and one-glance comprehension</strong>. We have lost
+    <strong>pacing</strong> in every run, and lately whitespace and motion with it. Earlier runs in this
+    series were reported to you as 5&ndash;1 and 4&ndash;2; I would not carry those numbers now, for two
+    reasons set out in the note below &mdash; the comparisons were not blind, and the motion half of them was
+    measuring an artefact.
+    <p style="margin:10px 0 0">What has survived every re-measurement is narrower and more useful than the
+    scoreboard: <strong>no critic &mdash; seventeen now &mdash; has been able to name one moment on this site a
+    designer would screenshot.</strong> The nearest any has come is &ldquo;a good photograph with tasteful type
+    on it, which is a thing a designer has seen a thousand times.&rdquo; That is the real gap, it has not moved,
+    and it is not a gap any gate can measure.</p>
+  </div>
+
+  <div class="note">
+    <strong>The comparison I have been quoting at you was measuring an artefact. Here is the correction.</strong>
+    Six waves of motion judgement rested on frame-by-frame captures of both sites. <code>oryzo.ai</code>
+    clamps wheel delta &mdash; ask it to scroll 5000px and it moves 698 &mdash; and our capture fired one wheel
+    event per frame and assumed the page had moved by what it asked for. Its document is 56,691px.
+    <strong>Thirty frames actually walked 90 to 5,879px: 10.4% of the page, every frame inside the opening
+    scene.</strong> Our site scrolls natively and was never affected; our thirty frames covered 86% of our
+    document. We were comparing our whole site against a tenth of their first scene, and nobody noticed
+    because only one side was ever measured.
+    <p style="margin:10px 0 0">The finding I repeated to you most often &mdash; that the reference holds one
+    subject for twenty-five of thirty frames while we hold nothing &mdash; <strong>is withdrawn.</strong> On
+    corrected captures ours holds <strong>5 of 30</strong> frames; the reference&rsquo;s opening scene occupies
+    <strong>4 of 30</strong> before it moves on. By the metric two judges used to say we never hold a picture,
+    we hold more frames than the site they compared us to. The blind comparisons were also not blind &mdash;
+    the reference stamps a wordmark on every frame &mdash; and both faults are now fixed in the harness.</p>
+  </div>
+
+  <div class="note" style="border-left-color:var(--brass)">
+    <strong>4. The one motion decision still worth your answer, now that it is optional rather than forced.</strong>
+    The homepage&rsquo;s held scene runs at <code>hold=0.95</code> viewport-heights. The component&rsquo;s own
+    defaults are <code>2.5</code> desktop / <code>1.7</code> mobile, and its author&rsquo;s note says that below
+    about 1.6 a hold reads as a stutter rather than a hold. <strong>We are shipping the site&rsquo;s most
+    expensive gesture below its own stated legibility floor.</strong> Restoring the defaults is a two-number
+    edit.
+    <dl style="margin-top:10px">
+      <dt>Costs</dt><dd>Homepage grows <strong>+21% on desktop</strong> (6608 &rarr; 8003px) and +13% on mobile.
+      Each text beat goes from ~338px of scroll to ~890px. No layout shift, no new markup, no bundle cost.</dd>
+      <dt>Buys</dt><dd>The held frames in a 30-frame read go from 5 to about 9 or 10, and the picture is present
+      long enough to register as held rather than as a pause.</dd>
+      <dt>I&rsquo;d say</dt><dd class="rec">Go to about 1.7 desktop rather than the full 2.5 &mdash; over the
+      legibility floor, roughly +9% page length instead of +21%. But this is taste, not measurement, and on
+      the corrected numbers we are no longer behind, so &ldquo;leave it short&rdquo; is a defensible answer.</dd>
+    </dl>
   </div>
 
   <div class="note" style="border-left-color:var(--red)">
@@ -241,7 +272,7 @@
     </div>
   </div>
 
-  <div class="stamp" id="stamp">Updated 29 Aug, 02:20 UTC · seven open</div>
+  <div class="stamp" id="stamp">Updated 29 Aug, 04:55 UTC · eight open</div>
 
   <h2>Earlier list — kept for the record</h2>
 
