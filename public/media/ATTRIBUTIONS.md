@@ -1,14 +1,27 @@
 # Image attributions — Lion Forum Institute
 
-Legal record for every photograph shipped in `public/media/`.
-Every image in this set is **public domain**: either a U.S. federal government work
-(17 U.S.C. § 105) or an item in the Library of Congress Carol M. Highsmith Archive,
-which carries the rights statement *"No known restrictions on publication."*
+Legal record for every photograph shipped in `public/media/`. It covers all
+twenty-six files: the ten scene photographs in entries 1–10, and the sixteen
+board portraits in entry 11.
 
-No image in this set is licensed CC-BY, CC-BY-SA or CC0-with-conditions, so **no
-attribution notice is legally required on the rendered site.** The credits below are
-recorded here for provenance and are recommended as a courtesy (a `/credits` line or a
-`<figure><figcaption>` is sufficient if the design ever wants one).
+**The set has two provenances, and they are not interchangeable.**
+
+*Entries 1–10 — scene photography.* Every one is **public domain**: either a U.S.
+federal government work (17 U.S.C. § 105) or an item in the Library of Congress
+Carol M. Highsmith Archive, which carries the rights statement *"No known
+restrictions on publication."* None is licensed CC-BY, CC-BY-SA or
+CC0-with-conditions, so **no attribution notice is legally required on the
+rendered site** for these files. The credits below are recorded here for
+provenance.
+
+*Entry 11 — the sixteen board portraits.* These are **not** public domain and
+must not be described as such. They were supplied by the client and their
+underlying copyright is **not established by anything in this repository** — see
+entry 11 for what is and is not known, per file. The client has stated that no
+photo credit is to appear on the site ("No photo credit we own the pics"); that
+instruction governs the rendered site and is why no credit line is displayed. It
+is not itself evidence of the chain of title, and this file records the
+distinction rather than resolving it.
 
 Derivative files (`.jpg`, `.webp`, `@1200` variants) are crops and resizes of the
 originals with a mild neutral contrast adjustment only. No color grade is baked in.
@@ -200,8 +213,71 @@ against. **This photograph is Rhode Island, not Cape Cod** — see `CONTENT-NOTE
 
 ---
 
+## 11. The sixteen board portraits — `public/media/board/*.jpg` / `.webp`
+
+**Internal provenance record. Nothing in this entry is a site-visible credit.**
+The client's instruction — *"No photo credit we own the pics"* — governs what the
+rendered page displays, and the page displays no credit. It does not govern our
+own paperwork, and this is the paperwork.
+
+| field | value |
+|---|---|
+| **Slot** | `/people/` — prospective-board roster, one 480 × 480 portrait per name (`src/data/site.js` → `board[].portrait`) |
+| **Source** | `Prospectus_document_review.zip`, supplied by the client, uploaded 2026-08-26 16:43 UTC. Sixteen PNGs under `uploads/Headshots/thumbs/`, one per name on the prospectus board list. |
+| **How they got here** | Client transfer only. **No image in this set was sourced from the web by this project**, and no repository tooling fetched any of them. Added in a single commit, `afd99ce`, which is the only commit that has ever touched `public/media/board/`. |
+| **Creator / photographer** | **Unknown for all sixteen.** The zip carries no captions, no manifest, no EXIF creator field and no accompanying PDF. |
+| **Copyright / licence** | **Unknown for all sixteen.** The client asserts ownership ("we own the pics"). That assertion is recorded here as the client's statement; it is not corroborated by anything in this repository, and it has not been verified per file. The set is visibly mixed in origin — some frames are composed as official government portraits (a U.S. flag and grey seamless), at least one as a commercial studio headshot on a white sweep. If any of these is in fact an official federal portrait it would be PD-USGov and free to use; if any is a commercial studio frame it is the photographer's or the sitter's copyright and the client's assertion needs to be true. **Do not record a licence for any of these files until the client supplies one.** |
+| **Personality / publicity rights** | Separate from copyright and also unresolved. These are sixteen named, living, identifiable people, several of them serving or recently-serving public officials, on a board none of them has agreed to join. See `CONTENT-NOTES.md` → "Board portraits — provenance and the permission gap". |
+| **Processing** | Square source (256² or 320²) upscaled to 480 × 480 and desaturated to a single cool monochrome treatment (measured shipped channel means run R < G < B across the set; the sources are warm colour). No crop; the sources arrived square. mozjpeg + webp derivatives. **Note:** every source is *smaller* than the shipped file — these are 1.5× / 1.875× upscales, not downscales. Higher-resolution originals should be requested from the client. |
+
+### Name-to-image mapping — verified
+
+The client's own filenames are the only name↔image pairing evidence that exists
+in this project: the zip contains no captions, no ordering and no document
+pairing a name with a frame. Our mapping reproduces those filenames exactly,
+one-to-one, with no renaming at any point in the single commit that added them.
+
+The derivation was checked mechanically rather than by eye: every shipped file
+was correlated against all sixteen client sources (16 × 16 grey signatures).
+Each shipped file matches the client source of the **same surname** at r ≈ 0.999–1.000,
+and every one is its own unique best match — the runner-up in every row is
+r ≤ 0.73. **No transposition occurred in this repository.** A worked note and
+the script live in the wave scratchpad.
+
+| shipped | client source | source size | source sha256 (12) | licence |
+|---|---|---|---|---|
+| `bahat.jpg` / `.webp` | `uploads/Headshots/thumbs/bahat.png` | 320 × 320 | `a0ffc5b586ac` | unknown |
+| `bailey.jpg` / `.webp` | `uploads/Headshots/thumbs/bailey.png` | 320 × 320 | `f496ed6f7529` | unknown |
+| `chopra.jpg` / `.webp` | `uploads/Headshots/thumbs/chopra.png` | 320 × 320 | `050b5b393ed2` | unknown |
+| `deblanc-knowles.jpg` / `.webp` | `uploads/Headshots/thumbs/deblanc-knowles.png` | 256 × 256 | `48bdc4c44a86` | unknown |
+| `filippelli.jpg` / `.webp` | `uploads/Headshots/thumbs/filippelli.png` | 320 × 320 | `239cb62fc234` | unknown |
+| `hole.jpg` / `.webp` | `uploads/Headshots/thumbs/hole.png` | 320 × 320 | `b65757c01f61` | unknown |
+| `imanbayev.jpg` / `.webp` | `uploads/Headshots/thumbs/imanbayev.png` | 256 × 256 | `42ec6789034f` | unknown |
+| `inslee.jpg` / `.webp` | `uploads/Headshots/thumbs/inslee.png` | 320 × 320 | `4d93c55b2617` | unknown |
+| `mcintosh.jpg` / `.webp` | `uploads/Headshots/thumbs/mcintosh.png` | 320 × 320 | `0715fac72cff` | unknown |
+| `mitchell.jpg` / `.webp` | `uploads/Headshots/thumbs/mitchell.png` | 320 × 320 | `846286eea1cc` | unknown |
+| `raimondo.jpg` / `.webp` | `uploads/Headshots/thumbs/raimondo.png` | 256 × 256 | `4c5182420eac` | unknown |
+| `scanlon.jpg` / `.webp` | `uploads/Headshots/thumbs/scanlon.png` | 320 × 320 | `4a7e435227a2` | unknown |
+| `sullivan.jpg` / `.webp` | `uploads/Headshots/thumbs/sullivan.png` | 256 × 256 | `39440a89005e` | unknown |
+| `tusk.jpg` / `.webp` | `uploads/Headshots/thumbs/tusk.png` | 320 × 320 | `4b1d20671c9f` | unknown |
+| `yoo.jpg` / `.webp` | `uploads/Headshots/thumbs/yoo.png` | 320 × 320 | `4ceda0c5c4bf` | unknown |
+| `zhang.jpg` / `.webp` | `uploads/Headshots/thumbs/zhang.png` | 320 × 320 | `0562d9f5d3dc` | unknown |
+
+**What this does and does not settle.** It settles that the picture printed
+under each name is the picture the client filed under that name. It does not,
+and cannot, settle whether the client filed the right picture — that would
+require identifying a face, which this project does not do. Confirming that the
+client's own filing is correct is the client's to do; the specific question is
+recorded in `CONTENT-NOTES.md`.
+
+---
+
 ## Optional courtesy credit line
 
 If the design ever wants one line of credit in a footer or a `/credits` page:
 
 > Photography: Carol M. Highsmith Archive, Library of Congress; U.S. Army; Bureau of Land Management. All images public domain.
+
+That line covers entries 1–10 **only**. The sixteen board portraits (entry 11)
+are not public domain and must never be swept into that sentence; the client has
+asked for no credit on them at all.

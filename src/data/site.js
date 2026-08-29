@@ -317,10 +317,20 @@ export const pilotTerms = [
        ACTIVE PILOTS — 2026", and the count is the part nothing disputes;
        the state is what carries the exception, so the state moves down into
        the caption where the exception already lives. /partner/ and the
-       homepage's Pilots scene resolve the same tension the same way. */
+       homepage's Pilots scene resolve the same tension the same way.
+
+       WAVE 24: the caption then read "Active for 2026. The fourth is still
+       in exploration." — which asserts and withdraws the same word in two
+       adjacent lines, under a key that is a count. The caption now carries
+       only the per-pilot split the prospectus states: it "is working with"
+       Special Olympics, Governor Inslee and Butler University, and it "is
+       exploring" 04. Those are the same words /institute/ and /partner/
+       already use, so the three surfaces cannot drift. The KEY is unchanged
+       and the hero strips are unchanged: "FOUR ACTIVE PILOTS — 2026" is the
+       prospectus's own heading, quoted, and nothing here contradicts it. */
     key: 'Four',
     term: 'Pilots',
-    text: 'Active for 2026. The fourth is still in exploration.',
+    text: 'Three are under way. The fourth is in exploration.',
   },
   {
     key: 'Shared',
@@ -651,8 +661,18 @@ export const forum = {
 
 /* The scene reads eyebrow → lead → claim. The lead is the bridge rung: it
    tells you the weight of the line that follows, so the held space between
-   them is an interval and not a hole. The claim stays ONE sentence. */
-export const whyNowLead = 'Everything that follows starts with one fact.';
+   them is an interval and not a hole. The claim stays ONE sentence.
+
+   THE LEAD DOES NOT CALL THE CLAIM A FACT. It read "Everything that follows
+   starts with one fact." The claim under it — refs/PROSPECTUS.txt, WHY NOW?,
+   quoted exactly — is the client's premise, and it is unfalsifiable: there is
+   no measure of how fast an institution absorbs anything. Labelling it a fact
+   asserts a status no source gives it, on the one sentence the whole
+   organisation rests on, and invites the one challenge it cannot answer. The
+   lead now says where the argument starts and claims nothing about it. It is
+   NOT replaced with a source, a date or a figure — none exists in either
+   reference, and inventing one is the thing this repo does not do. */
+export const whyNowLead = 'Everything that follows starts here.';
 
 export const whyNow =
   'AI is moving faster than public institutions can absorb it.';

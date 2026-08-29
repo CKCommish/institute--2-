@@ -908,3 +908,42 @@ Then, and this part is not optional:
 2. **Confirm the lawn frame is the Kennedy Compound.** If it cannot be
    confirmed, set its credit to `''` and the picture makes no claim on its own.
 3. Re-run `tools/photo-meter.mjs` and `tools/credit-sweep.mjs`.
+
+### Provenance established, and the one question left (portrait review)
+
+The provenance of all sixteen board portraits is now recorded in
+`public/media/ATTRIBUTIONS.md` entry 11, as an internal record only — no credit
+is displayed anywhere on the site, per the client's instruction.
+
+The name-to-image mapping was checked mechanically against the client's own zip
+and is **correct**: each shipped portrait derives from the client source file of
+the same surname (correlation 0.999–1.000, unique best match in all sixteen
+rows). Nothing was transposed here.
+
+That leaves exactly two things for the client, and they are different questions:
+
+1. **Copyright, per file.** "We own the pics" is recorded, not verified. The set
+   is visibly mixed — some frames are composed as official government portraits,
+   at least one as a commercial studio headshot. Ask for the source of each, or
+   at minimum for written confirmation that the client holds or has been granted
+   the right to publish each of the sixteen on a public website.
+
+2. **Whether the right picture is filed under Michael Hole.** A reviewer noted
+   that `hole.png` — the client's own file, under the client's own name — is
+   composed like an official federal portrait (U.S. flag over the left shoulder,
+   grey seamless, flag lapel pin), which is the visual grammar of `sullivan.png`
+   and `raimondo.png` rather than of a university provost. This project cannot
+   settle that: identifying a person from a photograph is not something we do,
+   and composition alone proves nothing — a former White House Fellow may well
+   have an official portrait. The question to put to the client, verbatim:
+
+   > In the headshots zip, is `hole.png` definitely a photograph of Dr. Michael
+   > Hole? It is composed like an official federal portrait — U.S. flag, grey
+   > seamless, flag lapel pin — rather than a university portrait, and we would
+   > rather ask than print the wrong face under his name. If it is right, we will
+   > ship it as-is. Also: can you send the full-resolution originals? Every file
+   > in the zip is a 256px or 320px thumbnail, and the site upscales them.
+
+   Until that comes back, the mapping stands as the client filed it. There is no
+   evidence in the repository against it, and a silent substitution would be a
+   worse error than the one being guarded against.

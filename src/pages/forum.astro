@@ -629,8 +629,24 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
         </div>
 
         <div class="frole__body" data-seq="150" data-seq-from="60">
-          <h2 class="display display--feature frole__p" id="frole-h" data-reveal>{forum.role}</h2>
-          <p class="frole__note" data-reveal="120">{forum.roleNote}</p>
+          {/* WHICH OF THE TWO SOURCED SENTENCES GETS THE 72px.
+
+               refs/PROSPECTUS.txt carries both in one sentence: the Institute
+               "is a major sponsor of the Lion Forum AND uses it as a key
+               platform to recruit partners and share its results with the
+               world." Neither half is invented and neither comes off.
+
+               But the half that was set largest was the sponsorship — an
+               institute named after the Forum announcing that it sponsors the
+               Forum, at the biggest size on the page, with no third party to
+               confirm it. That is a boast, and it is the one register a civic
+               institute cannot afford. The half a programme officer actually
+               needs is the purpose: why the Institute is standing in that
+               room. The two strings are swapped, not rewritten — the ranking
+               changes, the page still says both things, and the sponsorship
+               is still on the page in the supporting line. */}
+          <h2 class="display display--feature frole__p" id="frole-h" data-reveal>{forum.roleNote}</h2>
+          <p class="frole__note" data-reveal="120">{forum.role}</p>
 
           {/* ONE DOOR, and it now carries the address it opens. The ask was
                a verb over a mailto: nothing on the page said where an
@@ -1113,8 +1129,12 @@ const briefRows = forum.brief.rows.filter((r) => r !== roomRow);
      out of a set; on this page the set is four beats at head/poster/banner
      and this is the fifth, on the opposite ground, at the rung none of them
      use. It is allowed a wide measure because the width is the point. */
+  /* 20ch held four lines of the old sponsorship sentence. The purpose
+     sentence is 85 characters and would set seven, which is a column and not
+     a claim. 28ch sets it in five at 1440 and is still narrower than any
+     other measure in this section. */
   .frole__p {
-    max-width: 20ch;
+    max-width: 28ch;
     color: var(--fg);
     text-wrap: balance;
     margin: 0 0 clamp(1.1rem, 2vw, 1.7rem);
