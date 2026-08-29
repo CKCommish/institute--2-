@@ -422,6 +422,35 @@ a.link.tap::after { bottom: calc(0.5rem - 2px); }
    enters from below, still behind its stagger, still on --ease-out — it just
    stops withholding the words for three quarters of a second.
 
+   WHAT IT MEASURED AFTER, same sweep, same boundary (worst deficit per
+   route; the two changes in motion.js — the +14% trigger lead and the
+   stagger ceiling — are part of the same repair and this is all three
+   together):
+
+     route        desktop            mobile
+     /pilots/     57.9% -> 43.5%     83.2% -> 26.3%
+     /partner/    59.4% -> 40.7%     59.7% -> 22.0%
+     /people/      8.4% ->  6.6%     35.5% ->  5.6%
+     /            10.2% -> 10.8%     33.8% -> 12.6%
+     /forum/      26.4% -> 18.3%     16.7% -> 12.6%
+     /institute/  18.8% ->  4.2%     15.9% ->  8.4%
+     /404          4.8% ->  2.6%              3.8%
+
+   The SHAPE matters more than the worst figure. /pilots/ desktop used to
+   run four consecutive frames at 41-58%; it now alternates 22/44/4/39/4/39/4
+   — every other frame is fully arrived, which is what a page in motion is
+   supposed to look like. The lowest fast-ink anywhere on the site rose from
+   1.33% to 1.96%, and the frame that holds it is /partner/'s ask, whose
+   SETTLED ink is 3.3%: that region is sparse by composition, not by timing,
+   and it is that page's moment. Nothing was done to it.
+   The homepage's 10.2 -> 10.8 is noise on a route that was never the
+   problem. Two things are NOT claimed here: this does not touch the held
+   scene (which is scroll-linked, not IO-driven, and was measured intact),
+   and no frame on this site was ever EMPTY below the nav — swept at 430,
+   900 and 2000px steps the minimum ink below the bar was 0.88% at 390 and
+   5.5% at 1440, both on the homepage entering Pilots. "Sparse and late" is
+   the true defect; "a full viewport of nothing" was not reproducible.
+
    NOT a blanket speed-up: --dur-2 and --dur-3 are untouched everywhere else,
    and the masked-line vector (.lines, below) is untouched, because a mask
    has no half-lit state to be caught in — a line is either travelled far
